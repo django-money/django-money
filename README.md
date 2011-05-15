@@ -70,7 +70,7 @@ if you assign managers to some other attribute, you have to wrap your manager ma
     from djmoney.models.managers import money_manager
     class BankAccount(models.Model):
         
-        balance = MoneyField(max_digits=10, decimal_places=2, default_currency=moneyed.USD)
+        balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
         accounts = money_manager(MyCustomManager())
 

@@ -4,6 +4,8 @@ from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
 from djmoney import forms
 
+from decimal import Decimal
+
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
 currency_field_name = lambda name: "%s_currency" % name
@@ -54,7 +56,7 @@ class MoneyField(models.DecimalField):
     
     def __init__(self, verbose_name=None, name=None, 
                  max_digits=None, decimal_places=None,
-                 default=None, default_currency=DEFAULT_CURRENCY, **kwargs):
+                 default=Decimal("0.0"), default_currency=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Money):
             self.default_currency = default.currency
         
