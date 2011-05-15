@@ -1,86 +1,60 @@
-from django.db import models
-from django.db.models.query import QuerySet
+
 from django.utils.encoding import smart_unicode
 from fields import currency_field_name
 
-__all__ = ('QuerysetWithMoney', 'MoneyManager',)
+def _expand_money_params(kwargs):
+    from moneyed import Money
+    from django.db.models.sql.constants import LOOKUP_SEP, QUERY_TERMS
+    to_append = {}
+    for name, value in kwargs.items():
+        if isinstance(value, Money):
+            # Get rid of __lt, __gt etc for the currency lookup
+            path = name.split(LOOKUP_SEP)
+            if QUERY_TERMS.has_key(path[-1]):
+                clean_name = LOOKUP_SEP.join(path[:-1])
+            else:
+                clean_name = name
+                
+            to_append[name] = value.amount
+            to_append[currency_field_name(clean_name)] = smart_unicode(value.currency)
+    kwargs.update(to_append)
+    return kwargs
 
-
-class QuerysetWithMoney(QuerySet):
+def understands_money(func):
+    '''
+    Used to wrap a queryset method with logic to expand
+    a query from something like:
     
-    def _update_params(self, kwargs):
-        from moneyed import Money
-        from django.db.models.sql.constants import LOOKUP_SEP
-        to_append = {}
-        for name, value in kwargs.items():
-            if isinstance(value, Money):
-                path = name.split(LOOKUP_SEP)
-                if len(path) > 1:
-                    field_name = currency_field_name(path[0])
-                else:
-                    field_name = currency_field_name(name)
-                to_append[name] = value.amount
-                to_append[field_name] = smart_unicode(value.currency)
-        kwargs.update(to_append)
-        return kwargs
-        
-    def dates(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).dates(*args, **kwargs)
+    mymodel.objects.filter(money=Money(100,"USD"))
+    
+    To something equivalent to:
+    
+    mymodel.objects.filter(money=Decimal("100.0), money_currency="USD")
+    '''
+    def decorator(*args, **kwargs):
+        kwargs = _expand_money_params(kwargs)
+        return func(*args, **kwargs)
+    return decorator
 
-    def distinct(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).distinct(*args, **kwargs)
+RELEVANT_QUERYSET_METHODS = ['dates','distinct','extra','get','get_or_create','filter','complex_filter',
+                             'exclude','in_bulk','iterator','latest','order_by','select_related','values']
 
-    def extra(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).extra(*args, **kwargs)
+def add_money_comprehension_to_queryset(qs):
+    # Decorate each relevant method with understand_money in the queryset given
+    map(lambda attr : setattr(qs, attr, understands_money(getattr(qs, attr))), RELEVANT_QUERYSET_METHODS)
+    return qs
 
-    def get(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).get(*args, **kwargs)
-
-    def get_or_create(self, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).get_or_create(**kwargs)
-
-    def filter(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).filter(*args, **kwargs)
-
-    def complex_filter(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).complex_filter(*args, **kwargs)
-
-    def exclude(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).exclude(*args, **kwargs)
-
-    def in_bulk(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).in_bulk(*args, **kwargs)
-
-    def iterator(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).iterator(*args, **kwargs)
-
-    def latest(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).latest(*args, **kwargs)
-
-    def order_by(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).order_by(*args, **kwargs)
-
-    def select_related(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).select_related(*args, **kwargs)
-
-    def values(self, *args, **kwargs):
-        kwargs = self._update_params(kwargs)
-        return super(QuerysetWithMoney, self).values(*args, **kwargs)
-
-
-class MoneyManager(models.Manager):
-    def get_query_set(self):
-        return QuerysetWithMoney(self.model)
+def money_manager(manager):
+    '''
+    Wraps a model managers get_query_set method so that each query set it returns 
+    is able to work on money fields.
+    
+    We use this instead of a real model manager, in order to allow users of django-money to
+    use other managers special managers while still doing money queries.
+    '''
+    old_get_query_set = manager.get_query_set
+    def get_query_set(*args,**kwargs):
+        return add_money_comprehension_to_queryset(old_get_query_set(*args,**kwargs))
+    
+    manager.get_query_set = get_query_set
+    return manager 

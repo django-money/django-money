@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils.encoding import smart_unicode
 from exceptions import Exception
-from moneyed.classes import Money, Currency, DEFAULT_CURRENCY
+from moneyed import Money, Currency, DEFAULT_CURRENCY
 from djmoney import forms
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
@@ -88,9 +88,14 @@ class MoneyField(models.DecimalField):
         
         setattr(cls, self.name, MoneyFieldProxy(self))
         
-        if not hasattr(cls, '_default_manager'):
-            from managers import MoneyManager
-            cls.add_to_class('objects', MoneyManager())
+        from managers import money_manager
+
+        if hasattr(cls, '_default_manager'):
+            cls._default_manager = money_manager(cls._default_manager)
+        elif hasattr(cls, 'objects'):
+            cls.objects = money_manager(cls._default_manager)
+        else:
+            cls.objects = money_manager(models.Manager)
         
     def get_db_prep_save(self, value):
         if isinstance(value, Money):

@@ -7,7 +7,7 @@ Created on May 7, 2011
 from  django.test import TestCase
 from moneyed import Money
 import moneyed
-from testapp.models import ModelWithVanillaMoneyField
+from testapp.models import ModelWithVanillaMoneyField, ModelRelatedToModelWithMoney
 
 class VanillaMoneyFieldTestCase(TestCase):
     
@@ -45,7 +45,6 @@ class VanillaMoneyFieldTestCase(TestCase):
         
     def testRangeSearch(self):
         
-        maxMoney = Money("1000")
         minMoney = Money("3")
         
         model = ModelWithVanillaMoneyField(money = Money("100.0"))
@@ -72,3 +71,16 @@ class VanillaMoneyFieldTestCase(TestCase):
         shouldBeOne = ModelWithVanillaMoneyField.objects.filter(money__lt=correctMoney)
         self.assertEquals(shouldBeOne.count(), 1)
         
+
+class RelatedModelsTestCase(TestCase):
+    
+    def testFindModelsRelatedToMoneyModels(self):
+        
+        moneyModel = ModelWithVanillaMoneyField(money = Money("100.0", moneyed.ZWN))
+        moneyModel.save()
+        
+        relatedModel = ModelRelatedToModelWithMoney(moneyModel=moneyModel)
+        relatedModel.save()
+        
+        ModelRelatedToModelWithMoney.objects.get(moneyModel__money = Money("100.0", moneyed.ZWN))
+        ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt = Money("1000.0", moneyed.ZWN))
