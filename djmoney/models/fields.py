@@ -7,8 +7,6 @@ from djmoney import forms
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
 currency_field_name = lambda name: "%s_currency" % name
-
-
 SUPPORTED_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
 
 class NotSupportedLookup(Exception):
@@ -118,3 +116,20 @@ class MoneyField(models.DecimalField):
         defaults = {'form_class': forms.MoneyField}
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
+    
+## South support
+try:
+    from south.modelsinspector import add_introspection_rules
+    
+    rules = [
+        ((MoneyField,),
+         [], # No positional args
+         {'default_currency':('default_currency',{})}),
+        ((CurrencyField,),
+         [],  # No positional args
+         {}), # No new keyword args
+    ]
+    
+    add_introspection_rules(rules, ["^djmoney\.models"])
+except ImportError:
+    pass
