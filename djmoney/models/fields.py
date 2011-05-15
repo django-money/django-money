@@ -70,6 +70,11 @@ class MoneyField(models.DecimalField):
         self.default_currency = default_currency
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
     
+    def to_python(self, value):
+        if isinstance(value, Money):
+            value = value.amount
+        return super(MoneyField, self).to_python(value)
+    
     def get_internal_type(self):
         return "DecimalField"
      
@@ -89,7 +94,7 @@ class MoneyField(models.DecimalField):
         
     def get_db_prep_save(self, value):
         if isinstance(value, Money):
-            value = value.amount  
+            value = value.amount
         return super(MoneyField, self).get_db_prep_save(value)
     
     def get_db_prep_lookup(self, lookup_type, value):

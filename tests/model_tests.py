@@ -23,6 +23,13 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(somemoney.currency, retrieved.money.currency)
         self.assertEquals(somemoney, retrieved.money)
         
+        # Try setting the value directly
+        retrieved.money = Money(1, moneyed.DKK)
+        retrieved.save()
+        retrieved = ModelWithVanillaMoneyField.objects.get(pk=model.pk)
+        
+        self.assertEquals(Money(1, moneyed.DKK), retrieved.money)
+        
     def testExactMatch(self):
         
         somemoney = Money("100.0")
