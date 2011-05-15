@@ -13,13 +13,17 @@ except ImportError:
 
 
 setup(name="django-money",
-      version="1.0-alpha",
-      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as money implementation, based on python-moneys django classes.",
+      version="0.1",
+      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as money implementation, based on python-money django implementation.",
       url="https://github.com/jakewins/django-money",
       zip_safe=False,
       packages=["djmoney",
                 "djmoney.forms", 
                 "djmoney.models"],
+      # Commented out, waiting for pull request to be fulfilled: https://github.com/limist/py-moneyed/pull/1 
+      #install_requires=['setuptools',
+      #                  'Django >= 1.2',
+      #                  'py-moneyed > 0.3'],
       package_dir={"": "src"},
       cmdclass = cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
