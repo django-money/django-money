@@ -23,8 +23,11 @@ class MoneyFieldProxy(object):
         self.currency_field_name = currency_field_name(self.field.name)
     
     def _money_from_obj(self, obj):
-        return Money(obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name])
-    
+        amount = obj.__dict__[self.field.name]
+        if amount is None:
+            return None
+        return Money(amount, obj.__dict__[self.currency_field_name])
+
     def __get__(self, obj, type=None):
         if obj is None:
             raise AttributeError('Can only be accessed via an instance.')
