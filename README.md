@@ -42,7 +42,7 @@ Use as normal model fields
     
     class BankAccount(models.Model):
         
-        balance = MoneyField(max_digits=10, decimal_places=2, default_currency=moneyed.USD)
+        balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
 Searching for models with money fields:
