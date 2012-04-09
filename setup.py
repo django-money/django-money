@@ -13,9 +13,9 @@ except ImportError:
 
 
 setup(name="django-money",
-      version="0.1",
-      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as money implementation, based on python-money django implementation.",
-      url="https://github.com/jakewins/django-money",
+      version="0.2",
+      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
+      url="https://github.com/reinbach/django-money",
       packages=["djmoney",
                 "djmoney.forms", 
                 "djmoney.models"],
