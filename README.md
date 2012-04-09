@@ -21,7 +21,7 @@ Django-money currently needs py-moneyed v0.4 (or later) to work.
 
 You can install django-money by doing:
 
-	pip install django-money
+	pip install djmoney
 
 This will automatically install the appropriate dependencies.
 
