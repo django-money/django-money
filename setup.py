@@ -19,11 +19,9 @@ setup(name="django-money",
       packages=["djmoney",
                 "djmoney.forms", 
                 "djmoney.models"],
-      # Commented out, waiting for pull request to be fulfilled: https://github.com/limist/py-moneyed/pull/1 
-      #install_requires=['setuptools',
-      #                  'Django >= 1.2',
-      #                  'py-moneyed > 0.3'],
-#      package_dir={"": ""},
+      install_requires=['setuptools',
+                        'Django >= 1.2',
+                        'py-moneyed > 0.4'],
       cmdclass = cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",
@@ -31,5 +29,3 @@ setup(name="django-money",
                    "Operating System :: OS Independent",
                    "Programming Language :: Python",
                    "Framework :: Django",])
-
-
