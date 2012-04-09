@@ -23,7 +23,7 @@ You can install django-money by doing:
 
 	pip install django-money
 
-This will automatically install the appropriate dependancies.
+This will automatically install the appropriate dependencies.
 
 You can obtain the source code for django-money from here:
 
@@ -58,6 +58,9 @@ Searching for models with money fields:
 
     BankAccount.objects.filter(balance__gt=Money(1, USD))
     # Returns the "account" object
+
+If you use South to handle model migration, things will "Just Work" out of the box.
+South is an optional dependency and things will work fine without it.
 
 Important note on model managers
 --------------------------------
