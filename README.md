@@ -62,6 +62,25 @@ Searching for models with money fields:
 If you use South to handle model migration, things will "Just Work" out of the box.
 South is an optional dependency and things will work fine without it.
 
+Adding a new Currency
+---------------------
+
+Currencies are listed on moneyed, and this modules use this to provide a choice
+list on the admin, also for validation.
+
+To add a new currency available on all the project, you can simple add this two
+lines on your `settings.py` file
+
+    from moneyed import add_currency
+    add_currency(code='BOB', numeric='068', name='Peso boliviano', countries=('BOLIVIA',))
+
+To restrict the currencies listed on the project set a `CURRENCIES` variable with
+a list of Currency codes on `settings.py`
+
+    CURRENCIES = ('USD', 'BOB')
+
+**The list has to contain valid Currency codes**
+
 Important note on model managers
 --------------------------------
 

@@ -14,7 +14,7 @@ def _expand_money_params(kwargs):
                 clean_name = LOOKUP_SEP.join(path[:-1])
             else:
                 clean_name = name
-                
+
             to_append[name] = value.amount
             to_append[currency_field_name(clean_name)] = smart_unicode(value.currency)
     kwargs.update(to_append)
@@ -24,11 +24,11 @@ def understands_money(func):
     '''
     Used to wrap a queryset method with logic to expand
     a query from something like:
-    
+
     mymodel.objects.filter(money=Money(100,"USD"))
-    
+
     To something equivalent to:
-    
+
     mymodel.objects.filter(money=Decimal("100.0), money_currency="USD")
     '''
     def decorator(*args, **kwargs):
@@ -46,15 +46,15 @@ def add_money_comprehension_to_queryset(qs):
 
 def money_manager(manager):
     '''
-    Wraps a model managers get_query_set method so that each query set it returns 
+    Wraps a model managers get_query_set method so that each query set it returns
     is able to work on money fields.
-    
+
     We use this instead of a real model manager, in order to allow users of django-money to
     use other managers special managers while still doing money queries.
     '''
     old_get_query_set = manager.get_query_set
     def get_query_set(*args,**kwargs):
         return add_money_comprehension_to_queryset(old_get_query_set(*args,**kwargs))
-    
+
     manager.get_query_set = get_query_set
-    return manager 
+    return manager
