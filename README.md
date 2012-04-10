@@ -17,19 +17,21 @@ Via py-moneyed, django-moneyed gets:
 Installation
 ------------
 
-Django-money currently needs the development version of py-moneyed to work (2012-04-08).
+Django-money currently needs py-moneyed v0.4 (or later) to work.
 
-Install py-moneyed from here:
+You can install django-money by doing:
 
-    git clone https://limist@github.com/limist/py-moneyed.git
-    cd py-moneyed
-    python setup.py install
+	pip install djmoney
 
-And then, install py-moneyed like so:
+This will automatically install the appropriate dependencies.
 
-    git clone https://jakewins@github.com/jakewins/django-money.git
-    cd django-money
-    python setup.py install
+You can obtain the source code for django-money from here:
+
+	https://github.com/reinbach/django-money
+
+And the source for py-moneyed from here:
+
+    https://github.com/limist/py-moneyed
 
 Model usage
 -----
@@ -56,6 +58,9 @@ Searching for models with money fields:
 
     BankAccount.objects.filter(balance__gt=Money(1, USD))
     # Returns the "account" object
+
+If you use South to handle model migration, things will "Just Work" out of the box.
+South is an optional dependency and things will work fine without it.
 
 Important note on model managers
 --------------------------------
