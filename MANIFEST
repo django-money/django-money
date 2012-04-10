@@ -1,0 +1,8 @@
+setup.py
+djmoney/__init__.py
+djmoney/forms/__init__.py
+djmoney/forms/fields.py
+djmoney/forms/widgets.py
+djmoney/models/__init__.py
+djmoney/models/fields.py
+djmoney/models/managers.py
