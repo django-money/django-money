@@ -6,10 +6,10 @@ import operator
 
 __all__ = ('InputMoneyWidget', 'CurrencySelectWidget',)
 
-PROJECT_CURRENCIES = settings.get(CURRENCIES, None)
+PROJECT_CURRENCIES = getattr(settings, 'CURRENCIES', None)
 
 if PROJECT_CURRENCIES:
-    CURRENCY_CHOICES = [(code, CURRENCIES[code].name) for code in CURRENCIES]
+    CURRENCY_CHOICES = [(code, CURRENCIES[code].name) for code in PROJECT_CURRENCIES]
 else:
     CURRENCY_CHOICES = [(c.code, c.name) for i, c in CURRENCIES.items() if c.code != DEFAULT_CURRENCY_CODE]
 
