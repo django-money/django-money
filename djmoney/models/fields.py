@@ -93,7 +93,7 @@ class MoneyField(models.DecimalField):
         if hasattr(cls, '_default_manager'):
             cls._default_manager = money_manager(cls._default_manager)
         elif hasattr(cls, 'objects'):
-            cls.objects = money_manager(cls._default_manager)
+            cls.objects = money_manager(cls.objects)
         else:
             cls.objects = money_manager(models.Manager)
         
