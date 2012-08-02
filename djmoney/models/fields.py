@@ -132,10 +132,12 @@ try:
     rules = [
         ((MoneyField,),
          [],  # No positional args
-         {'default_currency':('default_currency', {})}),
+         {'default': ('default', {'default': Decimal('0.0')}),
+          'default_currency': ('default_currency', {'default': DEFAULT_CURRENCY})}),
         ((CurrencyField,),
          [],  # No positional args
-         {}),  # No new keyword args
+         {'default': ('default', {'default': DEFAULT_CURRENCY.code}),
+          'max_length': ('max_length', {'default': 3})}),
     ]
 
     add_introspection_rules(rules, ["^djmoney\.models"])
