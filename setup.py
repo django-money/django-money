@@ -7,29 +7,25 @@ try:
     cmdclass = {"compile_catalog": babel.compile_catalog,
                 "extract_messages": babel.extract_messages,
                 "init_catalog": babel.init_catalog,
-                "update_catalog": babel.update_catalog,}
+                "update_catalog": babel.update_catalog, }
 except ImportError:
     cmdclass = {}
 
 
 setup(name="django-money",
-      version="0.1",
-      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as money implementation, based on python-money django implementation.",
-      url="https://github.com/jakewins/django-money",
+      version="0.2",
+      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
+      url="https://github.com/reinbach/django-money",
       packages=["djmoney",
-                "djmoney.forms", 
+                "djmoney.forms",
                 "djmoney.models"],
-      # Commented out, waiting for pull request to be fulfilled: https://github.com/limist/py-moneyed/pull/1 
-      #install_requires=['setuptools',
-      #                  'Django >= 1.2',
-      #                  'py-moneyed > 0.3'],
-      package_dir={"": ""},
-      cmdclass = cmdclass,
+      install_requires=['setuptools',
+                        'Django >= 1.2',
+                        'py-moneyed > 0.3'],
+      cmdclass=cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",
                    "License :: OSI Approved :: BSD License",
                    "Operating System :: OS Independent",
                    "Programming Language :: Python",
-                   "Framework :: Django",])
-
-
+                   "Framework :: Django", ])
