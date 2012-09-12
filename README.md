@@ -17,12 +17,11 @@ Via py-moneyed, django-moneyed gets:
 Installation
 ------------
 
-Django-money currently needs a special version of py-moneyed to work (2011-05-15). This will be resolved as soon as 
-my fork of it is approved and merged into py-moneyed main branch.
+Django-money currently needs the development version of py-moneyed to work (2012-04-08).
 
-Until then, install py-moneyed from here:
+Install py-moneyed from here:
 
-    git clone https://jakewins@github.com/jakewins/py-moneyed.git
+    git clone https://limist@github.com/limist/py-moneyed.git
     cd py-moneyed
     python setup.py install
 
@@ -43,7 +42,7 @@ Use as normal model fields
     
     class BankAccount(models.Model):
         
-        balance = MoneyField(max_digits=10, decimal_places=2, default_currency=moneyed.USD)
+        balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
 Searching for models with money fields:
