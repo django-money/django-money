@@ -1,11 +1,11 @@
 Django-money
 -----------
 
-A little django app that uses py-moneyed to add support for Money fields in your models and forms. 
+A little django app that uses py-moneyed to add support for Money fields in your models and forms.
 
 Fork of the django support that was in http://code.google.com/p/python-money/
 
-This version adds tests, and comes with several critical bugfixes. 
+This version adds tests, and comes with several critical bugfixes.
 
 Via py-moneyed, django-moneyed gets:
 
@@ -41,9 +41,9 @@ Use as normal model fields
     import moneyed
     from djmoney.models.fields import MoneyField
     from django.db import models
-    
+
     class BankAccount(models.Model):
-        
+
         balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
@@ -62,6 +62,25 @@ Searching for models with money fields:
 If you use South to handle model migration, things will "Just Work" out of the box.
 South is an optional dependency and things will work fine without it.
 
+Adding a new Currency
+---------------------
+
+Currencies are listed on moneyed, and this modules use this to provide a choice
+list on the admin, also for validation.
+
+To add a new currency available on all the project, you can simple add this two
+lines on your `settings.py` file
+
+    from moneyed import add_currency
+    add_currency(code='BOB', numeric='068', name='Peso boliviano', countries=('BOLIVIA',))
+
+To restrict the currencies listed on the project set a `CURRENCIES` variable with
+a list of Currency codes on `settings.py`
+
+    CURRENCIES = ('USD', 'BOB')
+
+**The list has to contain valid Currency codes**
+
 Important note on model managers
 --------------------------------
 
@@ -73,7 +92,7 @@ if you assign managers to some other attribute, you have to wrap your manager ma
 
     from djmoney.models.managers import money_manager
     class BankAccount(models.Model):
-        
+
         balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
         accounts = money_manager(MyCustomManager())
@@ -85,9 +104,7 @@ you also need to manually decorate those custom methods, like so:
     from djmoney.models.managers import understand_money
 
     class MyCustomQuerySet(QuerySet):
-    
+
        @understand_money
        def my_custom_method(*args,**kwargs):
            # Awesome stuff
-
-
