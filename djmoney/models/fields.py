@@ -129,6 +129,10 @@ class MoneyField(models.DecimalField):
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
 
+    def value_to_string(self, obj):
+        return obj.__dict__[self.attname].amount
+
+
 ## South support
 try:
     from south.modelsinspector import add_introspection_rules
