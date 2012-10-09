@@ -90,7 +90,7 @@ class MoneyField(models.DecimalField):
         
         from managers import money_manager
 
-        if hasattr(cls, '_default_manager'):
+        if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)
         elif hasattr(cls, 'objects'):
             cls.objects = money_manager(cls.objects)
