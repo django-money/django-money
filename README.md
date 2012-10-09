@@ -17,15 +17,7 @@ Via py-moneyed, django-moneyed gets:
 Installation
 ------------
 
-Django-money currently needs the development version of py-moneyed to work (2012-04-08).
-
-Install py-moneyed from here:
-
-    git clone https://limist@github.com/limist/py-moneyed.git
-    cd py-moneyed
-    python setup.py install
-
-And then, install py-moneyed like so:
+Clone and run the setup script:
 
     git clone https://jakewins@github.com/jakewins/django-money.git
     cd django-money
