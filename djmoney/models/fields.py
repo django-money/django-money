@@ -50,6 +50,8 @@ class MoneyFieldProxy(object):
 
 class CurrencyField(models.CharField):
 
+    description = "A field which stores currency."
+
     def __init__(self, verbose_name=None, name=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
             default = default.code
@@ -61,6 +63,8 @@ class CurrencyField(models.CharField):
 
 
 class MoneyField(models.DecimalField):
+
+    description = "A field which stores both the currency and amount of money."
 
     def __init__(self, verbose_name=None, name=None,
                  max_digits=None, decimal_places=None,
