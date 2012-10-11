@@ -1,0 +1,7 @@
+Changes in 0.3.1
+- Fix AttributeError when Model inherit a manager (Rachid Belaid <rachid.belaid@gmail.com>)
+- Correctly serialize the field (Anand Kumria <akumria@acm.org>)
+
+Changes in 0.3
+- Allow django-money to be specified as read-only in a model (Anand Kumria <akumria@acm.org>)
+- South support: Declare default attribute values. (Piet Delport <pjdelport@gmail.com>)
