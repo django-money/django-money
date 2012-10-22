@@ -1,10 +1,16 @@
-
 from django.utils.encoding import smart_unicode
 from fields import currency_field_name
 
 def _expand_money_params(kwargs):
     from moneyed import Money
-    from django.db.models.sql.constants import LOOKUP_SEP, QUERY_TERMS
+    try:
+        from django.db.models.sql.constants import LOOKUP_SEP
+    except Import Error:
+        # New refactoring in Django 1.5
+        from django.db.models.sql import LOOKUP_SEP
+
+    from django.db.models.sql.constants import QUERY_TERMS
+
     to_append = {}
     for name, value in kwargs.items():
         if isinstance(value, Money):
