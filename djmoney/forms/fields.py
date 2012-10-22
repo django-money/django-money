@@ -5,6 +5,7 @@ from moneyed.classes import Money, CURRENCIES, DEFAULT_CURRENCY_CODE
 
 __all__ = ('MoneyField',)
 
+
 class MoneyField(forms.DecimalField):
 
     def __init__(self, currency_widget=None, *args, **kwargs):

@@ -11,11 +11,14 @@ __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 currency_field_name = lambda name: "%s_currency" % name
 SUPPORTED_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
 
+
 class NotSupportedLookup(Exception):
     def __init__(self, lookup):
         self.lookup = lookup
+
     def __str__(self):
         return "Lookup '%s' is not supported for MoneyField" % self.lookup
+
 
 class MoneyFieldProxy(object):
     def __init__(self, field):
@@ -40,11 +43,14 @@ class MoneyFieldProxy(object):
             obj.__dict__[self.field.name] = value.amount
             setattr(obj, self.currency_field_name, smart_unicode(value.currency))
         else:
-            if value: value = str(value)
+            if value:
+                value = str(value)
             obj.__dict__[self.field.name] = self.field.to_python(value)
 
 
 class CurrencyField(models.CharField):
+
+    description = "A field which stores currency."
 
     def __init__(self, verbose_name=None, name=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
@@ -55,7 +61,10 @@ class CurrencyField(models.CharField):
     def get_internal_type(self):
         return "CharField"
 
+
 class MoneyField(models.DecimalField):
+
+    description = "A field which stores both the currency and amount of money."
 
     def __init__(self, verbose_name=None, name=None,
                  max_digits=None, decimal_places=None,
@@ -93,9 +102,9 @@ class MoneyField(models.DecimalField):
 
         from managers import money_manager
 
-        try:
+        if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)
-        except AttributeError:
+        else:
             cls.objects = money_manager(models.Manager)
 
     def get_db_prep_save(self, value, connection):
@@ -120,6 +129,10 @@ class MoneyField(models.DecimalField):
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
 
+    def value_to_string(self, obj):
+        return obj.__dict__[self.attname].amount
+
+
 ## South support
 try:
     from south.modelsinspector import add_introspection_rules
@@ -127,12 +140,12 @@ try:
     rules = [
         ((MoneyField,),
          [],  # No positional args
-         {'default_currency':('default_currency', {})}
-        ),
+         {'default': ('default', {'default': Decimal('0.0')}),
+          'default_currency': ('default_currency', {'default': DEFAULT_CURRENCY})}),
         ((CurrencyField,),
          [],  # No positional args
-         {}
-        ),
+         {'default': ('default', {'default': DEFAULT_CURRENCY.code}),
+          'max_length': ('max_length', {'default': 3})}),
     ]
 
     add_introspection_rules(rules, ["^djmoney\.models"])
