@@ -5,7 +5,7 @@ def _expand_money_params(kwargs):
     from moneyed import Money
     try:
         from django.db.models.sql.constants import LOOKUP_SEP
-    except Import Error:
+    except ImportError:
         # New refactoring in Django 1.5
         from django.db.models.sql import LOOKUP_SEP
 
