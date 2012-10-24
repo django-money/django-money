@@ -11,34 +11,6 @@ from django.db.models.fields.related import ManyToManyRel
 
 from django.contrib.admin import util as admin_util
 
-
-def djmoney_display_for_field(value, field):
-    from django.contrib.admin.templatetags.admin_list import _boolean_icon
-    from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
-
-    try:
-        if field.flatchoices:
-            return dict(field.flatchoices).get(value, EMPTY_CHANGELIST_VALUE)
-        # NullBooleanField needs special-case null-handling, so it comes
-        # before the general null test.
-        elif isinstance(field, models.BooleanField) or isinstance(field, models.NullBooleanField):
-            return _boolean_icon(value)
-        elif value is None:
-            return EMPTY_CHANGELIST_VALUE
-        elif isinstance(field, models.DateTimeField):
-            return formats.localize(timezone.localtime(value))
-        elif isinstance(field, models.DateField) or isinstance(field, models.TimeField):
-            return formats.localize(value)
-        elif isinstance(field, models.DecimalField):
-            return formats.number_format(value, field.decimal_places)
-        elif isinstance(field, models.FloatField):
-            return formats.number_format(value)
-        else:
-            return smart_unicode(value)
-    except:
-            return smart_unicode(value)
-admin_util.display_for_field = djmoney_display_for_field
-
 def djmoney_contents(self):
     from django.contrib.admin.templatetags.admin_list import _boolean_icon
     from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
