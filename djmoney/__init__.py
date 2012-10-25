@@ -35,7 +35,7 @@ def djmoney_contents(self):
             elif isinstance(f.rel, ManyToManyRel):
                 result_repr = ", ".join(map(unicode, value.all()))
             else:
-                result_repr = djmoney_display_for_field(value, f)
+                result_repr = smart_unicode(value)
     return conditional_escape(result_repr)
 
 from django.contrib.admin.helpers import AdminReadonlyField
