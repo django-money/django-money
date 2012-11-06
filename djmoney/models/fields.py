@@ -104,8 +104,10 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)
+        elif hasattr(cls, 'objects'):
+            cls.objects = money_manager(cls.objects)
         else:
-            cls.objects = money_manager(models.Manager)
+            cls.objects = money_manager(models.Manager())
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
