@@ -55,12 +55,13 @@ def money_manager(manager):
     We use this instead of a real model manager, in order to allow users of django-money to
     use other managers special managers while still doing money queries.
     '''
-    old_get_query_set = manager.get_query_set
+    import types
 
-    def get_query_set(self,*args, **kwargs):
+    def get_query_set(self, *args, **kwargs):
         return add_money_comprehension_to_queryset(self._old_get_query_set(*args, **kwargs))
 
-    import types
-    manager.__class__._old_get_query_set = manager.__class__.get_query_set
+    if not hasattr(manager, '_old_get_query_set'):
+        manager.__class__._old_get_query_set = manager.__class__.get_query_set
+
     manager.__class__.get_query_set = types.MethodType(get_query_set, None, manager.__class__)
     return manager
