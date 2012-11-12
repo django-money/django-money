@@ -61,6 +61,8 @@ class CurrencyField(models.CharField):
     def get_internal_type(self):
         return "CharField"
 
+class CurrencyFieldToIgnore(CurrencyField):
+    pass
 
 class MoneyField(models.DecimalField):
 
@@ -92,9 +94,10 @@ class MoneyField(models.DecimalField):
 
     def contribute_to_class(self, cls, name):
         c_field_name = currency_field_name(name)
-        c_field = CurrencyField(max_length=3, default=self.default_currency, editable=False)
+        c_field = CurrencyFieldToIgnore(max_length=3, default=self.default_currency, editable=False)
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
+
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
@@ -137,7 +140,7 @@ class MoneyField(models.DecimalField):
 
 ## South support
 try:
-    from south.modelsinspector import add_introspection_rules
+    from south.modelsinspector import add_introspection_rules, add_ignored_fields
 
     rules = [
         ((MoneyField,),
@@ -150,6 +153,8 @@ try:
           'max_length': ('max_length', {'default': 3})}),
     ]
 
-    add_introspection_rules(rules, ["^djmoney\.models"])
+    add_ignored_fields(["^djmoney\.models\.fields\.CurrencyFieldToIgnore"])
+    add_introspection_rules(rules, ["^djmoney\.models\.fields\.MoneyField",
+                                    "^djmoney\.models\.fields\.CurrencyField"])
 except ImportError:
     pass
