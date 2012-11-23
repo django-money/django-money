@@ -61,8 +61,6 @@ class CurrencyField(models.CharField):
     def get_internal_type(self):
         return "CharField"
 
-class CurrencyFieldToIgnore(CurrencyField):
-    pass
 
 class MoneyField(models.DecimalField):
 
@@ -71,6 +69,9 @@ class MoneyField(models.DecimalField):
     def __init__(self, verbose_name=None, name=None,
                  max_digits=None, decimal_places=None,
                  default=Decimal("0.0"), default_currency=DEFAULT_CURRENCY, **kwargs):
+
+        self.frozen_by_south = kwargs.pop("frozen_by_south", False)
+
         if isinstance(default, Money):
             self.default_currency = default.currency
 
@@ -93,10 +94,11 @@ class MoneyField(models.DecimalField):
         return "DecimalField"
 
     def contribute_to_class(self, cls, name):
-        c_field_name = currency_field_name(name)
-        c_field = CurrencyFieldToIgnore(max_length=3, default=self.default_currency, editable=False)
-        c_field.creation_counter = self.creation_counter
-        cls.add_to_class(c_field_name, c_field)
+        if not self.frozen_by_south:
+            c_field_name = currency_field_name(name)
+            c_field = CurrencyField(max_length=3, default=self.default_currency, editable=False)
+            c_field.creation_counter = self.creation_counter
+            cls.add_to_class(c_field_name, c_field)
 
 
         super(MoneyField, self).contribute_to_class(cls, name)
@@ -146,14 +148,15 @@ try:
         ((MoneyField,),
          [],  # No positional args
          {'default': ('default', {'default': Decimal('0.0')}),
-          'default_currency': ('default_currency', {'default': DEFAULT_CURRENCY})}),
+         'default_currency': ('default_currency', {'default': DEFAULT_CURRENCY}),
+          "frozen_by_south": [True, {"is_value": True}]
+          }),
         ((CurrencyField,),
          [],  # No positional args
          {'default': ('default', {'default': DEFAULT_CURRENCY.code}),
           'max_length': ('max_length', {'default': 3})}),
     ]
 
-    add_ignored_fields(["^djmoney\.models\.fields\.CurrencyFieldToIgnore"])
     add_introspection_rules(rules, ["^djmoney\.models\.fields\.MoneyField",
                                     "^djmoney\.models\.fields\.CurrencyField"])
 except ImportError:
