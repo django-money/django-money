@@ -142,7 +142,7 @@ class MoneyField(models.DecimalField):
 
 ## South support
 try:
-    from south.modelsinspector import add_introspection_rules, add_ignored_fields
+    from south.modelsinspector import add_introspection_rules
 
     rules = [
         ((MoneyField,),
