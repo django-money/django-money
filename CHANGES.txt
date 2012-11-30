@@ -1,3 +1,8 @@
+Changes in 0.3.2
+- Fixed issues with display_for_field not detecting fields correctly (adambregenzer)
+- Add south ignore rule to avoid duplicate currency field when using the frozen orm (Rachid Belaid <rachid.belaid@gmail.com>)
+- Disallow overide of objects manager if not setting it up with an instance (Rachid Belaid <rachid.belaid@gmail.com>)
+
 Changes in 0.3.1
 - Fix AttributeError when Model inherit a manager (Rachid Belaid <rachid.belaid@gmail.com>)
 - Correctly serialize the field (Anand Kumria <akumria@acm.org>)
