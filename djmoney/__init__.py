@@ -1,4 +1,4 @@
-from django.db import models
+from django import db
 from django.utils.encoding import smart_unicode
 from django.utils import formats
 from django.utils import timezone
@@ -21,17 +21,17 @@ def djmoney_display_for_field(value, field):
             return dict(field.flatchoices).get(value, EMPTY_CHANGELIST_VALUE)
         # NullBooleanField needs special-case null-handling, so it comes
         # before the general null test.
-        elif isinstance(field, models.BooleanField) or isinstance(field, models.NullBooleanField):
+        elif isinstance(field, db.models.BooleanField) or isinstance(field, db.models.NullBooleanField):
             return _boolean_icon(value)
         elif value is None:
             return EMPTY_CHANGELIST_VALUE
-        elif isinstance(field, models.DateTimeField):
+        elif isinstance(field, db.models.DateTimeField):
             return formats.localize(timezone.localtime(value))
-        elif isinstance(field, models.DateField) or isinstance(field, models.TimeField):
+        elif isinstance(field, db.models.DateField) or isinstance(field, db.models.TimeField):
             return formats.localize(value)
-        elif isinstance(field, models.DecimalField):
+        elif isinstance(field, db.models.DecimalField):
             return formats.number_format(value, field.decimal_places)
-        elif isinstance(field, models.FloatField):
+        elif isinstance(field, db.models.FloatField):
             return formats.number_format(value)
         else:
             return smart_unicode(value)
