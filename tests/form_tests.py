@@ -18,7 +18,7 @@ class MoneyFormTestCase(TestCase):
     def testRender(self):
 
         form = MoneyForm()
-        expected = """<tr><th><label for="id_money">Money:</label></th><td><input type="text" name="money" /><select name="money_currency">
+        expected = """<tr><th><label for="id_money">Money:</label></th><td><input type="text" name="money" id="id_money" /><select name="money_currency" id="id_money_currency">
 <option value="a">a</option>
 </select></td></tr>"""
 

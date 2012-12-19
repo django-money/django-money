@@ -74,6 +74,10 @@ class MoneyField(models.DecimalField):
 
         if isinstance(default, Money):
             self.default_currency = default.currency
+        else:
+            self.default_currency = default_currency
+            # To ultimately pass default_currency on to widget
+            default=Money(default, default_currency)
 
         # Avoid giving the user hard-to-debug errors if they miss required attributes
         if max_digits is None:
@@ -82,7 +86,6 @@ class MoneyField(models.DecimalField):
         if decimal_places is None:
             raise Exception("You have to provide a decimal_places attribute to Money fields.")
 
-        self.default_currency = default_currency
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
 
     def to_python(self, value):
