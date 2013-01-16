@@ -141,26 +141,33 @@ class MoneyField(models.DecimalField):
 
     def value_to_string(self, obj):
         return obj.__dict__[self.attname].amount
+    
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        # Note: This method gets automatically with schemamigration time.
+        from south.modelsinspector import introspector
+        field_class = self.__class__.__module__ + "." + self.__class__.__name__
+        args, kwargs = introspector(self)
+        # We need to 
+        # 1. Delete the default, 'cause it's not automatically supported.
+        kwargs.pop('default')
+        # 2. add the default currency, because it's not picked up from the inspector automatically.
+        kwargs['default_currency'] = "'%s'" %self.default_currency
+        return (field_class, args, kwargs)
 
 
 ## South support
 try:
     from south.modelsinspector import add_introspection_rules
-
     rules = [
-        ((MoneyField,),
-         [],  # No positional args
-         {'default': ('default', {'default': Decimal('0.0')}),
-         'default_currency': ('default_currency', {'default': DEFAULT_CURRENCY}),
-          "frozen_by_south": [True, {"is_value": True}]
-          }),
+        # MoneyField has its own method.
         ((CurrencyField,),
          [],  # No positional args
          {'default': ('default', {'default': DEFAULT_CURRENCY.code}),
           'max_length': ('max_length', {'default': 3})}),
     ]
 
-    add_introspection_rules(rules, ["^djmoney\.models\.fields\.MoneyField",
+    add_introspection_rules(rules, [# MoneyField implement the serialization in south_field_triple method,
                                     "^djmoney\.models\.fields\.CurrencyField"])
 except ImportError:
     pass
