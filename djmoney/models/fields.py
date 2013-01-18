@@ -5,6 +5,7 @@ from moneyed import Money, Currency, DEFAULT_CURRENCY
 from djmoney import forms
 
 from decimal import Decimal
+import inspect
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
@@ -120,6 +121,7 @@ class MoneyField(models.DecimalField):
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
             value = value.amount
+            return value
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
     def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
@@ -130,6 +132,11 @@ class MoneyField(models.DecimalField):
 
     def get_default(self):
         if isinstance(self.default, Money):
+            frm = inspect.stack()[1]
+            mod = inspect.getmodule(frm[0])
+            # We need to return the numerical value if this is called by south
+            if mod.__name__ == "south.db.generic":
+                return float(self.default.amount)
             return self.default
         else:
             return super(MoneyField, self).get_default()
