@@ -68,6 +68,7 @@ class MoneyField(models.DecimalField):
             raise Exception("You have to provide a decimal_places attribute to Money fields.")
         
         self.default_currency = default_currency
+        self.frozen_by_south = kwargs.pop('frozen_by_south', None)
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
     
     def to_python(self, value):
