@@ -13,8 +13,10 @@ class MoneyField(forms.DecimalField):
         super(MoneyField, self).__init__(*args, **kwargs)
     
     def to_python(self, value):
+        if isinstance(value, Money):
+            return value
         if not isinstance(value, tuple):
-            raise Exception("Invalid money input, expected amount and currency.")
+            raise Exception("Invalid money input, expected amount and currency, got: %s." % value)
 
         amount = super(MoneyField, self).to_python(value[0])
             
