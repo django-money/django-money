@@ -13,6 +13,8 @@ class MoneyField(forms.DecimalField):
         super(MoneyField, self).__init__(*args, **kwargs)
     
     def to_python(self, value):
+        if value is None:
+            return None
         if isinstance(value, Money):
             return value
         if not isinstance(value, tuple):
@@ -29,6 +31,8 @@ class MoneyField(forms.DecimalField):
         return Money(amount=amount, currency=currency)
     
     def validate(self, value):
+        if value is None:
+            return None
         if not isinstance(value, Money):
             raise Exception("Invalid money input, expected Money object to validate.")
         

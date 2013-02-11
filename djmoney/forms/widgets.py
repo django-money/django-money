@@ -37,5 +37,7 @@ class InputMoneyWidget(forms.TextInput):
         return result
     
     def value_from_datadict(self, data, files, name):
+        if not data.get(name, None):
+            return None
         return Money(data.get(name, None), data.get(name+'_currency', None))
         

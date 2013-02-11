@@ -31,6 +31,8 @@ class MoneyFieldProxy(object):
     
     def _money_from_obj(self, obj):
         value = obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name]
+        if value[0] is None:
+            return None
         return MoneyPatched(amount=value[0], currency=value[1])
     
     def __get__(self, obj, type=None):
