@@ -18,6 +18,12 @@ class NotSupportedLookup(Exception):
     def __str__(self):
         return "Lookup '%s' is not supported for MoneyField" % self.lookup
 
+
+class MoneyPatched(Money):
+    def __float__(self):
+         return float(self.amount)
+         
+         
 class MoneyFieldProxy(object):
     def __init__(self, field):
         self.field = field
@@ -25,7 +31,7 @@ class MoneyFieldProxy(object):
     
     def _money_from_obj(self, obj):
         value = obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name]
-        return Money(amount=value[0], currency=value[1])
+        return MoneyPatched(amount=value[0], currency=value[1])
     
     def __get__(self, obj, type=None):
         if obj is None:
@@ -36,14 +42,14 @@ class MoneyFieldProxy(object):
     
     def __set__(self, obj, value):
         if isinstance(value, tuple):
-            value = Money(amount=value[0], currency=value[1])
+            value = Money2(amount=value[0], currency=value[1])
         if isinstance(value, Money):
             obj.__dict__[self.field.name] = value.amount  
             setattr(obj, self.currency_field_name, smart_unicode(value.currency))
         else:
             obj.__dict__[self.field.name] = self.field.to_python(value) 
 
-
+         
 class CurrencyField(models.CharField):
     
     def __init__(self, verbose_name=None, name=None, default=DEFAULT_CURRENCY, **kwargs):
