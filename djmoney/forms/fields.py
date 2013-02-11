@@ -7,15 +7,17 @@ __all__ = ('MoneyField',)
 
 class MoneyField(forms.DecimalField):
     
-    def __init__(self, currency_widget=None, *args, **kwargs):
-        self.widget = InputMoneyWidget(currency_widget=currency_widget)
+    def __init__(self, currency_widget=None, currency_choices=CURRENCIES,
+                 *args, **kwargs):
+        self.widget = InputMoneyWidget(currency_widget=currency_widget, currency_choices=currency_choices)
         super(MoneyField, self).__init__(*args, **kwargs)
     
     def to_python(self, value):
         if not isinstance(value, tuple):
-            raise Exception("Invalid money input, expected sum and currency.")
+            raise Exception("Invalid money input, expected amount and currency.")
 
         amount = super(MoneyField, self).to_python(value[0])
+            
         currency = value[1]
         if not currency:
             raise forms.ValidationError(_(u'Currency is missing'))

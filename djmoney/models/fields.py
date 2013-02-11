@@ -3,6 +3,7 @@ from django.utils.encoding import smart_unicode
 from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
 from djmoney import forms
+from djmoney.forms.widgets import CURRENCY_CHOICES
 
 from decimal import Decimal
 
@@ -23,7 +24,8 @@ class MoneyFieldProxy(object):
         self.currency_field_name = currency_field_name(self.field.name)
     
     def _money_from_obj(self, obj):
-        return Money(obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name])
+        value = obj.__dict__[self.field.name], obj.__dict__[self.currency_field_name]
+        return Money(amount=value[0], currency=value[1])
     
     def __get__(self, obj, type=None):
         if obj is None:
@@ -33,11 +35,12 @@ class MoneyFieldProxy(object):
         return obj.__dict__[self.field.name]
     
     def __set__(self, obj, value):
+        if isinstance(value, tuple):
+            value = Money(amount=value[0], currency=value[1])
         if isinstance(value, Money):
             obj.__dict__[self.field.name] = value.amount  
             setattr(obj, self.currency_field_name, smart_unicode(value.currency))
         else:
-            if value: value = str(value)
             obj.__dict__[self.field.name] = self.field.to_python(value) 
 
 
@@ -56,7 +59,8 @@ class MoneyField(models.DecimalField):
     
     def __init__(self, verbose_name=None, name=None, 
                  max_digits=None, decimal_places=None,
-                 default=Decimal("0.0"), default_currency=DEFAULT_CURRENCY, **kwargs):
+                 default=Decimal("0.0"), default_currency=DEFAULT_CURRENCY,
+                 currency_choices=CURRENCY_CHOICES, **kwargs):
         if isinstance(default, Money):
             self.default_currency = default.currency
         
@@ -68,20 +72,24 @@ class MoneyField(models.DecimalField):
             raise Exception("You have to provide a decimal_places attribute to Money fields.")
         
         self.default_currency = default_currency
+        self.currency_choices = currency_choices
         self.frozen_by_south = kwargs.pop('frozen_by_south', None)
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
     
     def to_python(self, value):
         if isinstance(value, Money):
             value = value.amount
+        if isinstance(value, tuple):
+            value = value[0]
         return super(MoneyField, self).to_python(value)
     
     def get_internal_type(self):
         return "DecimalField"
-     
+    
     def contribute_to_class(self, cls, name):
         c_field_name = currency_field_name(name)
-        c_field = CurrencyField(max_length=3, default=self.default_currency, editable=False)
+        c_field = CurrencyField(max_length=3, default=self.default_currency, editable=False,
+                                choices=self.currency_choices)
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
         
@@ -118,6 +126,7 @@ class MoneyField(models.DecimalField):
     def formfield(self, **kwargs):
         defaults = {'form_class': forms.MoneyField}
         defaults.update(kwargs)
+        defaults['currency_choices'] = self.currency_choices
         return super(MoneyField, self).formfield(**defaults)
     
 ## South support
