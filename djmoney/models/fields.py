@@ -156,7 +156,7 @@ class MoneyField(models.DecimalField):
         return '%s' % str(self.default)
     
     def get_south_default_currency(self):
-        return '\"%s\"' % str(self.default_currency.code)
+        return '"%s"' % str(self.default_currency.code)
 
 ## South support
 try:
