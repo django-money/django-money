@@ -6,7 +6,7 @@ from django.core.serializers.python import Deserializer as PythonDeserializer,\
 from StringIO import StringIO
 from django.core.serializers.base import DeserializationError
 from django.utils import simplejson
-
+from django.core.serializers.json import Deserializer
 from models.fields import MoneyField
 from moneyed import Money
 from decimal import Decimal
@@ -34,10 +34,11 @@ def Deserializer(stream_or_string, **options):
 
             for obj in PythonDeserializer([obj], **options):
                 for field, value in money_fields.items():
-                    print obj.object
                     setattr(obj.object, field, value)
                 yield obj
     
     except GeneratorExit:
         raise
-
+    except Exception, e:
+        # Map to deserializer error
+        raise DeserializationError(e)

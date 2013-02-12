@@ -67,11 +67,12 @@ class MoneyField(models.DecimalField):
     
     def __init__(self, verbose_name=None, name=None, 
                  max_digits=None, decimal_places=None,
-                 default=Decimal("0.0"), default_currency=DEFAULT_CURRENCY,
+                 default=Money(0.0, DEFAULT_CURRENCY),
+                 default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
-        if isinstance(default, Money):
-            self.default_currency = default.currency
-        
+        if not isinstance(default, Money):
+            raise Exception("default value must be an instance of Money")
+            
         # Avoid giving the user hard-to-debug errors if they miss required attributes
         if max_digits is None:
             raise Exception("You have to provide a max_digits attribute to Money fields.")
@@ -79,9 +80,12 @@ class MoneyField(models.DecimalField):
         if decimal_places is None:
             raise Exception("You have to provide a decimal_places attribute to Money fields.")
         
+        if not default_currency:
+            default_currency = default.currency
         self.default_currency = default_currency
         self.currency_choices = currency_choices
         self.frozen_by_south = kwargs.pop('frozen_by_south', None)
+        
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
     
     def to_python(self, value):
