@@ -54,10 +54,11 @@ class MoneyFieldProxy(object):
          
 class CurrencyField(models.CharField):
     
-    def __init__(self, verbose_name=None, name=None, default=DEFAULT_CURRENCY, **kwargs):
+    def __init__(self, price_field=None, verbose_name=None, name=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
             default = default.code
         kwargs['max_length'] = 3
+        self.price_field = price_field
         super(CurrencyField, self).__init__(verbose_name, name, default=default, **kwargs)
     
     def get_internal_type(self): 
@@ -70,8 +71,13 @@ class MoneyField(models.DecimalField):
                  default=Money(0.0, DEFAULT_CURRENCY),
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
+        if isinstance(default, basestring):
+            amount, currency = default.split(" ")
+            default = Money(float(amount), Currency(code=currency))
+        if isinstance(default, float):
+            default = Money(default, default_currency)
         if not isinstance(default, Money):
-            raise Exception("default value must be an instance of Money")
+            raise Exception("default value must be an instance of Money, is: %s" % str(default))
             
         # Avoid giving the user hard-to-debug errors if they miss required attributes
         if max_digits is None:
@@ -100,8 +106,13 @@ class MoneyField(models.DecimalField):
     
     def contribute_to_class(self, cls, name):
         c_field_name = currency_field_name(name)
-        c_field = CurrencyField(max_length=3, default=self.default_currency, editable=False,
-                                choices=self.currency_choices)
+        # Do not change default=self.default_currency.code, needed
+        # for south compat.
+        c_field = CurrencyField(
+            max_length=3, price_field=self,
+            default=self.default_currency, editable=False,
+            choices=self.currency_choices
+        )
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
         
@@ -141,6 +152,12 @@ class MoneyField(models.DecimalField):
         defaults['currency_choices'] = self.currency_choices
         return super(MoneyField, self).formfield(**defaults)
     
+    def get_south_default(self):
+        return '%s' % str(self.default)
+    
+    def get_south_default_currency(self):
+        return '\"%s\"' % str(self.default_currency.code)
+
 ## South support
 try:
     from south.modelsinspector import add_introspection_rules
@@ -148,10 +165,14 @@ try:
     rules = [
         ((MoneyField,),
          [], # No positional args
-         {'default_currency':('default_currency',{})}),
+         {
+             'default_currency':('get_south_default_currency',{}),
+             'default': ("get_south_default", {},)
+         }),
         ((CurrencyField,),
          [],  # No positional args
-         {}), # No new keyword args
+         {
+         }),
     ]
     
     add_introspection_rules(rules, ["^djmoney\.models"])
