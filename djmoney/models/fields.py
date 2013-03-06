@@ -118,7 +118,11 @@ class MoneyField(models.DecimalField):
         defaults = {'form_class': forms.MoneyField}
         defaults.update(kwargs)
         return super(MoneyField, self).formfield(**defaults)
-    
+
+    def value_to_string(self, obj):                                             
+        value = self._get_val_from_obj(obj)                                       
+        return self.get_prep_value(value)
+  
 ## South support
 try:
     from south.modelsinspector import add_introspection_rules
