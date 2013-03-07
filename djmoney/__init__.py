@@ -1,7 +1,11 @@
 from django import db
 from django.utils.encoding import smart_unicode
 from django.utils import formats
-from django.utils import timezone
+try:
+    from django.utils.timezone import localtime
+except ImportError:
+    def localtime(value):
+        return value
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.util import lookup_field
@@ -26,7 +30,7 @@ def djmoney_display_for_field(value, field):
         elif value is None:
             return EMPTY_CHANGELIST_VALUE
         elif isinstance(field, db.models.DateTimeField):
-            return formats.localize(timezone.localtime(value))
+            return formats.localize(localtime(value))
         elif isinstance(field, db.models.DateField) or isinstance(field, db.models.TimeField):
             return formats.localize(value)
         elif isinstance(field, db.models.DecimalField):
