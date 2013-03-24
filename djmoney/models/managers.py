@@ -7,7 +7,9 @@ def _expand_money_params(kwargs):
     try :
       from django.db.models.sql.constants import LOOKUP_SEP, QUERY_TERMS
     except ImportError:
+      # 1.5 fix
       from django.db.models.constants import LOOKUP_SEP
+      from django.db.models.sql.constants import QUERY_TERMS
     to_append = {}
     for name, value in kwargs.items():
         if isinstance(value, Money):
