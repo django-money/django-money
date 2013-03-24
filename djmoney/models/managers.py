@@ -4,7 +4,10 @@ from fields import currency_field_name
 
 def _expand_money_params(kwargs):
     from moneyed import Money
-    from django.db.models.sql.constants import LOOKUP_SEP, QUERY_TERMS
+    try :
+      from django.db.models.sql.constants import LOOKUP_SEP, QUERY_TERMS
+    except ImportError:
+      from django.db.models.constants import LOOKUP_SEP
     to_append = {}
     for name, value in kwargs.items():
         if isinstance(value, Money):
