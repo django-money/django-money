@@ -71,4 +71,4 @@ def money_manager(manager):
         return add_money_comprehension_to_queryset(old_get_query_set(*args, **kwargs))
 
     manager.get_query_set = get_query_set
-    return manager 
+    return manager
