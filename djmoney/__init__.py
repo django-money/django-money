@@ -1,7 +1,10 @@
-from django.db import models
 from django.utils.encoding import smart_unicode
-from django.utils import formats
-from django.utils import timezone
+
+try:
+    from django.utils.timezone import localtime
+except ImportError:
+    def localtime(value):
+        return value
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.admin.util import lookup_field
@@ -9,12 +12,13 @@ from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.db.models.fields.related import ManyToManyRel
 
-from django.contrib.admin import util as admin_util
 
 def djmoney_contents(self):
     from django.contrib.admin.templatetags.admin_list import _boolean_icon
     from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
-    field, obj, model_admin = self.field['field'], self.form.instance, self.model_admin
+
+    field, obj, model_admin = self.field[
+                                  'field'], self.form.instance, self.model_admin
 
     try:
         f, attr, value = lookup_field(field, obj, model_admin)
@@ -38,5 +42,7 @@ def djmoney_contents(self):
                 result_repr = smart_unicode(value)
     return conditional_escape(result_repr)
 
+
 from django.contrib.admin.helpers import AdminReadonlyField
+
 AdminReadonlyField.contents = djmoney_contents

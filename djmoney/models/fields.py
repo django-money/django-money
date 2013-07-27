@@ -6,6 +6,7 @@ from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
 
 from decimal import Decimal
+import inspect
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
@@ -82,11 +83,15 @@ class MoneyField(models.DecimalField):
                  default=Money(0.0, DEFAULT_CURRENCY),
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
+
+
         if isinstance(default, basestring):
             amount, currency = default.split(" ")
             default = Money(float(amount), Currency(code=currency))
+
         if isinstance(default, float):
             default = Money(default, default_currency)
+
         if not isinstance(default, Money):
             raise Exception(
                 "default value must be an instance of Money, is: %s" % str(
@@ -101,12 +106,13 @@ class MoneyField(models.DecimalField):
             raise Exception(
                 "You have to provide a decimal_places attribute to Money fields.")
 
+
         if not default_currency:
             default_currency = default.currency
 
         self.default_currency = default_currency
         self.currency_choices = currency_choices
-        self.frozen_by_south = kwargs.pop('frozen_by_south', None)
+        self.frozen_by_south = kwargs.pop('frozen_by_south', False)
 
         super(MoneyField, self).__init__(verbose_name, name, max_digits,
                                          decimal_places, default=default,
@@ -134,6 +140,7 @@ class MoneyField(models.DecimalField):
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
 
+
         super(MoneyField, self).contribute_to_class(cls, name)
 
         setattr(cls, self.name, MoneyFieldProxy(self))
@@ -142,15 +149,16 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)
-        elif hasattr(cls, 'objects'):
+        elif getattr(cls, 'objects', None):
             cls.objects = money_manager(cls.objects)
         else:
-            cls.objects = money_manager(models.Manager)
+            cls.objects = money_manager(models.Manager())
 
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
             value = value.amount
+            return value
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
     def get_db_prep_lookup(self, lookup_type, value, connection,
@@ -163,6 +171,11 @@ class MoneyField(models.DecimalField):
 
     def get_default(self):
         if isinstance(self.default, Money):
+            frm = inspect.stack()[1]
+            mod = inspect.getmodule(frm[0])
+            # We need to return the numerical value if this is called by south
+            if mod.__name__ == "south.db.generic":
+                return float(self.default.amount)
             return self.default
         else:
             return super(MoneyField, self).get_default()
@@ -180,26 +193,35 @@ class MoneyField(models.DecimalField):
     def get_south_default(self):
         return '%s' % str(self.default)
 
+
     def get_south_default_currency(self):
         return '"%s"' % str(self.default_currency.code)
 
-## South support
+    def south_field_triple(self):
+        "Returns a suitable description of this field for South."
+        # Note: This method gets automatically with schemamigration time.
+        from south.modelsinspector import introspector
+        field_class = self.__class__.__module__ + "." + self.__class__.__name__
+        args, kwargs = introspector(self)
+        # We need to
+        # 1. Delete the default, 'cause it's not automatically supported.
+        kwargs.pop('default')
+        # 2. add the default currency, because it's not picked up from the inspector automatically.
+        kwargs['default_currency'] = "'%s'" % self.default_currency
+        return (field_class, args, kwargs)
+
+
 try:
     from south.modelsinspector import add_introspection_rules
-
     rules = [
-        ((MoneyField,),
-         [], # No positional args
-         {
-             'default_currency': ('get_south_default_currency', {}),
-             'default': ("get_south_default", {},)
-         }),
+        # MoneyField has its own method.
         ((CurrencyField,),
-         [], # No positional args
-         {
-         }),
+         [],  # No positional args
+         {'default': ('default', {'default': DEFAULT_CURRENCY.code}),
+          'max_length': ('max_length', {'default': 3})}),
     ]
 
-    add_introspection_rules(rules, ["^djmoney\.models"])
+    # MoneyField implement the serialization in south_field_triple method
+    add_introspection_rules(rules, ["^djmoney\.models\.fields\.CurrencyField"])
 except ImportError:
     pass

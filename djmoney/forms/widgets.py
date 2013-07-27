@@ -43,8 +43,12 @@ class InputMoneyWidget(forms.TextInput):
         if isinstance(value, int) or isinstance(value, Decimal):
             amount = value
             currency = self.default_currency
-        result = super(InputMoneyWidget, self).render(name, amount)
-        result += self.currency_widget.render(name + '_currency', currency)
+
+        result = super(InputMoneyWidget, self).render(name, amount, attrs)
+        name += '_currency'
+        attrs['id'] = 'id_' + name
+        result += self.currency_widget.render(name, currency, attrs)
+
         return result
 
     def value_from_datadict(self, data, files, name):

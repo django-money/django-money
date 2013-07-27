@@ -1,3 +1,4 @@
+#-*- encoding: utf-8 -*-
 from distutils.core import setup
 
 # Load in babel support, if available.
@@ -12,9 +13,11 @@ except ImportError:
     cmdclass = {}
 
 setup(name="django-money",
-      version="0.3.1",
+      version="0.3.3",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
       url="https://github.com/reinbach/django-money",
+      maintainer=u'Mario Cesar Señoranis Ayala',
+      maintainer_email='mariocesasr@creat1va.com',
       packages=["djmoney",
                 "djmoney.forms",
                 "djmoney.models"],
