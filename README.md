@@ -65,13 +65,38 @@ list on the admin, also for validation.
 To add a new currency available on all the project, you can simple add this two
 lines on your `settings.py` file
 
-    from moneyed import add_currency
-    add_currency(code='BOB', numeric='068', name='Peso boliviano', countries=('BOLIVIA',))
+    import moneyed
+    from moneyed.localization import _FORMATTER
+    from decimal import ROUND_HALF_EVEN
+
+    BOB = moneyed.add_currency(
+        code='BOB',
+        numeric='068',
+        name='Peso boliviano',
+        countries=('BOLIVIA', )
+    )
+
+    # Currency Formatter will output 2.000,00 Bs.
+    _FORMATTER.add_sign_definition(
+        'default',
+        BOB,
+        prefix=u'Bs. '
+    )
+
+    _FORMATTER.add_formatting_definition(
+        'es_BO',
+        group_size=3, group_separator=".", decimal_point=",",
+        positive_sign="",  trailing_positive_sign="",
+        negative_sign="-", trailing_negative_sign="",
+        rounding_method=ROUND_HALF_EVEN)
+
 
 To restrict the currencies listed on the project set a `CURRENCIES` variable with
 a list of Currency codes on `settings.py`
 
     CURRENCIES = ('USD', 'BOB')
+
+
 
 **The list has to contain valid Currency codes**
 
