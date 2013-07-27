@@ -68,14 +68,9 @@ def money_manager(manager):
     """
 
     old_get_query_set = manager.get_query_set
+    def get_query_set(*args,**kwargs):
+        return add_money_comprehension_to_queryset(old_get_query_set(*args,**kwargs))
 
-    def get_query_set(*args, **kwargs):
-        return add_money_comprehension_to_queryset(
-            old_get_query_set(*args, **kwargs))
+    manager.get_query_set = get_query_set
 
-    if not hasattr(manager, '_old_get_query_set'):
-        manager.__class__._old_get_query_set = manager.__class__.get_query_set
-
-    manager.__class__.get_query_set = types.MethodType(get_query_set, None,
-                                                       manager.__class__)
     return manager

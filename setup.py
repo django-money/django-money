@@ -13,11 +13,11 @@ except ImportError:
     cmdclass = {}
 
 setup(name="django-money",
-      version="0.3.3",
+      version="0.3.3.1",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
-      url="https://github.com/reinbach/django-money",
+      url="https://github.com/creat1va/django-money",
       maintainer=u'Mario Cesar Señoranis Ayala',
-      maintainer_email='mariocesasr@creat1va.com',
+      maintainer_email='mariocesar@creat1va.com',
       packages=["djmoney",
                 "djmoney.forms",
                 "djmoney.models"],

@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.utils.translation import ugettext_lazy as _
 from django import forms
 from widgets import InputMoneyWidget
@@ -14,10 +15,12 @@ class MoneyField(forms.DecimalField):
         super(MoneyField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
+
         if value is None:
             return None
         if isinstance(value, Money):
             return value
+
         if not isinstance(value, tuple):
             raise Exception(
                 "Invalid money input, expected amount and currency, got: %s." % value)
