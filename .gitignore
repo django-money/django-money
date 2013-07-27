@@ -7,7 +7,7 @@ dist
 downloads
 eggs
 parts
-src/*.egg-info
+*.egg-info
 build
 .ropeproject
 .tox
