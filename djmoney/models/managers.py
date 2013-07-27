@@ -4,12 +4,7 @@ from fields import currency_field_name
 
 def _expand_money_params(kwargs):
     from moneyed import Money
-    try:
-        from django.db.models.sql.constants import LOOKUP_SEP
-    except ImportError:
-        # New refactoring in Django 1.5
-        from django.db.models.constants import LOOKUP_SEP
-
+    from django.db.models.constants import LOOKUP_SEP
     from django.db.models.sql.constants import QUERY_TERMS
 
     to_append = {}
@@ -17,7 +12,7 @@ def _expand_money_params(kwargs):
         if isinstance(value, Money):
             # Get rid of __lt, __gt etc for the currency lookup
             path = name.split(LOOKUP_SEP)
-            if QUERY_TERMS.has_key(path[-1]):
+            if path[-1] in QUERY_TERMS:
                 clean_name = LOOKUP_SEP.join(path[:-1])
             else:
                 clean_name = name

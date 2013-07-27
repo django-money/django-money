@@ -1,16 +1,15 @@
 from distutils.core import setup
 
-
 # Load in babel support, if available.
 try:
     from babel.messages import frontend as babel
+
     cmdclass = {"compile_catalog": babel.compile_catalog,
                 "extract_messages": babel.extract_messages,
                 "init_catalog": babel.init_catalog,
                 "update_catalog": babel.update_catalog, }
 except ImportError:
     cmdclass = {}
-
 
 setup(name="django-money",
       version="0.3.1",
@@ -22,6 +21,8 @@ setup(name="django-money",
       install_requires=['setuptools',
                         'Django >= 1.5.1',
                         'py-moneyed > 0.4'],
+      cmdclass=cmdclass,
+      package_dir={"": ""},
       cmdclass=cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",

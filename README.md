@@ -19,15 +19,9 @@ Installation
 
 Django-money currently needs py-moneyed v0.4 (or later) to work.
 
-You can install django-money by doing:
-
-	pip install django-money
-
-This will automatically install the appropriate dependencies.
-
 You can obtain the source code for django-money from here:
 
-	https://github.com/reinbach/django-money
+	https://github.com/creat1va/django-money
 
 And the source for py-moneyed from here:
 

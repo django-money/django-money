@@ -80,6 +80,7 @@ class MoneyField(models.DecimalField):
             raise Exception("You have to provide a decimal_places attribute to Money fields.")
 
         self.default_currency = default_currency
+        self.frozen_by_south = kwargs.pop('frozen_by_south', None)
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
 
     def to_python(self, value):
@@ -104,8 +105,11 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)
+        elif hasattr(cls, 'objects'):
+            cls.objects = money_manager(cls.objects)
         else:
             cls.objects = money_manager(models.Manager)
+        
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
@@ -113,11 +117,11 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
     def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
-        if not lookup_type in SUPPORTED_LOOKUPS:
+        if not lookup_type in SUPPORTED_LOOKUPS: 
             raise NotSupportedLookup(lookup_type)
-        value = self.get_db_prep_save(value, connection)
+        value = self.get_db_prep_save(value)
         return super(MoneyField, self).get_db_prep_lookup(lookup_type, value, connection, prepared)
-
+    
     def get_default(self):
         if isinstance(self.default, Money):
             return self.default
@@ -130,8 +134,9 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).formfield(**defaults)
 
     def value_to_string(self, obj):
-        return obj.__dict__[self.attname].amount
-
+        value = self._get_val_from_obj(obj)                                       
+        return self.get_prep_value(value)
+  
 
 ## South support
 try:
