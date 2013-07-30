@@ -158,6 +158,10 @@ class MoneyField(models.DecimalField):
     def get_south_default_currency(self):
         return '"%s"' % str(self.default_currency.code)
 
+    def value_to_string(self, obj):                                             
+        value = self._get_val_from_obj(obj)                                       
+        return self.get_prep_value(value)
+
 ## South support
 try:
     from south.modelsinspector import add_introspection_rules
