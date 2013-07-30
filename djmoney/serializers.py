@@ -2,10 +2,12 @@ import json
 from StringIO import StringIO
 from decimal import Decimal
 from django.core.serializers.python import Deserializer as PythonDeserializer
+from django.core.serializers.python import Serializer
 from django.core.serializers.python import _get_model
 from django.core.serializers.base import DeserializationError
 from djmoney.models.fields import MoneyField
 
+Serializer = Serializer
 
 def Deserializer(stream_or_string, **options):
     """
