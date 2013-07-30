@@ -72,6 +72,34 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(shouldBeOne.count(), 1)
         
 
+    def testCurrencyChoices(self):
+        
+        otherMoney = Money("1000", moneyed.USD)
+        correctMoney = Money("1000", moneyed.ZWN)
+        
+        model = ModelWithChoicesMoneyField(
+            money = Money("100.0", moneyed.ZWN)
+        )
+        model.save()
+        
+        shouldBeEmpty = ModelWithVanillaMoneyField.objects.filter(money__lt=otherMoney)
+        self.assertEquals(shouldBeEmpty.count(), 0)
+        
+        shouldBeOne = ModelWithVanillaMoneyField.objects.filter(money__lt=correctMoney)
+        self.assertEquals(shouldBeOne.count(), 1)
+
+        model = ModelWithChoicesMoneyField(
+            money = Money("100.0", moneyed.USD)
+        )
+        model.save()
+        
+        # Non-handled currency
+        model = ModelWithChoicesMoneyField(
+            money = Money("100.0", moneyed.DKK)
+        )
+        model.save()
+
+
 class RelatedModelsTestCase(TestCase):
     
     def testFindModelsRelatedToMoneyModels(self):
