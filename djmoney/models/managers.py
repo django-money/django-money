@@ -6,7 +6,11 @@ from djmoney.models.fields import currency_field_name
 
 def _expand_money_params(kwargs):
     from moneyed import Money
-    from django.db.models.constants import LOOKUP_SEP
+    try:
+        from django.db.models.constants import LOOKUP_SEP
+    except ImportError:
+        # Django < 1.5
+        LOOKUP_SEP = '__'
     from django.db.models.sql.constants import QUERY_TERMS
 
     to_append = {}
