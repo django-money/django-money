@@ -130,6 +130,11 @@ class MoneyField(models.DecimalField):
         return "DecimalField"
 
     def contribute_to_class(self, cls, name):
+        
+        # Don't run on abstract classes
+        if cls._meta.abstract:
+            return
+        
         c_field_name = currency_field_name(name)
         # Do not change default=self.default_currency.code, needed
         # for south compat.
