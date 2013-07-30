@@ -7,6 +7,10 @@ from django.core.serializers.python import _get_model
 from django.core.serializers.base import DeserializationError
 from djmoney.models.fields import MoneyField
 
+### This works with reversion but may break with loaddata and dumpdata
+### Needs more work!
+### /benjaoming 2013-07-30
+
 Serializer = Serializer
 
 def Deserializer(stream_or_string, **options):
