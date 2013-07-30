@@ -1,8 +1,8 @@
 import json
 from StringIO import StringIO
 from decimal import Decimal
-from django.core.serializers.python import Deserializer as PythonDeserializer
-from django.core.serializers.python import Serializer
+from django.core.serializers.json import Deserializer as JSONDeserializer
+from django.core.serializers.json import Serializer as JSONSerializer
 from django.core.serializers.python import _get_model
 from django.core.serializers.base import DeserializationError
 from djmoney.models.fields import MoneyField
@@ -11,7 +11,7 @@ from djmoney.models.fields import MoneyField
 ### Needs more work!
 ### /benjaoming 2013-07-30
 
-Serializer = Serializer
+Serializer = JSONSerializer
 
 def Deserializer(stream_or_string, **options):
     """
@@ -36,13 +36,10 @@ def Deserializer(stream_or_string, **options):
                 filter(lambda (k, v): k not in money_fields.keys(),
                        obj["fields"].items()))
 
-            for obj in PythonDeserializer([obj], **options):
+            for obj in JSONDeserializer([obj], **options):
                 for field, value in money_fields.items():
                     setattr(obj.object, field, value)
                 yield obj
 
     except GeneratorExit:
         raise
-    except Exception, e:
-        # Map to deserializer error
-        raise DeserializationError(e)
