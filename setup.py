@@ -1,3 +1,4 @@
+
 #-*- encoding: utf-8 -*-
 from distutils.core import setup
 
@@ -16,8 +17,8 @@ setup(name="django-money",
       version="0.3.3.1",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
       url="https://github.com/creat1va/django-money",
-      maintainer=u'Mario Cesar Señoranis Ayala',
-      maintainer_email='mariocesar@creat1va.com',
+      maintainer=u'jakewins',
+#      maintainer_email='email@example.com',
       packages=["djmoney",
                 "djmoney.forms",
                 "djmoney.models"],
