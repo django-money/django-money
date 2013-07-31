@@ -21,7 +21,7 @@ Django-money currently needs py-moneyed v0.4 (or later) to work.
 
 You can obtain the source code for django-money from here:
 
-	https://github.com/creat1va/django-money
+    https://github.com/jakewins/django-money
 
 And the source for py-moneyed from here:
 
