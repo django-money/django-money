@@ -127,3 +127,27 @@ you also need to manually decorate those custom methods, like so:
        @understand_money
        def my_custom_method(*args,**kwargs):
            # Awesome stuff
+
+Format localization
+--------------------------------
+
+The formatting is turned on if you have set USE_L10N=True in the your settings file.
+
+If formatting is disabled in the configuration, then in the templates will be used default formatting.
+
+Testing
+--------------------------------
+
+Install the required packages:
+
+	pip install pytest-django
+	
+	cd <...>/django-money/
+	
+The main tests:
+
+	./runtests.py
+	
+Testing the compatibility the library "py-moneyed".
+
+	PYTHONPATH=`pwd`/djmoney/tests:$PYTHONPATH py.test
