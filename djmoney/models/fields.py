@@ -27,36 +27,41 @@ class NotSupportedLookup(Exception):
 
 class MoneyPatched(Money):
 
+    # Set to True or False has a higher priority
+    # than USE_L10N == True in the django settings file.
+    use_l10n = None
+
     def __float__(self):
         return float(self.amount)
 
-    def __patch_to_current_class(self, money):
+    @staticmethod
+    def _patch_to_current_class(money):
         """
         Converts object of type MoneyPatched on the object of type Money.
         """
         return MoneyPatched(money.amount, money.currency)
 
     def __pos__(self):
-        return self.__patch_to_current_class(
+        return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__pos__())
 
     def __neg__(self):
-        return self.__patch_to_current_class(
+        return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__neg__())
 
     def __add__(self, other):
 
-        return self.__patch_to_current_class(
+        return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__add__(other))
 
     def __sub__(self, other):
 
-        return self.__patch_to_current_class(
+        return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__sub__(other))
 
     def __mul__(self, other):
 
-        return self.__patch_to_current_class(
+        return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__mul__(other))
 
     def __div__(self, other):
@@ -64,42 +69,54 @@ class MoneyPatched(Money):
         if isinstance(other, Money):
             return super(MoneyPatched, self).__div__(other)
         else:
-            return self.__patch_to_current_class(
+            return self._patch_to_current_class(
                 super(MoneyPatched, self).__div__(other))
 
     def __rmod__(self, other):
 
-        return self.__patch_to_current_class(
+        return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__rmod__(other))
 
-    # Money format localization if USE_L10N == True
-    if settings.USE_L10N:
+    def __get_current_locale(self):
+        locale = translation.get_language()
 
-        def __get_current_locale(self):
-            locale = translation.get_language()
+        if _FORMATTER.get_formatting_definition(locale):
+            return locale
 
-            if _FORMATTER.get_formatting_definition(locale):
-                return locale
+        if _FORMATTER.get_formatting_definition('%s_%s' % (locale, locale)):
+            return '%s_%s' % (locale, locale)
 
-            if _FORMATTER.get_formatting_definition('%s_%s' % (locale, locale)):
-                return '%s_%s' % (locale, locale)
+        return ''
 
-            return ''
+    def __use_l10n(self):
+        'Return boolean'
 
-        def __unicode__(self):
+        if self.use_l10n == True:
+            return True
+
+        if self.use_l10n == False:
+            return False
+
+        return settings.USE_L10N
+
+
+    def __unicode__(self):
+
+        if self.__use_l10n():
             locale = self.__get_current_locale()
             if locale:
                 return format_money(self, locale=locale)
-            else:
-                return format_money(self)
 
-        def __str__(self):
+        return format_money(self)
+
+    def __str__(self):
+
+        if self.__use_l10n():
             locale = self.__get_current_locale()
             if locale:
                 return format_money(self, locale=locale)
-            else:
-                return format_money(self)
 
+        return format_money(self)
 
 class MoneyFieldProxy(object):
     def __init__(self, field):

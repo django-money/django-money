@@ -135,6 +135,44 @@ The formatting is turned on if you have set USE_L10N=True in the your settings f
 
 If formatting is disabled in the configuration, then in the templates will be used default formatting.
 
+In the templates you can use a special tag to format the money.
+
+In the file "settings.py" add to "INSTALLED_APPS" entry from the library djmoney:
+
+    INSTALLED_APPS += ( 'djmoney', )
+
+In the template, add:
+
+	{% load djmoney %}
+	...
+	{% money_localize money %}
+	
+and that is all.
+
+Instructions to the tag money_localize:
+
+    Usage::
+
+        {% money_localize <money_object> [ on(default) | off ] [as var_name] %}
+        {% money_localize <amount> <currency> [ on(default) | off ] [as var_name] %}
+             
+    Example:
+
+        The same effect:
+        {% money_localize money_object %}
+        {% money_localize money_object on %}
+        
+        Assignment to a variable:
+        {% money_localize money_object on as NEW_MONEY_OBJECT %}
+        
+        Formatting the number with currency:
+        {% money_localize '4.5' 'USD' %}          
+        
+    Return::
+    
+        MoneyPatched object
+
+
 Testing
 --------------------------------
 
