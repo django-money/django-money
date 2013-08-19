@@ -76,7 +76,7 @@ class MoneyLocalizeNode(template.Node):
                 money = MoneyPatched._patch_to_current_class(money)
             else:
                 raise TemplateSyntaxError('The variable "money" must be an '
-                                      'instance of Money.')
+                                          'instance of Money.')
 
         elif amount != None and currency != None:
             money = MoneyPatched(float(amount), str(currency))

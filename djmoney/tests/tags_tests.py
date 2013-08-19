@@ -2,6 +2,7 @@
 from django.test import TestCase
 from django import template
 from django.utils import translation
+from django.template import TemplateSyntaxError
 
 from moneyed import Money
 import moneyed
@@ -52,6 +53,12 @@ class MoneyLocalizeTestCase(TestCase):
             u'{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
             u'2.30 zł',
             context={'money':Money(2.3, 'PLN')})
+
+        # test zero amount of money
+        self.assertTemplate(
+            u'{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
+            u'0.00 zł',
+            context={'money':Money(0, 'PLN')})
 
     def testConvert(self):
 
