@@ -178,9 +178,11 @@ Testing
 
 Install the required packages:
 
-	pip install pytest-django
+	git clone https://github.com/jakewins/django-money
 	
-	cd <...>/django-money/
+	cd ./django-money/
+	
+	pip install -e .[tests] # installation with required packages for testing
 	
 The main tests:
 
