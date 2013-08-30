@@ -183,11 +183,24 @@ Install the required packages:
 	cd ./django-money/
 	
 	pip install -e .[tests] # installation with required packages for testing
+
+Recommended way to run the tests:
 	
-The main tests:
+	tox
+
+or
+
+	python setup test
+	
+
+	
+Testing the application in the current environment python:
+
+ * the main tests
 
 	./runtests.py
 	
-Testing the compatibility the library "py-moneyed".
+ * testing the compatibility the library "py-moneyed".
 
 	PYTHONPATH=`pwd`/djmoney/tests:$PYTHONPATH py.test
+

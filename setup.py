@@ -2,16 +2,20 @@
 #-*- encoding: utf-8 -*-
 from setuptools import setup
 
-# Load in babel support, if available.
-try:
-    from babel.messages import frontend as babel
+from setuptools.command.test import test as TestCommand
+import sys
 
-    cmdclass = {"compile_catalog": babel.compile_catalog,
-                "extract_messages": babel.extract_messages,
-                "init_catalog": babel.init_catalog,
-                "update_catalog": babel.update_catalog, }
-except ImportError:
-    cmdclass = {}
+class Tox(TestCommand):
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+    def run_tests(self):
+        #import here, cause outside the eggs aren't loaded
+        import tox
+        errno = tox.cmdline(self.test_args)
+        sys.exit(errno)
+
 
 setup(name="django-money",
       version="0.3.3.1",
@@ -23,10 +27,12 @@ setup(name="django-money",
                 "djmoney.forms",
                 "djmoney.models"],
       install_requires=['setuptools',
-                        'Django >= 1.5.1',
+                        'Django >= 1.4, < 1.6',
                         'py-moneyed > 0.4'],
+      platforms=['Any'],
+      keywords=['django', 'py-money', 'money'],
       #package_dir={"": ""},
-      cmdclass=cmdclass,
+      #cmdclass=cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",
                    "License :: OSI Approved :: BSD License",
@@ -36,5 +42,9 @@ setup(name="django-money",
       extras_require={
             'tests': [
                 'pytest-django>=2.3.0',
-                'south>=0.8.2'
-            ]})
+                'south>=0.8.2',
+                'tox>=1.6.0'
+            ]},
+      tests_require=['tox>=1.6.0', 'pytest-django>=2.3.0', 'south>=0.8.2'],
+      cmdclass={'test': Tox},
+      )

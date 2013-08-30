@@ -16,3 +16,7 @@ build
 .project
 .pydevproject
 .settings
+.tox
+
+*\.egg
+*\.egg-info
