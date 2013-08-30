@@ -22,7 +22,7 @@ class MoneyFormTestCase(TestCase):
 <option value="a">a</option>
 </select></td></tr>"""
 
-        self.assertEquals(str(form), expected)
+        self.assertHTMLEqual(str(form), expected)
 
     def testValidate(self):
 
