@@ -7,6 +7,10 @@ Fork of the django support that was in http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
+Django versions supported: 1.4.x, 1.5.x
+
+Python versions supported: 2.6.x, 2.7.x, pypy 2.1
+
 Via py-moneyed, django-moneyed gets:
 
  * Support for proper Money value handling (using the standard Money design pattern)
@@ -190,7 +194,7 @@ Recommended way to run the tests:
 
 or
 
-	python setup test
+	python setup.py test
 	
 
 	
