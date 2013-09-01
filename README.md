@@ -9,7 +9,9 @@ This version adds tests, and comes with several critical bugfixes.
 
 Django versions supported: 1.4.x, 1.5.x
 
-Python versions supported: 2.6.x, 2.7.x, pypy 2.1
+Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x*, 3.3.x*
+(* These versions of Python work only for the moment when you install the following 
+   fork "py-moneyed"  https://github.com/fizista/py-moneyed/tree/python3 )
 
 Via py-moneyed, django-moneyed gets:
 
@@ -195,7 +197,6 @@ Recommended way to run the tests:
 or
 
 	python setup.py test
-	
 
 	
 Testing the application in the current environment python:
@@ -204,7 +205,3 @@ Testing the application in the current environment python:
 
 	./runtests.py
 	
- * testing the compatibility the library "py-moneyed".
-
-	PYTHONPATH=`pwd`/djmoney/tests:$PYTHONPATH py.test
-

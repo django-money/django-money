@@ -8,9 +8,8 @@ import moneyed
 from django.test import TestCase
 from moneyed import Money
 from decimal import Decimal
-from testapp.forms import MoneyForm, MoneyModelForm
-
-from testapp.models import ModelWithVanillaMoneyField
+from .testapp.forms import MoneyForm, MoneyModelForm
+from .testapp.models import ModelWithVanillaMoneyField
 
 
 class MoneyFormTestCase(TestCase):

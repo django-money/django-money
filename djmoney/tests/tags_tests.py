@@ -1,4 +1,5 @@
-# -*- encoding: utf-8
+# -*- encoding: utf-8 -*-
+from __future__ import unicode_literals
 from django.test import TestCase
 from django import template
 from django.utils import translation
@@ -28,51 +29,51 @@ class MoneyLocalizeTestCase(TestCase):
     def testOnOff(self):
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize money %}',
-            u'2,30 zł',
+            '{% load djmoney %}{% money_localize money %}',
+            '2,30 zł',
             context={'money':Money(2.3, 'PLN')})
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize money on %}',
-            u'2,30 zł',
+            '{% load djmoney %}{% money_localize money on %}',
+            '2,30 zł',
             context={'money':Money(2.3, 'PLN')})
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize money off %}',
-            u'2.30 zł',
+            '{% load djmoney %}{% money_localize money off %}',
+            '2.30 zł',
             context={'money':Money(2.3, 'PLN')})
 
     def testAsVar(self):
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize money as NEW_M %}{{NEW_M}}',
-            u'2,30 zł',
+            '{% load djmoney %}{% money_localize money as NEW_M %}{{NEW_M}}',
+            '2,30 zł',
             context={'money':Money(2.3, 'PLN')})
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
-            u'2.30 zł',
+            '{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
+            '2.30 zł',
             context={'money':Money(2.3, 'PLN')})
 
         # test zero amount of money
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
-            u'0.00 zł',
+            '{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
+            '0.00 zł',
             context={'money':Money(0, 'PLN')})
 
     def testConvert(self):
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M %}{{NEW_M}}',
-            u'2,50 zł',
+            '{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M %}{{NEW_M}}',
+            '2,50 zł',
             context={})
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize "2.5" "PLN" %}',
-            u'2,50 zł',
+            '{% load djmoney %}{% money_localize "2.5" "PLN" %}',
+            '2,50 zł',
             context={})
 
         self.assertTemplate(
-            u'{% load djmoney %}{% money_localize amount currency %}',
-            u'2,60 zł',
+            '{% load djmoney %}{% money_localize amount currency %}',
+            '2,60 zł',
             context={'amount': 2.6, 'currency': 'PLN'})

@@ -1,4 +1,9 @@
-from django.utils.encoding import smart_unicode
+from __future__ import unicode_literals
+try:
+    from django.utils.encoding import smart_unicode
+except ImportError:
+    # Python 3
+    from django.utils.encoding import smart_text as smart_unicode
 
 try:
     from django.utils.timezone import localtime
@@ -37,7 +42,7 @@ def djmoney_contents(self):
             if value is None:
                 result_repr = EMPTY_CHANGELIST_VALUE
             elif isinstance(f.rel, ManyToManyRel):
-                result_repr = ", ".join(map(unicode, value.all()))
+                result_repr = ", ".join(map(str, value.all()))
             else:
                 result_repr = smart_unicode(value)
     return conditional_escape(result_repr)

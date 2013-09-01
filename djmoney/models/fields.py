@@ -1,15 +1,25 @@
+from __future__ import division
 from django.db import models
 from django.conf import settings
-from django.utils.encoding import smart_unicode
+try:
+    from django.utils.encoding import smart_unicode
+except ImportError:
+    # Python 3
+    from django.utils.encoding import smart_text as smart_unicode
 from django.utils import translation
-from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
 from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
 
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 import inspect
+
+try:
+    unicode = unicode
+except NameError:
+    # 'unicode' is undefined, in Python 3
+    basestring = (str, bytes)
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
@@ -64,13 +74,13 @@ class MoneyPatched(Money):
         return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__mul__(other))
 
-    def __div__(self, other):
+    def __truediv__(self, other):
 
         if isinstance(other, Money):
-            return super(MoneyPatched, self).__div__(other)
+            return super(MoneyPatched, self).__truediv__(other)
         else:
             return self._patch_to_current_class(
-                super(MoneyPatched, self).__div__(other))
+                super(MoneyPatched, self).__truediv__(other))
 
     def __rmod__(self, other):
 
@@ -117,6 +127,11 @@ class MoneyPatched(Money):
                 return format_money(self, locale=locale)
 
         return format_money(self)
+
+    def __repr__(self):
+        # small fix for tests
+        return "%s %s" % (self.amount.to_integral_value(ROUND_DOWN),
+                          self.currency)
 
 class MoneyFieldProxy(object):
     def __init__(self, field):
@@ -244,7 +259,7 @@ class MoneyField(models.DecimalField):
 
         setattr(cls, self.name, MoneyFieldProxy(self))
 
-        from managers import money_manager
+        from .managers import money_manager
 
         if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)

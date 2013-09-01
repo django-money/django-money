@@ -1,5 +1,6 @@
 #!/usr/bin/env python
-# -*- encoding: utf-8
+# -*- encoding: utf-8 -*-
+from __future__ import unicode_literals
 import sys
 from django.conf import settings
 
@@ -27,8 +28,8 @@ import moneyed
 from moneyed.localization import _FORMATTER, DEFAULT
 from decimal import ROUND_HALF_EVEN
 
-_FORMATTER.add_sign_definition('pl_PL', moneyed.PLN, suffix=u' zł')
-_FORMATTER.add_sign_definition(DEFAULT, moneyed.PLN, suffix=u' zł')
+_FORMATTER.add_sign_definition('pl_PL', moneyed.PLN, suffix=' zł')
+_FORMATTER.add_sign_definition(DEFAULT, moneyed.PLN, suffix=' zł')
 _FORMATTER.add_formatting_definition(
      "pl_PL", group_size=3, group_separator=" ", decimal_point=",",
      positive_sign="", trailing_positive_sign="",
@@ -47,3 +48,9 @@ patch_for_test_db_setup()
 failures = test_runner.run_tests(['djmoney', ])
 if failures:
     sys.exit(failures)
+
+
+## Run py.tests
+# Compatibility testing patches on the py-moneyed
+import pytest
+pytest.main()
