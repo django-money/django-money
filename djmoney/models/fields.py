@@ -155,15 +155,13 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, '_default_manager', None):
             cls._default_manager = money_manager(cls._default_manager)
-        else:
-            cls._default_manager = money_manager(models.Manager())
-        cls._default_manager.model = cls
-        
+            if cls._default_manager.model is None:
+                cls._default_manager.model = cls
+
         if getattr(cls, 'objects', None):
             cls.objects = money_manager(cls.objects)
-        else:
-            cls.objects = money_manager(models.Manager())
-        cls.objects.model = cls
+            if cls.objects.model is None:
+                cls.objects.model = cls
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
