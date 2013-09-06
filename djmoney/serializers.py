@@ -22,7 +22,6 @@ def Deserializer(stream_or_string, **options):
     if isinstance(stream_or_string, bytes):
         stream_or_string = stream_or_string.decode('utf-8')
     try:
-        obj_list = []
         for obj in json.loads(stream_or_string):
             money_fields = {}
             fields = {}
