@@ -1,4 +1,3 @@
-import types
 from django.utils.encoding import smart_unicode
 
 from djmoney.models.fields import currency_field_name
