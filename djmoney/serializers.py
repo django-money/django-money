@@ -29,7 +29,7 @@ def Deserializer(stream_or_string, **options):
             Model = _get_model(obj["model"])
             for (field_name, field_value) in obj['fields'].iteritems():
                 field = Model._meta.get_field(field_name)
-                if isinstance(field, MoneyField):
+                if isinstance(field, MoneyField) and field_value is not None:
                     money_fields[field_name] = Decimal(
                         field_value.split(" ")[0])
                 else:
