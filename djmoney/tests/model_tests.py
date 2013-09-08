@@ -6,8 +6,8 @@ Created on May 7, 2011
 
 from django.test import TestCase
 from moneyed import Money
-from testapp.models import (ModelWithVanillaMoneyField, 
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField)
+from testapp.models import (ModelWithVanillaMoneyField,
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel)
 import moneyed
 
 
@@ -75,18 +75,18 @@ class VanillaMoneyFieldTestCase(TestCase):
 
 
     def testCurrencyChoices(self):
-        
+
         otherMoney = Money("1000", moneyed.USD)
         correctMoney = Money("1000", moneyed.ZWN)
-        
+
         model = ModelWithChoicesMoneyField(
             money = Money("100.0", moneyed.ZWN)
         )
         model.save()
-        
+
         shouldBeEmpty = ModelWithChoicesMoneyField.objects.filter(money__lt=otherMoney)
         self.assertEquals(shouldBeEmpty.count(), 0)
-        
+
         shouldBeOne = ModelWithChoicesMoneyField.objects.filter(money__lt=correctMoney)
         self.assertEquals(shouldBeOne.count(), 1)
 
@@ -94,7 +94,7 @@ class VanillaMoneyFieldTestCase(TestCase):
             money = Money("100.0", moneyed.USD)
         )
         model.save()
-        
+
         # Non-handled currency
         model = ModelWithChoicesMoneyField(
             money = Money("100.0", moneyed.DKK)
@@ -114,3 +114,12 @@ class RelatedModelsTestCase(TestCase):
 
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money("100.0", moneyed.ZWN))
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money("1000.0", moneyed.ZWN))
+
+
+class InheritedModelTestCase(TestCase):
+
+    def testBaseModel(self):
+        self.assertEqual(BaseModel.objects.model, BaseModel)
+
+    def testInheritedModel(self):
+        self.assertEqual(InheritedModel.objects.model, InheritedModel)
