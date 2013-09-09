@@ -33,11 +33,11 @@ class MoneyFieldProxy(object):
         self.currency_field_name = currency_field_name(self.field.name)
 
     def _money_from_obj(self, obj):
-        value = obj.__dict__[self.field.name], obj.__dict__[
-            self.currency_field_name]
-        if value[0] is None:
+        amount, currency = obj.__dict__[self.field.name], \
+                           obj.__dict__[self.currency_field_name]
+        if amount is None:
             return None
-        return MoneyPatched(amount=value[0], currency=value[1])
+        return MoneyPatched(amount=amount, currency=currency)
 
     def __get__(self, obj, type=None):
         if obj is None:
@@ -130,11 +130,11 @@ class MoneyField(models.DecimalField):
         return "DecimalField"
 
     def contribute_to_class(self, cls, name):
-        
+
         # Don't run on abstract classes
         if cls._meta.abstract:
             return
-        
+
         c_field_name = currency_field_name(name)
         # Do not change default=self.default_currency.code, needed
         # for south compat.
@@ -219,7 +219,7 @@ class MoneyField(models.DecimalField):
         kwargs.pop('default')
         # 2. add the default currency, because it's not picked up from the inspector automatically.
         kwargs['default_currency'] = "'%s'" % self.default_currency
-        return (field_class, args, kwargs)
+        return field_class, args, kwargs
 
 
 try:

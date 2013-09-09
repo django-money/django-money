@@ -32,15 +32,13 @@ class InputMoneyWidget(forms.TextInput):
         super(InputMoneyWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
-        amount = ''
-        currency = ''
+        amount, currency = '', ''
         if isinstance(value, Money):
             amount = value.amount
             currency = value.currency.code
         if isinstance(value, tuple):
-            amount = value[0]
-            currency = value[1]
-        if isinstance(value, int) or isinstance(value, Decimal):
+            amount, currency = value[:2]
+        if isinstance(value, (int, Decimal)):
             amount = value
             currency = self.default_currency
 
@@ -52,6 +50,7 @@ class InputMoneyWidget(forms.TextInput):
         return result
 
     def value_from_datadict(self, data, files, name):
-        if not data.get(name, None):
+        if name not in data:
             return None
-        return Money(data.get(name, None), data.get(name + '_currency', None))
+        amount, currency = data.get(name), data.get(name + '_currency')
+        return Money(amount=amount, currency=currency)
