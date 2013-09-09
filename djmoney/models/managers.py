@@ -1,4 +1,3 @@
-import types
 from django.utils.encoding import smart_unicode
 
 from djmoney.models.fields import currency_field_name
@@ -70,10 +69,10 @@ def money_manager(manager):
     We use this instead of a real model manager, in order to allow users of django-money to
     use other managers special managers while still doing money queries.
     """
-
     old_get_query_set = manager.get_query_set
-    def get_query_set(*args,**kwargs):
-        return add_money_comprehension_to_queryset(old_get_query_set(*args,**kwargs))
+
+    def get_query_set(*args, **kwargs):
+        return add_money_comprehension_to_queryset(old_get_query_set(*args, **kwargs))
 
     manager.get_query_set = get_query_set
 
