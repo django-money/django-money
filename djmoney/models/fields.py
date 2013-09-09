@@ -231,7 +231,7 @@ def patch_managers(sender, **kwargs):
     """
     from managers import money_manager
 
-    if any([isinstance(field, MoneyField) for field in sender._meta.fields]):
+    if any(isinstance(field, MoneyField) for field in sender._meta.fields):
         for _id, name, manager in sender._meta.concrete_managers:
             setattr(sender, name, money_manager(manager))
 
