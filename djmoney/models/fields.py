@@ -34,12 +34,12 @@ class MoneyPatched(Money):
     def __float__(self):
         return float(self.amount)
 
-    @staticmethod
-    def _patch_to_current_class(money):
+    @classmethod
+    def _patch_to_current_class(cls, money):
         """
         Converts object of type MoneyPatched on the object of type Money.
         """
-        return MoneyPatched(money.amount, money.currency)
+        return cls(money.amount, money.currency)
 
     def __pos__(self):
         return MoneyPatched._patch_to_current_class(
