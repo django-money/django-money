@@ -39,6 +39,7 @@ class MoneyPatched(Money):
 
     # Set to True or False has a higher priority
     # than USE_L10N == True in the django settings file.
+    # The variable "self.use_l10n" has three states:
     use_l10n = None
 
     def __float__(self):
@@ -101,12 +102,17 @@ class MoneyPatched(Money):
     def __use_l10n(self):
         'Return boolean'
 
+        # Do not change. The variable "self.use_l10n" has three states:
+        # True, False, and None.
         if self.use_l10n == True:
             return True
 
+        # Do not change. The variable "self.use_l10n" has three states:
+        # True, False, and None.
         if self.use_l10n == False:
             return False
 
+        # if self.use_l10n == None >>
         return settings.USE_L10N
 
 

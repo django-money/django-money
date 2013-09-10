@@ -5,6 +5,7 @@ from django import template
 from django.utils import translation
 from django.template import TemplateSyntaxError
 
+from ..models.fields import MoneyPatched
 from moneyed import Money
 import moneyed
 
@@ -28,15 +29,47 @@ class MoneyLocalizeTestCase(TestCase):
 
     def testOnOff(self):
 
+        # with a tag template "money_localize"
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money %}',
             '2,30 zł',
             context={'money':Money(2.3, 'PLN')})
 
+        # without a tag template "money_localize"
+        self.assertTemplate(
+            '{{ money }}',
+            '2,30 zł',
+            context={'money':MoneyPatched(2.3, 'PLN')})
+
+        with self.settings(USE_L10N=False):
+            # money_localize has a default setting USE_L10N = True
+            self.assertTemplate(
+                '{% load djmoney %}{% money_localize money %}',
+                '2,30 zł',
+                context={'money':Money(2.3, 'PLN')})
+
+            # without a tag template "money_localize"
+            self.assertTemplate(
+                '{{ money }}',
+                '2.30 zł',
+                context={'money':MoneyPatched(2.3, 'PLN')})
+            mp = MoneyPatched(2.3, 'PLN')
+            mp.use_l10n = True
+            self.assertTemplate(
+                '{{ money }}',
+                '2,30 zł',
+                context={'money':mp})
+
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money on %}',
             '2,30 zł',
             context={'money':Money(2.3, 'PLN')})
+
+        with self.settings(USE_L10N=False):
+            self.assertTemplate(
+                '{% load djmoney %}{% money_localize money on %}',
+                '2,30 zł',
+                context={'money':Money(2.3, 'PLN')})
 
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money off %}',
