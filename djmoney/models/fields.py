@@ -4,13 +4,13 @@ from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
+from djmoney.utils import get_currency_field_name
 
 from decimal import Decimal
 import inspect
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
-currency_field_name = lambda name: "%s_currency" % name
 SUPPORTED_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
 
 
@@ -30,7 +30,7 @@ class MoneyPatched(Money):
 class MoneyFieldProxy(object):
     def __init__(self, field):
         self.field = field
-        self.currency_field_name = currency_field_name(self.field.name)
+        self.currency_field_name = get_currency_field_name(self.field.name)
 
     def _money_from_obj(self, obj):
         amount, currency = obj.__dict__[self.field.name], \
@@ -135,7 +135,7 @@ class MoneyField(models.DecimalField):
         if cls._meta.abstract:
             return
 
-        c_field_name = currency_field_name(name)
+        c_field_name = get_currency_field_name(name)
         # Do not change default=self.default_currency.code, needed
         # for south compat.
         c_field = CurrencyField(
