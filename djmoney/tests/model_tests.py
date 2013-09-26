@@ -7,7 +7,7 @@ Created on May 7, 2011
 from django.test import TestCase
 from moneyed import Money
 from testapp.models import (ModelWithVanillaMoneyField,
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel)
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, NullMoneyFieldModel)
 import moneyed
 
 
@@ -100,6 +100,17 @@ class VanillaMoneyFieldTestCase(TestCase):
             money = Money("100.0", moneyed.DKK)
         )
         model.save()
+
+    def testIsNullLookup(self):
+
+        null_instance = NullMoneyFieldModel.objects.create(field=None)
+        null_instance.save()
+
+        normal_instance = NullMoneyFieldModel.objects.create(field=Money(100, 'USD'))
+        normal_instance.save()
+
+        shouldBeOne = NullMoneyFieldModel.objects.filter(field=None)
+        self.assertEquals(shouldBeOne.count(), 1)
 
 
 class RelatedModelsTestCase(TestCase):
