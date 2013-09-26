@@ -1,4 +1,3 @@
-
 #-*- encoding: utf-8 -*-
 from distutils.core import setup
 
@@ -25,7 +24,6 @@ setup(name="django-money",
       install_requires=['setuptools',
                         'Django >= 1.5.1',
                         'py-moneyed > 0.4'],
-      package_dir={"": ""},
       cmdclass=cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",
