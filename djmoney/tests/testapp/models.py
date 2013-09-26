@@ -40,3 +40,10 @@ class AbstractModel(models.Model):
 class InheritorModel(AbstractModel):
     name = models.CharField(max_length=50)
 
+
+class BaseModel(models.Model):
+    first_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+
+
+class InheritedModel(BaseModel):
+    second_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
