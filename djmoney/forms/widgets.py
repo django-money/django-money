@@ -3,6 +3,7 @@ from django.conf import settings
 from moneyed import Money, CURRENCIES, DEFAULT_CURRENCY_CODE
 from decimal import Decimal
 import operator
+from djmoney.utils import get_currency_field_name
 
 __all__ = ('InputMoneyWidget', 'CurrencySelectWidget',)
 
@@ -32,26 +33,25 @@ class InputMoneyWidget(forms.TextInput):
         super(InputMoneyWidget, self).__init__(attrs)
 
     def render(self, name, value, attrs=None):
-        amount = ''
-        currency = ''
+        amount, currency = '', ''
         if isinstance(value, Money):
             amount = value.amount
             currency = value.currency.code
         if isinstance(value, tuple):
-            amount = value[0]
-            currency = value[1]
-        if isinstance(value, int) or isinstance(value, Decimal):
+            amount, currency = value[:2]
+        if isinstance(value, (int, Decimal)):
             amount = value
             currency = self.default_currency
 
         result = super(InputMoneyWidget, self).render(name, amount, attrs)
-        name += '_currency'
+        name = get_currency_field_name(name)
         attrs['id'] = 'id_' + name
         result += self.currency_widget.render(name, currency, attrs)
 
         return result
 
     def value_from_datadict(self, data, files, name):
-        if not data.get(name, None):
+        if name not in data:
             return None
-        return Money(data.get(name, None), data.get(name + '_currency', None))
+        amount, currency = data.get(name), data.get(get_currency_field_name(name))
+        return Money(amount=amount, currency=currency)
