@@ -68,12 +68,16 @@ class CurrencyField(models.CharField):
             default = default.code
         kwargs['max_length'] = 3
         self.price_field = price_field
+        self.frozen_by_south = kwargs.pop('frozen_by_south', False)
         super(CurrencyField, self).__init__(verbose_name, name, default=default,
                                             **kwargs)
 
     def get_internal_type(self):
         return "CharField"
 
+    def contribute_to_class(self, cls, name):
+        if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
+            super(CurrencyField, self).contribute_to_class(cls, name)
 
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
@@ -130,22 +134,22 @@ class MoneyField(models.DecimalField):
         return "DecimalField"
 
     def contribute_to_class(self, cls, name):
-        
+
         # Don't run on abstract classes
         if cls._meta.abstract:
             return
-        
-        c_field_name = currency_field_name(name)
-        # Do not change default=self.default_currency.code, needed
-        # for south compat.
-        c_field = CurrencyField(
-            max_length=3, price_field=self,
-            default=self.default_currency, editable=False,
-            choices=self.currency_choices
-        )
-        c_field.creation_counter = self.creation_counter
-        cls.add_to_class(c_field_name, c_field)
 
+        if not self.frozen_by_south:
+            c_field_name = currency_field_name(name)
+            # Do not change default=self.default_currency.code, needed
+            # for south compat.
+            c_field = CurrencyField(
+                max_length=3, price_field=self,
+                default=self.default_currency, editable=False,
+                choices=self.currency_choices
+            )
+            c_field.creation_counter = self.creation_counter
+            cls.add_to_class(c_field_name, c_field)
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
@@ -158,7 +162,7 @@ class MoneyField(models.DecimalField):
         else:
             cls._default_manager = money_manager(models.Manager())
         cls._default_manager.model = cls
-        
+
         if getattr(cls, 'objects', None):
             cls.objects = money_manager(cls.objects)
         else:
