@@ -54,4 +54,6 @@ class InputMoneyWidget(forms.TextInput):
         if name not in data:
             return None
         amount, currency = data.get(name), data.get(get_currency_field_name(name))
+        if isinstance(amount, Money):
+            return amount
         return Money(amount=amount, currency=currency)
