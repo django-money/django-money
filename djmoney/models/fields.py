@@ -1,7 +1,9 @@
+from django.conf import settings
 from django.db import models
 from django.utils.encoding import smart_unicode
 from exceptions import Exception
-from moneyed import Money, Currency, DEFAULT_CURRENCY
+from moneyed import Money, Currency
+from moneyed import DEFAULT_CURRENCY as _DEFAULT_CURRENCY
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
 from django.db.models.expressions import ExpressionNode
@@ -9,10 +11,17 @@ from django.db.models.expressions import ExpressionNode
 from decimal import Decimal
 import inspect
 
+DEFAULT_CURRENCY = settings.get('MONEYFIELD_DEFAULT_CURRENCY', None) \
+    or _DEFAULT_CURRENCY
+
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
 currency_field_name = lambda name: "%s_currency" % name
 SUPPORTED_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
+MAX_DIGITS_ERROR = ("You have to provide a max_digits attribute to Money"
+                    " fields.")
+DECIMAL_PLACES_ERROR = ("You have to provide a decimal_places attribute to "
+    "Money fields.")
 
 
 class NotSupportedLookup(Exception):
@@ -86,6 +95,7 @@ class CurrencyField(models.CharField):
         if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
 
+
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
 
@@ -111,13 +121,15 @@ class MoneyField(models.DecimalField):
 
         # Avoid giving the user hard-to-debug errors if they miss required attributes
         if max_digits is None:
-            raise Exception(
-                "You have to provide a max_digits attribute to Money fields.")
+            try:
+                max_digits = settings.MONEYFIELD_MAX_DIGITS
+            except AttributeError:
+                raise Exception(MAX_DIGITS_ERROR)
 
         if decimal_places is None:
-            raise Exception(
-                "You have to provide a decimal_places attribute to Money fields.")
-
+            try:
+                decimal_places = settings.MONEYFIELD_DECIMAL_PLACES
+            raise Exception(DECIMAL_PLACES_ERROR)
 
         if not default_currency:
             default_currency = default.currency
