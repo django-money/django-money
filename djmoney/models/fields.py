@@ -94,7 +94,7 @@ class CurrencyField(models.CharField):
     def contribute_to_class(self, cls, name):
         if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
-*
+
 
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
