@@ -5,6 +5,7 @@ Created on May 7, 2011
 '''
 
 from django.test import TestCase
+from django.db.models import F
 from moneyed import Money
 from testapp.models import (ModelWithVanillaMoneyField, 
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField)
@@ -31,6 +32,21 @@ class VanillaMoneyFieldTestCase(TestCase):
         retrieved = ModelWithVanillaMoneyField.objects.get(pk=model.pk)
 
         self.assertEquals(Money(1, moneyed.DKK), retrieved.money)
+
+    def testRelativeAddition(self):
+        # test relative value adding
+        somemoney = Money(100, 'USD')
+        mymodel = ModelWithVanillaMoneyField.objects.create(money=somemoney)
+        # duplicate money
+        mymodel.money = F('money') + somemoney
+        mymodel.save()
+        mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
+        self.assertEquals(mymodel.money, 2*somemoney)
+        # subtract everything.
+        mymodel.money = F('money') - (2 * somemoney)
+        mymodel.save()
+        mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
+        self.assertEquals(Money(0, 'USD'), mymodel.money)
 
     def testExactMatch(self):
 

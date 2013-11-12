@@ -4,6 +4,7 @@ from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
+from django.db.models.expressions import ExpressionNode
 
 from decimal import Decimal
 import inspect
@@ -42,6 +43,8 @@ class MoneyFieldProxy(object):
     def __get__(self, obj, type=None):
         if obj is None:
             raise AttributeError('Can only be accessed via an instance.')
+        if isinstance(obj.__dict__[self.field.name], ExpressionNode):
+            return obj.__dict__[self.field.name]
         if not isinstance(obj.__dict__[self.field.name], Money):
             obj.__dict__[self.field.name] = self._money_from_obj(obj)
         return obj.__dict__[self.field.name]
@@ -53,6 +56,10 @@ class MoneyFieldProxy(object):
             obj.__dict__[self.field.name] = value.amount
             setattr(obj, self.currency_field_name,
                     smart_unicode(value.currency))
+        elif isinstance(value, ExpressionNode):
+            if isinstance(value.children[1], Money):
+                value.children[1] = value.children[1].amount
+            obj.__dict__[self.field.name] = value
         else:
             if value:
                 value = str(value)
@@ -165,9 +172,8 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, 'objects', None):
             cls.objects = money_manager(cls.objects)
-        else:
-            cls.objects = money_manager(models.Manager())
-        cls.objects.model = cls
+            if cls.objects.model is None:
+                cls.objects.model = cls
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
