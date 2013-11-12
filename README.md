@@ -127,3 +127,8 @@ you also need to manually decorate those custom methods, like so:
        @understand_money
        def my_custom_method(*args,**kwargs):
            # Awesome stuff
+
+Working with Exchange Rates
+---------------------------
+
+To work with exchange rates, check out this repo that builds off of django-money: https://github.com/evonove/django-money-rates

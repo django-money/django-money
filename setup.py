@@ -1,4 +1,3 @@
-
 #-*- encoding: utf-8 -*-
 from distutils.core import setup
 
@@ -14,11 +13,11 @@ except ImportError:
     cmdclass = {}
 
 setup(name="django-money",
-      version="0.3.3.1",
+      version="0.3.3.2",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
       url="https://github.com/jakewins/django-money",
       maintainer='Greg Reinbach',
-      maintainer_email='greg@reinbach.com', 
+      maintainer_email='greg@reinbach.com',
       packages=["djmoney",
                 "djmoney.forms",
                 "djmoney.models",
@@ -26,7 +25,6 @@ setup(name="django-money",
       install_requires=['setuptools',
                         'Django >= 1.5.1',
                         'py-moneyed > 0.4'],
-      package_dir={"": ""},
       cmdclass=cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",
