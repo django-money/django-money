@@ -7,7 +7,7 @@ Created on May 7, 2011
 from django.test import TestCase
 from moneyed import Money
 from testapp.models import (ModelWithVanillaMoneyField,
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel)
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, SimpleModel)
 import moneyed
 
 
@@ -123,3 +123,13 @@ class InheritedModelTestCase(TestCase):
 
     def testInheritedModel(self):
         self.assertEqual(InheritedModel.objects.model, InheritedModel)
+
+
+class ManagerTest(TestCase):
+
+    def test_manager(self):
+        self.assertTrue(hasattr(SimpleModel, 'objects'))
+
+    def test_objects_creation(self):
+        SimpleModel.objects.create(money=Money("100.0", 'USD'))
+        self.assertEqual(SimpleModel.objects.count(), 1)
