@@ -11,8 +11,9 @@ __all__ = ('MoneyField',)
 class MoneyField(forms.DecimalField):
     def __init__(self, currency_widget=None, currency_choices=CURRENCIES,
                  *args, **kwargs):
-        self.widget = InputMoneyWidget(currency_widget=currency_widget,
-                                       currency_choices=currency_choices)
+        widget = InputMoneyWidget(currency_widget=currency_widget,
+                                  currency_choices=currency_choices)
+        kwargs.setdefault('widget', widget)
         super(MoneyField, self).__init__(*args, **kwargs)
 
     def to_python(self, value):
