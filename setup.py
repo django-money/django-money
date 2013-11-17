@@ -32,20 +32,12 @@ setup(name="django-money",
                         'six'],
       platforms=['Any'],
       keywords=['django', 'py-money', 'money'],
-      #package_dir={"": ""},
-      #cmdclass=cmdclass,
       classifiers=["Development Status :: 5 - Production/Stable",
                    "Intended Audience :: Developers",
                    "License :: OSI Approved :: BSD License",
                    "Operating System :: OS Independent",
                    "Programming Language :: Python",
                    "Framework :: Django", ],
-      extras_require={
-            'tests': [
-                'pytest-django>=2.3.0',
-                'south>=0.8.2',
-                'tox>=1.6.0'
-            ]},
-      tests_require=['tox>=1.6.0', 'pytest-django>=2.3.0', 'south>=0.8.2'],
+      tests_require=['tox>=1.6.0'],
       cmdclass={'test': Tox},
       )
