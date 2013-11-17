@@ -297,8 +297,9 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, 'objects', None):
             cls.objects = money_manager(cls.objects)
-            if cls.objects.model is None:
-                cls.objects.model = cls
+        else:
+            cls.objects = money_manager(models.Manager())
+        cls.objects.model = cls
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
