@@ -11,6 +11,7 @@ from moneyed import Money, Currency, DEFAULT_CURRENCY
 from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
+from django.db.models.expressions import ExpressionNode
 
 from decimal import Decimal, ROUND_DOWN
 import inspect
@@ -154,6 +155,8 @@ class MoneyFieldProxy(object):
     def __get__(self, obj, type=None):
         if obj is None:
             raise AttributeError('Can only be accessed via an instance.')
+        if isinstance(obj.__dict__[self.field.name], ExpressionNode):
+            return obj.__dict__[self.field.name]
         if not isinstance(obj.__dict__[self.field.name], Money):
             obj.__dict__[self.field.name] = self._money_from_obj(obj)
         return obj.__dict__[self.field.name]
@@ -165,6 +168,10 @@ class MoneyFieldProxy(object):
             obj.__dict__[self.field.name] = value.amount
             setattr(obj, self.currency_field_name,
                     smart_unicode(value.currency))
+        elif isinstance(value, ExpressionNode):
+            if isinstance(value.children[1], Money):
+                value.children[1] = value.children[1].amount
+            obj.__dict__[self.field.name] = value
         else:
             if value:
                 value = str(value)
@@ -180,12 +187,16 @@ class CurrencyField(models.CharField):
             default = default.code
         kwargs['max_length'] = 3
         self.price_field = price_field
+        self.frozen_by_south = kwargs.pop('frozen_by_south', False)
         super(CurrencyField, self).__init__(verbose_name, name, default=default,
                                             **kwargs)
 
     def get_internal_type(self):
         return "CharField"
 
+    def contribute_to_class(self, cls, name):
+        if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
+            super(CurrencyField, self).contribute_to_class(cls, name)
 
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
@@ -260,6 +271,17 @@ class MoneyField(models.DecimalField):
         c_field.creation_counter = self.creation_counter
         cls.add_to_class(c_field_name, c_field)
 
+        if not self.frozen_by_south:
+            c_field_name = currency_field_name(name)
+            # Do not change default=self.default_currency.code, needed
+            # for south compat.
+            c_field = CurrencyField(
+                max_length=3, price_field=self,
+                default=self.default_currency, editable=False,
+                choices=self.currency_choices
+            )
+            c_field.creation_counter = self.creation_counter
+            cls.add_to_class(c_field_name, c_field)
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
@@ -275,9 +297,8 @@ class MoneyField(models.DecimalField):
 
         if getattr(cls, 'objects', None):
             cls.objects = money_manager(cls.objects)
-        else:
-            cls.objects = money_manager(models.Manager())
-        cls.objects.model = cls
+            if cls.objects.model is None:
+                cls.objects.model = cls
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):

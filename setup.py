@@ -1,4 +1,3 @@
-
 #-*- encoding: utf-8 -*-
 from setuptools import setup
 
@@ -25,7 +24,8 @@ setup(name="django-money",
       maintainer_email='greg@reinbach.com',
       packages=["djmoney",
                 "djmoney.forms",
-                "djmoney.models"],
+                "djmoney.models",
+                "djmoney.tests"],
       install_requires=['setuptools',
                         'Django >= 1.4, < 1.7',
                         'py-moneyed > 0.4',

@@ -205,3 +205,7 @@ Testing the application in the current environment python:
 
 	./runtests.py
 	
+Working with Exchange Rates
+---------------------------
+
+To work with exchange rates, check out this repo that builds off of django-money: https://github.com/evonove/django-money-rates
