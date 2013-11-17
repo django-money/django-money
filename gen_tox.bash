@@ -97,8 +97,10 @@ cat <<EOF
 
 [testenv]
 commands=
-    pip install -e .[tests] -q --log={envlogdir}/pip-extra-install.log
     {envpython} runtests.py {posargs}
+deps=
+    pytest-django>=2.3.0
+    south>=0.8.2
 
 [django]
 1.4.x  = Django>=1.4,<1.5
@@ -131,6 +133,7 @@ basepython=$PYTHON_VER
 deps=
     {[django]$DJANGO_VER}
     {[pymoneyed]$PYMONEYED_VER}
+    {[testenv]deps}
     
 EOF
 }
