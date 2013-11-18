@@ -5,7 +5,7 @@ language: python
 python:
   - 2.7
 install: pip install tox
-script: tox $ENV
+script: tox -e $ENV
 env:
 END
 
