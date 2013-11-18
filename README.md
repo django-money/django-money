@@ -204,6 +204,9 @@ Testing the application in the current environment python:
  * the main tests
 
 	./runtests.py
+
+A handful of the tox environments are automatically tested on travis: see `gen_travis.bash` and `.travis.yml`.
+[![Build Status](https://travis-ci.org/ashleyh/django-money.png?branch=master)](https://travis-ci.org/ashleyh/django-money)
 	
 Working with Exchange Rates
 ---------------------------
