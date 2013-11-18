@@ -1,4 +1,3 @@
-import re
 from django import template
 from django.template import TemplateSyntaxError
 from moneyed import Money
@@ -71,14 +70,14 @@ class MoneyLocalizeNode(template.Node):
         amount = self.amount.resolve(context) if self.amount else None
         currency = self.currency.resolve(context) if self.currency else None
 
-        if money != None:
+        if money is not None:
             if isinstance(money, Money):
                 money = MoneyPatched._patch_to_current_class(money)
             else:
                 raise TemplateSyntaxError('The variable "money" must be an '
                                           'instance of Money.')
 
-        elif amount != None and currency != None:
+        elif amount is not None and currency is not None:
             money = MoneyPatched(float(amount), str(currency))
         else:
             raise TemplateSyntaxError('You must define both variables: '
@@ -101,21 +100,21 @@ def money_localize(parser, token):
 
         {% money_localize <money_object> [ on(default) | off ] [as var_name] %}
         {% money_localize <amount> <currency> [ on(default) | off ] [as var_name] %}
-             
+
     Example:
 
         The same effect:
         {% money_localize money_object %}
         {% money_localize money_object on %}
-        
+
         Assignment to a variable:
         {% money_localize money_object on as NEW_MONEY_OBJECT %}
-        
+
         Formatting the number with currency:
-        {% money_localize '4.5' 'USD' %}          
-        
+        {% money_localize '4.5' 'USD' %}
+
     Return::
-    
+
         MoneyPatched object
 
     """

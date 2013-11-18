@@ -41,7 +41,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         mymodel.money = F('money') + somemoney
         mymodel.save()
         mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
-        self.assertEquals(mymodel.money, 2*somemoney)
+        self.assertEquals(mymodel.money, 2 * somemoney)
         # subtract everything.
         mymodel.money = F('money') - (2 * somemoney)
         mymodel.save()
