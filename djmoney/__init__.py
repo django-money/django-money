@@ -22,8 +22,7 @@ def djmoney_contents(self):
     from django.contrib.admin.templatetags.admin_list import _boolean_icon
     from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
 
-    field, obj, model_admin = self.field[
-                                  'field'], self.form.instance, self.model_admin
+    field, obj, model_admin = self.field['field'], self.form.instance, self.model_admin
 
     try:
         f, attr, value = lookup_field(field, obj, model_admin)

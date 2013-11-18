@@ -1,5 +1,4 @@
 # coding=utf-8
-import six
 import json
 from decimal import Decimal
 

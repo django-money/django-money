@@ -117,7 +117,6 @@ class MoneyPatched(Money):
         # if self.use_l10n == None >>
         return settings.USE_L10N
 
-
     def __unicode__(self):
 
         if self.__use_l10n():
@@ -141,14 +140,15 @@ class MoneyPatched(Money):
         return "%s %s" % (self.amount.to_integral_value(ROUND_DOWN),
                           self.currency)
 
+
 class MoneyFieldProxy(object):
     def __init__(self, field):
         self.field = field
         self.currency_field_name = get_currency_field_name(self.field.name)
 
     def _money_from_obj(self, obj):
-        amount, currency = obj.__dict__[self.field.name], \
-                           obj.__dict__[self.currency_field_name]
+        amount = obj.__dict__[self.field.name]
+        currency = obj.__dict__[self.currency_field_name]
         if amount is None:
             return None
         return MoneyPatched(amount=amount, currency=currency)
@@ -199,6 +199,7 @@ class CurrencyField(models.CharField):
         if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
 
+
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
 
@@ -230,7 +231,6 @@ class MoneyField(models.DecimalField):
         if decimal_places is None:
             raise Exception(
                 "You have to provide a decimal_places attribute to Money fields.")
-
 
         if not default_currency:
             default_currency = default.currency
@@ -315,7 +315,6 @@ class MoneyField(models.DecimalField):
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
-
 
     ## South support
     def south_field_triple(self):
