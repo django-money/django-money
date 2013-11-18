@@ -4,7 +4,7 @@ except ImportError:
     # Python 3
     from django.utils.encoding import smart_text as smart_unicode
 
-from djmoney.models.fields import currency_field_name
+from djmoney.utils import get_currency_field_name
 
 
 def _expand_money_params(kwargs):
@@ -27,7 +27,7 @@ def _expand_money_params(kwargs):
                 clean_name = name
 
             to_append[name] = value.amount
-            to_append[currency_field_name(clean_name)] = smart_unicode(
+            to_append[get_currency_field_name(clean_name)] = smart_unicode(
                 value.currency)
     kwargs.update(to_append)
     return kwargs
@@ -73,7 +73,6 @@ def money_manager(manager):
     We use this instead of a real model manager, in order to allow users of django-money to
     use other managers special managers while still doing money queries.
     """
-
     old_get_query_set = manager.get_query_set
 
     def get_query_set(*args, **kwargs):

@@ -7,11 +7,13 @@ except ImportError:
     # Python 3
     from django.utils.encoding import smart_text as smart_unicode
 from django.utils import translation
+from django.db.models.signals import class_prepared
 from moneyed import Money, Currency, DEFAULT_CURRENCY
 from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
 from django.db.models.expressions import ExpressionNode
+from djmoney.utils import get_currency_field_name
 
 from decimal import Decimal, ROUND_DOWN
 import inspect
@@ -22,10 +24,9 @@ except NameError:
     # 'unicode' is undefined, in Python 3
     basestring = (str, bytes)
 
-__all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
+__all__ = ('MoneyField', 'NotSupportedLookup')
 
-currency_field_name = lambda name: "%s_currency" % name
-SUPPORTED_LOOKUPS = ('exact', 'lt', 'gt', 'lte', 'gte')
+SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
 
 
 class NotSupportedLookup(Exception):
@@ -143,14 +144,14 @@ class MoneyPatched(Money):
 class MoneyFieldProxy(object):
     def __init__(self, field):
         self.field = field
-        self.currency_field_name = currency_field_name(self.field.name)
+        self.currency_field_name = get_currency_field_name(self.field.name)
 
     def _money_from_obj(self, obj):
-        value = obj.__dict__[self.field.name], obj.__dict__[
-            self.currency_field_name]
-        if value[0] is None:
+        amount, currency = obj.__dict__[self.field.name], \
+                           obj.__dict__[self.currency_field_name]
+        if amount is None:
             return None
-        return MoneyPatched(amount=value[0], currency=value[1])
+        return MoneyPatched(amount=amount, currency=currency)
 
     def __get__(self, obj, type=None):
         if obj is None:
@@ -213,9 +214,7 @@ class MoneyField(models.DecimalField):
                 default = Money(float(amount), Currency(code=currency))
             except ValueError:
                 default = Money(float(default), default_currency)
-        elif isinstance(default, float):
-            default = Money(default, default_currency)
-        elif isinstance(default, Decimal):
+        elif isinstance(default, (float, Decimal)):
             default = Money(default, default_currency)
 
         if not isinstance(default, Money):
@@ -260,19 +259,8 @@ class MoneyField(models.DecimalField):
         if cls._meta.abstract:
             return
 
-        c_field_name = currency_field_name(name)
-        # Do not change default=self.default_currency.code, needed
-        # for south compat.
-        c_field = CurrencyField(
-            max_length=3, price_field=self,
-            default=self.default_currency, editable=False,
-            choices=self.currency_choices
-        )
-        c_field.creation_counter = self.creation_counter
-        cls.add_to_class(c_field_name, c_field)
-
         if not self.frozen_by_south:
-            c_field_name = currency_field_name(name)
+            c_field_name = get_currency_field_name(name)
             # Do not change default=self.default_currency.code, needed
             # for south compat.
             c_field = CurrencyField(
@@ -286,20 +274,6 @@ class MoneyField(models.DecimalField):
         super(MoneyField, self).contribute_to_class(cls, name)
 
         setattr(cls, self.name, MoneyFieldProxy(self))
-
-        from .managers import money_manager
-
-        if getattr(cls, '_default_manager', None):
-            cls._default_manager = money_manager(cls._default_manager)
-        else:
-            cls._default_manager = money_manager(models.Manager())
-        cls._default_manager.model = cls
-
-        if getattr(cls, 'objects', None):
-            cls.objects = money_manager(cls.objects)
-        else:
-            cls.objects = money_manager(models.Manager())
-        cls.objects.model = cls
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
@@ -355,7 +329,7 @@ class MoneyField(models.DecimalField):
         kwargs.pop('default')
         # 2. add the default currency, because it's not picked up from the inspector automatically.
         kwargs['default_currency'] = "'%s'" % self.default_currency
-        return (field_class, args, kwargs)
+        return field_class, args, kwargs
 
 
 try:
@@ -372,3 +346,17 @@ try:
     add_introspection_rules(rules, ["^djmoney\.models\.fields\.CurrencyField"])
 except ImportError:
     pass
+
+
+def patch_managers(sender, **kwargs):
+    """
+    Patches models managers
+    """
+    from .managers import money_manager
+
+    if any(isinstance(field, MoneyField) for field in sender._meta.fields):
+        for _id, name, manager in sender._meta.concrete_managers:
+            setattr(sender, name, money_manager(manager))
+
+
+class_prepared.connect(patch_managers)
