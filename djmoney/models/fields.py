@@ -88,6 +88,7 @@ class CurrencyField(models.CharField):
         if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
 
+
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
 
@@ -97,13 +98,10 @@ class MoneyField(models.DecimalField):
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
 
-
         if isinstance(default, basestring):
             amount, currency = default.split(" ")
             default = Money(float(amount), Currency(code=currency))
-        elif isinstance(default, float):
-            default = Money(default, default_currency)
-        elif isinstance(default, Decimal):
+        elif isinstance(default, (float, Decimal)):
             default = Money(default, default_currency)
 
         if not isinstance(default, Money):
@@ -119,7 +117,6 @@ class MoneyField(models.DecimalField):
         if decimal_places is None:
             raise Exception(
                 "You have to provide a decimal_places attribute to Money fields.")
-
 
         if not default_currency:
             default_currency = default.currency
