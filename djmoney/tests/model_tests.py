@@ -7,7 +7,7 @@ from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, NullMoneyFieldModel)
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, NullMoneyFieldModel, SimpleModel)
 import moneyed
 
 
