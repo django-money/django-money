@@ -7,7 +7,8 @@ from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
 from testapp.models import (ModelWithVanillaMoneyField,
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, SimpleModel)
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, 
+    SimpleModel, NullMoneyFieldModel)
 import moneyed
 
 
@@ -108,6 +109,17 @@ class VanillaMoneyFieldTestCase(TestCase):
             money=Money("100.0", moneyed.USD)
         )
         model.save()
+
+    def testIsNullLookup(self):
+
+        null_instance = NullMoneyFieldModel.objects.create(field=None)
+        null_instance.save()
+
+        normal_instance = NullMoneyFieldModel.objects.create(field=Money(100, 'USD'))
+        normal_instance.save()
+
+        shouldBeOne = NullMoneyFieldModel.objects.filter(field=None)
+        self.assertEquals(shouldBeOne.count(), 1)
 
 
 class RelatedModelsTestCase(TestCase):

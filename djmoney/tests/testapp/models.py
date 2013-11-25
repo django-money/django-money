@@ -60,3 +60,7 @@ class InheritedModel(BaseModel):
 
 class SimpleModel(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+
+
+class NullMoneyFieldModel(models.Model):
+    field = MoneyField(max_digits=10, decimal_places=2, null=True)
