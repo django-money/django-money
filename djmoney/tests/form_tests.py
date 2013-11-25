@@ -36,7 +36,7 @@ class MoneyFormTestCase(TestCase):
         self.assertEquals(result.amount, Decimal("10"))
         self.assertEquals(result.currency, moneyed.SEK)
 
-    def testNonExistantCurrency(self):
+    def testNonExistentCurrency(self):
 
         form = MoneyForm({"money": "10", "money_currency": "_XX!123_"})
 

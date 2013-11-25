@@ -23,4 +23,3 @@ SITE_ID = 1
 ROOT_URLCONF = 'core.urls'
 
 SECRET_KEY = 'foobar'
-
