@@ -140,6 +140,8 @@ class MoneyField(models.DecimalField):
 
     def contribute_to_class(self, cls, name):
 
+        cls._meta.has_money_field = True
+
         # Don't run on abstract classes
         if cls._meta.abstract:
             return
@@ -240,7 +242,7 @@ def patch_managers(sender, **kwargs):
     """
     from managers import money_manager
 
-    if any(isinstance(field, MoneyField) for field in sender._meta.fields):
+    if hasattr(sender._meta, 'has_money_field'):
         for _id, name, manager in sender._meta.concrete_managers:
             setattr(sender, name, money_manager(manager))
 
