@@ -3,12 +3,11 @@ Created on May 7, 2011
 
 @author: jake
 '''
-
 from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
-from testapp.models import (ModelWithVanillaMoneyField, 
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField)
+from testapp.models import (ModelWithVanillaMoneyField,
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, SimpleModel)
 import moneyed
 
 
@@ -91,18 +90,18 @@ class VanillaMoneyFieldTestCase(TestCase):
 
 
     def testCurrencyChoices(self):
-        
+
         otherMoney = Money("1000", moneyed.USD)
         correctMoney = Money("1000", moneyed.ZWN)
-        
+
         model = ModelWithChoicesMoneyField(
             money = Money("100.0", moneyed.ZWN)
         )
         model.save()
-        
+
         shouldBeEmpty = ModelWithChoicesMoneyField.objects.filter(money__lt=otherMoney)
         self.assertEquals(shouldBeEmpty.count(), 0)
-        
+
         shouldBeOne = ModelWithChoicesMoneyField.objects.filter(money__lt=correctMoney)
         self.assertEquals(shouldBeOne.count(), 1)
 
@@ -110,12 +109,7 @@ class VanillaMoneyFieldTestCase(TestCase):
             money = Money("100.0", moneyed.USD)
         )
         model.save()
-        
-        # Non-handled currency
-        model = ModelWithChoicesMoneyField(
-            money = Money("100.0", moneyed.DKK)
-        )
-        model.save()
+
 
 
 class RelatedModelsTestCase(TestCase):
@@ -130,3 +124,22 @@ class RelatedModelsTestCase(TestCase):
 
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money("100.0", moneyed.ZWN))
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money("1000.0", moneyed.ZWN))
+
+
+class InheritedModelTestCase(TestCase):
+
+    def testBaseModel(self):
+        self.assertEqual(BaseModel.objects.model, BaseModel)
+
+    def testInheritedModel(self):
+        self.assertEqual(InheritedModel.objects.model, InheritedModel)
+
+
+class ManagerTest(TestCase):
+
+    def test_manager(self):
+        self.assertTrue(hasattr(SimpleModel, 'objects'))
+
+    def test_objects_creation(self):
+        SimpleModel.objects.create(money=Money("100.0", 'USD'))
+        self.assertEqual(SimpleModel.objects.count(), 1)

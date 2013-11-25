@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.signals import class_prepared
 from django.utils.encoding import smart_unicode
 from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
@@ -162,18 +163,6 @@ class MoneyField(models.DecimalField):
 
         setattr(cls, self.name, MoneyFieldProxy(self))
 
-        from managers import money_manager
-
-        if getattr(cls, '_default_manager', None):
-            cls._default_manager = money_manager(cls._default_manager)
-        else:
-            cls._default_manager = money_manager(models.Manager())
-        cls._default_manager.model = cls
-
-        if getattr(cls, 'objects', None):
-            cls.objects = money_manager(cls.objects)
-            if cls.objects.model is None:
-                cls.objects.model = cls
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
@@ -246,3 +235,17 @@ try:
     add_introspection_rules(rules, ["^djmoney\.models\.fields\.CurrencyField"])
 except ImportError:
     pass
+
+
+def patch_managers(sender, **kwargs):
+    """
+    Patches models managers
+    """
+    from managers import money_manager
+
+    if any(isinstance(field, MoneyField) for field in sender._meta.fields):
+        for _id, name, manager in sender._meta.concrete_managers:
+            setattr(sender, name, money_manager(manager))
+
+
+class_prepared.connect(patch_managers)
