@@ -143,6 +143,13 @@ class InheritedModelTestCase(TestCase):
 
     def testInheritedModel(self):
         self.assertEqual(InheritedModel.objects.model, InheritedModel)
+        moneyModel = InheritedModel(
+            first_field=Money("100.0", moneyed.ZWN),
+            second_field=Money("200.0", moneyed.USD),
+        )
+        moneyModel.save()
+        self.assertEqual(moneyModel.first_field, Money(100.0, moneyed.ZWN))
+        self.assertEqual(moneyModel.second_field, Money(200.0, moneyed.USD))
 
 
 class ManagerTest(TestCase):

@@ -10,7 +10,7 @@ class ReversionTestCase(TestCase):
         amount = Money(100, 'GHS')
         with reversion.create_revision():
             model = RevisionedModel.objects.create(amount=amount)
-            #model.save()
+            model.save()
         model.delete()
         version = reversion.get_deleted(RevisionedModel)[0]
         version.revision.revert()
