@@ -13,9 +13,12 @@ settings.configure(
     SITE_ID=1,
     ROOT_URLCONF=None,
     INSTALLED_APPS=(
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
         'djmoney',
         'djmoney.tests.testapp',
         'south',
+        'reversion',
     ),
     USE_TZ=True,
     SOUTH_TESTS_MIGRATE=True,
