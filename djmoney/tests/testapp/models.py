@@ -9,7 +9,6 @@ from django.db import models
 
 import moneyed
 
-
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
 
@@ -40,8 +39,11 @@ class InheritorModel(AbstractModel):
     name = models.CharField(max_length=50)
 
 
-class NullMoneyFieldModel(models.Model):
-    field = MoneyField(max_digits=10, decimal_places=2, null=True)
+class RevisionedModel(models.Model):
+    amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+
+import reversion
+reversion.register(RevisionedModel)
 
 
 class BaseModel(models.Model):
@@ -50,3 +52,11 @@ class BaseModel(models.Model):
 
 class InheritedModel(BaseModel):
     second_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+
+
+class SimpleModel(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+
+
+class NullMoneyFieldModel(models.Model):
+    field = MoneyField(max_digits=10, decimal_places=2, null=True)

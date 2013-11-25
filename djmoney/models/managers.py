@@ -6,7 +6,6 @@ except ImportError:
 
 from djmoney.utils import get_currency_field_name
 
-
 def _expand_money_params(kwargs):
     from moneyed import Money
     try:

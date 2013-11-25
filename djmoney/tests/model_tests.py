@@ -3,7 +3,6 @@ Created on May 7, 2011
 
 @author: jake
 '''
-
 from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
@@ -110,12 +109,6 @@ class VanillaMoneyFieldTestCase(TestCase):
         )
         model.save()
 
-        # Non-handled currency
-        model = ModelWithChoicesMoneyField(
-            money=Money("100.0", moneyed.DKK)
-        )
-        model.save()
-
     def testIsNullLookup(self):
 
         null_instance = NullMoneyFieldModel.objects.create(field=None)
@@ -149,3 +142,20 @@ class InheritedModelTestCase(TestCase):
 
     def testInheritedModel(self):
         self.assertEqual(InheritedModel.objects.model, InheritedModel)
+        moneyModel = InheritedModel(
+            first_field=Money("100.0", moneyed.ZWN),
+            second_field=Money("200.0", moneyed.USD),
+        )
+        moneyModel.save()
+        self.assertEqual(moneyModel.first_field, Money(100.0, moneyed.ZWN))
+        self.assertEqual(moneyModel.second_field, Money(200.0, moneyed.USD))
+
+
+class ManagerTest(TestCase):
+
+    def test_manager(self):
+        self.assertTrue(hasattr(SimpleModel, 'objects'))
+
+    def test_objects_creation(self):
+        SimpleModel.objects.create(money=Money("100.0", 'USD'))
+        self.assertEqual(SimpleModel.objects.count(), 1)
