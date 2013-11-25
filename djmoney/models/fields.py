@@ -13,7 +13,6 @@ import inspect
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
-currency_field_name = lambda name: "%s_currency" % name
 SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
 
 
