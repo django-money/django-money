@@ -3,11 +3,9 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django import template
 from django.utils import translation
-from django.template import TemplateSyntaxError
 
 from ..models.fields import MoneyPatched
 from moneyed import Money
-import moneyed
 
 
 class MoneyLocalizeTestCase(TestCase):
@@ -22,7 +20,6 @@ class MoneyLocalizeTestCase(TestCase):
         super(TestCase, self).tearDown()
 
     def assertTemplate(self, template_string, result, context={}):
-
         c = template.Context(context)
         t = template.Template(template_string)
         self.assertEqual(t.render(c), result)
@@ -33,66 +30,66 @@ class MoneyLocalizeTestCase(TestCase):
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money %}',
             '2,30 zł',
-            context={'money':Money(2.3, 'PLN')})
+            context={'money': Money(2.3, 'PLN')})
 
         # without a tag template "money_localize"
         self.assertTemplate(
             '{{ money }}',
             '2,30 zł',
-            context={'money':MoneyPatched(2.3, 'PLN')})
+            context={'money': MoneyPatched(2.3, 'PLN')})
 
         with self.settings(USE_L10N=False):
             # money_localize has a default setting USE_L10N = True
             self.assertTemplate(
                 '{% load djmoney %}{% money_localize money %}',
                 '2,30 zł',
-                context={'money':Money(2.3, 'PLN')})
+                context={'money': Money(2.3, 'PLN')})
 
             # without a tag template "money_localize"
             self.assertTemplate(
                 '{{ money }}',
                 '2.30 zł',
-                context={'money':MoneyPatched(2.3, 'PLN')})
+                context={'money': MoneyPatched(2.3, 'PLN')})
             mp = MoneyPatched(2.3, 'PLN')
             mp.use_l10n = True
             self.assertTemplate(
                 '{{ money }}',
                 '2,30 zł',
-                context={'money':mp})
+                context={'money': mp})
 
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money on %}',
             '2,30 zł',
-            context={'money':Money(2.3, 'PLN')})
+            context={'money': Money(2.3, 'PLN')})
 
         with self.settings(USE_L10N=False):
             self.assertTemplate(
                 '{% load djmoney %}{% money_localize money on %}',
                 '2,30 zł',
-                context={'money':Money(2.3, 'PLN')})
+                context={'money': Money(2.3, 'PLN')})
 
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money off %}',
             '2.30 zł',
-            context={'money':Money(2.3, 'PLN')})
+            context={'money': Money(2.3, 'PLN')})
 
     def testAsVar(self):
 
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money as NEW_M %}{{NEW_M}}',
             '2,30 zł',
-            context={'money':Money(2.3, 'PLN')})
+            context={'money': Money(2.3, 'PLN')})
 
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
             '2.30 zł',
-            context={'money':Money(2.3, 'PLN')})
+            context={'money': Money(2.3, 'PLN')})
 
         # test zero amount of money
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}',
             '0.00 zł',
-            context={'money':Money(0, 'PLN')})
+            context={'money': Money(0, 'PLN')})
 
     def testConvert(self):
 

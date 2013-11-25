@@ -7,7 +7,7 @@ Fork of the django support that was in http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4.x, 1.5.x
+Django versions supported: 1.4.x, 1.5.x, 1.6.x
 
 Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x*, 3.3.x*
 (* These versions of Python work only for the moment when you install the following 
@@ -204,4 +204,11 @@ Testing the application in the current environment python:
  * the main tests
 
 	./runtests.py
+
+A handful of the tox environments are automatically tested on travis: see `gen_travis.bash` and `.travis.yml`.
+[![Build Status](https://travis-ci.org/ashleyh/django-money.png?branch=master)](https://travis-ci.org/ashleyh/django-money)
 	
+Working with Exchange Rates
+---------------------------
+
+To work with exchange rates, check out this repo that builds off of django-money: https://github.com/evonove/django-money-rates

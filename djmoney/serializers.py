@@ -1,5 +1,4 @@
 # coding=utf-8
-import six
 import json
 from decimal import Decimal
 
@@ -22,14 +21,13 @@ def Deserializer(stream_or_string, **options):
     if isinstance(stream_or_string, bytes):
         stream_or_string = stream_or_string.decode('utf-8')
     try:
-        obj_list = []
         for obj in json.loads(stream_or_string):
             money_fields = {}
             fields = {}
             Model = _get_model(obj["model"])
             for (field_name, field_value) in six.iteritems(obj['fields']):
                 field = Model._meta.get_field(field_name)
-                if isinstance(field, MoneyField):
+                if isinstance(field, MoneyField) and field_value is not None:
                     money_fields[field_name] = Decimal(
                         field_value.split(" ")[0])
                 else:

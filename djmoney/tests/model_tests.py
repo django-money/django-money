@@ -5,9 +5,10 @@ Created on May 7, 2011
 '''
 
 from django.test import TestCase
+from django.db.models import F
 from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField)
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, NullMoneyFieldModel)
 import moneyed
 
 
@@ -31,6 +32,21 @@ class VanillaMoneyFieldTestCase(TestCase):
         retrieved = ModelWithVanillaMoneyField.objects.get(pk=model.pk)
 
         self.assertEquals(Money(1, moneyed.DKK), retrieved.money)
+
+    def testRelativeAddition(self):
+        # test relative value adding
+        somemoney = Money(100, 'USD')
+        mymodel = ModelWithVanillaMoneyField.objects.create(money=somemoney)
+        # duplicate money
+        mymodel.money = F('money') + somemoney
+        mymodel.save()
+        mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
+        self.assertEquals(mymodel.money, 2 * somemoney)
+        # subtract everything.
+        mymodel.money = F('money') - (2 * somemoney)
+        mymodel.save()
+        mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
+        self.assertEquals(Money(0, 'USD'), mymodel.money)
 
     def testExactMatch(self):
 
@@ -73,7 +89,6 @@ class VanillaMoneyFieldTestCase(TestCase):
         shouldBeOne = ModelWithVanillaMoneyField.objects.filter(money__lt=correctMoney)
         self.assertEquals(shouldBeOne.count(), 1)
 
-
     def testCurrencyChoices(self):
 
         otherMoney = Money("1000", moneyed.USD)
@@ -101,6 +116,17 @@ class VanillaMoneyFieldTestCase(TestCase):
         )
         model.save()
 
+    def testIsNullLookup(self):
+
+        null_instance = NullMoneyFieldModel.objects.create(field=None)
+        null_instance.save()
+
+        normal_instance = NullMoneyFieldModel.objects.create(field=Money(100, 'USD'))
+        normal_instance.save()
+
+        shouldBeOne = NullMoneyFieldModel.objects.filter(field=None)
+        self.assertEquals(shouldBeOne.count(), 1)
+
 
 class RelatedModelsTestCase(TestCase):
 
@@ -114,3 +140,12 @@ class RelatedModelsTestCase(TestCase):
 
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money("100.0", moneyed.ZWN))
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money("1000.0", moneyed.ZWN))
+
+
+class InheritedModelTestCase(TestCase):
+
+    def testBaseModel(self):
+        self.assertEqual(BaseModel.objects.model, BaseModel)
+
+    def testInheritedModel(self):
+        self.assertEqual(InheritedModel.objects.model, InheritedModel)
