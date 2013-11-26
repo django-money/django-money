@@ -6,8 +6,8 @@ Created on May 7, 2011
 from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
-from testapp.models import (ModelWithVanillaMoneyField,
-    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, 
+from .testapp.models import (ModelWithVanillaMoneyField,
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel)
 import moneyed
 
@@ -41,7 +41,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         mymodel.money = F('money') + somemoney
         mymodel.save()
         mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
-        self.assertEquals(mymodel.money, 2*somemoney)
+        self.assertEquals(mymodel.money, 2 * somemoney)
         # subtract everything.
         mymodel.money = F('money') - (2 * somemoney)
         mymodel.save()
@@ -137,6 +137,7 @@ class RelatedModelsTestCase(TestCase):
 
 
 class InheritedModelTestCase(TestCase):
+    """Test inheritence from a concrete model"""
 
     def testBaseModel(self):
         self.assertEqual(BaseModel.objects.model, BaseModel)
@@ -150,6 +151,20 @@ class InheritedModelTestCase(TestCase):
         moneyModel.save()
         self.assertEqual(moneyModel.first_field, Money(100.0, moneyed.ZWN))
         self.assertEqual(moneyModel.second_field, Money(200.0, moneyed.USD))
+
+
+class InheritorModelTestCase(TestCase):
+    """Test inheritence from an ABSTRACT model"""
+
+    def testInheritorModel(self):
+        self.assertEqual(InheritorModel.objects.model, InheritorModel)
+        moneyModel = InheritorModel(
+            price1=Money("100.0", moneyed.ZWN),
+            price2=Money("200.0", moneyed.USD),
+        )
+        moneyModel.save()
+        self.assertEqual(moneyModel.price1, Money(100.0, moneyed.ZWN))
+        self.assertEqual(moneyModel.price2, Money(200.0, moneyed.USD))
 
 
 class ManagerTest(TestCase):

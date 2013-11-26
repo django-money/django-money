@@ -1,5 +1,4 @@
 # coding=utf-8
-
 import json
 from decimal import Decimal
 
@@ -9,6 +8,7 @@ from django.core.serializers.python import _get_model
 from django.utils import six
 
 from djmoney.models.fields import MoneyField
+from djmoney.utils import get_currency_field_name
 from moneyed import Money
 
 Serializer = JSONSerializer
@@ -27,10 +27,10 @@ def Deserializer(stream_or_string, **options):
             money_fields = {}
             fields = {}
             Model = _get_model(obj["model"])
-            for (field_name, field_value) in obj['fields'].iteritems():
+            for (field_name, field_value) in six.iteritems(obj['fields']):
                 field = Model._meta.get_field(field_name)
                 if isinstance(field, MoneyField) and field_value is not None:
-                    money_fields[field_name] = Money(field_value, obj['fields']['%s_currency' % field_name])
+                    money_fields[field_name] = Money(field_value, obj['fields'][get_currency_field_name(field_name)])
                 else:
                     fields[field_name] = field_value
             obj['fields'] = fields

@@ -1,5 +1,11 @@
-from django.utils.encoding import smart_unicode
+try:
+    from django.utils.encoding import smart_unicode
+except ImportError:
+    # Python 3
+    from django.utils.encoding import smart_text as smart_unicode
+
 from djmoney.utils import get_currency_field_name
+
 
 def _expand_money_params(kwargs):
     from moneyed import Money
@@ -54,8 +60,8 @@ RELEVANT_QUERYSET_METHODS = ['dates', 'distinct', 'extra', 'get',
 
 def add_money_comprehension_to_queryset(qs):
     # Decorate each relevant method with understand_money in the queryset given
-    map(lambda attr: setattr(qs, attr, understands_money(getattr(qs, attr))),
-        RELEVANT_QUERYSET_METHODS)
+    list(map(lambda attr: setattr(qs, attr, understands_money(getattr(qs, attr))),
+        RELEVANT_QUERYSET_METHODS))
     return qs
 
 
@@ -73,5 +79,9 @@ def money_manager(manager):
         return add_money_comprehension_to_queryset(old_get_query_set(*args, **kwargs))
 
     manager.get_query_set = get_query_set
+
+    if hasattr(manager, 'get_queryset'):
+        # Django 1.6
+        manager.get_queryset = get_query_set
 
     return manager

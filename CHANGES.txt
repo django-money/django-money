@@ -1,3 +1,9 @@
+Changes in 0.4
+- Python 3 compatibility
+- add tox tests
+- add format localization 
+- tag money_localize
+
 Changes in 0.3.3
 - Fixed issues with money widget not passing attrs up to django's render method, caused id attribute to not be set in html for widgets (adambregenzer)
 - Fixed issue of default currency not being passed on to widget (snbuchholz)
