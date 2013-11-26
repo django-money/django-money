@@ -20,11 +20,11 @@ DJANGO_DICT=( "django14:1.4.x"
 
 # <id>:<version>
 PYMONEYED_DICT=( "pm04:0.4"
-				 "pmlatest:latest"
-				 "pmpython3:python3" )
+				 "pm05:0.5"
+				 "pmlatest:latest" )
 
 # condition[<id> <id> ...]: skip[<id> <id> ...]
-TOX_SKIP_CONDITIONS=( "pmlatest pm04: py32 py33" 
+TOX_SKIP_CONDITIONS=( "pm04: py32 py33" 
 					  "py33 py32: django14")
 
 function test_conditions() {
@@ -111,8 +111,8 @@ latest = https://github.com/django/django/tarball/master
 
 [pymoneyed]
 0.4    = py-moneyed>=0.4,<0.5
+0.5    = py-moneyed>=0.5,<0.6
 latest = https://github.com/limist/py-moneyed/archive/master.zip
-python3 = https://github.com/fizista/py-moneyed/archive/python3.zip
 
 EOF
 }

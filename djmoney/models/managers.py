@@ -1,10 +1,6 @@
-try:
-    from django.utils.encoding import smart_unicode
-except ImportError:
-    # Python 3
-    from django.utils.encoding import smart_text as smart_unicode
-
+from django.utils.encoding import smart_unicode
 from djmoney.utils import get_currency_field_name
+
 
 def _expand_money_params(kwargs):
     from moneyed import Money

@@ -29,14 +29,14 @@ class ModelWithChoicesMoneyField(models.Model):
 
 
 class AbstractModel(models.Model):
-    price = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    price1 = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
     class Meta:
         abstract = True
 
 
 class InheritorModel(AbstractModel):
-    name = models.CharField(max_length=50)
+    price2 = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
 class RevisionedModel(models.Model):

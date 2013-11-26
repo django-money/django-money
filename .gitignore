@@ -17,7 +17,9 @@ __pycache__
 .project
 .pydevproject
 .settings
+djmoney/tests/testproject
 .tox
+.idea
 
 *\.egg
 *\.egg-info

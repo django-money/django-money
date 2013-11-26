@@ -12,8 +12,8 @@ from moneyed import Money, Currency, DEFAULT_CURRENCY
 from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
-from django.db.models.expressions import ExpressionNode
 from djmoney.utils import get_currency_field_name
+from django.db.models.expressions import ExpressionNode
 
 from decimal import Decimal, ROUND_DOWN
 import inspect
@@ -210,11 +210,8 @@ class MoneyField(models.DecimalField):
                  currency_choices=CURRENCY_CHOICES, **kwargs):
 
         if isinstance(default, basestring):
-            try:
-                amount, currency = default.split(" ")
-                default = Money(float(amount), Currency(code=currency))
-            except ValueError:
-                default = Money(float(default), default_currency)
+            amount, currency = default.split(" ")
+            default = Money(float(amount), Currency(code=currency))
         elif isinstance(default, (float, Decimal)):
             default = Money(default, default_currency)
 
@@ -255,9 +252,12 @@ class MoneyField(models.DecimalField):
 
     def contribute_to_class(self, cls, name):
 
+        cls._meta.has_money_field = True
+
         # Don't run on abstract classes
-        if cls._meta.abstract:
-            return
+        # Removed, see https://github.com/jakewins/django-money/issues/42
+        #if cls._meta.abstract:
+        #    return
 
         if not self.frozen_by_south:
             c_field_name = get_currency_field_name(name)
@@ -351,9 +351,9 @@ def patch_managers(sender, **kwargs):
     """
     Patches models managers
     """
-    from .managers import money_manager
+    from managers import money_manager
 
-    if any(isinstance(field, MoneyField) for field in sender._meta.fields):
+    if hasattr(sender._meta, 'has_money_field'):
         for _id, name, manager in sender._meta.concrete_managers:
             setattr(sender, name, money_manager(manager))
 
