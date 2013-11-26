@@ -244,7 +244,9 @@ def patch_managers(sender, **kwargs):
     from managers import money_manager
 
     if hasattr(sender._meta, 'has_money_field'):
+        print "Paching", sender
         for _id, name, manager in sender._meta.concrete_managers:
+            print " -> Paching manager", name
             setattr(sender, name, money_manager(manager))
 
 
