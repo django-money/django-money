@@ -351,7 +351,7 @@ def patch_managers(sender, **kwargs):
     """
     Patches models managers
     """
-    from managers import money_manager
+    from .managers import money_manager
 
     if hasattr(sender._meta, 'has_money_field'):
         for _id, name, manager in sender._meta.concrete_managers:
