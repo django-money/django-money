@@ -34,14 +34,14 @@ class MoneyLocalizeNode(template.Node):
         var_name = None
         use_l10n = True
 
-        # GET varible var_name
+        # GET variable var_name
         if len(tokens) > 3:
             if tokens[-2] == 'as':
                 var_name = parser.compile_filter(tokens[-1])
                 # remove the already used data
                 tokens = tokens[0:-2]
 
-        # GET varible use_l10n
+        # GET variable use_l10n
         if tokens[-1].lower() in ('on', 'off'):
 
             if tokens[-1].lower() == 'on':
@@ -51,12 +51,12 @@ class MoneyLocalizeNode(template.Node):
             # remove the already used data
             tokens.pop(-1)
 
-        # GET varible money
+        # GET variable money
         if len(tokens) == 2:
             return cls(money=parser.compile_filter(tokens[1]),
                        var_name=var_name, use_l10n=use_l10n)
 
-        # GET varible amount and currency
+        # GET variable amount and currency
         if len(tokens) == 3:
             return cls(amount=parser.compile_filter(tokens[1]),
                        currency=parser.compile_filter(tokens[2]),
