@@ -24,9 +24,8 @@ except NameError:
     # 'unicode' is undefined, in Python 3
     basestring = (str, bytes)
 
-__all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
+__all__ = ('MoneyField', 'NotSupportedLookup')
 
-currency_field_name = lambda name: "%s_currency" % name
 SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
 
 
@@ -261,7 +260,7 @@ class MoneyField(models.DecimalField):
         #    return
 
         if not self.frozen_by_south:
-            c_field_name = currency_field_name(name)
+            c_field_name = get_currency_field_name(name)
             # Do not change default=self.default_currency.code, needed
             # for south compat.
             c_field = CurrencyField(
@@ -352,7 +351,7 @@ def patch_managers(sender, **kwargs):
     """
     Patches models managers
     """
-    from managers import money_manager
+    from .managers import money_manager
 
     if hasattr(sender._meta, 'has_money_field'):
         for _id, name, manager in sender._meta.concrete_managers:

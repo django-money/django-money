@@ -20,7 +20,7 @@ else
   cat <<"END"
   - ENV=py27-django15-pmlatest
   - ENV=py27-django16-pmlatest
-  - ENV=py33-django15-pmpython3
-  - ENV=py33-django16-pmpython3
+  - ENV=py33-django15-pmlatest
+  - ENV=py33-django16-pmlatest
 END
 fi

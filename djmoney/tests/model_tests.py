@@ -6,7 +6,7 @@ Created on May 7, 2011
 from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
-from testapp.models import (ModelWithVanillaMoneyField,
+from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel)
 import moneyed
