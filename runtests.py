@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+# -*- encoding: utf-8 -*-
+from __future__ import unicode_literals
 import sys
 from django.conf import settings
 
@@ -21,8 +23,22 @@ settings.configure(
         'reversion',
     ),
     USE_TZ=True,
+    USE_L10N=True,
     SOUTH_TESTS_MIGRATE=True,
 )
+
+import moneyed
+from moneyed.localization import _FORMATTER, DEFAULT
+from decimal import ROUND_HALF_EVEN
+
+_FORMATTER.add_sign_definition('pl_PL', moneyed.PLN, suffix=' zł')
+_FORMATTER.add_sign_definition(DEFAULT, moneyed.PLN, suffix=' zł')
+_FORMATTER.add_formatting_definition(
+     "pl_PL", group_size=3, group_separator=" ", decimal_point=",",
+     positive_sign="", trailing_positive_sign="",
+     negative_sign="-", trailing_negative_sign="",
+     rounding_method=ROUND_HALF_EVEN)
+
 
 from django.test.simple import DjangoTestSuiteRunner
 test_runner = DjangoTestSuiteRunner(verbosity=1)
@@ -35,3 +51,9 @@ patch_for_test_db_setup()
 failures = test_runner.run_tests(['djmoney', ])
 if failures:
     sys.exit(failures)
+
+
+## Run py.tests
+# Compatibility testing patches on the py-moneyed
+import pytest
+pytest.main()

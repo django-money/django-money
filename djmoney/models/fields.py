@@ -1,18 +1,32 @@
+from __future__ import division
 from django.db import models
+from django.conf import settings
+try:
+    from django.utils.encoding import smart_unicode
+except ImportError:
+    # Python 3
+    from django.utils.encoding import smart_text as smart_unicode
+from django.utils import translation
 from django.db.models.signals import class_prepared
-from django.utils.encoding import smart_unicode
-from exceptions import Exception
 from moneyed import Money, Currency, DEFAULT_CURRENCY
+from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
-from django.db.models.expressions import ExpressionNode
 from djmoney.utils import get_currency_field_name
+from django.db.models.expressions import ExpressionNode
 
-from decimal import Decimal
+from decimal import Decimal, ROUND_DOWN
 import inspect
+
+try:
+    unicode = unicode
+except NameError:
+    # 'unicode' is undefined, in Python 3
+    basestring = (str, bytes)
 
 __all__ = ('MoneyField', 'currency_field_name', 'NotSupportedLookup')
 
+currency_field_name = lambda name: "%s_currency" % name
 SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
 
 
@@ -25,8 +39,107 @@ class NotSupportedLookup(Exception):
 
 
 class MoneyPatched(Money):
+
+    # Set to True or False has a higher priority
+    # than USE_L10N == True in the django settings file.
+    # The variable "self.use_l10n" has three states:
+    use_l10n = None
+
     def __float__(self):
         return float(self.amount)
+
+    @classmethod
+    def _patch_to_current_class(cls, money):
+        """
+        Converts object of type MoneyPatched on the object of type Money.
+        """
+        return cls(money.amount, money.currency)
+
+    def __pos__(self):
+        return MoneyPatched._patch_to_current_class(
+            super(MoneyPatched, self).__pos__())
+
+    def __neg__(self):
+        return MoneyPatched._patch_to_current_class(
+            super(MoneyPatched, self).__neg__())
+
+    def __add__(self, other):
+
+        return MoneyPatched._patch_to_current_class(
+            super(MoneyPatched, self).__add__(other))
+
+    def __sub__(self, other):
+
+        return MoneyPatched._patch_to_current_class(
+            super(MoneyPatched, self).__sub__(other))
+
+    def __mul__(self, other):
+
+        return MoneyPatched._patch_to_current_class(
+            super(MoneyPatched, self).__mul__(other))
+
+    def __truediv__(self, other):
+
+        if isinstance(other, Money):
+            return super(MoneyPatched, self).__truediv__(other)
+        else:
+            return self._patch_to_current_class(
+                super(MoneyPatched, self).__truediv__(other))
+
+    def __rmod__(self, other):
+
+        return MoneyPatched._patch_to_current_class(
+            super(MoneyPatched, self).__rmod__(other))
+
+    def __get_current_locale(self):
+        locale = translation.get_language()
+
+        if _FORMATTER.get_formatting_definition(locale):
+            return locale
+
+        if _FORMATTER.get_formatting_definition('%s_%s' % (locale, locale)):
+            return '%s_%s' % (locale, locale)
+
+        return ''
+
+    def __use_l10n(self):
+        'Return boolean'
+
+        # Do not change. The variable "self.use_l10n" has three states:
+        # True, False, and None.
+        if self.use_l10n == True:
+            return True
+
+        # Do not change. The variable "self.use_l10n" has three states:
+        # True, False, and None.
+        if self.use_l10n == False:
+            return False
+
+        # if self.use_l10n == None >>
+        return settings.USE_L10N
+
+    def __unicode__(self):
+
+        if self.__use_l10n():
+            locale = self.__get_current_locale()
+            if locale:
+                return format_money(self, locale=locale)
+
+        return format_money(self)
+
+    def __str__(self):
+
+        if self.__use_l10n():
+            locale = self.__get_current_locale()
+            if locale:
+                return format_money(self, locale=locale)
+
+        return format_money(self)
+
+    def __repr__(self):
+        # small fix for tests
+        return "%s %s" % (self.amount.to_integral_value(ROUND_DOWN),
+                          self.currency)
 
 
 class MoneyFieldProxy(object):
@@ -35,8 +148,8 @@ class MoneyFieldProxy(object):
         self.currency_field_name = get_currency_field_name(self.field.name)
 
     def _money_from_obj(self, obj):
-        amount, currency = obj.__dict__[self.field.name], \
-                           obj.__dict__[self.currency_field_name]
+        amount = obj.__dict__[self.field.name]
+        currency = obj.__dict__[self.currency_field_name]
         if amount is None:
             return None
         return MoneyPatched(amount=amount, currency=currency)
@@ -148,7 +261,7 @@ class MoneyField(models.DecimalField):
         #    return
 
         if not self.frozen_by_south:
-            c_field_name = get_currency_field_name(name)
+            c_field_name = currency_field_name(name)
             # Do not change default=self.default_currency.code, needed
             # for south compat.
             c_field = CurrencyField(
@@ -162,7 +275,6 @@ class MoneyField(models.DecimalField):
         super(MoneyField, self).contribute_to_class(cls, name)
 
         setattr(cls, self.name, MoneyFieldProxy(self))
-
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Money):
@@ -204,7 +316,6 @@ class MoneyField(models.DecimalField):
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
-
 
     ## South support
     def south_field_triple(self):

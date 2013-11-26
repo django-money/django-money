@@ -1,2 +1,2 @@
-from fields import *
-from widgets import *
+from .fields import *
+from .widgets import *

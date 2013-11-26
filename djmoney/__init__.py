@@ -1,4 +1,9 @@
-from django.utils.encoding import smart_unicode
+from __future__ import unicode_literals
+try:
+    from django.utils.encoding import smart_unicode
+except ImportError:
+    # Python 3
+    from django.utils.encoding import smart_text as smart_unicode
 
 try:
     from django.utils.timezone import localtime
@@ -17,8 +22,7 @@ def djmoney_contents(self):
     from django.contrib.admin.templatetags.admin_list import _boolean_icon
     from django.contrib.admin.views.main import EMPTY_CHANGELIST_VALUE
 
-    field, obj, model_admin = self.field[
-                                  'field'], self.form.instance, self.model_admin
+    field, obj, model_admin = self.field['field'], self.form.instance, self.model_admin
 
     try:
         f, attr, value = lookup_field(field, obj, model_admin)
@@ -37,7 +41,7 @@ def djmoney_contents(self):
             if value is None:
                 result_repr = EMPTY_CHANGELIST_VALUE
             elif isinstance(f.rel, ManyToManyRel):
-                result_repr = ", ".join(map(unicode, value.all()))
+                result_repr = ", ".join(map(str, value.all()))
             else:
                 result_repr = smart_unicode(value)
     return conditional_escape(result_repr)

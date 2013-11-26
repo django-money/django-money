@@ -1,5 +1,6 @@
 *.pyc
 *.pyo
+*.~
 .installed.cfg
 bin
 develop-eggs
@@ -11,8 +12,14 @@ parts
 build
 .ropeproject
 .tox
+__pycache__
 
 .project
 .pydevproject
 .settings
 djmoney/tests/testproject
+.tox
+.idea
+
+*\.egg
+*\.egg-info
