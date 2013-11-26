@@ -1,6 +1,5 @@
 # coding=utf-8
 import json
-from decimal import Decimal
 
 from django.core.serializers.python import Deserializer as PythonDeserializer
 from django.core.serializers.json import Serializer as JSONSerializer

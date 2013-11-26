@@ -2,7 +2,7 @@ from django.test import TestCase
 from testapp.models import RevisionedModel
 from moneyed import Money
 import reversion
-from django.conf import settings
+
 
 class ReversionTestCase(TestCase):
     def test_that_can_safely_restore_deleted_object(self):
