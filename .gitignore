@@ -15,3 +15,4 @@ build
 .project
 .pydevproject
 .settings
+djmoney/tests/testproject

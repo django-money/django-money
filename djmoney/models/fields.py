@@ -143,8 +143,9 @@ class MoneyField(models.DecimalField):
         cls._meta.has_money_field = True
 
         # Don't run on abstract classes
-        if cls._meta.abstract:
-            return
+        # Removed, see https://github.com/jakewins/django-money/issues/42
+        #if cls._meta.abstract:
+        #    return
 
         if not self.frozen_by_south:
             c_field_name = get_currency_field_name(name)
