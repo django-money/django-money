@@ -21,10 +21,13 @@ CURRENCY_CHOICES.sort(key=operator.itemgetter(1))
 
 
 class MoneyField(forms.DecimalField):
-    def __init__(self, currency_widget=None, currency_choices=CURRENCY_CHOICES,
+    def __init__(self, currency_widget=None, currency_choices=CURRENCY_CHOICES, localize=False,
                  *args, **kwargs):
         widget = InputMoneyWidget(currency_widget=currency_widget,
                                   currency_choices=currency_choices)
+        self.localize = localize
+        if self.localize:
+            widget.is_localized = True
         kwargs.setdefault('widget', widget)
         super(MoneyField, self).__init__(*args, **kwargs)
 
