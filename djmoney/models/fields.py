@@ -287,7 +287,7 @@ class MoneyField(models.DecimalField):
             mod = inspect.getmodule(frm[0])
             # We need to return the numerical value if this is called by south
             if mod.__name__ == "south.db.generic":
-                return float(self.default.amount) if not kwargs.get('localize') else str(self.default.amount)
+                return float(self.default.amount)
             return self.default
         else:
             return super(MoneyField, self).get_default()
