@@ -1,11 +1,10 @@
-from django import forms
-from django.conf import settings
-from moneyed import Money, CURRENCIES, DEFAULT_CURRENCY_CODE
-from decimal import Decimal
 import operator
-from djmoney.utils import get_currency_field_name
 
-__all__ = ('InputMoneyWidget', 'CurrencySelectWidget',)
+from django.conf import settings
+from django.forms import TextInput, Select, MultiWidget
+from moneyed import CURRENCIES, DEFAULT_CURRENCY_CODE
+
+__all__ = ('MoneyWidget', )
 
 PROJECT_CURRENCIES = getattr(settings, 'CURRENCIES', None)
 
@@ -19,41 +18,16 @@ else:
 CURRENCY_CHOICES.sort(key=operator.itemgetter(1))
 
 
-class CurrencySelectWidget(forms.Select):
-    def __init__(self, attrs=None, choices=CURRENCY_CHOICES):
-        super(CurrencySelectWidget, self).__init__(attrs, choices)
+class MoneyWidget(MultiWidget):
+    def __init__(self, choices=CURRENCY_CHOICES, amount_widget=None, currency_widget=None, *args, **kwargs):
+        if not amount_widget:
+            amount_widget = TextInput
+        if not currency_widget:
+            currency_widget = Select(choices)
+        widgets = (amount_widget, currency_widget)
+        super(MoneyWidget, self).__init__(widgets, *args, **kwargs)
 
-
-class InputMoneyWidget(forms.TextInput):
-    def __init__(self, attrs=None, currency_widget=None,
-                 default_currency=DEFAULT_CURRENCY_CODE,
-                 currency_choices=CURRENCY_CHOICES):
-        self.currency_widget = currency_widget or CurrencySelectWidget(choices=currency_choices)
-        self.default_currency = default_currency
-        super(InputMoneyWidget, self).__init__(attrs)
-
-    def render(self, name, value, attrs=None):
-        amount, currency = '', ''
-        if isinstance(value, Money):
-            amount = value.amount
-            currency = value.currency.code
-        if isinstance(value, tuple):
-            amount, currency = value[:2]
-        if isinstance(value, (int, Decimal)):
-            amount = value
-            currency = self.default_currency
-
-        result = super(InputMoneyWidget, self).render(name, amount, attrs)
-        name = get_currency_field_name(name)
-        attrs['id'] = 'id_' + name
-        result += self.currency_widget.render(name, currency, attrs)
-
-        return result
-
-    def value_from_datadict(self, data, files, name):
-        if name not in data:
-            return None
-        amount, currency = data.get(name), data.get(get_currency_field_name(name))
-        if isinstance(amount, Money):
-            return amount
-        return Money(amount=amount, currency=currency)
+    def decompress(self, value):
+        if value:
+            return [value.amount, value.currency]
+        return [None, None]

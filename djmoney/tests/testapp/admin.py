@@ -1,4 +1,8 @@
 from django.contrib import admin
 
 import models
-admin.site.register(models.InheritedModel)
+
+class InheritedModelAdmin(admin.ModelAdmin):
+     readonly_fields = ('second_field',)
+
+admin.site.register(models.InheritedModel, InheritedModelAdmin)

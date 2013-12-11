@@ -1,52 +1,28 @@
 from __future__ import unicode_literals
-from django.utils.translation import ugettext_lazy as _
-from django import forms
-from .widgets import InputMoneyWidget
-from moneyed.classes import Money, CURRENCIES, DEFAULT_CURRENCY_CODE
+from warnings import warn
+
+from django.forms import MultiValueField, DecimalField, ChoiceField
+from moneyed.classes import Money
+
+from .widgets import MoneyWidget, CURRENCY_CHOICES
+
 
 __all__ = ('MoneyField',)
 
 
-class MoneyField(forms.DecimalField):
-    def __init__(self, currency_widget=None, currency_choices=CURRENCIES,
-                 *args, **kwargs):
-        widget = InputMoneyWidget(currency_widget=currency_widget,
-                                  currency_choices=currency_choices)
-        kwargs.setdefault('widget', widget)
-        super(MoneyField, self).__init__(*args, **kwargs)
+class MoneyField(MultiValueField):
+    def __init__(self, currency_widget=None, currency_choices=CURRENCY_CHOICES, choices=CURRENCY_CHOICES,
+                 max_value=None, min_value=None,
+                 max_digits=None, decimal_places=None, *args, **kwargs):
+        if currency_choices != CURRENCY_CHOICES:
+            warn('currency_choices will be deprecated in favor of choices', PendingDeprecationWarning)
+            choices = currency_choices
+        decimal_field = DecimalField(max_value, min_value, max_digits, decimal_places, *args, **kwargs)
+        choice_field = ChoiceField(choices=currency_choices)
+        self.widget = currency_widget if currency_widget else MoneyWidget(amount_widget=decimal_field.widget,
+                                                                          currency_widget=choice_field.widget)
+        fields = (decimal_field, choice_field)
+        super(MoneyField, self).__init__(fields, *args, **kwargs)
 
-    def to_python(self, value):
-
-        if value is None:
-            return None
-        if isinstance(value, Money):
-            return value
-
-        if not isinstance(value, tuple) or len(value) != 2:
-            raise Exception(
-                "Invalid money input, expected amount and currency, got: %s." % value)
-
-        amount, currency = value
-        if not currency:
-            raise forms.ValidationError(_('Currency is missing'))
-
-        if not isinstance(currency, basestring):
-            raise forms.ValidationError(
-                _("Unrecognized currency type '%s'." % currency))
-
-        currency = currency.upper()
-        if currency not in CURRENCIES or currency == DEFAULT_CURRENCY_CODE:
-            raise forms.ValidationError(
-                _("Unrecognized currency type '%s'." % currency))
-
-        amount = super(MoneyField, self).to_python(amount)
-        return Money(amount=amount, currency=currency)
-
-    def validate(self, value):
-        if value is None:
-            return None
-        if not isinstance(value, Money):
-            raise Exception(
-                "Invalid money input, expected Money object to validate.")
-
-        super(MoneyField, self).validate(value.amount)
+    def compress(self, data_list):
+        return Money(*data_list[:2])

@@ -5,13 +5,13 @@ Created on May 15, 2011
 '''
 
 from django import forms
-from djmoney.forms import MoneyField, CurrencySelectWidget
+from djmoney.forms import MoneyField
 from .models import ModelWithVanillaMoneyField
 
 
 class MoneyForm(forms.Form):
 
-    money = MoneyField(currency_widget=CurrencySelectWidget(choices=[("a", "a")]))
+    money = MoneyField(currency_choices=[(u'SEK', u'Swedish Krona')], max_value=1000, min_value=2)
 
 
 class MoneyModelForm(forms.ModelForm):
