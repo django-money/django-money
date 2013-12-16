@@ -28,6 +28,7 @@ class MoneyField(forms.DecimalField):
         self.localize = localize
         if self.localize:
             widget.is_localized = True
+            widget.input_type = 'text'
         kwargs.setdefault('widget', widget)
         super(MoneyField, self).__init__(*args, **kwargs)
 
