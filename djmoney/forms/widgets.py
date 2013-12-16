@@ -24,7 +24,7 @@ class CurrencySelectWidget(forms.Select):
         super(CurrencySelectWidget, self).__init__(attrs, choices)
 
 
-class InputMoneyWidget(forms.TextInput):
+class InputMoneyWidget(forms.NumberInput):
     def __init__(self, attrs=None, currency_widget=None,
                  default_currency=DEFAULT_CURRENCY_CODE,
                  currency_choices=CURRENCY_CHOICES):
