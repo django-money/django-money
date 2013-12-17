@@ -1,15 +1,15 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.test import TestCase
 from django import template
 from django.utils import translation
+from moneyed import Money
 
 from ..models.fields import MoneyPatched
-from moneyed import Money
 
 
 class MoneyLocalizeTestCase(TestCase):
-
     def setUp(self):
         self.default_language = translation.get_language()
         translation.activate('pl')
@@ -25,7 +25,6 @@ class MoneyLocalizeTestCase(TestCase):
         self.assertEqual(t.render(c), result)
 
     def testOnOff(self):
-
         # with a tag template "money_localize"
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money %}',
@@ -74,7 +73,6 @@ class MoneyLocalizeTestCase(TestCase):
             context={'money': Money(2.3, 'PLN')})
 
     def testAsVar(self):
-
         self.assertTemplate(
             '{% load djmoney %}{% money_localize money as NEW_M %}{{NEW_M}}',
             '2,30 zł',
@@ -92,7 +90,6 @@ class MoneyLocalizeTestCase(TestCase):
             context={'money': Money(0, 'PLN')})
 
     def testConvert(self):
-
         self.assertTemplate(
             '{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M %}{{NEW_M}}',
             '2,50 zł',

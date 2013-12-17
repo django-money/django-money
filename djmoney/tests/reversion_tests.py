@@ -1,6 +1,7 @@
 from django.test import TestCase
-from testapp.models import RevisionedModel
 from moneyed import Money
+
+from testapp.models import RevisionedModel
 import reversion
 
 

@@ -19,8 +19,12 @@ CURRENCY_CHOICES.sort(key=operator.itemgetter(1))
 
 
 class MoneyWidget(MultiWidget):
-    def __init__(self, choices=CURRENCY_CHOICES, amount_widget=None, *args, **kwargs):
-        widgets = (amount_widget if amount_widget else TextInput, Select(choices=choices))
+    def __init__(self, choices=CURRENCY_CHOICES, amount_widget=None, currency_widget=None, *args, **kwargs):
+        if not amount_widget:
+            amount_widget = TextInput
+        if not currency_widget:
+            currency_widget = Select(choices)
+        widgets = (amount_widget, currency_widget)
         super(MoneyWidget, self).__init__(widgets, *args, **kwargs)
 
     def decompress(self, value):

@@ -5,10 +5,11 @@ from django.core.serializers.python import Deserializer as PythonDeserializer
 from django.core.serializers.json import Serializer as JSONSerializer
 from django.core.serializers.python import _get_model
 from django.utils import six
+from moneyed import Money
 
 from djmoney.models.fields import MoneyField
+
 from djmoney.utils import get_currency_field_name
-from moneyed import Money
 
 Serializer = JSONSerializer
 
