@@ -6,15 +6,16 @@ Created on May 7, 2011
 from django.test import TestCase
 from django.db.models import F
 from moneyed import Money
-import moneyed
-
 from .testapp.models import (ModelWithVanillaMoneyField,
-                             ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
-                             SimpleModel, NullMoneyFieldModel)
+    ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
+    SimpleModel, NullMoneyFieldModel)
+import moneyed
 
 
 class VanillaMoneyFieldTestCase(TestCase):
+
     def testSaving(self):
+
         somemoney = Money("100.0")
 
         model = ModelWithVanillaMoneyField(money=somemoney)
@@ -48,6 +49,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(Money(0, 'USD'), mymodel.money)
 
     def testExactMatch(self):
+
         somemoney = Money("100.0")
 
         model = ModelWithVanillaMoneyField()
@@ -60,6 +62,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(model.pk, retrieved.pk)
 
     def testRangeSearch(self):
+
         minMoney = Money("3")
 
         model = ModelWithVanillaMoneyField(money=Money("100.0"))
@@ -73,6 +76,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(shouldBeEmpty.count(), 0)
 
     def testCurrencySearch(self):
+
         otherMoney = Money("1000", moneyed.USD)
         correctMoney = Money("1000", moneyed.ZWN)
 
@@ -86,6 +90,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(shouldBeOne.count(), 1)
 
     def testCurrencyChoices(self):
+
         otherMoney = Money("1000", moneyed.USD)
         correctMoney = Money("1000", moneyed.ZWN)
 
@@ -106,6 +111,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         model.save()
 
     def testIsNullLookup(self):
+
         null_instance = NullMoneyFieldModel.objects.create(field=None)
         null_instance.save()
 
@@ -117,7 +123,9 @@ class VanillaMoneyFieldTestCase(TestCase):
 
 
 class RelatedModelsTestCase(TestCase):
+
     def testFindModelsRelatedToMoneyModels(self):
+
         moneyModel = ModelWithVanillaMoneyField(money=Money("100.0", moneyed.ZWN))
         moneyModel.save()
 
@@ -160,6 +168,7 @@ class InheritorModelTestCase(TestCase):
 
 
 class ManagerTest(TestCase):
+
     def test_manager(self):
         self.assertTrue(hasattr(SimpleModel, 'objects'))
 
