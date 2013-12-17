@@ -1,6 +1,7 @@
 from __future__ import division
 from django.db import models
 from django.conf import settings
+
 try:
     from django.utils.encoding import smart_unicode
 except ImportError:
@@ -38,7 +39,6 @@ class NotSupportedLookup(Exception):
 
 
 class MoneyPatched(Money):
-
     # Set to True or False has a higher priority
     # than USE_L10N == True in the django settings file.
     # The variable "self.use_l10n" has three states:
@@ -313,6 +313,7 @@ class MoneyField(models.DecimalField):
         "Returns a suitable description of this field for South."
         # Note: This method gets automatically with schemamigration time.
         from south.modelsinspector import introspector
+
         field_class = self.__class__.__module__ + "." + self.__class__.__name__
         args, kwargs = introspector(self)
         # We need to
@@ -325,10 +326,11 @@ class MoneyField(models.DecimalField):
 
 try:
     from south.modelsinspector import add_introspection_rules
+
     rules = [
         # MoneyField has its own method.
         ((CurrencyField,),
-         [],  # No positional args
+         [], # No positional args
          {'default': ('default', {'default': DEFAULT_CURRENCY.code}),
           'max_length': ('max_length', {'default': 3})}),
     ]

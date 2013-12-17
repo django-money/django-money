@@ -8,7 +8,6 @@ register = template.Library()
 
 
 class MoneyLocalizeNode(template.Node):
-
     def __repr__(self):
         return "<MoneyLocalizeNode %r>" % self.money
 
@@ -48,7 +47,7 @@ class MoneyLocalizeNode(template.Node):
                 use_l10n = True
             else:
                 use_l10n = False
-            # remove the already used data
+                # remove the already used data
             tokens.pop(-1)
 
         # GET variable money

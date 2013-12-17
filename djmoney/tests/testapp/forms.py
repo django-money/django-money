@@ -10,11 +10,9 @@ from .models import ModelWithVanillaMoneyField
 
 
 class MoneyForm(forms.Form):
-
     money = MoneyField(currency_choices=[(u'SEK', u'Swedish Krona')], max_value=1000, min_value=2)
 
 
 class MoneyModelForm(forms.ModelForm):
-
     class Meta:
         model = ModelWithVanillaMoneyField

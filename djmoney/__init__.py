@@ -1,4 +1,5 @@
 from __future__ import unicode_literals
+
 try:
     from django.utils.encoding import smart_unicode
 except ImportError:
