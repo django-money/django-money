@@ -16,10 +16,14 @@ from .testapp.models import ModelWithVanillaMoneyField
 class MoneyFormTestCase(TestCase):
     def testRender(self):
         form = MoneyForm()
-        expected = """<tr><th><label for="id_money_0">Money:</label></th><td><input type="text" name="money_0" id="id_money_0" /><select name="money_1" id="id_money_1">
+        expected_text = """<tr><th><label for="id_money_0">Money:</label></th><td><input type="text" name="money_0" id="id_money_0" /><select name="money_1" id="id_money_1">
 <option value="SEK">Swedish Krona</option>
 </select></td></tr>"""
-        self.assertHTMLEqual(str(form), expected)
+        expected_number = """<tr><th><label for="id_money_0">Money:</label></th><td><input type="number" name="money_0" id="id_money_0" /><select name="money_1" id="id_money_1">
+<option value="SEK">Swedish Krona</option>
+</select></td></tr>"""
+        # Django 1.6 returns a input type number by default. If localize=True it returns type text.
+        self.assertTrue(str(form) in [expected_number, expected_text])
 
     def testValidate(self):
         m = Money(Decimal(10), moneyed.SEK)
