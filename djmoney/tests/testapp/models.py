@@ -9,6 +9,7 @@ from django.db import models
 
 import moneyed
 
+
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
 
