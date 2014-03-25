@@ -1,3 +1,5 @@
+from django.db.models.expressions import ExpressionNode, F
+
 try:
     from django.utils.encoding import smart_unicode
 except ImportError:
@@ -8,6 +10,14 @@ from djmoney.utils import get_currency_field_name
 
 
 def _expand_money_params(kwargs):
+    def get_clean_name(name):
+        # Get rid of __lt, __gt etc for the currency lookup
+        path = name.split(LOOKUP_SEP)
+        if path[-1] in QUERY_TERMS:
+            return LOOKUP_SEP.join(path[:-1])
+        else:
+            return name
+
     from moneyed import Money
     try:
         from django.db.models.constants import LOOKUP_SEP
@@ -19,16 +29,14 @@ def _expand_money_params(kwargs):
     to_append = {}
     for name, value in kwargs.items():
         if isinstance(value, Money):
-            # Get rid of __lt, __gt etc for the currency lookup
-            path = name.split(LOOKUP_SEP)
-            if path[-1] in QUERY_TERMS:
-                clean_name = LOOKUP_SEP.join(path[:-1])
-            else:
-                clean_name = name
-
+            clean_name = get_clean_name(name)
             to_append[name] = value.amount
             to_append[get_currency_field_name(clean_name)] = smart_unicode(
                 value.currency)
+        if isinstance(value, ExpressionNode):
+            clean_name = get_clean_name(name)
+            to_append['_'.join([clean_name, 'currency'])] = F('_'.join([value.name, 'currency']))
+
     kwargs.update(to_append)
     return kwargs
 

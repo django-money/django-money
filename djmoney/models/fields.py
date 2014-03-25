@@ -1,6 +1,7 @@
 from __future__ import division
 from django.db import models
 from django.conf import settings
+from django.db.models.sql.expressions import SQLEvaluator
 try:
     from django.utils.encoding import smart_unicode
 except ImportError:
@@ -233,6 +234,8 @@ class MoneyField(models.DecimalField):
                                          **kwargs)
 
     def to_python(self, value):
+        if isinstance(value, SQLEvaluator):
+            return value
         if isinstance(value, Money):
             value = value.amount
         if isinstance(value, tuple):
@@ -268,6 +271,8 @@ class MoneyField(models.DecimalField):
         setattr(cls, self.name, MoneyFieldProxy(self))
 
     def get_db_prep_save(self, value, connection):
+        if isinstance(value, SQLEvaluator):
+            return value
         if isinstance(value, Money):
             value = value.amount
             return value
