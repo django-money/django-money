@@ -9,7 +9,7 @@ from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
-    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney)
+    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney, ModelWithTwoMoneyFields)
 import moneyed
 
 
@@ -68,6 +68,15 @@ class VanillaMoneyFieldTestCase(TestCase):
         mymodel.save()
         mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
         self.assertEquals(Money(0, 'USD'), mymodel.money)
+
+    def testComparisonLookup(self):
+        ModelWithTwoMoneyFields.objects.create(amount1=Money(1, 'USD'), amount2=Money(2, 'USD'))
+        ModelWithTwoMoneyFields.objects.create(amount1=Money(2, 'USD'), amount2=Money(0, 'USD'))
+        ModelWithTwoMoneyFields.objects.create(amount1=Money(3, 'USD'), amount2=Money(0, 'USD'))
+        ModelWithTwoMoneyFields.objects.create(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS'))
+
+        qs = ModelWithTwoMoneyFields.objects.filter(amount1__gt=F('amount2'))
+        self.assertEquals(2, qs.count())
 
     def testExactMatch(self):
 

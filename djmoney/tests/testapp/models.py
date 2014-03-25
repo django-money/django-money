@@ -32,6 +32,10 @@ class ModelWithDefaultAsDecimal(models.Model):
 class ModelWithDefaultAsMoney(models.Model):
     money = MoneyField(default=moneyed.Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
 
+class ModelWithTwoMoneyFields(models.Model):
+    amount1 = MoneyField(max_digits=10, decimal_places=2)
+    amount2 = MoneyField(max_digits=10, decimal_places=3)
+
 class ModelRelatedToModelWithMoney(models.Model):
     moneyModel = models.ForeignKey(ModelWithVanillaMoneyField)
 
