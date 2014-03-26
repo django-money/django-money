@@ -197,7 +197,7 @@ class MoneyField(models.DecimalField):
 
     def __init__(self, verbose_name=None, name=None,
                  max_digits=None, decimal_places=None,
-                 default=Money(0.0, DEFAULT_CURRENCY),
+                 default=0.0,
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
 

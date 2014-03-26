@@ -33,6 +33,13 @@ class VanillaMoneyFieldTestCase(TestCase):
 
         self.assertEquals(Money(1, moneyed.DKK), retrieved.money)
 
+        object = BaseModel.objects.create()
+        self.assertEquals(Money(0, 'USD'), object.first_field)
+        object = BaseModel.objects.create(first_field='111.2')
+        self.assertEquals(Money('111.2', 'USD'), object.first_field)
+        object = BaseModel.objects.create(first_field=Money('123', 'PLN'))
+        self.assertEquals(Money('123', 'PLN'), object.first_field)
+
     def testRelativeAddition(self):
         # test relative value adding
         somemoney = Money(100, 'USD')
