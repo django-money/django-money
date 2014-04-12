@@ -202,9 +202,18 @@ class MoneyField(models.DecimalField):
                  currency_choices=CURRENCY_CHOICES, **kwargs):
 
         if isinstance(default, basestring):
-            amount, currency = default.split(" ")
+            try:
+                # handle scenario where default is formatted like:
+                # 'amount currency-code'
+                amount, currency = default.split(" ")
+            except ValueError:
+                # value error would be risen if the default is
+                # without the currency part, i.e
+                # 'amount'
+                amount = default
+                currency = default_currency
             default = Money(float(amount), Currency(code=currency))
-        elif isinstance(default, (float, Decimal)):
+        elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
 
         if not isinstance(default, Money):

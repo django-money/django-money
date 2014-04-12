@@ -8,7 +8,8 @@ from django.db.models import F
 from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
-    SimpleModel, NullMoneyFieldModel)
+    SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
+    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency)
 import moneyed
 
 
@@ -39,6 +40,17 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(Money('111.2', 'USD'), object.first_field)
         object = BaseModel.objects.create(first_field=Money('123', 'PLN'))
         self.assertEquals(Money('123', 'PLN'), object.first_field)
+
+        object = ModelWithDefaultAsDecimal.objects.create()
+        self.assertEquals(Money('0.01', 'CHF'), object.money)
+        object = ModelWithDefaultAsInt.objects.create()
+        self.assertEquals(Money('123', 'GHS'), object.money)
+        object = ModelWithDefaultAsString.objects.create()
+        self.assertEquals(Money('123', 'PLN'), object.money)
+        object = ModelWithDefaultAsStringWithCurrency.objects.create()
+        self.assertEquals(Money('123', 'USD'), object.money)
+        object = ModelWithDefaultAsFloat.objects.create()
+        self.assertEquals(Money('12.05', 'PLN'), object.money)
 
     def testRelativeAddition(self):
         # test relative value adding
