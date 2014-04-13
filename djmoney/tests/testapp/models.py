@@ -29,6 +29,9 @@ class ModelWithDefaultAsFloat(models.Model):
 class ModelWithDefaultAsDecimal(models.Model):
     money = MoneyField(default=Decimal('0.01'), max_digits=10, decimal_places=2, default_currency='CHF')
 
+class ModelWithDefaultAsMoney(models.Model):
+    money = MoneyField(default=moneyed.Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
+
 class ModelRelatedToModelWithMoney(models.Model):
     moneyModel = models.ForeignKey(ModelWithVanillaMoneyField)
 

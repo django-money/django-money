@@ -9,7 +9,7 @@ from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
-    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency)
+    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney)
 import moneyed
 
 
@@ -51,6 +51,8 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(Money('123', 'USD'), object.money)
         object = ModelWithDefaultAsFloat.objects.create()
         self.assertEquals(Money('12.05', 'PLN'), object.money)
+        object = ModelWithDefaultAsMoney.objects.create()
+        self.assertEquals(Money('0.01', 'RUB'), object.money)
 
     def testRelativeAddition(self):
         # test relative value adding
