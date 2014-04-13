@@ -8,11 +8,29 @@ from djmoney.models.fields import MoneyField
 from django.db import models
 
 import moneyed
+from decimal import Decimal
 
 
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
 
+class ModelWithDefaultAsInt(models.Model):
+    money = MoneyField(default=123, max_digits=10, decimal_places=2, default_currency='GHS')
+
+class ModelWithDefaultAsStringWithCurrency(models.Model):
+    money = MoneyField(default='123 USD', max_digits=10, decimal_places=2)
+
+class ModelWithDefaultAsString(models.Model):
+    money = MoneyField(default='123', max_digits=10, decimal_places=2, default_currency='PLN')
+
+class ModelWithDefaultAsFloat(models.Model):
+    money = MoneyField(default=12.05, max_digits=10, decimal_places=2, default_currency='PLN')
+
+class ModelWithDefaultAsDecimal(models.Model):
+    money = MoneyField(default=Decimal('0.01'), max_digits=10, decimal_places=2, default_currency='CHF')
+
+class ModelWithDefaultAsMoney(models.Model):
+    money = MoneyField(default=moneyed.Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
 
 class ModelRelatedToModelWithMoney(models.Model):
     moneyModel = models.ForeignKey(ModelWithVanillaMoneyField)
