@@ -20,6 +20,6 @@ __pycache__
 djmoney/tests/testproject
 .tox
 .idea
-
+.venv
 *\.egg
 *\.egg-info
