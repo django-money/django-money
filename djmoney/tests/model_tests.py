@@ -9,7 +9,8 @@ from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
-    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney, ModelWithTwoMoneyFields)
+    ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney, ModelWithTwoMoneyFields,
+    ProxyModel)
 import moneyed
 
 
@@ -205,3 +206,10 @@ class ManagerTest(TestCase):
     def test_objects_creation(self):
         SimpleModel.objects.create(money=Money("100.0", 'USD'))
         self.assertEqual(SimpleModel.objects.count(), 1)
+
+
+class ProxyModelTest(TestCase):
+
+    def test_manager(self):
+        ProxyModel.objects.create(money=Money("100.0", 'USD'))
+        self.assertIsInstance(ProxyModel.objects.get(pk=1), ProxyModel)

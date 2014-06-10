@@ -83,3 +83,8 @@ class SimpleModel(models.Model):
 
 class NullMoneyFieldModel(models.Model):
     field = MoneyField(max_digits=10, decimal_places=2, null=True)
+
+
+class ProxyModel(SimpleModel):
+    class Meta:
+        proxy = True
