@@ -152,6 +152,10 @@ class VanillaMoneyFieldTestCase(TestCase):
         shouldBeOne = NullMoneyFieldModel.objects.filter(field=None)
         self.assertEquals(shouldBeOne.count(), 1)
 
+    def testNullDefault(self):
+        null_instance = NullMoneyFieldModel.objects.create()
+        self.assertEquals(null_instance.field, None)
+
 
 class RelatedModelsTestCase(TestCase):
 
