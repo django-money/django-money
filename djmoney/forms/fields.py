@@ -25,4 +25,9 @@ class MoneyField(MultiValueField):
         super(MoneyField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
-        return Money(*data_list[:2])
+        if data_list:
+            if not self.required and data_list[0] in self.empty_values:
+                return None
+            else:
+                return Money(*data_list[:2])
+        return None
