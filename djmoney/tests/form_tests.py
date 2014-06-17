@@ -49,6 +49,16 @@ class MoneyFormTestCase(TestCase):
         form = MoneyForm({"money_0": m.amount, "money_1": m.currency})
         self.assertFalse(form.is_valid())
 
+    def testChangedData(self):
+        # Form displays first currency pre-selected, and we don't
+        # want that to count as changed data.
+        form = MoneyForm({"money_0": "", "money_1": moneyed.SEK})
+        self.assertEquals(form.changed_data, [])
+
+        # But if user types something it, it should be noticed:
+        form2 = MoneyForm({"money_0": "1.23", "money_1": moneyed.SEK})
+        self.assertEquals(form2.changed_data, ['money'])
+
 
 class OptionalMoneyFormTestCase(TestCase):
 
