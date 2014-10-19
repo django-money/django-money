@@ -7,10 +7,10 @@ Fork of the django support that was in http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4.x, 1.5.x, 1.6.x
+Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x
 
 Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x*, 3.3.x*
-(* These versions of Python work only for the moment when you install the following 
+(* These versions of Python work only for the moment when you install the following
    fork "py-moneyed"  https://github.com/fizista/py-moneyed/tree/python3 )
 
 Via py-moneyed, django-moneyed gets:
@@ -152,7 +152,7 @@ In the template, add:
 	{% load djmoney %}
 	...
 	{% money_localize money %}
-	
+
 and that is all.
 
 Instructions to the tag money_localize:
@@ -161,21 +161,21 @@ Instructions to the tag money_localize:
 
         {% money_localize <money_object> [ on(default) | off ] [as var_name] %}
         {% money_localize <amount> <currency> [ on(default) | off ] [as var_name] %}
-             
+
     Example:
 
         The same effect:
         {% money_localize money_object %}
         {% money_localize money_object on %}
-        
+
         Assignment to a variable:
         {% money_localize money_object on as NEW_MONEY_OBJECT %}
-        
+
         Formatting the number with currency:
-        {% money_localize '4.5' 'USD' %}          
-        
+        {% money_localize '4.5' 'USD' %}
+
     Return::
-    
+
         MoneyPatched object
 
 
@@ -185,20 +185,20 @@ Testing
 Install the required packages:
 
 	git clone https://github.com/jakewins/django-money
-	
+
 	cd ./django-money/
-	
+
 	pip install -e .[tests] # installation with required packages for testing
 
 Recommended way to run the tests:
-	
+
 	tox
 
 or
 
 	python setup.py test
 
-	
+
 Testing the application in the current environment python:
 
  * the main tests
@@ -207,7 +207,7 @@ Testing the application in the current environment python:
 
 A handful of the tox environments are automatically tested on travis: see `gen_travis.bash` and `.travis.yml`.
 [![Build Status](https://travis-ci.org/ashleyh/django-money.png?branch=master)](https://travis-ci.org/ashleyh/django-money)
-	
+
 Working with Exchange Rates
 ---------------------------
 

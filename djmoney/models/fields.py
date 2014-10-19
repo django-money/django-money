@@ -336,6 +336,18 @@ class MoneyField(models.DecimalField):
         kwargs['default_currency'] = "'%s'" % self.default_currency
         return field_class, args, kwargs
 
+    ## Django 1.7 migration support
+    def deconstruct(self):
+        name, path, args, kwargs = super(MoneyField, self).deconstruct()
+
+        if self.default:
+            kwargs['default'] = self.default.amount
+        if self.default_currency != DEFAULT_CURRENCY:
+            kwargs['default_currency'] = self.default_currency
+        if self.currency_choices != CURRENCY_CHOICES:
+            kwargs['currency_choices'] = self.currency_choices
+        return name, path, args, kwargs
+
 
 try:
     from south.modelsinspector import add_introspection_rules
