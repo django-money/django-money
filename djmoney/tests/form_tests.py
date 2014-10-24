@@ -10,7 +10,7 @@ import moneyed
 from django.test import TestCase
 from moneyed import Money
 
-from .testapp.forms import MoneyForm, MoneyModelForm
+from .testapp.forms import MoneyForm, OptionalMoneyForm, MoneyModelForm
 from .testapp.models import ModelWithVanillaMoneyField
 
 
@@ -47,6 +47,34 @@ class MoneyFormTestCase(TestCase):
     def testNonExistentCurrency(self):
         m = Money(Decimal(10), moneyed.EUR)
         form = MoneyForm({"money_0": m.amount, "money_1": m.currency})
+        self.assertFalse(form.is_valid())
+
+    def testChangedData(self):
+        # Form displays first currency pre-selected, and we don't
+        # want that to count as changed data.
+        form = MoneyForm({"money_0": "", "money_1": moneyed.SEK})
+        self.assertEquals(form.changed_data, [])
+
+        # But if user types something it, it should be noticed:
+        form2 = MoneyForm({"money_0": "1.23", "money_1": moneyed.SEK})
+        self.assertEquals(form2.changed_data, ['money'])
+
+
+class OptionalMoneyFormTestCase(TestCase):
+
+    # The currency widget means that 'money_1' will always be filled
+    # in, but 'money_0' could be absent/empty.
+    def testMissingAmount(self):
+        form = OptionalMoneyForm({"money_1": moneyed.SEK})
+        self.assertTrue(form.is_valid())
+
+    def testEmptyAmount(self):
+        form = OptionalMoneyForm({"money_0": "", "money_1": moneyed.SEK})
+        self.assertTrue(form.is_valid())
+
+    def testAmountIsNotANumber(self):
+        # Should still complain for invalid data
+        form = OptionalMoneyForm({"money_0": "xyz*|\\", "money_1": moneyed.SEK})
         self.assertFalse(form.is_valid())
 
 
