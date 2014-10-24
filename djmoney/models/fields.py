@@ -198,9 +198,14 @@ class MoneyField(models.DecimalField):
 
     def __init__(self, verbose_name=None, name=None,
                  max_digits=None, decimal_places=None,
-                 default=0.0,
+                 default=None,
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
+
+        nullable = kwargs.get('null', False)
+        if default is None and not nullable:
+            # Backwards compatible fix for non-nullable fields
+            default = 0.0
 
         if isinstance(default, basestring):
             try:
@@ -217,7 +222,7 @@ class MoneyField(models.DecimalField):
         elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
 
-        if not isinstance(default, Money):
+        if not (nullable and default is None) and not isinstance(default, Money):
             raise Exception(
                 "default value must be an instance of Money, is: %s" % str(
                     default))
