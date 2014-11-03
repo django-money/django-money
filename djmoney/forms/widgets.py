@@ -23,7 +23,7 @@ class MoneyWidget(MultiWidget):
         if not amount_widget:
             amount_widget = TextInput
         if not currency_widget:
-            currency_widget = Select(choices)
+            currency_widget = Select(choices=choices)
         widgets = (amount_widget, currency_widget)
         super(MoneyWidget, self).__init__(widgets, *args, **kwargs)
 

@@ -25,9 +25,19 @@ class MoneyField(MultiValueField):
         super(MoneyField, self).__init__(fields, *args, **kwargs)
 
     def compress(self, data_list):
-        try:
-            if data_list[0] is None:
+        if data_list:
+            if not self.required and data_list[0] in self.empty_values:
                 return None
-        except IndexError:
-            return None
-        return Money(*data_list[:2])
+            else:
+                return Money(*data_list[:2])
+        return None
+
+    def _has_changed(self, initial, data):
+        # ChoiceField._has_changed returns True always here, so we rely solely
+        # on the DecimalField. Based on MultiValueField.
+        if initial is None:
+            initial = ['' for x in range(0, len(data))]
+        else:
+            if not isinstance(initial, list):
+                initial = self.widget.decompress(initial)
+        return self.fields[0]._has_changed(initial[0], data[0])
