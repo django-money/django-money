@@ -192,6 +192,11 @@ class CurrencyField(models.CharField):
         if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
 
+    def pre_save(self, obj, add):
+        if self.price_field.__class__.__name__ == 'DenormDBField':
+            self.price_field.pre_save(obj, add)
+        return super(CurrencyField, self).pre_save(obj, add)
+
 
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
@@ -277,7 +282,7 @@ class MoneyField(models.DecimalField):
                 default=self.default_currency, editable=False,
                 choices=self.currency_choices
             )
-            c_field.creation_counter = self.creation_counter + 1
+            c_field.creation_counter = self.creation_counter
             cls.add_to_class(c_field_name, c_field)
 
         super(MoneyField, self).contribute_to_class(cls, name)
