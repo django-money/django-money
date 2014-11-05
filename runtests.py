@@ -41,7 +41,7 @@ _FORMATTER.add_formatting_definition(
 
 
 from django.test.simple import DjangoTestSuiteRunner
-test_runner = DjangoTestSuiteRunner(verbosity=1)
+test_runner = DjangoTestSuiteRunner(verbosity=1, failfast=False)
 
 # If you use South for migrations, uncomment this to monkeypatch
 # syncdb to get migrations to run.
