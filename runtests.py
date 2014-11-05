@@ -48,7 +48,11 @@ test_runner = DjangoTestSuiteRunner(verbosity=1, failfast=False)
 from south.management.commands import patch_for_test_db_setup
 patch_for_test_db_setup()
 
-failures = test_runner.run_tests(['djmoney', ])
+if len(sys.argv) > 1:
+    tests = sys.argv[1:]
+else:
+    tests = ['djmoney']
+failures = test_runner.run_tests(tests)
 if failures:
     sys.exit(failures)
 
