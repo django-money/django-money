@@ -31,3 +31,16 @@ class MoneyWidget(MultiWidget):
         if value:
             return [value.amount, value.currency]
         return [None, None]
+
+    # Needed for Django 1.5.x, where Field doesn't have the '_has_changed' method.
+    # But it mustn't run on Django 1.6, where it doesn't work and isn't needed.
+
+    if hasattr(TextInput, '_has_changed'):
+        def _has_changed(self, initial, data):
+            # Rely on the amount widget, not the currency widget.
+            if initial is None:
+                initial = ['' for x in range(0, len(data))]
+            else:
+                if not isinstance(initial, list):
+                    initial = self.decompress(initial)
+            return self.widgets[0]._has_changed(initial[0], data[0])
