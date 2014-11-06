@@ -60,4 +60,7 @@ if failures:
 ## Run py.tests
 # Compatibility testing patches on the py-moneyed
 import pytest
-pytest.main()
+failures = pytest.main()
+
+if failures:
+    sys.exit(failures)
