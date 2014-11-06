@@ -1,3 +1,5 @@
+from functools import wraps
+
 from django.db.models.expressions import ExpressionNode, F
 
 try:
@@ -53,11 +55,13 @@ def understands_money(func):
     mymodel.objects.filter(money=Decimal("100.0), money_currency="USD")
     """
 
-    def decorator(*args, **kwargs):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        kwargs = kwargs.copy()
         kwargs = _expand_money_params(kwargs)
         return func(*args, **kwargs)
 
-    return decorator
+    return wrapper
 
 
 RELEVANT_QUERYSET_METHODS = ['dates', 'distinct', 'extra', 'get',
