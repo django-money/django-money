@@ -1,5 +1,6 @@
 from functools import wraps
 
+import django
 from django.db.models.expressions import ExpressionNode, F
 
 try:
@@ -79,21 +80,38 @@ def add_money_comprehension_to_queryset(qs):
 
 def money_manager(manager):
     """
-    Wraps a model managers get_query_set method so that each query set it returns
+    Patches a model manager's get_queryset method so that each QuerySet it returns
     is able to work on money fields.
 
-    We use this instead of a real model manager, in order to allow users of django-money to
-    use other managers special managers while still doing money queries.
+    This allow users of django-money to use other managers while still doing
+    money queries.
     """
-    old_get_query_set = manager.get_query_set
 
-    def get_query_set(*args, **kwargs):
-        return add_money_comprehension_to_queryset(old_get_query_set(*args, **kwargs))
+    # Need to dynamically subclass to add our behaviour, and then change
+    # the class of 'manager' to our subclass.
 
-    manager.get_query_set = get_query_set
+    # Rejected alternatives:
+    #
+    # * A monkey patch that adds things to the manager instance dictionary.
+    #   This fails due to complications with Manager._copy_to_model behaviour.
+    #
+    # * Returning a new MoneyManager instance (rather than modifying
+    #   the passed in manager instance). This fails for reasons that
+    #   are tricky to get to the bottom of - Manager does funny things.
+    class MoneyManager(manager.__class__):
 
-    if hasattr(manager, 'get_queryset'):
-        # Django 1.6
-        manager.get_queryset = get_query_set
+        def get_queryset(self, *args, **kwargs):
+            # If we are calling code that is pre-Django 1.6, need to
+            # spell it 'get_query_set'
+            s = super(MoneyManager, self)
+            method = getattr(s, 'get_queryset',
+                             getattr(s, 'get_query_set', None))
+            return add_money_comprehension_to_queryset(method(*args, **kwargs))
 
+        # If we are being called by code pre Django 1.6, need
+        # 'get_query_set'.
+        if django.VERSION < (1, 6):
+            get_query_set = get_queryset
+
+    manager.__class__ = MoneyManager
     return manager

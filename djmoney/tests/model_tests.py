@@ -214,6 +214,12 @@ class ManagerTest(TestCase):
 
 class ProxyModelTest(TestCase):
 
-    def test_manager(self):
+    def test_instances(self):
         ProxyModel.objects.create(money=Money("100.0", 'USD'))
         self.assertIsInstance(ProxyModel.objects.get(pk=1), ProxyModel)
+
+    def test_patching(self):
+        ProxyModel.objects.create(money=Money("100.0", 'USD'))
+        # This will fail if ProxyModel.objects doesn't have the patched manager:
+        self.assertEqual(ProxyModel.objects.filter(money__gt=Money("50.00", 'GBP')).count(),
+                         0)
