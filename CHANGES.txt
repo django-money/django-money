@@ -1,7 +1,13 @@
+Changes in 0.5
+- Django 1.7 compatibility (Francois Rejete <francois@rejete.com>)
+- Added "choices=" to instantiation of currency widget (David Stockwell <david@zooey.co.uk>)
+- Nullable MoneyField should act as default=None (Jacob Hansson <jacob@bitchware.se>)
+- Fixed bug where a non-required MoneyField threw an exception (@spookylukey)
+
 Changes in 0.4
 - Python 3 compatibility
 - add tox tests
-- add format localization 
+- add format localization
 - tag money_localize
 
 Changes in 0.3.3
