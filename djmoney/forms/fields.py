@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from warnings import warn
 
+from django.core import validators
 from django.forms import MultiValueField, DecimalField, ChoiceField
 from moneyed.classes import Money
 
@@ -11,6 +12,11 @@ __all__ = ('MoneyField',)
 
 
 class MoneyField(MultiValueField):
+
+    # Django 1.5 compat:
+    if not hasattr(MultiValueField, 'empty_values'):
+        empty_values = list(validators.EMPTY_VALUES)
+
     def __init__(self, currency_widget=None, currency_choices=CURRENCY_CHOICES, choices=CURRENCY_CHOICES,
                  max_value=None, min_value=None,
                  max_digits=None, decimal_places=None, *args, **kwargs):
