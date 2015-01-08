@@ -289,7 +289,6 @@ class MoneyField(models.DecimalField):
             return value
         if isinstance(value, Money):
             value = value.amount
-            return value
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
     def get_db_prep_lookup(self, lookup_type, value, connection,

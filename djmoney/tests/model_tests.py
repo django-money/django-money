@@ -55,6 +55,17 @@ class VanillaMoneyFieldTestCase(TestCase):
         object = ModelWithDefaultAsMoney.objects.create()
         self.assertEquals(Money('0.01', 'RUB'), object.money)
 
+    def testRounding(self):
+        somemoney = Money("100.0623456781123219")
+
+        model = ModelWithVanillaMoneyField(money=somemoney)
+        model.save()
+
+        retrieved = ModelWithVanillaMoneyField.objects.get(pk=model.pk)
+        
+        self.assertEquals(somemoney.currency, retrieved.money.currency)
+        self.assertEquals(Money("100.06"), retrieved.money)
+
     def testRelativeAddition(self):
         # test relative value adding
         somemoney = Money(100, 'USD')
