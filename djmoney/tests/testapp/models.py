@@ -51,6 +51,11 @@ class ModelWithChoicesMoneyField(models.Model):
     )
 
 
+class ModelWithNonMoneyField(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    desc = models.CharField(max_length=10)
+
+
 class AbstractModel(models.Model):
     price1 = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
