@@ -10,7 +10,7 @@ from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
     ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney, ModelWithTwoMoneyFields,
-    ProxyModel)
+    ProxyModel, ModelWithNonMoneyField)
 import moneyed
 
 
@@ -169,6 +169,15 @@ class RelatedModelsTestCase(TestCase):
 
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money("100.0", moneyed.ZWN))
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money("1000.0", moneyed.ZWN))
+
+
+class NonMoneyTestCase(TestCase):
+
+    def testAllowExpressionNodesWithoutMoney(self):
+        """ allow querying on expression nodes that are not Money """
+        ModelWithNonMoneyField(money=Money(100.0), desc="hundred").save()
+        instance = ModelWithNonMoneyField.objects.filter(desc=F("desc")).get()
+        self.assertEqual(instance.desc, "hundred")
 
 
 class InheritedModelTestCase(TestCase):
