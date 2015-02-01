@@ -10,7 +10,7 @@ from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
     ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney, ModelWithTwoMoneyFields,
-    ProxyModel)
+    ProxyModel, ModelWithNonMoneyField)
 import moneyed
 
 
@@ -54,6 +54,17 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(Money('12.05', 'PLN'), object.money)
         object = ModelWithDefaultAsMoney.objects.create()
         self.assertEquals(Money('0.01', 'RUB'), object.money)
+
+    def testRounding(self):
+        somemoney = Money("100.0623456781123219")
+
+        model = ModelWithVanillaMoneyField(money=somemoney)
+        model.save()
+
+        retrieved = ModelWithVanillaMoneyField.objects.get(pk=model.pk)
+        
+        self.assertEquals(somemoney.currency, retrieved.money.currency)
+        self.assertEquals(Money("100.06"), retrieved.money)
 
     def testRelativeAddition(self):
         # test relative value adding
@@ -152,6 +163,10 @@ class VanillaMoneyFieldTestCase(TestCase):
         shouldBeOne = NullMoneyFieldModel.objects.filter(field=None)
         self.assertEquals(shouldBeOne.count(), 1)
 
+    def testNullDefault(self):
+        null_instance = NullMoneyFieldModel.objects.create()
+        self.assertEquals(null_instance.field, None)
+
 
 class RelatedModelsTestCase(TestCase):
 
@@ -165,6 +180,15 @@ class RelatedModelsTestCase(TestCase):
 
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money("100.0", moneyed.ZWN))
         ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money("1000.0", moneyed.ZWN))
+
+
+class NonMoneyTestCase(TestCase):
+
+    def testAllowExpressionNodesWithoutMoney(self):
+        """ allow querying on expression nodes that are not Money """
+        ModelWithNonMoneyField(money=Money(100.0), desc="hundred").save()
+        instance = ModelWithNonMoneyField.objects.filter(desc=F("desc")).get()
+        self.assertEqual(instance.desc, "hundred")
 
 
 class InheritedModelTestCase(TestCase):
@@ -210,6 +234,12 @@ class ManagerTest(TestCase):
 
 class ProxyModelTest(TestCase):
 
-    def test_manager(self):
+    def test_instances(self):
         ProxyModel.objects.create(money=Money("100.0", 'USD'))
         self.assertIsInstance(ProxyModel.objects.get(pk=1), ProxyModel)
+
+    def test_patching(self):
+        ProxyModel.objects.create(money=Money("100.0", 'USD'))
+        # This will fail if ProxyModel.objects doesn't have the patched manager:
+        self.assertEqual(ProxyModel.objects.filter(money__gt=Money("50.00", 'GBP')).count(),
+                         0)

@@ -41,14 +41,18 @@ _FORMATTER.add_formatting_definition(
 
 
 from django.test.simple import DjangoTestSuiteRunner
-test_runner = DjangoTestSuiteRunner(verbosity=1)
+test_runner = DjangoTestSuiteRunner(verbosity=1, failfast=False)
 
 # If you use South for migrations, uncomment this to monkeypatch
 # syncdb to get migrations to run.
 from south.management.commands import patch_for_test_db_setup
 patch_for_test_db_setup()
 
-failures = test_runner.run_tests(['djmoney', ])
+if len(sys.argv) > 1:
+    tests = sys.argv[1:]
+else:
+    tests = ['djmoney']
+failures = test_runner.run_tests(tests)
 if failures:
     sys.exit(failures)
 
@@ -56,4 +60,7 @@ if failures:
 ## Run py.tests
 # Compatibility testing patches on the py-moneyed
 import pytest
-pytest.main()
+failures = pytest.main()
+
+if failures:
+    sys.exit(failures)
