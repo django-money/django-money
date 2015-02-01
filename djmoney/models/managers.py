@@ -53,7 +53,7 @@ def _get_field(model, name):
 
     # The following is borrowed from the innards of Query.add_filter - it strips out __gt, __exact et al.
     num_parts = len(parts)
-    if len(parts) > 1 and parts[-1] in qs.query_terms:
+    if num_parts > 1 and parts[-1] in qs.query_terms:
         # Traverse the lookup query to distinguish related fields from
         # lookup types.
         lookup_model = model
@@ -84,14 +84,14 @@ def _get_field(model, name):
     return field
 
 
-def _expand_money_args(model, args, depth=0):
+def _expand_money_args(model, args):
     """
     Augments args so that they contain _currency lookups - ie.. Q() | Q()
     """
     for arg in args:
         for i, child in enumerate(arg.children):
             if isinstance(child, Q):
-                _expand_money_args(model, [child], depth + 3)
+                _expand_money_args(model, [child])
             elif isinstance(child, (list, tuple)):
                 name, value = child
                 if isinstance(value, Money):
@@ -106,7 +106,7 @@ def _expand_money_args(model, args, depth=0):
                         clean_name = _get_clean_name(name)
                         arg.children[i] = Q(*[
                             child, 
-                            ('_'.join([clean_name, 'currency']), F('_'.join([value.name, 'currency'])))
+                            ('_'.join([clean_name, 'currency']), F(get_currency_field_name(value.name)))
                         ])
     return args
 
@@ -126,7 +126,7 @@ def _expand_money_kwargs(model, kwargs):
             field = _get_field(model, name)
             if isinstance(field, MoneyField):
                 clean_name = _get_clean_name(name)
-                to_append['_'.join([clean_name, 'currency'])] = F('_'.join([value.name, 'currency']))
+                to_append['_'.join([clean_name, 'currency'])] = F(get_currency_field_name(value.name))
 
     kwargs.update(to_append)
     return kwargs
