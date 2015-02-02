@@ -14,6 +14,12 @@ class ExpandMoneyArgsTestCase(TestCase):
             []
         )
 
+        # Test non-Q arg (such as it receives for an order_by
+        self.assertEqual(
+            _expand_money_args(ModelWithNonMoneyField(), ['money']),
+            ['money']
+        )
+
         # Test
         #   (AND: ('money', 0 USD))
         # results in;

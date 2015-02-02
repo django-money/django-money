@@ -89,25 +89,26 @@ def _expand_money_args(model, args):
     Augments args so that they contain _currency lookups - ie.. Q() | Q()
     """
     for arg in args:
-        for i, child in enumerate(arg.children):
-            if isinstance(child, Q):
-                _expand_money_args(model, [child])
-            elif isinstance(child, (list, tuple)):
-                name, value = child
-                if isinstance(value, Money):
-                    clean_name = _get_clean_name(name)
-                    arg.children[i] = Q(*[
-                        child,
-                        (get_currency_field_name(clean_name), smart_unicode(value.currency))
-                    ])
-                if isinstance(value, ExpressionNode):
-                    field = _get_field(model, name)
-                    if isinstance(field, MoneyField):
+        if isinstance(arg, Q):
+            for i, child in enumerate(arg.children):
+                if isinstance(child, Q):
+                    _expand_money_args(model, [child])
+                elif isinstance(child, (list, tuple)):
+                    name, value = child
+                    if isinstance(value, Money):
                         clean_name = _get_clean_name(name)
                         arg.children[i] = Q(*[
-                            child, 
-                            ('_'.join([clean_name, 'currency']), F(get_currency_field_name(value.name)))
+                            child,
+                            (get_currency_field_name(clean_name), smart_unicode(value.currency))
                         ])
+                    if isinstance(value, ExpressionNode):
+                        field = _get_field(model, name)
+                        if isinstance(field, MoneyField):
+                            clean_name = _get_clean_name(name)
+                            arg.children[i] = Q(*[
+                                child, 
+                                ('_'.join([clean_name, 'currency']), F(get_currency_field_name(value.name)))
+                            ])
     return args
 
 
@@ -154,10 +155,8 @@ def understands_money(model, func):
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ['dates', 'distinct', 'extra', 'get',
-                             'get_or_create', 'filter', 'complex_filter',
-                             'exclude', 'in_bulk', 'iterator', 'latest',
-                             'order_by', 'select_related', 'values']
+RELEVANT_QUERYSET_METHODS = ['distinct', 'get', 'get_or_create', 'filter',
+                             'exclude']
 
 
 def add_money_comprehension_to_queryset(model, qs):
