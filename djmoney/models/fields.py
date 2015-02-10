@@ -16,6 +16,14 @@ from djmoney.forms.widgets import CURRENCY_CHOICES
 from djmoney.utils import get_currency_field_name
 from django.db.models.expressions import ExpressionNode
 
+# If django-money-rates is installed we can automatically
+# perform operations with different currencies
+try:
+    from djmoney_rates.utils import convert_money
+    AUTO_CONVERT_MONEY = True
+except ImportError:
+    AUTO_CONVERT_MONEY = False
+
 from decimal import Decimal, ROUND_DOWN
 import inspect
 
@@ -48,6 +56,15 @@ class MoneyPatched(Money):
     def __float__(self):
         return float(self.amount)
 
+    def _convert_to_local_currency(self, other):
+        """
+        Converts other Money instances to the local currency
+        """
+        if AUTO_CONVERT_MONEY:
+            return convert_money(other.amount, other.currency, self.currency)
+        else:
+            return other
+
     @classmethod
     def _patch_to_current_class(cls, money):
         """
@@ -64,12 +81,12 @@ class MoneyPatched(Money):
             super(MoneyPatched, self).__neg__())
 
     def __add__(self, other):
-
+        other = self._convert_to_local_currency(other)
         return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__add__(other))
 
     def __sub__(self, other):
-
+        other = self._convert_to_local_currency(other)
         return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__sub__(other))
 
