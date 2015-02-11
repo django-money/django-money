@@ -3,15 +3,19 @@ Created on May 7, 2011
 
 @author: jake
 '''
+from decimal import Decimal
 from django.test import TestCase
 from django.db.models import F
+from unittest import skipIf
 from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
     SimpleModel, NullMoneyFieldModel, ModelWithDefaultAsDecimal, ModelWithDefaultAsFloat, ModelWithDefaultAsInt,
     ModelWithDefaultAsString, ModelWithDefaultAsStringWithCurrency, ModelWithDefaultAsMoney, ModelWithTwoMoneyFields,
     ProxyModel, ModelWithNonMoneyField)
+from djmoney.models.fields import MoneyPatched, AUTO_CONVERT_MONEY
 import moneyed
+from mock import patch
 
 
 class VanillaMoneyFieldTestCase(TestCase):
@@ -243,3 +247,27 @@ class ProxyModelTest(TestCase):
         # This will fail if ProxyModel.objects doesn't have the patched manager:
         self.assertEqual(ProxyModel.objects.filter(money__gt=Money("50.00", 'GBP')).count(),
                          0)
+
+
+class DifferentCurrencyTestCase(TestCase):
+    """Test sum/sub operations between different currencies"""
+
+    @skipIf(AUTO_CONVERT_MONEY is False, "You need to install django-money-rates to run this test")
+    def test_sum(self):
+        with patch(
+            'djmoney.models.fields.convert_money',
+            side_effect=lambda amount, cur_from, cur_to: Money((amount * Decimal(0.88)), cur_to)
+        ):
+            result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
+            self.assertEqual(round(result.amount, 2), 10.88)
+            self.assertEqual(result.currency, moneyed.EUR)
+
+    @skipIf(AUTO_CONVERT_MONEY is False, "You need to install django-money-rates to run this test")
+    def test_sub(self):
+        with patch(
+            'djmoney.models.fields.convert_money',
+            side_effect=lambda amount, cur_from, cur_to: Money((amount * Decimal(0.88)), cur_to)
+        ):
+            result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
+            self.assertEqual(round(result.amount, 2), 9.23)
+            self.assertEqual(result.currency, moneyed.EUR)
