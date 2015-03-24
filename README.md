@@ -1,9 +1,9 @@
 Django-money
 -----------
 
-A little django app that uses py-moneyed to add support for Money fields in your models and forms.
+A little Django app that uses `py-moneyed` to add support for Money fields in your models and forms.
 
-Fork of the django support that was in http://code.google.com/p/python-money/
+Fork of the Django support that was in http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
@@ -11,9 +11,9 @@ Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x
 
 Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x\*, 3.3.x\*
 (* These versions of Python work only for the moment when you install the following
-   fork "py-moneyed"  https://github.com/fizista/py-moneyed/tree/python3 )
+   fork `py-moneyed`  https://github.com/fizista/py-moneyed/tree/python3 )
 
-Via py-moneyed, django-moneyed gets:
+Via `py-moneyed`, `django-money` gets:
 
  * Support for proper Money value handling (using the standard Money design pattern)
  * A currency class and definitions for all currencies in circulation
@@ -23,13 +23,13 @@ Via py-moneyed, django-moneyed gets:
 Installation
 ------------
 
-Django-money currently needs py-moneyed v0.4 (or later) to work.
+Django-money currently needs `py-moneyed` v0.4 (or later) to work.
 
-You can obtain the source code for django-money from here:
+You can obtain the source code for `django-money` from here:
 
     https://github.com/jakewins/django-money
 
-And the source for py-moneyed from here:
+And the source for `py-moneyed` from here:
 
     https://github.com/limist/py-moneyed
 
@@ -137,13 +137,13 @@ you also need to manually decorate those custom methods, like so:
 Format localization
 --------------------------------
 
-The formatting is turned on if you have set USE_L10N=True in the your settings file.
+The formatting is turned on if you have set `USE_L10N = True` in the your settings file.
 
 If formatting is disabled in the configuration, then in the templates will be used default formatting.
 
 In the templates you can use a special tag to format the money.
 
-In the file "settings.py" add to "INSTALLED_APPS" entry from the library djmoney:
+In the file `settings.py` add to `INSTALLED_APPS` entry from the library `djmoney`:
 
     INSTALLED_APPS += ( 'djmoney', )
 
@@ -155,7 +155,7 @@ In the template, add:
 
 and that is all.
 
-Instructions to the tag money_localize:
+Instructions to the tag `money_localize`:
 
     Usage::
 
