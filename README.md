@@ -9,7 +9,7 @@ This version adds tests, and comes with several critical bugfixes.
 
 Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x
 
-Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x*, 3.3.x*
+Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x\*, 3.3.x\*
 (* These versions of Python work only for the moment when you install the following
    fork "py-moneyed"  https://github.com/fizista/py-moneyed/tree/python3 )
 
