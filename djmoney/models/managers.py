@@ -1,7 +1,11 @@
 from functools import wraps
 
 import django
-from django.db.models.expressions import ExpressionNode, F
+try:
+    from django.db.models.expressions import BaseExpression, F
+except ImportError:
+    # Django < 1.8
+    from django.db.models.expressions import ExpressionNode as BaseExpression, F
 
 try:
     from django.utils.encoding import smart_unicode
@@ -36,7 +40,7 @@ def _expand_money_params(kwargs):
             to_append[name] = value.amount
             to_append[get_currency_field_name(clean_name)] = smart_unicode(
                 value.currency)
-        if isinstance(value, ExpressionNode):
+        if isinstance(value, BaseExpression):
             clean_name = get_clean_name(name)
             to_append['_'.join([clean_name, 'currency'])] = F('_'.join([value.name, 'currency']))
 

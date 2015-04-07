@@ -1,7 +1,11 @@
 from __future__ import division
 from django.db import models
 from django.conf import settings
-from django.db.models.sql.expressions import SQLEvaluator
+try:
+    from django.db.models.expressions import Expression
+except ImportError:
+    # Django < 1.8
+    from django.db.models.sql.expressions import SQLEvaluator as Expression
 try:
     from django.utils.encoding import smart_unicode
 except ImportError:
@@ -14,7 +18,11 @@ from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
 from djmoney.forms.widgets import CURRENCY_CHOICES
 from djmoney.utils import get_currency_field_name
-from django.db.models.expressions import ExpressionNode
+try:
+    from django.db.models.expressions import BaseExpression
+except ImportError:
+    # Django < 1.8
+    from django.db.models.expressions import ExpressionNode as BaseExpression
 
 from decimal import Decimal, ROUND_DOWN
 import inspect
@@ -149,7 +157,7 @@ class MoneyFieldProxy(object):
     def __get__(self, obj, type=None):
         if obj is None:
             raise AttributeError('Can only be accessed via an instance.')
-        if isinstance(obj.__dict__[self.field.name], ExpressionNode):
+        if isinstance(obj.__dict__[self.field.name], BaseExpression):
             return obj.__dict__[self.field.name]
         if not isinstance(obj.__dict__[self.field.name], Money):
             obj.__dict__[self.field.name] = self._money_from_obj(obj)
@@ -162,7 +170,7 @@ class MoneyFieldProxy(object):
             obj.__dict__[self.field.name] = value.amount
             setattr(obj, self.currency_field_name,
                     smart_unicode(value.currency))
-        elif isinstance(value, ExpressionNode):
+        elif isinstance(value, BaseExpression):
             if isinstance(value.children[1], Money):
                 value.children[1] = value.children[1].amount
             obj.__dict__[self.field.name] = value
@@ -248,7 +256,7 @@ class MoneyField(models.DecimalField):
                                          **kwargs)
 
     def to_python(self, value):
-        if isinstance(value, SQLEvaluator):
+        if isinstance(value, Expression):
             return value
         if isinstance(value, Money):
             value = value.amount
@@ -285,7 +293,7 @@ class MoneyField(models.DecimalField):
         setattr(cls, self.name, MoneyFieldProxy(self))
 
     def get_db_prep_save(self, value, connection):
-        if isinstance(value, SQLEvaluator):
+        if isinstance(value, Expression):
             return value
         if isinstance(value, Money):
             value = value.amount
