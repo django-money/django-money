@@ -1,7 +1,7 @@
 Django-money
 -----------
 
-[[!https://travis-ci.org/django-money/django-money.svg]](https://travis-ci.org/django-money/django-money)
+[![Travis](https://travis-ci.org/django-money/django-money.svg)](https://travis-ci.org/django-money/django-money)
 
 A little Django app that uses `py-moneyed` to add support for Money fields in your models and forms.
 
