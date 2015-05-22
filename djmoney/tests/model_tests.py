@@ -4,7 +4,7 @@ Created on May 7, 2011
 @author: jake
 '''
 from django.test import TestCase
-from django.db.models import F
+from django.db.models import F, Q
 from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,
@@ -62,7 +62,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         model.save()
 
         retrieved = ModelWithVanillaMoneyField.objects.get(pk=model.pk)
-        
+
         self.assertEquals(somemoney.currency, retrieved.money.currency)
         self.assertEquals(Money("100.06"), retrieved.money)
 
@@ -86,8 +86,30 @@ class VanillaMoneyFieldTestCase(TestCase):
         ModelWithTwoMoneyFields.objects.create(amount1=Money(2, 'USD'), amount2=Money(0, 'USD'))
         ModelWithTwoMoneyFields.objects.create(amount1=Money(3, 'USD'), amount2=Money(0, 'USD'))
         ModelWithTwoMoneyFields.objects.create(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS'))
+        ModelWithTwoMoneyFields.objects.create(amount1=Money(5, 'USD'), amount2=Money(5, 'USD'))
+
+        qs = ModelWithTwoMoneyFields.objects.filter(amount1=F('amount2'))
+        self.assertEquals(1, qs.count())
 
         qs = ModelWithTwoMoneyFields.objects.filter(amount1__gt=F('amount2'))
+        self.assertEquals(2, qs.count())
+
+        qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')))
+        self.assertEquals(3, qs.count())
+
+        qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD')) | Q(amount2=Money(0, 'GHS')))
+        self.assertEquals(2, qs.count())
+
+        qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount1=Money(5, 'USD')) | Q(amount2=Money(0, 'GHS')))
+        self.assertEquals(3, qs.count())
+
+        qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS')))
+        self.assertEquals(2, qs.count())
+
+        qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount1__gt=Money(4, 'USD'), amount2=Money(0, 'GHS')))
+        self.assertEquals(1, qs.count())
+
+        qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount1__gte=Money(4, 'USD'), amount2=Money(0, 'GHS')))
         self.assertEquals(2, qs.count())
 
     def testExactMatch(self):
