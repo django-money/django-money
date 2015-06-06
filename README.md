@@ -9,11 +9,10 @@ Fork of the Django support that was in http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x
+Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x, 1.8.x
 
-Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x\*, 3.3.x\*
-(* These versions of Python work only for the moment when you install the following
-   fork `py-moneyed`  https://github.com/fizista/py-moneyed/tree/python3 )
+Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x\*, 3.3.x\*, 3.4.x\*
+(* These versions of Python require py-moneyed 0.5 or higher )
 
 Via `py-moneyed`, `django-money` gets:
 
@@ -29,7 +28,7 @@ Django-money currently needs `py-moneyed` v0.4 (or later) to work.
 
 You can obtain the source code for `django-money` from here:
 
-    https://github.com/jakewins/django-money
+    https://github.com/django-money/django-money
 
 And the source for `py-moneyed` from here:
 
@@ -211,7 +210,7 @@ Testing
 
 Install the required packages:
 
-	git clone https://github.com/jakewins/django-money
+	git clone https://github.com/django-money/django-money
 
 	cd ./django-money/
 
