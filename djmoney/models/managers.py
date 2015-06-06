@@ -105,7 +105,7 @@ def _expand_money_args(model, args):
                             child,
                             (get_currency_field_name(clean_name), smart_unicode(value.currency))
                         ])
-                    if isinstance(value, ExpressionNode):
+                    if isinstance(value, BaseExpression):
                         field = _get_field(model, name)
                         if isinstance(field, MoneyField):
                             clean_name = _get_clean_name(name)
