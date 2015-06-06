@@ -1,7 +1,11 @@
 from functools import wraps
 
 import django
-from django.db.models.expressions import ExpressionNode, F
+try:
+    from django.db.models.expressions import BaseExpression, F
+except ImportError:
+    # Django < 1.8
+    from django.db.models.expressions import ExpressionNode as BaseExpression, F
 from django.db.models.sql.query import Query
 from djmoney.models.fields import MoneyField
 from django.db.models.query_utils import Q
@@ -101,7 +105,7 @@ def _expand_money_args(model, args):
                             child,
                             (get_currency_field_name(clean_name), smart_unicode(value.currency))
                         ])
-                    if isinstance(value, ExpressionNode):
+                    if isinstance(value, BaseExpression):
                         field = _get_field(model, name)
                         if isinstance(field, MoneyField):
                             clean_name = _get_clean_name(name)
@@ -123,7 +127,7 @@ def _expand_money_kwargs(model, kwargs):
             to_append[name] = value.amount
             to_append[get_currency_field_name(clean_name)] = smart_unicode(
                 value.currency)
-        if isinstance(value, ExpressionNode):
+        if isinstance(value, BaseExpression):
             field = _get_field(model, name)
             if isinstance(field, MoneyField):
                 clean_name = _get_clean_name(name)

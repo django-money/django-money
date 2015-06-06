@@ -12,7 +12,10 @@ except ImportError:
         return value
 
 from django.core.exceptions import ObjectDoesNotExist
-from django.contrib.admin.util import lookup_field
+try:
+    from django.contrib.admin.utils import lookup_field
+except ImportError:
+    from django.contrib.admin.util import lookup_field
 from django.utils.safestring import mark_safe
 from django.utils.html import conditional_escape
 from django.db.models.fields.related import ManyToManyRel

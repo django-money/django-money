@@ -4,9 +4,26 @@ from __future__ import unicode_literals
 import sys
 from django.conf import settings
 
+# Detect if django.db.migrations is supported
+from django import VERSION as DJANGO_VERSION
+NATIVE_MIGRATIONS = (DJANGO_VERSION >= (1, 7))
+
+
+INSTALLED_APPS = (
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'djmoney',
+    'djmoney.tests.testapp',
+    'reversion',
+)
+
+if not NATIVE_MIGRATIONS:
+    INSTALLED_APPS += (
+        'south',
+    )
+
 settings.configure(
     DEBUG=True,
-#    AUTH_USER_MODEL='testdata.CustomUser',
     DATABASES={
          'default': {
              'ENGINE': 'django.db.backends.sqlite3',
@@ -14,14 +31,10 @@ settings.configure(
     },
     SITE_ID=1,
     ROOT_URLCONF=None,
-    INSTALLED_APPS=(
-        'django.contrib.auth',
-        'django.contrib.contenttypes',
-        'djmoney',
-        'djmoney.tests.testapp',
-        'south',
-        'reversion',
+    MIDDLEWARE_CLASSES=(
+        'django.middleware.common.CommonMiddleware',
     ),
+    INSTALLED_APPS=INSTALLED_APPS,
     USE_TZ=True,
     USE_L10N=True,
     SOUTH_TESTS_MIGRATE=True,
@@ -40,13 +53,22 @@ _FORMATTER.add_formatting_definition(
      rounding_method=ROUND_HALF_EVEN)
 
 
-from django.test.simple import DjangoTestSuiteRunner
+try:
+    from django.test.simple import DjangoTestSuiteRunner
+except ImportError:
+    from django.test.runner import DiscoverRunner as DjangoTestSuiteRunner
+
 test_runner = DjangoTestSuiteRunner(verbosity=1, failfast=False)
 
-# If you use South for migrations, uncomment this to monkeypatch
-# syncdb to get migrations to run.
-from south.management.commands import patch_for_test_db_setup
-patch_for_test_db_setup()
+# Native migrations are present in Django 1.7+
+# This also requires initializing the app registry with django.setup()
+# If native migrations are not present, initialize South and configure it for running the test suite
+if NATIVE_MIGRATIONS:
+    from django import setup
+    setup()
+else:
+    from south.management.commands import patch_for_test_db_setup
+    patch_for_test_db_setup()
 
 if len(sys.argv) > 1:
     tests = sys.argv[1:]

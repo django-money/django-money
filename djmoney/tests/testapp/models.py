@@ -20,6 +20,9 @@ class ModelWithDefaultAsInt(models.Model):
 class ModelWithDefaultAsStringWithCurrency(models.Model):
     money = MoneyField(default='123 USD', max_digits=10, decimal_places=2)
 
+    class Meta:
+        verbose_name = 'model_default_string_currency'
+
 class ModelWithDefaultAsString(models.Model):
     money = MoneyField(default='123', max_digits=10, decimal_places=2, default_currency='PLN')
 

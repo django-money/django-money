@@ -21,3 +21,4 @@ class MoneyModelForm(forms.ModelForm):
 
     class Meta:
         model = ModelWithVanillaMoneyField
+        fields = ('money',)
