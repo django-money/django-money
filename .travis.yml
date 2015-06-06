@@ -2,10 +2,17 @@ language: python
 python:
   - 2.7
   - 3.3
+  - 3.4
 install: pip install tox
 script: tox -e $ENV
 env:
   - ENV=py27-django15-pm05
   - ENV=py27-django16-pm05
+  - ENV=py27-django17-pm05
+  - ENV=py27-django18-pm05
   - ENV=py33-django15-pm05
   - ENV=py33-django16-pm05
+  - ENV=py33-django17-pm05
+  - ENV=py33-django18-pm05
+  - ENV=py34-django17-pm05
+  - ENV=py34-django18-pm05
