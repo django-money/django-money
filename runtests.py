@@ -4,11 +4,9 @@ from __future__ import unicode_literals
 import sys
 from django.conf import settings
 
-try:
-    from django import setup
-    NATIVE_MIGRATIONS = True
-except ImportError:
-    NATIVE_MIGRATIONS = False
+# Detect if django.db.migrations is supported
+from django import VERSION as DJANGO_VERSION
+NATIVE_MIGRATIONS = (DJANGO_VERSION >= (1, 7))
 
 
 INSTALLED_APPS = (
@@ -66,6 +64,7 @@ test_runner = DjangoTestSuiteRunner(verbosity=1, failfast=False)
 # This also requires initializing the app registry with django.setup()
 # If native migrations are not present, initialize South and configure it for running the test suite
 if NATIVE_MIGRATIONS:
+    from django import setup
     setup()
 else:
     from south.management.commands import patch_for_test_db_setup
