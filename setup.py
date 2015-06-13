@@ -17,7 +17,7 @@ class Tox(TestCommand):
 
 
 setup(name="django-money",
-      version="0.5.0",
+      version="0.7.0",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
       url="https://github.com/jakewins/django-money",
       maintainer='Greg Reinbach',
