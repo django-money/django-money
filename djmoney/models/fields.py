@@ -100,7 +100,9 @@ class MoneyPatched(Money):
             super(MoneyPatched, self).__rmod__(other))
 
     def __get_current_locale(self):
-        locale = translation.to_locale(translation.get_language())
+        # get_language can return None starting on django 1.8
+        language = translation.get_language() or settings.LANGUAGE_CODE
+        locale = translation.to_locale(language)
 
         if _FORMATTER.get_formatting_definition(locale):
             return locale
