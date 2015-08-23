@@ -357,7 +357,7 @@ class MoneyField(models.DecimalField):
         if self.default is not None:
             kwargs['default'] = self.default.amount
         if self.default_currency != DEFAULT_CURRENCY:
-            kwargs['default_currency'] = '%s' % self.default_currency
+            kwargs['default_currency'] = '%s' % str(self.default_currency)
         if self.currency_choices != CURRENCY_CHOICES:
             kwargs['currency_choices'] = self.currency_choices
         return name, path, args, kwargs
