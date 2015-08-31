@@ -28,7 +28,7 @@ class MoneyWidget(MultiWidget):
         super(MoneyWidget, self).__init__(widgets, *args, **kwargs)
 
     def decompress(self, value):
-        if value:
+        if value is not None:
             return [value.amount, value.currency]
         return [None, None]
 
