@@ -1,3 +1,21 @@
+Changes in 0.7.2
+- Better checks on None values (@tsouvarev, @sjdines)
+- Consistency with south declarations and calling str function (@sjdines)
+
+Changes in 0.7
+- Django 1.8 compatible (@willhcr)
+- Fix bug in printing MoneyField (@YAmikep)
+
+Changes in 0.6
+- Tox cleanup (@edwinlunando)
+- Add Python 3 trove classifier (@dekkers)
+- Improved README (@glarrain)
+- Appends _currency to non-money ExpressionFields [#101] (@alexhayes, @alexriina, @briankung)
+- Data truncated for column [#103] (@alexhayes)
+- Proxy Model with MoneyField returns wrong class [#80] (@spookylukey)
+- Fixed has_changed not working [#95] (@spookylukey)
+-Added/Cleaned up tests (@spookylukey, @alexriina)
+
 Changes in 0.5
 - Django 1.7 compatibility (Francois Rejete <francois@rejete.com>)
 - Added "choices=" to instantiation of currency widget (David Stockwell <david@zooey.co.uk>)
