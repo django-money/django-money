@@ -13,16 +13,17 @@ except ImportError:
     from django.utils.encoding import smart_text as smart_unicode
 from django.utils import translation
 from django.db.models.signals import class_prepared
-from moneyed import Money, Currency, DEFAULT_CURRENCY
+from moneyed import Money, Currency
 from moneyed.localization import _FORMATTER, format_money
 from djmoney import forms
-from djmoney.forms.widgets import CURRENCY_CHOICES
 from djmoney.utils import get_currency_field_name
 try:
     from django.db.models.expressions import BaseExpression
 except ImportError:
     # Django < 1.8
     from django.db.models.expressions import ExpressionNode as BaseExpression
+
+from djmoney.settings import DEFAULT_CURRENCY, CURRENCY_CHOICES
 
 # If django-money-rates is installed we can automatically
 # perform operations with different currencies
@@ -300,7 +301,7 @@ class MoneyField(models.DecimalField):
 
         # Don't run on abstract classes
         # Removed, see https://github.com/jakewins/django-money/issues/42
-        #if cls._meta.abstract:
+        # if cls._meta.abstract:
         #    return
 
         if not self.frozen_by_south:
@@ -361,7 +362,7 @@ class MoneyField(models.DecimalField):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
 
-    ## South support
+    # # South support
     def south_field_triple(self):
         "Returns a suitable description of this field for South."
         # Note: This method gets automatically with schemamigration time.
@@ -375,7 +376,7 @@ class MoneyField(models.DecimalField):
         kwargs['default_currency'] = "'%s'" % self.default_currency
         return field_class, args, kwargs
 
-    ## Django 1.7 migration support
+    # # Django 1.7 migration support
     def deconstruct(self):
         name, path, args, kwargs = super(MoneyField, self).deconstruct()
 
