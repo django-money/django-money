@@ -10,9 +10,6 @@ DEFAULT_CURRENCY = getattr(settings, 'DEFAULT_CURRENCY', DEFAULT_CURRENCY)
 
 # The default currency choices, you can define this in your project's
 # settings module
-
-__all__ = ('MoneyWidget',)
-
 PROJECT_CURRENCIES = getattr(settings, 'CURRENCIES', None)
 
 if PROJECT_CURRENCIES:
