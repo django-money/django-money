@@ -293,3 +293,9 @@ class DifferentCurrencyTestCase(TestCase):
             result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
             self.assertEqual(round(result.amount, 2), 9.23)
             self.assertEqual(result.currency, moneyed.EUR)
+
+    def test_eq(self):
+        self.assertEqual(MoneyPatched(1, 'EUR'), Money(1, 'EUR'))
+        self.assertNotEqual(MoneyPatched(1, 'EUR'), Money(2, 'EUR'))
+        with self.assertRaises(TypeError):
+            MoneyPatched(10, 'EUR') == Money(10, 'USD')
