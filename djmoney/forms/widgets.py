@@ -1,10 +1,8 @@
-from django.conf import settings
 from django.forms import TextInput, Select, MultiWidget
-from moneyed import CURRENCIES, DEFAULT_CURRENCY_CODE
 from ..settings import CURRENCY_CHOICES
 
 
-__all__ = ('MoneyWidget', )
+__all__ = ('MoneyWidget',)
 
 
 class MoneyWidget(MultiWidget):
