@@ -10,7 +10,7 @@ import moneyed
 from django.test import TestCase
 from moneyed import Money
 
-from .testapp.forms import MoneyForm, OptionalMoneyForm, MoneyModelForm
+from .testapp.forms import MoneyForm, OptionalMoneyForm, MoneyModelForm, MoneyFormMultipleCurrencies
 from .testapp.models import ModelWithVanillaMoneyField
 
 
@@ -58,6 +58,21 @@ class MoneyFormTestCase(TestCase):
         # But if user types something it, it should be noticed:
         form2 = MoneyForm({"money_0": "1.23", "money_1": moneyed.SEK})
         self.assertEquals(form2.changed_data, ['money'])
+
+
+class MoneyFormMultipleCurrenciesTestCase(TestCase):
+
+    def testChangeCurrencyNotAmount(self):
+        # If the amount is the same, but the currency changes, then we
+        # should consider this to be a change.
+        initial_money = Money(Decimal(10), moneyed.SEK)
+        new_money = Money(Decimal(10), moneyed.EUR)
+
+        initial = {'money': initial_money}
+        data = {'money_0': new_money.amount, 'money_1': new_money.currency}
+
+        form = MoneyFormMultipleCurrencies(data, initial=initial)
+        self.assertEquals(form.changed_data, ['money'])
 
 
 class OptionalMoneyFormTestCase(TestCase):
