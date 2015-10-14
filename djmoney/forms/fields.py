@@ -2,6 +2,7 @@ from __future__ import unicode_literals
 from warnings import warn
 
 from django.core import validators
+from django.core.exceptions import ValidationError
 from django.forms import MultiValueField, DecimalField, ChoiceField
 from moneyed.classes import Money
 
@@ -56,15 +57,48 @@ class MoneyField(MultiValueField):
                 return Money(*data_list[:2])
         return None
 
-    def _has_changed(self, initial, data):
-        # TODO: What on earth is going on here!?
-
-        # ChoiceField._has_changed returns True always here, so we rely solely
-        # on the DecimalField. Based on MultiValueField.
+    def has_changed(self, initial, data):
         if initial is None:
-            initial = [''] * len(data)
-            # initial = ['' for x in range(0, len(data))]
+            initial = ['' for x in range(0, len(data))]
         else:
             if not isinstance(initial, list):
                 initial = self.widget.decompress(initial)
-        return self.fields[0]._has_changed(initial[0], data[0])
+
+        amount_field, currency_field = self.fields
+        amount_initial, currency_initial = initial
+
+        # We treat the amount and currency fields slightly
+        # differently: if the amount has changed, then we definitely
+        # consider the money value to have changed. If the currency
+        # has changed, but the amount is *empty* then we do not
+        # consider the money value to have changed. This means that it
+        # plays nicely with empty formrows in formsets.
+        try:
+            amount_data = data[0]
+        except IndexError:
+            amount_data = None
+
+        try:
+            amount_initial = amount_field.to_python(amount_initial)
+        except ValidationError:
+            return True
+        if amount_field._has_changed(amount_initial, amount_data):
+            return True
+
+        try:
+            currency_data = data[1]
+        except IndexError:
+            currency_data = None
+
+        try:
+            currency_initial = currency_field.to_python(currency_initial)
+        except ValidationError:
+            return True
+        # If the currency is valid, has changed and there is some
+        # amount data, then the money value has changed.
+        if currency_field._has_changed(currency_initial, currency_data) and amount_data:
+            return True
+
+        return False
+
+    _has_changed = has_changed
