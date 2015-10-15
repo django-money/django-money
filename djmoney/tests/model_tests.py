@@ -6,7 +6,11 @@ Created on May 7, 2011
 from decimal import Decimal
 from django.test import TestCase
 from django.db.models import F, Q
-from unittest import skipIf
+try:
+    from unittest import skipIf
+except ImportError:
+    # For python2.6 compatibility
+    from unittest2 import skipIf
 from moneyed import Money
 from .testapp.models import (ModelWithVanillaMoneyField,
     ModelRelatedToModelWithMoney, ModelWithChoicesMoneyField, BaseModel, InheritedModel, InheritorModel,

@@ -3,6 +3,10 @@ install: pip install tox
 script: tox -e $ENV
 matrix:
   include:
+    - python: "2.6"
+      env: ENV=py26-django15-pm05
+    - python: "2.6"
+      env: ENV=py26-django16-pm05
     - python: "2.7"
       env: ENV=py27-django15-pm05
     - python: "2.7"
