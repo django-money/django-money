@@ -23,11 +23,32 @@ class MoneyWidget(MultiWidget):
     # But it mustn't run on Django 1.6, where it doesn't work and isn't needed.
 
     if hasattr(TextInput, '_has_changed'):
+        # This is a reimplementation of the MoneyField.has_changed,
+        # but for the widget.
         def _has_changed(self, initial, data):
-            # Rely on the amount widget, not the currency widget.
             if initial is None:
                 initial = ['' for x in range(0, len(data))]
             else:
                 if not isinstance(initial, list):
                     initial = self.decompress(initial)
-            return self.widgets[0]._has_changed(initial[0], data[0])
+
+            amount_widget, currency_widget = self.widgets
+            amount_initial, currency_initial = initial
+
+            try:
+                amount_data = data[0]
+            except IndexError:
+                amount_data = None
+
+            if amount_widget._has_changed(amount_initial, amount_data):
+                return True
+
+            try:
+                currency_data = data[1]
+            except IndexError:
+                currency_data = None
+
+            if currency_widget._has_changed(currency_initial, currency_data) and amount_data:
+                return True
+
+            return False
