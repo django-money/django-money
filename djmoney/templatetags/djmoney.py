@@ -1,5 +1,7 @@
+import importlib
 from django import template
-from django.template import TemplateSyntaxError
+from django.conf import settings
+from django.template import TemplateSyntaxError, VariableDoesNotExist
 from moneyed import Money
 
 from ..models.fields import MoneyPatched
@@ -24,6 +26,9 @@ class MoneyLocalizeNode(template.Node):
         self.currency = currency
         self.use_l10n = use_l10n
         self.var_name = var_name
+
+        self.request = template.Variable('request')
+        self.country_code = None
 
     @classmethod
     def handle_token(cls, parser, token):
@@ -70,6 +75,12 @@ class MoneyLocalizeNode(template.Node):
         amount = self.amount.resolve(context) if self.amount else None
         currency = self.currency.resolve(context) if self.currency else None
 
+        try:
+            self.country_code = self.request.resolve(context).country_code if self.request else None
+        except VariableDoesNotExist:
+            self.country_code = None
+
+
         if money is not None:
             if isinstance(money, Money):
                 money = MoneyPatched._patch_to_current_class(money)
@@ -86,11 +97,26 @@ class MoneyLocalizeNode(template.Node):
         money.use_l10n = self.use_l10n
 
         if self.var_name is None:
-            return money
+            return self._str_override_currency_sign(money)
 
         # as <var_name>
         context[self.var_name.token] = money
+
         return ''
+
+    def _str_override_currency_sign(self, money):
+        str_money = unicode(money)
+        if hasattr(settings, 'CURRENCY_CONFIG_MODULE'):
+            currency_config = importlib.import_module(settings.CURRENCY_CONFIG_MODULE)
+            overrides = currency_config.override_currency_by_location
+
+            if self.country_code and self.country_code.upper() in overrides.keys():
+                currencies = overrides.get(self.country_code)
+                if currencies and str(money.currency) in currencies.keys():
+                    values = currencies[str(money.currency)]
+                    str_money = str(money).replace(values[0], values[1])
+
+        return str_money
 
 
 @register.tag

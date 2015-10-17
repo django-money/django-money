@@ -3,6 +3,7 @@ from __future__ import unicode_literals
 from django.test import TestCase
 from django import template
 from django.utils import translation
+from mock import Mock
 
 from ..models.fields import MoneyPatched
 from moneyed import Money
@@ -107,3 +108,12 @@ class MoneyLocalizeTestCase(TestCase):
             '{% load djmoney %}{% money_localize amount currency %}',
             '2,60 zł',
             context={'amount': 2.6, 'currency': 'PLN'})
+
+    def testOverrideCurrencySign(self):
+        request = Mock()
+        request.country_code = 'HU'
+        with self.settings(CURRENCY_CONFIG_MODULE='djmoney.tests.test_settings'):
+            self.assertTemplate(
+                '{% load djmoney %}{% money_localize "2.5" "USD" %}',
+                'US DOLLAR 2.50',
+                context={'request': request})
