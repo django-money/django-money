@@ -27,8 +27,6 @@ class MoneyLocalizeNode(template.Node):
         self.use_l10n = use_l10n
         self.var_name = var_name
 
-        self.request = None
-
         self.request = template.Variable('request')
         self.country_code = None
 
