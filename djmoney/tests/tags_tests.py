@@ -119,5 +119,5 @@ class MoneyLocalizeTestCase(TestCase):
             with self.settings(CURRENCY_CONFIG_MODULE='djmoney.tests.test_settings'):
                 self.assertTemplate(
                     '{% load djmoney %}{% money_localize "2.5" "HUF" %}',
-                    'Huf 2.50',
+                    'Huf 2,50',
                     context={'request': request})
