@@ -101,8 +101,10 @@ class MoneyLocalizeNode(template.Node):
 
         money.use_l10n = self.use_l10n
 
+        money = self._str_override_currency_sign(money)
+
         if self.var_name is None:
-            return self._str_override_currency_sign(money)
+            return money
 
         # as <var_name>
         context[self.var_name.token] = money
