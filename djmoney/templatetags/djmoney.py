@@ -76,10 +76,15 @@ class MoneyLocalizeNode(template.Node):
         currency = self.currency.resolve(context) if self.currency else None
 
         try:
-            self.country_code = self.request.resolve(context).country_code if self.request else None
+            request = self.request.resolve(context) if self.request else None
         except VariableDoesNotExist:
-            self.country_code = None
+            request = None
 
+        if request:
+            try:
+                self.country_code = getattr(request, 'country_code')
+            except AttributeError:
+                self.country_code = None
 
         if money is not None:
             if isinstance(money, Money):
