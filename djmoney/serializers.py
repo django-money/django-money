@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 
+from django.core.serializers.base import DeserializationError
 from django.core.serializers.python import Deserializer as PythonDeserializer
 from django.core.serializers.json import Serializer as JSONSerializer
 from django.core.serializers.python import _get_model
@@ -29,12 +30,12 @@ def Deserializer(stream_or_string, **options):
             fields = {}
             try:
                 Model = _get_model(obj["model"])
-            except base.DeserializationError:
+            except DeserializationError:
                 if ignore:
                     continue
                 else:
                     raise
-            field_names = {f.name for f in Model._meta.get_fields()}
+            field_names = set(f.name for f in Model._meta.get_fields())
             for (field_name, field_value) in six.iteritems(obj['fields']):
                 if ignore and field_name not in field_names:
                     # skip fields no longer on model
