@@ -19,4 +19,4 @@ else:
     CURRENCY_CHOICES = [(c.code, c.name) for i, c in CURRENCIES.items() if
                         c.code != DEFAULT_CURRENCY_CODE]
 
-CURRENCY_CHOICES.sort(key=operator.itemgetter(1))
+CURRENCY_CHOICES.sort(key=operator.itemgetter(1, 0))
