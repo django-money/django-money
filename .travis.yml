@@ -15,6 +15,8 @@ matrix:
       env: ENV=py27-django17-pm05
     - python: "2.7"
       env: ENV=py27-django18-pm05
+    - python: "2.7"
+      env: ENV=py27-django19-pm05
     - python: "3.3"
       env: ENV=py33-django15-pm05
     - python: "3.3"
@@ -23,7 +25,11 @@ matrix:
       env: ENV=py33-django17-pm05
     - python: "3.3"
       env: ENV=py33-django18-pm05
+    - python: "3.3"
+      env: ENV=py33-django19-pm05
     - python: "3.4"
       env: ENV=py34-django17-pm05
     - python: "3.4"
       env: ENV=py34-django18-pm05
+    - python: "3.4"
+      env: ENV=py34-django19-pm05
