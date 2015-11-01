@@ -1,6 +1,7 @@
 # coding=utf-8
 import json
 
+from django.core.serializers.base import DeserializationError
 from django.core.serializers.python import Deserializer as PythonDeserializer
 from django.core.serializers.json import Serializer as JSONSerializer
 from django.core.serializers.python import _get_model
@@ -17,6 +18,8 @@ def Deserializer(stream_or_string, **options):
     """
     Deserialize a stream or string of JSON data.
     """
+    ignore = options.pop('ignorenonexistent', False)
+    
     if not isinstance(stream_or_string, (bytes, six.string_types)):
         stream_or_string = stream_or_string.read()
     if isinstance(stream_or_string, bytes):
@@ -25,8 +28,18 @@ def Deserializer(stream_or_string, **options):
         for obj in json.loads(stream_or_string):
             money_fields = {}
             fields = {}
-            Model = _get_model(obj["model"])
+            try:
+                Model = _get_model(obj["model"])
+            except DeserializationError:
+                if ignore:
+                    continue
+                else:
+                    raise
+            field_names = set(f.name for f in Model._meta.get_fields())
             for (field_name, field_value) in six.iteritems(obj['fields']):
+                if ignore and field_name not in field_names:
+                    # skip fields no longer on model
+                    continue
                 field = Model._meta.get_field(field_name)
                 if isinstance(field, MoneyField) and field_value is not None:
                     money_fields[field_name] = Money(field_value, obj['fields'][get_currency_field_name(field_name)])
