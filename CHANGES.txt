@@ -1,3 +1,9 @@
+Changes in 0.7.4
+- Fixed loaddata (Andrey Kuzmin)
+- Pyton 2.6 fixes (Andrey Kuzmin)
+- Fixed currency choices ordering (Antony Seedhouse)
+- Support for Django 1.9 (Krzysztof Jagiello)
+
 Changes in 0.7.3
 - Sum different currencies (FeverUp)
 - Added __eq__ method (@benjaoming)
