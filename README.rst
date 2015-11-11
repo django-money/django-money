@@ -45,6 +45,10 @@ And the source for ``py-moneyed`` from here:
 
     https://github.com/limist/py-moneyed
 
+Using `pip`:
+
+    pip install py-moneyed django-money
+
 Model usage
 -----------
 
