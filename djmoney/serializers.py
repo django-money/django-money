@@ -35,7 +35,10 @@ def Deserializer(stream_or_string, **options):
                     continue
                 else:
                     raise
-            field_names = set(f.name for f in Model._meta.get_fields())
+            try:
+                field_names = set(f.name for f in Model._meta.get_fields())
+            except AttributeError:
+                field_names = set(f.name for f in Model._meta.fields)
             for (field_name, field_value) in six.iteritems(obj['fields']):
                 if ignore and field_name not in field_names:
                     # skip fields no longer on model
