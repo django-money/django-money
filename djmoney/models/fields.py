@@ -1,4 +1,5 @@
 from __future__ import division
+from django import VERSION
 from django.db import models
 from django.conf import settings
 try:
@@ -199,8 +200,26 @@ class MoneyFieldProxy(object):
             setattr(obj, self.currency_field_name,
                     smart_unicode(value.currency))
         elif isinstance(value, BaseExpression):
-            if isinstance(value.children[1], Money):
-                value.children[1] = value.children[1].amount
+            # we can only allow this operation if the currency matches.
+            # otherwise, one could use F() with different currencies
+            # which should not be possible.
+            def _check_currency(obj, field, amt):
+                currency_field_name = get_currency_field_name(field.name)
+                if obj.__dict__[currency_field_name] != str(amt.currency):
+                    raise ValueError(
+                        'You cannot use F() with different currencies.')
+            if VERSION < (1, 8):
+                _check_currency(obj, self.field, value.children[1])
+                # Django 1.8 removed `children` attribute.
+                if isinstance(value.children[1], Money):
+                    value.children[1] = value.children[1].amount
+            elif VERSION >= (1, 8, 0):
+                _check_currency(obj, self.field, value.rhs.value)
+                # value.lhs contains F expression, i.e.
+                # F(field)
+                # rhs contains our value, however we need to extract the amount
+                # it is an anology to the above code (pre Django-1.8)
+                value.rhs.value = value.rhs.value.amount
             obj.__dict__[self.field.name] = value
         else:
             if value:
