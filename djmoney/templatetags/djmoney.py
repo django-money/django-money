@@ -1,6 +1,7 @@
 from django import template
 from django.template import TemplateSyntaxError
 from moneyed import Money
+from decimal import Decimal
 
 from ..models.fields import MoneyPatched
 
@@ -78,7 +79,7 @@ class MoneyLocalizeNode(template.Node):
                                           'instance of Money.')
 
         elif amount is not None and currency is not None:
-            money = MoneyPatched(float(amount), str(currency))
+            money = MoneyPatched(Decimal(amount), str(currency))
         else:
             raise TemplateSyntaxError('You must define both variables: '
                                       'amount and currency.')
