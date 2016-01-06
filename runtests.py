@@ -14,6 +14,7 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'djmoney',
     'djmoney.tests.testapp',
+    'reversion',
 )
 
 if not NATIVE_MIGRATIONS:
