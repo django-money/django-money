@@ -203,6 +203,19 @@ class VanillaMoneyFieldTestCase(TestCase):
         null_instance = NullMoneyFieldModel.objects.create()
         self.assertEquals(null_instance.field, None)
 
+    def test_get_or_create_respects_currency(self):
+        instance, created = ModelWithVanillaMoneyField.objects.get_or_create(
+            money_currency='PLN'
+        )
+
+        self.assertEquals(str(instance.money.currency), 'PLN', 'currency should be taken into account in get_or_create')
+
+        instance, created = ModelWithVanillaMoneyField.objects.get_or_create(
+            money=Money(0, 'EUR')
+        )
+
+        self.assertEquals(str(instance.money.currency), 'EUR', 'currency should be taken into account in get_or_create')
+
 
 class RelatedModelsTestCase(TestCase):
 
