@@ -1,5 +1,5 @@
 from django.test import TestCase
-from testapp.models import RevisionedModel
+from djmoney.tests.testapp.models import RevisionedModel
 from moneyed import Money
 from django import VERSION
 if VERSION >= (1, 7):
