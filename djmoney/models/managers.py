@@ -40,11 +40,6 @@ def _get_clean_name(name):
 
 
 def _get_field(model, name):
-    if django.VERSION[0] >= 1 and django.VERSION[1] >= 8:
-        # Django 1.8+ - can use something like 
-        # expression.output_field.get_internal_field() == 'Money..'
-        raise NotImplementedError("Django 1.8+ support is not implemented.")
-
     from django.db.models.fields import FieldDoesNotExist
 
     # Create a fake query object so we can easily work out what field
@@ -127,7 +122,10 @@ def _expand_money_kwargs(model, kwargs):
             to_append[name] = value.amount
             to_append[get_currency_field_name(clean_name)] = smart_unicode(
                 value.currency)
-        if isinstance(value, BaseExpression):
+        cmp_cls = BaseExpression
+        if django.VERSION >= (1, 8):
+            cmp_cls = F
+        if isinstance(value, cmp_cls):
             field = _get_field(model, name)
             if isinstance(field, MoneyField):
                 clean_name = _get_clean_name(name)
