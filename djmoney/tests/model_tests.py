@@ -105,8 +105,8 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(1, qs.count())
 
         qs = ModelWithTwoMoneyFields.objects.filter(amount1__gt=F('amount2'))
-        # should yield 2 USD, 3 USD, 4 USD
-        self.assertEquals(3, qs.count())
+        # should yield 2 USD, 3 USD, but not 4 GHS (different currency)
+        self.assertEquals(2, qs.count())
 
         qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')))
         self.assertEquals(3, qs.count())
