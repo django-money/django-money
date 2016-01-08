@@ -79,7 +79,7 @@ class MoneyLocalizeNode(template.Node):
                                           'instance of Money.')
 
         elif amount is not None and currency is not None:
-            money = MoneyPatched(Decimal(amount), str(currency))
+            money = MoneyPatched(Decimal(str(amount)), str(currency))
         else:
             raise TemplateSyntaxError('You must define both variables: '
                                       'amount and currency.')
