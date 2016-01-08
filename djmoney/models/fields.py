@@ -197,8 +197,22 @@ class MoneyFieldProxy(object):
             value = Money(amount=value[0], currency=value[1])
         if isinstance(value, Money):
             obj.__dict__[self.field.name] = value.amount
-            setattr(obj, self.currency_field_name,
-                    smart_unicode(value.currency))
+            # we have to determine whether to replace the currency.
+            # i.e. if we do the following:
+            # .objects.get_or_create(money_currency='EUR')
+            # then the currency is already set up, before this code hits
+            # __set__ of MoneyField. This is because the currency field
+            # has less creation counter than money field.
+            obj_curr = obj.__dict__[self.currency_field_name]
+            val_curr = str(value.currency)
+            def_curr = str(self.field.default_currency)
+            if obj_curr != val_curr:
+                # in other words, update the currency only if it wasn't
+                # changed before.
+                if obj_curr == def_curr:
+                    setattr(
+                        obj, self.currency_field_name,
+                        smart_unicode(value.currency))
         elif isinstance(value, BaseExpression):
             # we can only allow this operation if the currency matches.
             # otherwise, one could use F() with different currencies
@@ -256,7 +270,6 @@ class MoneyField(models.DecimalField):
                  default=None,
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
-
         nullable = kwargs.get('null', False)
         if default is None and not nullable:
             # Backwards compatible fix for non-nullable fields
