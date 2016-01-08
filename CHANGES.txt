@@ -1,3 +1,10 @@
+Changes in 0.7.6
+- Fix for get_or_create / create manager methods not respecting currency code (Mateusz Mikołajczyk)
+- Fix unit tests (Mateusz Mikołajczyk)
+- Fix for using MoneyField with F() expressions when using Django >= 1.8 (Mateusz Mikołajczyk)
+- Mention Django 1.9 in tox.ini (Benjamin Bach)
+- Added correct paths for py.test discovery (Benjamin Bach)
+
 Changes in 0.7.5
 - #149 Fallback to _meta.fields if _meta.get_fields raises AttributeError (Bruno Alla)
 - pip Instructions updated (Ghelo Tolentino)
