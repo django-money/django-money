@@ -273,7 +273,7 @@ class MoneyField(models.DecimalField):
                 # 'amount'
                 amount = default
                 currency = default_currency
-            default = Money(float(amount), Currency(code=currency))
+            default = Money(Decimal(amount), Currency(code=currency))
         elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
 
