@@ -10,6 +10,12 @@ from django.db import models
 import moneyed
 from decimal import Decimal
 
+from django import VERSION
+if VERSION >= (1, 7):
+    from reversion import revisions as reversion
+else:
+    import reversion
+
 
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
@@ -73,7 +79,6 @@ class InheritorModel(AbstractModel):
 class RevisionedModel(models.Model):
     amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
-import reversion
 reversion.register(RevisionedModel)
 
 

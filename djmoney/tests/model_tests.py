@@ -88,6 +88,11 @@ class VanillaMoneyFieldTestCase(TestCase):
         mymodel.save()
         mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
         self.assertEquals(Money(0, 'USD'), mymodel.money)
+        # check that one cannot use different currencies with F()
+        mymodel = ModelWithVanillaMoneyField.objects.get(pk=mymodel.pk)
+        with self.assertRaises(ValueError):
+            # this model has USD as a currency, therefore this should fail.
+            mymodel.money = F('money') + Money(100, 'EUR')
 
     def testComparisonLookup(self):
         ModelWithTwoMoneyFields.objects.create(amount1=Money(1, 'USD'), amount2=Money(2, 'USD'))
@@ -100,6 +105,7 @@ class VanillaMoneyFieldTestCase(TestCase):
         self.assertEquals(1, qs.count())
 
         qs = ModelWithTwoMoneyFields.objects.filter(amount1__gt=F('amount2'))
+        # should yield 2 USD, 3 USD, but not 4 GHS (different currency)
         self.assertEquals(2, qs.count())
 
         qs = ModelWithTwoMoneyFields.objects.filter(Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')))
