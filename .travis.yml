@@ -16,3 +16,5 @@ env:
   - TOX_ENV=py34-django17-pm05
   - TOX_ENV=py34-django18-pm05
   - TOX_ENV=py34-django19-pm05
+  - TOX_ENV=py35-django18-pm05
+  - TOX_ENV=py35-django19-pm05
