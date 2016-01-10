@@ -5,21 +5,23 @@ Created on May 15, 2011
 '''
 
 from django import forms
+
 from djmoney.forms import MoneyField
+
 from .models import ModelWithVanillaMoneyField
 
 
 class MoneyForm(forms.Form):
-
     money = MoneyField(currency_choices=[(u'SEK', u'Swedish Krona')], max_value=1000, min_value=2)
 
-class MoneyFormMultipleCurrencies(forms.Form):
 
+class MoneyFormMultipleCurrencies(forms.Form):
     money = MoneyField(currency_choices=[(u'SEK', u'Swedish Krona'), (u'EUR', u'Euro')], max_value=1000, min_value=2)
 
-class OptionalMoneyForm(forms.Form):
 
+class OptionalMoneyForm(forms.Form):
     money = MoneyField(required=False, currency_choices=[(u'SEK', u'Swedish Krona')])
+
 
 class MoneyModelForm(forms.ModelForm):
 

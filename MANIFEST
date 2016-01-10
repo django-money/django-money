@@ -13,12 +13,3 @@ djmoney/forms/widgets.py
 djmoney/models/__init__.py
 djmoney/models/fields.py
 djmoney/models/managers.py
-djmoney/tests/__init__.py
-djmoney/tests/form_tests.py
-djmoney/tests/model_tests.py
-djmoney/tests/reversion_tests.py
-djmoney/tests/runtests.py
-djmoney/tests/settings.py
-djmoney/tests/testapp/__init__.py
-djmoney/tests/testapp/forms.py
-djmoney/tests/testapp/models.py

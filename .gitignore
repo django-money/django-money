@@ -17,10 +17,11 @@ __pycache__
 .project
 .pydevproject
 .settings
-djmoney/tests/testproject
-.tox
 .idea
 .venv
 *\.egg
-*\.egg-info
 .cache
+
+.coverage
+coverage.xml
+htmlcov

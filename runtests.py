@@ -13,7 +13,7 @@ INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'djmoney',
-    'djmoney.tests.testapp',
+    'tests.testapp',
     'reversion',
 )
 
