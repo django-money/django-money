@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 from warnings import warn
 
+from django import VERSION
 from django.core import validators
 from django.core.exceptions import ValidationError
 from django.forms import MultiValueField, DecimalField, ChoiceField
@@ -11,6 +12,12 @@ from ..settings import CURRENCY_CHOICES
 
 
 __all__ = ('MoneyField',)
+
+
+if VERSION >= (1, 10):
+    has_changed = 'has_changed'
+else:
+    has_changed = '_has_changed'
 
 
 class MoneyField(MultiValueField):
@@ -82,7 +89,7 @@ class MoneyField(MultiValueField):
             amount_initial = amount_field.to_python(amount_initial)
         except ValidationError:
             return True
-        if amount_field._has_changed(amount_initial, amount_data):
+        if getattr(amount_field, has_changed)(amount_initial, amount_data):
             return True
 
         try:
@@ -96,7 +103,7 @@ class MoneyField(MultiValueField):
             return True
         # If the currency is valid, has changed and there is some
         # amount data, then the money value has changed.
-        if currency_field._has_changed(currency_initial, currency_data) and amount_data:
+        if getattr(currency_field, has_changed)(currency_initial, currency_data) and amount_data:
             return True
 
         return False

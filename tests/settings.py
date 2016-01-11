@@ -15,6 +15,14 @@ DATABASES = {
     }
 }
 
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+    },
+]
+
 warnings.simplefilter('ignore', Warning)
 
 INSTALLED_APPS = (

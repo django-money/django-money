@@ -250,14 +250,14 @@ class TestDifferentCurrencies:
     @pytest.mark.usefixtures('patched_convert_money')
     def test_add(self):
         result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
-        assert round(result.amount, 2) == Decimal('10.88')
+        assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
         assert result.currency == moneyed.EUR
 
     @rates_is_available
     @pytest.mark.usefixtures('patched_convert_money')
     def test_sub(self):
         result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
-        assert round(result.amount, 2) == Decimal('9.23')
+        assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
         assert result.currency == moneyed.EUR
 
     def test_eq(self):
