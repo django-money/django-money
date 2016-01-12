@@ -1,3 +1,12 @@
+help:
+	@echo "clean - remove all build, test, coverage and Python artifacts"
+	@echo "clean-build - remove build artifacts"
+	@echo "clean-pyc - remove Python file artifacts"
+	@echo "clean-test - remove test and coverage artifacts"
+	@echo "test - run tests quickly with the default Python"
+	@echo "coverage - check code coverage quickly with the default Python"
+	@echo "install - install the package to the active Python's site-packages"
+
 clean: clean-build clean-pyc clean-test
 
 clean-build:
@@ -20,3 +29,12 @@ clean-test:
 
 test:
 	python setup.py test --pytest-args="--cov=djmoney"
+
+coverage:
+	coverage run --source djmoney setup.py test
+	coverage report -m
+	coverage html
+	open htmlcov/index.html
+
+install: clean
+	python setup.py install
