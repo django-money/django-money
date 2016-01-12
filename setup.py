@@ -1,8 +1,8 @@
-#-*- encoding: utf-8 -*-
-from setuptools import setup
-
-from setuptools.command.test import test as TestCommand
+# coding=utf-8
 import sys
+
+from setuptools import setup
+from setuptools.command.test import test as TestCommand
 
 
 class PyTest(TestCommand):
@@ -32,6 +32,7 @@ if sys.version_info < (3, 3):
 if sys.version_info[:2] == (3, 2):
     test_requirements.append('coverage==3.7.1')
 
+
 setup(name="django-money",
       version="0.7.6",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
@@ -45,8 +46,7 @@ setup(name="django-money",
                 ],
       install_requires=['setuptools',
                         'Django >= 1.4',
-                        'py-moneyed > 0.4',
-                        'six'],
+                        'py-moneyed > 0.4'],
       platforms=['Any'],
       keywords=['django', 'py-money', 'money'],
       classifiers=["Development Status :: 5 - Production/Stable",

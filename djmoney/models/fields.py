@@ -1,30 +1,24 @@
+# coding=utf-8
 from __future__ import division
-from django import VERSION
-from django.db import models
-from django.conf import settings
-try:
-    from django.db.models.expressions import Expression
-except ImportError:
-    # Django < 1.8
-    from django.db.models.sql.expressions import SQLEvaluator as Expression
-try:
-    from django.utils.encoding import smart_unicode
-except ImportError:
-    # Python 3
-    from django.utils.encoding import smart_text as smart_unicode
-from django.utils import translation
-from django.db.models.signals import class_prepared
-from moneyed import Money, Currency
-from moneyed.localization import _FORMATTER, format_money
-from djmoney import forms
-from djmoney.utils import get_currency_field_name
-try:
-    from django.db.models.expressions import BaseExpression
-except ImportError:
-    # Django < 1.8
-    from django.db.models.expressions import ExpressionNode as BaseExpression
 
-from djmoney.settings import DEFAULT_CURRENCY, CURRENCY_CHOICES
+import inspect
+from decimal import ROUND_DOWN, Decimal
+
+from django import VERSION
+from django.conf import settings
+from django.db import models
+from django.db.models.signals import class_prepared
+from django.utils import translation
+
+from moneyed import Currency, Money
+from moneyed.localization import _FORMATTER, format_money
+
+from djmoney import forms
+from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from djmoney.utils import get_currency_field_name
+
+from .._compat import BaseExpression, Expression, smart_unicode, string_types
+
 
 # If django-money-rates is installed we can automatically
 # perform operations with different currencies
@@ -34,14 +28,6 @@ try:
 except ImportError:
     AUTO_CONVERT_MONEY = False
 
-from decimal import Decimal, ROUND_DOWN
-import inspect
-
-try:
-    unicode = unicode
-except NameError:
-    # 'unicode' is undefined, in Python 3
-    basestring = (str, bytes)
 
 __all__ = ('MoneyField', 'NotSupportedLookup')
 
@@ -53,7 +39,7 @@ class NotSupportedLookup(Exception):
         self.lookup = lookup
 
     def __str__(self):
-        return "Lookup '%s' is not supported for MoneyField" % self.lookup
+        return 'Lookup \'%s\' is not supported for MoneyField' % self.lookup
 
 
 class MoneyPatched(Money):
@@ -232,7 +218,7 @@ class MoneyFieldProxy(object):
                 # value.lhs contains F expression, i.e.
                 # F(field)
                 # rhs contains our value, however we need to extract the amount
-                # it is an anology to the above code (pre Django-1.8)
+                # it is an analogy to the above code (pre Django-1.8)
                 value.rhs.value = value.rhs.value.amount
             obj.__dict__[self.field.name] = value
         else:
@@ -242,7 +228,7 @@ class MoneyFieldProxy(object):
 
 
 class CurrencyField(models.CharField):
-    description = "A field which stores currency."
+    description = 'A field which stores currency.'
 
     def __init__(self, price_field=None, verbose_name=None, name=None,
                  default=DEFAULT_CURRENCY, **kwargs):
@@ -255,7 +241,7 @@ class CurrencyField(models.CharField):
                                             **kwargs)
 
     def get_internal_type(self):
-        return "CharField"
+        return 'CharField'
 
     def contribute_to_class(self, cls, name):
         if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
@@ -263,7 +249,7 @@ class CurrencyField(models.CharField):
 
 
 class MoneyField(models.DecimalField):
-    description = "A field which stores both the currency and amount of money."
+    description = 'A field which stores both the currency and amount of money.'
 
     def __init__(self, verbose_name=None, name=None,
                  max_digits=None, decimal_places=None,
@@ -275,11 +261,11 @@ class MoneyField(models.DecimalField):
             # Backwards compatible fix for non-nullable fields
             default = 0.0
 
-        if isinstance(default, basestring):
+        if isinstance(default, string_types):
             try:
                 # handle scenario where default is formatted like:
                 # 'amount currency-code'
-                amount, currency = default.split(" ")
+                amount, currency = default.split(' ')
             except ValueError:
                 # value error would be risen if the default is
                 # without the currency part, i.e
@@ -292,17 +278,16 @@ class MoneyField(models.DecimalField):
 
         if not (nullable and default is None) and not isinstance(default, Money):
             raise Exception(
-                "default value must be an instance of Money, is: %s" % str(
-                    default))
+                'default value must be an instance of Money, is: %s' % str(default))
 
         # Avoid giving the user hard-to-debug errors if they miss required attributes
         if max_digits is None:
             raise Exception(
-                "You have to provide a max_digits attribute to Money fields.")
+                'You have to provide a max_digits attribute to Money fields.')
 
         if decimal_places is None:
             raise Exception(
-                "You have to provide a decimal_places attribute to Money fields.")
+                'You have to provide a decimal_places attribute to Money fields.')
 
         if not default_currency:
             default_currency = default.currency
@@ -325,7 +310,7 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).to_python(value)
 
     def get_internal_type(self):
-        return "DecimalField"
+        return 'DecimalField'
 
     def contribute_to_class(self, cls, name):
 
@@ -372,7 +357,7 @@ class MoneyField(models.DecimalField):
             frm = inspect.stack()[1]
             mod = inspect.getmodule(frm[0])
             # We need to return the numerical value if this is called by south
-            if mod.__name__ == "south.db.generic":
+            if mod.__name__ == 'south.db.generic':
                 return float(self.default.amount)
             return self.default
         else:
@@ -396,10 +381,10 @@ class MoneyField(models.DecimalField):
 
     # # South support
     def south_field_triple(self):
-        "Returns a suitable description of this field for South."
+        """Returns a suitable description of this field for South."""
         # Note: This method gets automatically with schemamigration time.
         from south.modelsinspector import introspector
-        field_class = self.__class__.__module__ + "." + self.__class__.__name__
+        field_class = self.__class__.__module__ + '.' + self.__class__.__name__
         args, kwargs = introspector(self)
         # We need to
         # 1. Delete the default, 'cause it's not automatically supported.
@@ -432,7 +417,7 @@ try:
     ]
 
     # MoneyField implement the serialization in south_field_triple method
-    add_introspection_rules(rules, ["^djmoney\.models\.fields\.CurrencyField"])
+    add_introspection_rules(rules, ['^djmoney\.models\.fields\.CurrencyField'])
 except ImportError:
     pass
 

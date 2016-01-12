@@ -1,9 +1,11 @@
+# coding=utf-8
 """
 Created on May 7, 2011
 
 @author: jake
 """
 from decimal import Decimal
+
 from django.db.models import F, Q
 
 import moneyed

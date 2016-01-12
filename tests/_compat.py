@@ -1,5 +1,7 @@
 # coding: utf-8
 from django import VERSION
+
+
 if VERSION >= (1, 7):
     from reversion import revisions as reversion
 else:

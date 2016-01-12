@@ -1,9 +1,9 @@
-'''
+# coding=utf-8
+"""
 Created on May 7, 2011
 
 @author: jake
-'''
-
+"""
 from decimal import Decimal
 
 from django.db import models
@@ -105,5 +105,6 @@ class NullMoneyFieldModel(models.Model):
 
 
 class ProxyModel(SimpleModel):
+
     class Meta:
         proxy = True

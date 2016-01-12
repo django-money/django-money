@@ -1,6 +1,7 @@
-import pytest
+# coding=utf-8
 from django.db.models import Q
 
+import pytest
 from moneyed import Money
 
 from djmoney.models.managers import _expand_money_args

@@ -1,32 +1,18 @@
+# coding=utf-8
 from functools import wraps
 
 import django
-try:
-    from django.db.models.expressions import BaseExpression, F
-except ImportError:
-    # Django < 1.8
-    from django.db.models.expressions import ExpressionNode as BaseExpression, F
-from django.db.models.sql.query import Query
-from djmoney.models.fields import MoneyField
+from django.db.models import F
 from django.db.models.query_utils import Q
+from django.db.models.sql.constants import QUERY_TERMS
+from django.db.models.sql.query import Query
+
 from moneyed import Money
 
-
-try:
-    from django.utils.encoding import smart_unicode
-except ImportError:
-    # Python 3
-    from django.utils.encoding import smart_text as smart_unicode
-
+from djmoney.models.fields import MoneyField
 from djmoney.utils import get_currency_field_name
 
-try:
-    from django.db.models.constants import LOOKUP_SEP
-except ImportError:
-    # Django < 1.5
-    LOOKUP_SEP = '__'
-
-from django.db.models.sql.constants import QUERY_TERMS
+from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode
 
 
 def _get_clean_name(name):
