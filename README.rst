@@ -18,8 +18,10 @@ This version adds tests, and comes with several critical bugfixes.
 
 Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x, 1.8.x, 1.9.x
 
-Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x\*, 3.3.x\*,
+Python versions supported: 2.6.x, 2.7.x, 3.2.x\*, 3.3.x\*,
 3.4.x\*, 3.5.x\* (\* These versions of Python require py-moneyed 0.5 or higher )
+
+PyPy versions supported: PyPy 2.2, PyPy3 (2.4.0)
 
 Via ``py-moneyed``, ``django-money`` gets:
 
