@@ -1,5 +1,5 @@
 language: python
-install: pip install tox
+install: pip install tox codecov
 script: tox -e $TOX_ENV
 env:
   - TOX_ENV=django_master-py35
@@ -34,3 +34,5 @@ env:
   - TOX_ENV=django14-py27
   - TOX_ENV=django14-py26
   - TOX_ENV=django14-pypy
+after_success:
+  - codecov

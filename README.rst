@@ -1,10 +1,12 @@
 Django-money
 ------------
 
-|Travis| |PyPi|
+|Travis| |codecov.io| |PyPi|
 
 .. |Travis| image:: https://travis-ci.org/django-money/django-money.svg
    :target: https://travis-ci.org/django-money/django-money
+.. |codecov.io| image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=master
+   :target: http://codecov.io/github/django-money/django-money?branch=master
 .. |PyPi| image:: https://badge.fury.io/py/django-money.svg
    :target: https://pypi.python.org/pypi/django-money
 
