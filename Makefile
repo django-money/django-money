@@ -34,7 +34,6 @@ coverage:
 	coverage run --source djmoney setup.py test
 	coverage report -m
 	coverage html
-	open htmlcov/index.html
 
 install: clean
 	python setup.py install

@@ -3,4 +3,3 @@ include CHANGES.txt
 include LICENSE.txt
 include README.rst
 recursive-include djmoney *.py
-recursive-include tests *.py
