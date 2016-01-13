@@ -1,7 +1,7 @@
 # coding=utf-8
 from functools import wraps
 
-import django
+from django import VERSION
 from django.db.models import F
 from django.db.models.query_utils import Q
 from django.db.models.sql.constants import QUERY_TERMS
@@ -59,12 +59,10 @@ def _get_field(model, name):
                     parts.pop()
                     break
 
-    if django.VERSION[0] >= 1 and django.VERSION[1] in (6, 7):
-        # Django 1.6-1.7
-        field = qs.setup_joins(parts, opts, alias)[0]
-    else:
-        # Django 1.4-1.5
+    if VERSION < (1, 6):
         field = qs.setup_joins(parts, opts, alias, False)[0]
+    else:
+        field = qs.setup_joins(parts, opts, alias)[0]
 
     return field
 
@@ -109,7 +107,7 @@ def _expand_money_kwargs(model, kwargs):
             to_append[get_currency_field_name(clean_name)] = smart_unicode(
                 value.currency)
         cmp_cls = BaseExpression
-        if django.VERSION >= (1, 8):
+        if VERSION >= (1, 8):
             cmp_cls = F
         if isinstance(value, cmp_cls):
             field = _get_field(model, name)
@@ -186,7 +184,7 @@ def money_manager(manager):
 
         # If we are being called by code pre Django 1.6, need
         # 'get_query_set'.
-        if django.VERSION < (1, 6):
+        if VERSION < (1, 6):
             get_query_set = get_queryset
 
     manager.__class__ = MoneyManager

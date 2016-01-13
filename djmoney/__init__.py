@@ -7,7 +7,7 @@ from django.db.models.fields.related import ManyToManyRel
 from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from ._compat import localtime, lookup_field, smart_unicode
+from ._compat import lookup_field, smart_unicode
 
 
 def get_empty_value_display(cls):

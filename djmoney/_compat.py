@@ -30,14 +30,6 @@ except ImportError:
     from django.utils.encoding import smart_text as smart_unicode
 
 try:
-    from django.utils.timezone import localtime
-except ImportError:
-
-    def localtime(value):
-        return value
-
-try:
     string_types = (basestring,)
 except NameError:
-    # 'unicode' is undefined, in Python 3
     string_types = (str, bytes)

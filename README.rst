@@ -18,12 +18,11 @@ http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x, 1.8.x, 1.9.x
+Django versions supported: 1.4, 1.5, 1.6, 1.7, 1.8, 1.9
 
-Python versions supported: 2.6.x, 2.7.x, 3.2.x\*, 3.3.x\*,
-3.4.x\*, 3.5.x\* (\* These versions of Python require py-moneyed 0.5 or higher )
+Python versions supported: 2.6, 2.7, 3.2, 3.3, 3.4, 3.5
 
-PyPy versions supported: PyPy 2.2, PyPy3 (2.4.0)
+PyPy versions supported: PyPy 2.2, PyPy3 2.4
 
 Via ``py-moneyed``, ``django-money`` gets:
 
