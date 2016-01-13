@@ -1,3 +1,4 @@
+sudo: false
 language: python
 install: pip install tox codecov
 script: tox -e $TOX_ENV
