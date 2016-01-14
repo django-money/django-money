@@ -1,4 +1,6 @@
-from django.forms import TextInput, Select, MultiWidget
+# coding=utf-8
+from django.forms import MultiWidget, Select, TextInput
+
 from ..settings import CURRENCY_CHOICES
 
 

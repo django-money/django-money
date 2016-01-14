@@ -1,27 +1,27 @@
-'''
+# coding=utf-8
+"""
 Created on May 7, 2011
 
 @author: jake
-'''
+"""
+from decimal import Decimal
 
-from djmoney.models.fields import MoneyField
 from django.db import models
 
 import moneyed
-from decimal import Decimal
 
-from django import VERSION
-if VERSION >= (1, 7):
-    from reversion import revisions as reversion
-else:
-    import reversion
+from djmoney.models.fields import MoneyField
+
+from .._compat import reversion
 
 
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
 
+
 class ModelWithDefaultAsInt(models.Model):
     money = MoneyField(default=123, max_digits=10, decimal_places=2, default_currency='GHS')
+
 
 class ModelWithDefaultAsStringWithCurrency(models.Model):
     money = MoneyField(default='123 USD', max_digits=10, decimal_places=2)
@@ -29,21 +29,27 @@ class ModelWithDefaultAsStringWithCurrency(models.Model):
     class Meta:
         verbose_name = 'model_default_string_currency'
 
+
 class ModelWithDefaultAsString(models.Model):
     money = MoneyField(default='123', max_digits=10, decimal_places=2, default_currency='PLN')
+
 
 class ModelWithDefaultAsFloat(models.Model):
     money = MoneyField(default=12.05, max_digits=10, decimal_places=2, default_currency='PLN')
 
+
 class ModelWithDefaultAsDecimal(models.Model):
     money = MoneyField(default=Decimal('0.01'), max_digits=10, decimal_places=2, default_currency='CHF')
+
 
 class ModelWithDefaultAsMoney(models.Model):
     money = MoneyField(default=moneyed.Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
 
+
 class ModelWithTwoMoneyFields(models.Model):
     amount1 = MoneyField(max_digits=10, decimal_places=2)
     amount2 = MoneyField(max_digits=10, decimal_places=3)
+
 
 class ModelRelatedToModelWithMoney(models.Model):
     moneyModel = models.ForeignKey(ModelWithVanillaMoneyField)
@@ -66,14 +72,14 @@ class ModelWithNonMoneyField(models.Model):
 
 
 class AbstractModel(models.Model):
-    price1 = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
     class Meta:
         abstract = True
 
 
 class InheritorModel(AbstractModel):
-    price2 = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    second_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
 class RevisionedModel(models.Model):
@@ -83,7 +89,7 @@ reversion.register(RevisionedModel)
 
 
 class BaseModel(models.Model):
-    first_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
 class InheritedModel(BaseModel):
@@ -99,5 +105,6 @@ class NullMoneyFieldModel(models.Model):
 
 
 class ProxyModel(SimpleModel):
+
     class Meta:
         proxy = True
