@@ -150,6 +150,7 @@ class MoneyPatched(Money):
 
 
 class MoneyFieldProxy(object):
+
     def __init__(self, field):
         self.field = field
         self.currency_field_name = get_currency_field_name(self.field.name)
@@ -172,6 +173,8 @@ class MoneyFieldProxy(object):
 
     def __set__(self, obj, value):
         if isinstance(value, tuple):
+            if len(value) != 2:
+                raise ValueError('Invalid value for MoneyField: %s' % str(value))
             value = Money(amount=value[0], currency=value[1])
         if isinstance(value, Money):
             obj.__dict__[self.field.name] = value.amount

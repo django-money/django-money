@@ -47,6 +47,8 @@ class TestVanillaMoneyField:
             (BaseModel, {}, Money(0, 'USD')),
             (BaseModel, {'money': '111.2'}, Money('111.2', 'USD')),
             (BaseModel, {'money': Money('123', 'PLN')}, Money('123', 'PLN')),
+            (BaseModel, {'money': ('123', 'PLN')}, Money('123', 'PLN')),
+            (BaseModel, {'money': (123.0, 'PLN')}, Money('123', 'PLN')),
             (ModelWithDefaultAsMoney, {}, Money('0.01', 'RUB')),
             (ModelWithDefaultAsFloat, {}, Money('12.05', 'PLN')),
             (ModelWithDefaultAsStringWithCurrency, {}, Money('123', 'USD')),
@@ -62,8 +64,13 @@ class TestVanillaMoneyField:
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
 
+    def test_invalid_tuple(self):
+        with pytest.raises(ValueError):
+            # Only 2-elements tuples are allowed
+            BaseModel.objects.create(money=(1, 'USD', 'extra_string'))
+
     def test_save_new_value(self):
-        instance = ModelWithVanillaMoneyField.objects.create(money=(Money('100.0')))
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money('100.0'))
         retrieved = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
 
         # Try setting the value directly
