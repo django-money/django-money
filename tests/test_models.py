@@ -110,11 +110,7 @@ class TestVanillaMoneyField:
         'filters, expected_count',
         (
             (Q(amount1=F('amount2')), 1),
-            pytest.mark.xfail(
-                (Q(amount1__gt=F('amount2')), 2),
-                reason='Filtering with Q objects is not the same as filtering with kwargs.'
-                       'It generates different queries.'
-            ),
+            (Q(amount1__gt=F('amount2')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD')) | Q(amount2=Money(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(5, 'USD')) | Q(amount2=Money(0, 'GHS')), 3),
