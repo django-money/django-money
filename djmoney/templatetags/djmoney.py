@@ -1,9 +1,13 @@
-from django import template
-from django.template import TemplateSyntaxError
-from moneyed import Money
+# coding=utf-8
 from decimal import Decimal
 
+from django import template
+from django.template import TemplateSyntaxError
+
+from moneyed import Money
+
 from ..models.fields import MoneyPatched
+
 
 register = template.Library()
 
@@ -11,7 +15,7 @@ register = template.Library()
 class MoneyLocalizeNode(template.Node):
 
     def __repr__(self):
-        return "<MoneyLocalizeNode %r>" % self.money
+        return '<MoneyLocalizeNode %r>' % self.money
 
     def __init__(self, money=None, amount=None, currency=None, use_l10n=None,
                  var_name=None):

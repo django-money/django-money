@@ -2,5 +2,4 @@ include setup.py
 include CHANGES.txt
 include LICENSE.txt
 include README.rst
-include runtests.py
-recursive-include djmoney *.py *.html *.txt *.png *.js *.css *.gif *.less *.mo *.po *.otf *.svg *.woff *.eot *.ttf
+recursive-include djmoney *.py

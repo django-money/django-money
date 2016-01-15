@@ -1,14 +1,16 @@
-*.pyc
-*.pyo
+*.py[cod]
+
+# Packages
+*.eggs
+*.egg-info
+
 *.~
 .installed.cfg
 bin
 develop-eggs
 dist
 downloads
-eggs
 parts
-*.egg-info
 build
 .ropeproject
 .tox
@@ -17,10 +19,11 @@ __pycache__
 .project
 .pydevproject
 .settings
-djmoney/tests/testproject
-.tox
 .idea
 .venv
-*\.egg
-*\.egg-info
 .cache
+
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov

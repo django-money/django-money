@@ -1,10 +1,12 @@
 Django-money
 ------------
 
-|Travis| |PyPi|
+|Travis| |codecov.io| |PyPi|
 
 .. |Travis| image:: https://travis-ci.org/django-money/django-money.svg
    :target: https://travis-ci.org/django-money/django-money
+.. |codecov.io| image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=master
+   :target: http://codecov.io/github/django-money/django-money?branch=master
 .. |PyPi| image:: https://badge.fury.io/py/django-money.svg
    :target: https://pypi.python.org/pypi/django-money
 
@@ -16,10 +18,11 @@ http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4.x, 1.5.x, 1.6.x, 1.7.x, 1.8.x
+Django versions supported: 1.4, 1.5, 1.6, 1.7, 1.8, 1.9
 
-Python versions supported: 2.6.x, 2.7.x, pypy 2.1, 3.2.x\*, 3.3.x\*,
-3.4.x\* (\* These versions of Python require py-moneyed 0.5 or higher )
+Python versions supported: 2.6, 2.7, 3.2, 3.3, 3.4, 3.5
+
+PyPy versions supported: PyPy 2.2, PyPy3 2.4
 
 Via ``py-moneyed``, ``django-money`` gets:
 
@@ -239,24 +242,15 @@ Install the required packages:
 
 Recommended way to run the tests:
 
-::
+.. code:: bash
 
     tox
 
-or
-
-::
-
-    python setup.py test
-
 Testing the application in the current environment python:
 
--  the main tests
+.. code:: bash
 
-   ./runtests.py
-
-A handful of the tox environments are automatically tested on travis:
-see ``gen_travis.bash`` and ``.travis.yml``.
+    make test
 
 Working with Exchange Rates
 ---------------------------

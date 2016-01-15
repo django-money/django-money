@@ -1,7 +1,10 @@
+# coding=utf-8
 import operator
 
 from django.conf import settings
-from moneyed import CURRENCIES, DEFAULT_CURRENCY_CODE, DEFAULT_CURRENCY
+
+from moneyed import CURRENCIES, DEFAULT_CURRENCY, DEFAULT_CURRENCY_CODE
+
 
 # The default currency, you can define this in your project's settings module
 # This has to be a currency object imported from moneyed

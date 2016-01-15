@@ -1,6 +1,12 @@
 # -*- encoding: utf-8 -*-
 from __future__ import unicode_literals
+
 import warnings
+from decimal import ROUND_HALF_EVEN
+
+import moneyed
+from moneyed.localization import _FORMATTER, DEFAULT
+
 
 DATABASES = {
     'default': {
@@ -8,6 +14,14 @@ DATABASES = {
         'NAME': ':memory:',
     }
 }
+
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+    },
+]
 
 warnings.simplefilter('ignore', Warning)
 
@@ -17,8 +31,12 @@ INSTALLED_APPS = (
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.sites',
+
     'djmoney',
-    'testapp'
+    'djmoney_rates',
+    'reversion',
+
+    'tests.testapp'
 )
 
 SITE_ID = 1
@@ -28,9 +46,6 @@ SECRET_KEY = 'foobar'
 
 USE_L10N = True
 
-import moneyed
-from moneyed.localization import _FORMATTER, DEFAULT
-from decimal import ROUND_HALF_EVEN
 
 _FORMATTER.add_sign_definition('pl_PL', moneyed.PLN, suffix=' zł')
 _FORMATTER.add_sign_definition(DEFAULT, moneyed.PLN, suffix=' zł')
