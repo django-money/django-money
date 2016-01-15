@@ -6,6 +6,7 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django import VERSION
 from django.db.models import F, Q
 
 import moneyed
@@ -113,20 +114,22 @@ class TestVanillaMoneyField:
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
         assert instance.money == expected
 
-    @pytest.mark.parametrize(
-        'f_obj',
-        (
-            F('money') + Money(100, 'EUR'),
-            F('money') * F('money'),
-            F('money') / F('money'),
-            F('money') % F('money'),
+    INVALID_EXPRESSIONS = [
+        F('money') + Money(100, 'EUR'),
+        F('money') * F('money'),
+        F('money') / F('money'),
+        F('money') % F('money'),
+        F('money') + F('integer'),
+        F('money') + F('second_money'),
+    ]
+    if VERSION >= (1, 7):
+        INVALID_EXPRESSIONS.extend([
             F('money') ** F('money'),
             F('money') ** F('integer'),
-            F('money') + F('integer'),
-            F('money') + F('second_money'),
             F('money') ** 2,
-        )
-    )
+        ])
+
+    @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
     def test_invalid_expressions(self, f_obj):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
         with pytest.raises(ValueError):
