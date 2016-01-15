@@ -88,12 +88,16 @@ class TestVanillaMoneyField:
         (
             (F('money') + Money(100, 'USD'), Money(200, 'USD')),
             (F('money') - Money(100, 'USD'), Money(0, 'USD')),
-            pytest.mark.xfail((F('money') * 2, Money(200, 'USD')), reason='Multiplication is not implemented'),
-            pytest.mark.xfail((F('money') / 2, Money(50, 'USD')), reason='Division is not implemented'),
+            (F('money') * 2, Money(200, 'USD')),
+            (F('money') * F('integer'), Money(200, 'USD')),
+            (F('money') / 2, Money(50, 'USD')),
+            (F('money') / F('integer'), Money(50, 'USD')),
+            (F('money') + F('money'), Money(200, 'USD')),
+            (F('money') - F('money'), Money(0, 'USD')),
         )
     )
     def test_f_queries(self, f_obj, expected):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = f_obj
         instance.save()
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
