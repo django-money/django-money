@@ -83,7 +83,7 @@ class TestVanillaMoneyField:
 
         assert retrieved.money == Money('100.06')
 
-    @pytest.mark.parametrize(
+    parametrize_f_objects = pytest.mark.parametrize(
         'f_obj, expected',
         (
             (F('money') + Money(100, 'USD'), Money(200, 'USD')),
@@ -91,11 +91,14 @@ class TestVanillaMoneyField:
             (F('money') * 2, Money(200, 'USD')),
             (F('money') * F('integer'), Money(200, 'USD')),
             (F('money') / 2, Money(50, 'USD')),
+            (F('money') % 98, Money(2, 'USD')),
             (F('money') / F('integer'), Money(50, 'USD')),
             (F('money') + F('money'), Money(200, 'USD')),
             (F('money') - F('money'), Money(0, 'USD')),
         )
     )
+
+    @parametrize_f_objects
     def test_f_queries(self, f_obj, expected):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = f_obj
@@ -103,12 +106,31 @@ class TestVanillaMoneyField:
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
         assert instance.money == expected
 
-    def test_different_currencies(self):
+    @parametrize_f_objects
+    def test_f_queries_update(self, f_obj, expected):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        ModelWithVanillaMoneyField.objects.update(money=f_obj)
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == expected
+
+    @pytest.mark.parametrize(
+        'f_obj',
+        (
+            F('money') + Money(100, 'EUR'),
+            F('money') * F('money'),
+            F('money') / F('money'),
+            F('money') % F('money'),
+            F('money') ** F('money'),
+            F('money') ** F('integer'),
+            F('money') + F('integer'),
+            F('money') + F('second_money'),
+            F('money') ** 2,
+        )
+    )
+    def test_invalid_expressions(self, f_obj):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
-        # check that one cannot use different currencies with F()
         with pytest.raises(ValueError):
-            # this model has USD as a currency, therefore this should fail.
-            instance.money = F('money') + Money(100, 'EUR')
+            instance.money = f_obj
 
     @pytest.mark.parametrize(
         'filters, expected_count',

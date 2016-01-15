@@ -7,7 +7,7 @@ help:
 	@echo "coverage - check code coverage quickly with the default Python"
 	@echo "install - install the package to the active Python's site-packages"
 
-clean: clean-build clean-pyc clean-test
+clean: clean-test clean-build clean-pyc
 
 clean-build:
 	rm -fr build/
