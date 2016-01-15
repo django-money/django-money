@@ -13,8 +13,16 @@ class MoneyForm(forms.Form):
 
     money = MoneyField(currency_choices=[(u'SEK', u'Swedish Krona')], max_value=1000, min_value=2)
 
+class MoneyFormMultipleCurrencies(forms.Form):
+
+    money = MoneyField(currency_choices=[(u'SEK', u'Swedish Krona'), (u'EUR', u'Euro')], max_value=1000, min_value=2)
+
+class OptionalMoneyForm(forms.Form):
+
+    money = MoneyField(required=False, currency_choices=[(u'SEK', u'Swedish Krona')])
 
 class MoneyModelForm(forms.ModelForm):
 
     class Meta:
         model = ModelWithVanillaMoneyField
+        fields = ('money',)

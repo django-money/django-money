@@ -1,7 +1,11 @@
 from django.test import TestCase
-from testapp.models import RevisionedModel
+from djmoney.tests.testapp.models import RevisionedModel
 from moneyed import Money
-import reversion
+from django import VERSION
+if VERSION >= (1, 7):
+    from reversion import revisions as reversion
+else:
+    import reversion
 
 
 class ReversionTestCase(TestCase):
