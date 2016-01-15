@@ -7,6 +7,7 @@ from decimal import ROUND_DOWN, Decimal
 from django import VERSION
 from django.conf import settings
 from django.db import models
+from django.db.models import F
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
@@ -201,17 +202,20 @@ class MoneyFieldProxy(object):
                     raise ValueError(
                         'You cannot use F() with different currencies.')
             if VERSION < (1, 8):
-                _check_currency(obj, self.field, value.children[1])
-                # Django 1.8 removed `children` attribute.
-                if isinstance(value.children[1], Money):
-                    value.children[1] = value.children[1].amount
-            elif VERSION >= (1, 8, 0):
-                _check_currency(obj, self.field, value.rhs.value)
-                # value.lhs contains F expression, i.e.
-                # F(field)
-                # rhs contains our value, however we need to extract the amount
-                # it is an analogy to the above code (pre Django-1.8)
-                value.rhs.value = value.rhs.value.amount
+                rhs = value.children[1]
+                if not isinstance(rhs, F) and isinstance(rhs, Money):
+                    _check_currency(obj, self.field, rhs)
+                    # Django 1.8 removed `children` attribute.
+                    value.children[1] = rhs.amount
+            else:
+                rhs = value.rhs
+                if not isinstance(rhs, F) and isinstance(rhs.value, Money):
+                    _check_currency(obj, self.field, rhs.value)
+                    # value.lhs contains F expression, i.e.
+                    # F(field)
+                    # rhs contains our value, however we need to extract the amount
+                    # it is an analogy to the above code (pre Django-1.8)
+                    value.rhs.value = value.rhs.value.amount
             obj.__dict__[self.field.name] = value
         else:
             if value:
