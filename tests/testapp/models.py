@@ -17,6 +17,8 @@ from .._compat import reversion
 
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
+    second_money = MoneyField(max_digits=10, decimal_places=2, default_currency='EUR')
+    integer = models.IntegerField(default=0)
 
 
 class ModelWithDefaultAsInt(models.Model):

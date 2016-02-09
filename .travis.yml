@@ -2,7 +2,7 @@ sudo: false
 language: python
 python:
   - 3.5
-install: pip install tox codecov
+install: travis_retry pip install "virtualenv<14.0.0" tox codecov
 script: tox -e $TOX_ENV
 env:
   - TOX_ENV=django_master-py35

@@ -7,6 +7,7 @@ from decimal import ROUND_DOWN, Decimal
 from django import VERSION
 from django.conf import settings
 from django.db import models
+from django.db.models import F
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
@@ -149,6 +150,42 @@ class MoneyPatched(Money):
                           self.currency)
 
 
+def get_value(obj, expr):
+    """
+    Extracts value from object or expression.
+    """
+    if isinstance(expr, F):
+        expr = getattr(obj, expr.name)
+    elif hasattr(expr, 'value'):
+        expr = expr.value
+    return expr
+
+
+def validate_money_expression(obj, expr):
+    """
+    Money supports different types of expressions, but you can't do following:
+      - Add or subtract money with not-money
+      - Any exponentiation
+      - Any operations with money in different currencies
+      - Multiplication, division, modulo with money instances on both sides of expression
+    """
+    if VERSION < (1, 8):
+        lhs, rhs = expr.children
+    else:
+        lhs, rhs = expr.lhs, expr.rhs
+    connector = expr.connector
+    lhs = get_value(obj, lhs)
+    rhs = get_value(obj, rhs)
+
+    if (not isinstance(rhs, Money) and connector in ('+', '-')) or connector == '^':
+        raise ValueError('Invalid F expression for MoneyField')
+    if isinstance(lhs, Money) and isinstance(rhs, Money):
+        if connector in ('*', '/', '^', '%%'):
+            raise ValueError('Invalid F expression for MoneyField')
+        if lhs.currency != rhs.currency:
+            raise ValueError('You cannot use F() with different currencies.')
+
+
 class MoneyFieldProxy(object):
 
     def __init__(self, field):
@@ -195,26 +232,22 @@ class MoneyFieldProxy(object):
                         obj, self.currency_field_name,
                         smart_unicode(value.currency))
         elif isinstance(value, BaseExpression):
-            # we can only allow this operation if the currency matches.
-            # otherwise, one could use F() with different currencies
-            # which should not be possible.
-            def _check_currency(obj, field, amt):
-                currency_field_name = get_currency_field_name(field.name)
-                if obj.__dict__[currency_field_name] != str(amt.currency):
-                    raise ValueError(
-                        'You cannot use F() with different currencies.')
+            if isinstance(value, (F, BaseExpression)):
+                validate_money_expression(obj, value)
+
             if VERSION < (1, 8):
-                _check_currency(obj, self.field, value.children[1])
-                # Django 1.8 removed `children` attribute.
-                if isinstance(value.children[1], Money):
-                    value.children[1] = value.children[1].amount
-            elif VERSION >= (1, 8, 0):
-                _check_currency(obj, self.field, value.rhs.value)
-                # value.lhs contains F expression, i.e.
-                # F(field)
-                # rhs contains our value, however we need to extract the amount
-                # it is an analogy to the above code (pre Django-1.8)
-                value.rhs.value = value.rhs.value.amount
+                rhs = value.children[1]
+                if not isinstance(rhs, F) and isinstance(rhs, Money):
+                    # Django 1.8 removed `children` attribute.
+                    value.children[1] = rhs.amount
+            else:
+                rhs = value.rhs
+                if not isinstance(rhs, F) and isinstance(rhs.value, Money):
+                    # value.lhs contains F expression, i.e.
+                    # F(field)
+                    # rhs contains our value, however we need to extract the amount
+                    # it is an analogy to the above code (pre Django-1.8)
+                    value.rhs.value = value.rhs.value.amount
             obj.__dict__[self.field.name] = value
         else:
             if value:

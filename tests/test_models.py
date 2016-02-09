@@ -6,6 +6,7 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django import VERSION
 from django.db.models import F, Q
 
 import moneyed
@@ -90,28 +91,64 @@ class TestVanillaMoneyField:
 
         assert retrieved.money == Money('100.06')
 
-    @pytest.mark.parametrize(
+    parametrize_f_objects = pytest.mark.parametrize(
         'f_obj, expected',
         (
             (F('money') + Money(100, 'USD'), Money(200, 'USD')),
             (F('money') - Money(100, 'USD'), Money(0, 'USD')),
-            pytest.mark.xfail((F('money') * 2, Money(200, 'USD')), reason='Multiplication is not implemented'),
-            pytest.mark.xfail((F('money') / 2, Money(50, 'USD')), reason='Division is not implemented'),
+            (F('money') * 2, Money(200, 'USD')),
+            (F('money') * F('integer'), Money(200, 'USD')),
+            (F('money') / 2, Money(50, 'USD')),
+            (F('money') % 98, Money(2, 'USD')),
+            (F('money') / F('integer'), Money(50, 'USD')),
+            (F('money') + F('money'), Money(200, 'USD')),
+            (F('money') - F('money'), Money(0, 'USD')),
         )
     )
+
+    @parametrize_f_objects
     def test_f_queries(self, f_obj, expected):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = f_obj
         instance.save()
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
         assert instance.money == expected
 
-    def test_different_currencies(self):
+    @parametrize_f_objects
+    def test_f_queries_update(self, f_obj, expected):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        ModelWithVanillaMoneyField.objects.update(money=f_obj)
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == expected
+
+    @pytest.mark.skipif(VERSION < (1, 5), reason='Django < 1.5 does not support `update_fields` kwarg')
+    def test_f_queries_with_update_fields(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        instance.money = F('money') + Money(100, 'USD')
+        instance.save(update_fields=['money'])
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == Money(200, 'USD')
+
+    INVALID_EXPRESSIONS = [
+        F('money') + Money(100, 'EUR'),
+        F('money') * F('money'),
+        F('money') / F('money'),
+        F('money') % F('money'),
+        F('money') + F('integer'),
+        F('money') + F('second_money'),
+    ]
+    if VERSION >= (1, 7):
+        INVALID_EXPRESSIONS.extend([
+            F('money') ** F('money'),
+            F('money') ** F('integer'),
+            F('money') ** 2,
+        ])
+
+    @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
+    def test_invalid_expressions(self, f_obj):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
-        # check that one cannot use different currencies with F()
         with pytest.raises(ValueError):
-            # this model has USD as a currency, therefore this should fail.
-            instance.money = F('money') + Money(100, 'EUR')
+            instance.money = f_obj
 
     @pytest.mark.parametrize(
         'filters, expected_count',
