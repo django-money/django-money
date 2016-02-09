@@ -114,6 +114,13 @@ class TestVanillaMoneyField:
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
         assert instance.money == expected
 
+    def test_f_queries_with_update_fields(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        instance.money = F('money') + Money(100, 'USD')
+        instance.save(update_fields=['money'])
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == Money(200, 'USD')
+
     INVALID_EXPRESSIONS = [
         F('money') + Money(100, 'EUR'),
         F('money') * F('money'),
