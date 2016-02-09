@@ -114,6 +114,7 @@ class TestVanillaMoneyField:
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
         assert instance.money == expected
 
+    @pytest.mark.skipif(VERSION < (1, 5), reason='Django < 1.5 does not support `update_fields` kwarg')
     def test_f_queries_with_update_fields(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = F('money') + Money(100, 'USD')
