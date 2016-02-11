@@ -15,11 +15,10 @@ from moneyed import Currency, Money
 from moneyed.localization import _FORMATTER, format_money
 
 from djmoney import forms
-from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
-from djmoney.utils import get_currency_field_name
 
-from .._compat import BaseExpression, Expression, smart_unicode, string_types
-
+from .._compat import BaseExpression, Expression, smart_unicode, split_expression, string_types
+from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from ..utils import get_currency_field_name
 
 # If django-money-rates is installed we can automatically
 # perform operations with different currencies
@@ -169,10 +168,7 @@ def validate_money_expression(obj, expr):
       - Any operations with money in different currencies
       - Multiplication, division, modulo with money instances on both sides of expression
     """
-    if VERSION < (1, 8):
-        lhs, rhs = expr.children
-    else:
-        lhs, rhs = expr.lhs, expr.rhs
+    lhs, rhs = split_expression(expr)
     connector = expr.connector
     lhs = get_value(obj, lhs)
     rhs = get_value(obj, rhs)

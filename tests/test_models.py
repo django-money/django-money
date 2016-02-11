@@ -91,65 +91,6 @@ class TestVanillaMoneyField:
 
         assert retrieved.money == Money('100.06')
 
-    parametrize_f_objects = pytest.mark.parametrize(
-        'f_obj, expected',
-        (
-            (F('money') + Money(100, 'USD'), Money(200, 'USD')),
-            (F('money') - Money(100, 'USD'), Money(0, 'USD')),
-            (F('money') * 2, Money(200, 'USD')),
-            (F('money') * F('integer'), Money(200, 'USD')),
-            (F('money') / 2, Money(50, 'USD')),
-            (F('money') % 98, Money(2, 'USD')),
-            (F('money') / F('integer'), Money(50, 'USD')),
-            (F('money') + F('money'), Money(200, 'USD')),
-            (F('money') - F('money'), Money(0, 'USD')),
-        )
-    )
-
-    @parametrize_f_objects
-    def test_f_queries(self, f_obj, expected):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
-        instance.money = f_obj
-        instance.save()
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
-        assert instance.money == expected
-
-    @parametrize_f_objects
-    def test_f_queries_update(self, f_obj, expected):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
-        ModelWithVanillaMoneyField.objects.update(money=f_obj)
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
-        assert instance.money == expected
-
-    @pytest.mark.skipif(VERSION < (1, 5), reason='Django < 1.5 does not support `update_fields` kwarg')
-    def test_f_queries_with_update_fields(self):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
-        instance.money = F('money') + Money(100, 'USD')
-        instance.save(update_fields=['money'])
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
-        assert instance.money == Money(200, 'USD')
-
-    INVALID_EXPRESSIONS = [
-        F('money') + Money(100, 'EUR'),
-        F('money') * F('money'),
-        F('money') / F('money'),
-        F('money') % F('money'),
-        F('money') + F('integer'),
-        F('money') + F('second_money'),
-    ]
-    if VERSION >= (1, 7):
-        INVALID_EXPRESSIONS.extend([
-            F('money') ** F('money'),
-            F('money') ** F('integer'),
-            F('money') ** 2,
-        ])
-
-    @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
-    def test_invalid_expressions(self, f_obj):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
-        with pytest.raises(ValueError):
-            instance.money = f_obj
-
     @pytest.mark.parametrize(
         'filters, expected_count',
         (
@@ -220,6 +161,112 @@ class TestVanillaMoneyField:
     def test_get_or_create_respects_currency(self, kwargs, currency):
         instance, created = ModelWithVanillaMoneyField.objects.get_or_create(**kwargs)
         assert str(instance.money.currency) == currency, 'currency should be taken into account in get_or_create'
+
+
+class TestFExpressions:
+
+    parametrize_f_objects = pytest.mark.parametrize(
+        'f_obj, expected',
+        (
+            (F('money') + Money(100, 'USD'), Money(200, 'USD')),
+            (F('money') - Money(100, 'USD'), Money(0, 'USD')),
+            (F('money') * 2, Money(200, 'USD')),
+            (F('money') * F('integer'), Money(200, 'USD')),
+            (F('money') / 2, Money(50, 'USD')),
+            (F('money') % 98, Money(2, 'USD')),
+            (F('money') / F('integer'), Money(50, 'USD')),
+            (F('money') + F('money'), Money(200, 'USD')),
+            (F('money') - F('money'), Money(0, 'USD')),
+        )
+    )
+
+    @parametrize_f_objects
+    def test_save(self, f_obj, expected):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        instance.money = f_obj
+        instance.save()
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == expected
+
+    @parametrize_f_objects
+    def test_f_update(self, f_obj, expected):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        ModelWithVanillaMoneyField.objects.update(money=f_obj)
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == expected
+
+    @pytest.mark.parametrize(
+        'create_kwargs, filter_value, in_result',
+        (
+            (
+                {'money': Money(100, 'USD'), 'second_money': Money(100, 'USD')},
+                {'money': F('money')},
+                True
+            ),
+            (
+                {'money': Money(100, 'USD'), 'second_money': Money(100, 'USD')},
+                {'money': F('second_money')},
+                True
+            ),
+            (
+                {'money': Money(100, 'USD'), 'second_money': Money(100, 'EUR')},
+                {'money': F('second_money')},
+                False
+            ),
+            (
+                {'money': Money(50, 'USD'), 'second_money': Money(100, 'USD')},
+                {'second_money': F('money') * 2},
+                True
+            ),
+            (
+                {'money': Money(50, 'USD'), 'second_money': Money(100, 'USD')},
+                {'second_money': F('money') + Money(50, 'USD')},
+                True
+            ),
+            (
+                {'money': Money(50, 'USD'), 'second_money': Money(100, 'EUR')},
+                {'second_money': F('money') * 2},
+                False
+            ),
+            (
+                {'money': Money(50, 'USD'), 'second_money': Money(100, 'EUR')},
+                {'second_money': F('money') + Money(50, 'USD')},
+                False
+            ),
+        )
+    )
+    def test_filtration(self, create_kwargs, filter_value, in_result):
+        instance = ModelWithVanillaMoneyField.objects.create(**create_kwargs)
+        assert (instance in ModelWithVanillaMoneyField.objects.filter(**filter_value)) is in_result
+
+    @pytest.mark.skipif(VERSION < (1, 5), reason='Django < 1.5 does not support `update_fields` kwarg')
+    def test_update_fields_save(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        instance.money = F('money') + Money(100, 'USD')
+        instance.save(update_fields=['money'])
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == Money(200, 'USD')
+
+    INVALID_EXPRESSIONS = [
+        F('money') + Money(100, 'EUR'),
+        F('money') * F('money'),
+        F('money') / F('money'),
+        F('money') % F('money'),
+        F('money') + F('integer'),
+        F('money') + F('second_money'),
+    ]
+    if VERSION >= (1, 7):
+        INVALID_EXPRESSIONS.extend([
+            F('money') ** F('money'),
+            F('money') ** F('integer'),
+            F('money') ** 2,
+        ])
+
+    @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
+    def test_invalid_expressions_access(self, f_obj):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
+        with pytest.raises(ValueError):
+            instance.money = f_obj
 
 
 def test_find_models_related_to_money_models():

@@ -9,10 +9,9 @@ from django.db.models.sql.query import Query
 
 from moneyed import Money
 
-from djmoney.models.fields import MoneyField
-from djmoney.utils import get_currency_field_name
-
-from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode
+from .fields import MoneyField
+from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode, split_expression
+from ..utils import get_currency_field_name, get_amount
 
 
 def _get_clean_name(name):
@@ -95,27 +94,34 @@ def _expand_money_args(model, args):
     return args
 
 
+def prepare_expression(value):
+    """
+    Prepares some complex money expression to be used in query.
+    """
+    lhs, rhs = split_expression(value)
+    amount = get_amount(rhs)
+    if VERSION < (1, 8):
+        value.children[1] = amount
+    else:
+        value.rhs.value = amount
+    return lhs
+
+
 def _expand_money_kwargs(model, kwargs):
     """
     Augments kwargs so that they contain _currency lookups.
     """
-    to_append = {}
-    for name, value in kwargs.items():
+    for name, value in list(kwargs.items()):
         if isinstance(value, Money):
             clean_name = _get_clean_name(name)
-            to_append[name] = value.amount
-            to_append[get_currency_field_name(clean_name)] = smart_unicode(
-                value.currency)
-        cmp_cls = BaseExpression
-        if VERSION >= (1, 8):
-            cmp_cls = F
-        if isinstance(value, cmp_cls):
-            field = _get_field(model, name)
-            if isinstance(field, MoneyField):
-                clean_name = _get_clean_name(name)
-                to_append['_'.join([clean_name, 'currency'])] = F(get_currency_field_name(value.name))
-
-    kwargs.update(to_append)
+            kwargs[name] = value.amount
+            kwargs[get_currency_field_name(clean_name)] = smart_unicode(value.currency)
+        elif isinstance(value, (BaseExpression, F)) and \
+                isinstance(_get_field(model, name), MoneyField):
+            clean_name = _get_clean_name(name)
+            if not isinstance(value, F):
+                value = prepare_expression(value)
+            kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
     return kwargs
 
 
