@@ -1,10 +1,11 @@
 # coding=utf-8
-from django.db.models import Q
+from django.db.models import F, Q
 
 import pytest
 from moneyed import Money
 
-from djmoney.models.managers import _expand_money_args
+from djmoney.models.managers import _expand_money_args, _expand_money_kwargs
+from djmoney.utils import split_expression, get_amount
 
 from .testapp.models import ModelWithNonMoneyField
 
@@ -134,3 +135,39 @@ class TestExpandMoneyArgs:
                         pytest.fail('There should only be two subchild elements, a tuple and a Q - not a %s' % subsubchild)
             else:
                 pytest.fail('There should only be two child elements, a tuple and a Q - not a %s' % child)
+
+
+class TestKwargsExpand:
+
+    @pytest.mark.parametrize(
+        'value, expected', (
+            (
+                ({'money': 100, 'desc': 'test'}, {'money': 100, 'desc': 'test'}),
+                ({'money': Money(100, 'USD')}, {'money': 100, 'money_currency': 'USD'}),
+                ({'money': Money(100, 'USD'), 'desc': 'test'}, {'money': 100, 'money_currency': 'USD', 'desc': 'test'}),
+            )
+        )
+    )
+    def test_simple(self, value, expected):
+        assert _expand_money_kwargs(ModelWithNonMoneyField, value) == expected
+
+    @pytest.mark.parametrize(
+        'value, expected', (
+            (
+                ({'money': F('money') * 2}, 2),
+                ({'money': F('money') + Money(100, 'USD')}, 100),
+            )
+        )
+    )
+    def test_complex_f_query(self, value, expected):
+        result = _expand_money_kwargs(ModelWithNonMoneyField, value)
+        assert isinstance(result['money_currency'], F)
+        assert result['money_currency'].name == 'money_currency'
+        rhs = split_expression(result['money'])[1]
+        assert get_amount(rhs) == expected
+
+    def test_simple_f_query(self):
+        result = _expand_money_kwargs(ModelWithNonMoneyField, {'money': F('money')})
+        assert isinstance(result['money_currency'], F)
+        assert result['money_currency'].name == 'money_currency'
+        assert result['money'].name == 'money'
