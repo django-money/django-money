@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 import sys
 
 from setuptools import setup
@@ -34,7 +34,7 @@ if sys.version_info[:2] == (3, 2):
 
 
 setup(name="django-money",
-      version="0.7.6",
+      version="0.7.7",
       description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
       url="https://github.com/jakewins/django-money",
       maintainer='Greg Reinbach',
