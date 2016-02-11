@@ -1,4 +1,6 @@
 # coding: utf-8
+from django import VERSION
+
 
 try:
     from django.db.models.constants import LOOKUP_SEP
@@ -33,3 +35,13 @@ try:
     string_types = (basestring,)
 except NameError:
     string_types = (str, bytes)
+
+
+def split_expression(expr):
+    """
+    Returns lhs and rhs of the expression.
+    """
+    if VERSION < (1, 8):
+        return expr.children
+    else:
+        return expr.lhs, expr.rhs

@@ -10,8 +10,8 @@ from django.db.models.sql.query import Query
 from moneyed import Money
 
 from .fields import MoneyField
-from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode
-from ..utils import get_currency_field_name, split_expression, get_amount
+from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode, split_expression
+from ..utils import get_currency_field_name, get_amount
 
 
 def _get_clean_name(name):

@@ -5,7 +5,8 @@ import pytest
 from moneyed import Money
 
 from djmoney.models.managers import _expand_money_args, _expand_money_kwargs
-from djmoney.utils import split_expression, get_amount
+from djmoney.utils import get_amount
+from djmoney._compat import split_expression
 
 from .testapp.models import ModelWithNonMoneyField
 

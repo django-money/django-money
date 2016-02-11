@@ -16,9 +16,9 @@ from moneyed.localization import _FORMATTER, format_money
 
 from djmoney import forms
 
-from .._compat import BaseExpression, Expression, smart_unicode, string_types
+from .._compat import BaseExpression, Expression, smart_unicode, split_expression, string_types
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
-from ..utils import get_currency_field_name, split_expression
+from ..utils import get_currency_field_name
 
 # If django-money-rates is installed we can automatically
 # perform operations with different currencies
