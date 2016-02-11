@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from functools import wraps
 
 from django import VERSION
@@ -9,9 +9,14 @@ from django.db.models.sql.query import Query
 
 from moneyed import Money
 
+from .._compat import (
+    LOOKUP_SEP,
+    BaseExpression,
+    smart_unicode,
+    split_expression,
+)
+from ..utils import get_amount, get_currency_field_name
 from .fields import MoneyField
-from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode, split_expression
-from ..utils import get_currency_field_name, get_amount
 
 
 def _get_clean_name(name):
@@ -88,7 +93,7 @@ def _expand_money_args(model, args):
                         if isinstance(field, MoneyField):
                             clean_name = _get_clean_name(name)
                             arg.children[i] = Q(*[
-                                child, 
+                                child,
                                 ('_'.join([clean_name, 'currency']), F(get_currency_field_name(value.name)))
                             ])
     return args
