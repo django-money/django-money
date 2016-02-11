@@ -1,4 +1,5 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
+# flake8: noqa
 from django import VERSION
 
 

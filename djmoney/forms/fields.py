@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from warnings import warn
@@ -65,7 +65,7 @@ class MoneyField(MultiValueField):
                 return Money(*data_list[:2])
         return None
 
-    def has_changed(self, initial, data):
+    def has_changed(self, initial, data):  # noqa
         if initial is None:
             initial = ['' for x in range(0, len(data))]
         else:

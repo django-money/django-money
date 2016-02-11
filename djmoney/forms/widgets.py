@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from django.forms import MultiWidget, Select, TextInput
 
 from ..settings import CURRENCY_CHOICES
@@ -24,7 +24,7 @@ class MoneyWidget(MultiWidget):
     # Needed for Django 1.5.x, where Field doesn't have the '_has_changed' method.
     # But it mustn't run on Django 1.6, where it doesn't work and isn't needed.
 
-    if hasattr(TextInput, '_has_changed'):
+    if hasattr(TextInput, '_has_changed'):  # noqa
         # This is a reimplementation of the MoneyField.has_changed,
         # but for the widget.
         def _has_changed(self, initial, data):

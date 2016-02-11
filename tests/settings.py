@@ -1,4 +1,4 @@
-# -*- encoding: utf-8 -*-
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import warnings
@@ -53,4 +53,5 @@ _FORMATTER.add_formatting_definition(
     "pl_PL", group_size=3, group_separator=" ", decimal_point=",",
     positive_sign="", trailing_positive_sign="",
     negative_sign="-", trailing_negative_sign="",
-    rounding_method=ROUND_HALF_EVEN)
+    rounding_method=ROUND_HALF_EVEN
+)

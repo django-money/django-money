@@ -1,10 +1,11 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 from moneyed import Money
 
 from ._compat import BaseExpression
 
 
-get_currency_field_name = lambda name: "%s_currency" % name
+def get_currency_field_name(name):
+    return "%s_currency" % name
 
 
 def get_amount(value):
