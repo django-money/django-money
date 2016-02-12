@@ -1,0 +1,12 @@
+-   repo: git://github.com/pre-commit/pre-commit-hooks
+    sha: d740faeded968de3881405d7de09dc6d2e0d7b06
+    hooks:
+    -   id: trailing-whitespace
+    -   id: flake8
+        args:
+        - --exclude=djmoney/*/migrations/*
+    -   id: check-yaml
+    -   id: check-added-large-files
+    -   id: debug-statements
+    -   id: end-of-file-fixer
+    -   id: fix-encoding-pragma

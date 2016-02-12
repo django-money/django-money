@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 import json
 
 from django.core.serializers.base import DeserializationError
@@ -18,12 +18,12 @@ from djmoney.utils import get_currency_field_name
 Serializer = JSONSerializer
 
 
-def Deserializer(stream_or_string, **options):
+def Deserializer(stream_or_string, **options):  # noqa
     """
     Deserialize a stream or string of JSON data.
     """
     ignore = options.pop('ignorenonexistent', False)
-    
+
     if not isinstance(stream_or_string, (bytes, six.string_types)):
         stream_or_string = stream_or_string.read()
     if isinstance(stream_or_string, bytes):

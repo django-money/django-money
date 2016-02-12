@@ -1,4 +1,4 @@
-# coding=utf-8
+# -*- coding: utf-8 -*-
 from __future__ import division
 
 import inspect
@@ -16,9 +16,16 @@ from moneyed.localization import _FORMATTER, format_money
 
 from djmoney import forms
 
-from .._compat import BaseExpression, Expression, smart_unicode, split_expression, string_types
+from .._compat import (
+    BaseExpression,
+    Expression,
+    smart_unicode,
+    split_expression,
+    string_types,
+)
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from ..utils import get_currency_field_name
+
 
 # If django-money-rates is installed we can automatically
 # perform operations with different currencies
@@ -204,7 +211,7 @@ class MoneyFieldProxy(object):
             obj.__dict__[self.field.name] = self._money_from_obj(obj)
         return obj.__dict__[self.field.name]
 
-    def __set__(self, obj, value):
+    def __set__(self, obj, value):  # noqa
         if isinstance(value, tuple):
             if len(value) != 2:
                 raise ValueError('Invalid value for MoneyField: %s' % str(value))
@@ -268,7 +275,7 @@ class CurrencyField(models.CharField):
         return 'CharField'
 
     def contribute_to_class(self, cls, name):
-        if not self.frozen_by_south and not name in [f.name for f in cls._meta.fields]:
+        if not self.frozen_by_south and name not in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
 
 
@@ -370,7 +377,7 @@ class MoneyField(models.DecimalField):
 
     def get_db_prep_lookup(self, lookup_type, value, connection,
                            prepared=False):
-        if not lookup_type in SUPPORTED_LOOKUPS:
+        if lookup_type not in SUPPORTED_LOOKUPS:
             raise NotSupportedLookup(lookup_type)
         value = self.get_db_prep_save(value, connection)
         return super(MoneyField, self).get_db_prep_lookup(lookup_type, value,
