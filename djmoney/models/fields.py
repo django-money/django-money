@@ -343,6 +343,8 @@ class MoneyField(models.DecimalField):
             value = value.amount
         if isinstance(value, tuple):
             value = value[0]
+        if isinstance(value, float):
+            value = str(value)
         return super(MoneyField, self).to_python(value)
 
     def get_internal_type(self):
