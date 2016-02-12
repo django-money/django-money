@@ -9,13 +9,8 @@ from django.db.models.sql.query import Query
 
 from moneyed import Money
 
-from .._compat import (
-    LOOKUP_SEP,
-    BaseExpression,
-    smart_unicode,
-    split_expression,
-)
-from ..utils import get_amount, get_currency_field_name
+from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode
+from ..utils import get_currency_field_name, prepare_expression
 from .fields import MoneyField
 
 
@@ -94,22 +89,9 @@ def _expand_money_args(model, args):
                             clean_name = _get_clean_name(name)
                             arg.children[i] = Q(*[
                                 child,
-                                ('_'.join([clean_name, 'currency']), F(get_currency_field_name(value.name)))
+                                (get_currency_field_name(clean_name), F(get_currency_field_name(value.name)))
                             ])
     return args
-
-
-def prepare_expression(value):
-    """
-    Prepares some complex money expression to be used in query.
-    """
-    lhs, rhs = split_expression(value)
-    amount = get_amount(rhs)
-    if VERSION < (1, 8):
-        value.children[1] = amount
-    else:
-        value.rhs.value = amount
-    return lhs
 
 
 def _expand_money_kwargs(model, kwargs):

@@ -4,7 +4,6 @@ from __future__ import division
 import inspect
 from decimal import ROUND_DOWN, Decimal
 
-from django import VERSION
 from django.conf import settings
 from django.db import models
 from django.db.models import F
@@ -24,7 +23,7 @@ from .._compat import (
     string_types,
 )
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
-from ..utils import get_currency_field_name
+from ..utils import get_currency_field_name, prepare_expression
 
 
 # If django-money-rates is installed we can automatically
@@ -235,22 +234,8 @@ class MoneyFieldProxy(object):
                         obj, self.currency_field_name,
                         smart_unicode(value.currency))
         elif isinstance(value, BaseExpression):
-            if isinstance(value, (F, BaseExpression)):
-                validate_money_expression(obj, value)
-
-            if VERSION < (1, 8):
-                rhs = value.children[1]
-                if not isinstance(rhs, F) and isinstance(rhs, Money):
-                    # Django 1.8 removed `children` attribute.
-                    value.children[1] = rhs.amount
-            else:
-                rhs = value.rhs
-                if not isinstance(rhs, F) and isinstance(rhs.value, Money):
-                    # value.lhs contains F expression, i.e.
-                    # F(field)
-                    # rhs contains our value, however we need to extract the amount
-                    # it is an analogy to the above code (pre Django-1.8)
-                    value.rhs.value = value.rhs.value.amount
+            validate_money_expression(obj, value)
+            prepare_expression(value)
             obj.__dict__[self.field.name] = value
         else:
             if value:
