@@ -234,8 +234,7 @@ class MoneyFieldProxy(object):
                         obj, self.currency_field_name,
                         smart_unicode(value.currency))
         elif isinstance(value, BaseExpression):
-            if isinstance(value, (F, BaseExpression)):
-                validate_money_expression(obj, value)
+            validate_money_expression(obj, value)
             prepare_expression(value)
             obj.__dict__[self.field.name] = value
         else:
