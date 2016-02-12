@@ -46,3 +46,13 @@ def split_expression(expr):
         return expr.children
     else:
         return expr.lhs, expr.rhs
+
+
+def set_expression_rhs(expr, value):
+    """
+    Sets right hand side value of the expression.
+    """
+    if VERSION < (1, 8):
+        expr.children[1] = value
+    else:
+        expr.rhs.value = value
