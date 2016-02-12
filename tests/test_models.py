@@ -7,6 +7,7 @@ Created on May 7, 2011
 from decimal import Decimal
 
 from django import VERSION
+from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 
 import moneyed
@@ -65,21 +66,29 @@ class TestVanillaMoneyField:
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
 
-    def test_invalid_tuple(self):
-        with pytest.raises(ValueError):
-            # Only 2-elements tuples are allowed
-            BaseModel.objects.create(money=(1, 'USD', 'extra_string'))
+    @pytest.mark.parametrize(
+        'value',
+        (
+            (1, 'USD', 'extra_string'),
+            (1, None),
+            (1, ),
+        )
+    )
+    def test_invalid_values(self, value):
+        with pytest.raises(ValidationError):
+            BaseModel.objects.create(money=value)
 
-    def test_save_new_value(self):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money('100.0'))
-        retrieved = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+    @pytest.mark.parametrize('field_name', ('money', 'second_money'))
+    def test_save_new_value(self, field_name):
+        ModelWithVanillaMoneyField.objects.create(**{field_name: Money('100.0')})
 
         # Try setting the value directly
-        retrieved.money = Money(1, moneyed.DKK)
+        retrieved = ModelWithVanillaMoneyField.objects.get()
+        setattr(retrieved, field_name, Money(1, moneyed.DKK))
         retrieved.save()
-        retrieved = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        retrieved = ModelWithVanillaMoneyField.objects.get()
 
-        assert retrieved.money == Money(1, moneyed.DKK)
+        assert getattr(retrieved, field_name) == Money(1, moneyed.DKK)
 
     def test_rounding(self):
         money = Money('100.0623456781123219')
@@ -265,7 +274,7 @@ class TestFExpressions:
     @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
     def test_invalid_expressions_access(self, f_obj):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
-        with pytest.raises(ValueError):
+        with pytest.raises(ValidationError):
             instance.money = f_obj
 
 
