@@ -5,6 +5,7 @@ import inspect
 from decimal import ROUND_DOWN, Decimal
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import class_prepared
@@ -180,12 +181,37 @@ def validate_money_expression(obj, expr):
     rhs = get_value(obj, rhs)
 
     if (not isinstance(rhs, Money) and connector in ('+', '-')) or connector == '^':
-        raise ValueError('Invalid F expression for MoneyField')
+        raise ValidationError('Invalid F expression for MoneyField.', code='invalid')
     if isinstance(lhs, Money) and isinstance(rhs, Money):
         if connector in ('*', '/', '^', '%%'):
-            raise ValueError('Invalid F expression for MoneyField')
+            raise ValidationError('Invalid F expression for MoneyField.', code='invalid')
         if lhs.currency != rhs.currency:
-            raise ValueError('You cannot use F() with different currencies.')
+            raise ValidationError('You cannot use F() with different currencies.', code='invalid')
+
+
+def validate_money_value(value):
+    """
+    Valid value for money are:
+      - Single numeric value
+      - Money instances
+      - Pairs of numeric value and currency. Currency can't be None.
+    """
+    if isinstance(value, (list, tuple)) and (len(value) != 2 or value[1] is None):
+        raise ValidationError(
+            'Invalid value for MoneyField: %(value)s.',
+            code='invalid',
+            params={'value': value},
+        )
+
+
+def get_currency(value):
+    """
+    Extracts currency from value.
+    """
+    if isinstance(value, Money):
+        return smart_unicode(value.currency)
+    elif isinstance(value, (list, tuple)):
+        return value[1]
 
 
 class MoneyFieldProxy(object):
@@ -211,36 +237,30 @@ class MoneyFieldProxy(object):
         return obj.__dict__[self.field.name]
 
     def __set__(self, obj, value):  # noqa
-        if isinstance(value, tuple):
-            if len(value) != 2:
-                raise ValueError('Invalid value for MoneyField: %s' % str(value))
-            value = Money(amount=value[0], currency=value[1])
-        if isinstance(value, Money):
-            obj.__dict__[self.field.name] = value.amount
-            # we have to determine whether to replace the currency.
-            # i.e. if we do the following:
-            # .objects.get_or_create(money_currency='EUR')
-            # then the currency is already set up, before this code hits
-            # __set__ of MoneyField. This is because the currency field
-            # has less creation counter than money field.
-            obj_curr = obj.__dict__[self.currency_field_name]
-            val_curr = str(value.currency)
-            def_curr = str(self.field.default_currency)
-            if obj_curr != val_curr:
-                # in other words, update the currency only if it wasn't
-                # changed before.
-                if obj_curr == def_curr:
-                    setattr(
-                        obj, self.currency_field_name,
-                        smart_unicode(value.currency))
-        elif isinstance(value, BaseExpression):
+        if isinstance(value, BaseExpression):
             validate_money_expression(obj, value)
             prepare_expression(value)
-            obj.__dict__[self.field.name] = value
         else:
-            if value:
-                value = str(value)
-            obj.__dict__[self.field.name] = self.field.to_python(value)
+            validate_money_value(value)
+            currency = get_currency(value)
+            if currency:
+                self.set_currency(obj, currency)
+            value = self.field.to_python(value)
+        obj.__dict__[self.field.name] = value
+
+    def set_currency(self, obj, value):
+        # we have to determine whether to replace the currency.
+        # i.e. if we do the following:
+        # .objects.get_or_create(money_currency='EUR')
+        # then the currency is already set up, before this code hits
+        # __set__ of MoneyField. This is because the currency field
+        # has less creation counter than money field.
+        object_currency = obj.__dict__[self.currency_field_name]
+        default_currency = str(self.field.default_currency)
+        if object_currency != value and (object_currency == default_currency or value != default_currency):
+            # in other words, update the currency only if it wasn't
+            # changed before.
+            setattr(obj, self.currency_field_name, value)
 
 
 class CurrencyField(models.CharField):
