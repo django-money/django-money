@@ -14,7 +14,7 @@ def patched_convert_money():
     """
 
     def convert_money(amount, currency_from, currency_to):  # noqa
-        return Money((amount * Decimal('0.88')), currency_to)
+        return Money(amount * Decimal('0.88'), currency_to)
 
     with patch('djmoney.models.fields.convert_money', side_effect=convert_money) as patched:
         yield patched
