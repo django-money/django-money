@@ -358,7 +358,6 @@ class MoneyField(models.DecimalField):
         # Removed, see https://github.com/jakewins/django-money/issues/42
         # if cls._meta.abstract:
         #    return
-
         if not self.frozen_by_south:
             c_field_name = get_currency_field_name(name)
             # Do not change default=self.default_currency.code, needed
@@ -467,8 +466,10 @@ def patch_managers(sender, **kwargs):
     from .managers import money_manager
 
     if hasattr(sender._meta, 'has_money_field'):
+        new_concrete_managers = []
         for _id, name, manager in sender._meta.concrete_managers:
-            setattr(sender, name, money_manager(manager))
+            new_concrete_managers.append((_id, name, money_manager(manager)))
+        sender._meta.concrete_managers = new_concrete_managers
 
 
 class_prepared.connect(patch_managers)
