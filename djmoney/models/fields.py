@@ -467,8 +467,10 @@ def patch_managers(sender, **kwargs):
     from .managers import money_manager
 
     if hasattr(sender._meta, 'has_money_field'):
-        for _id, name, manager in sender._meta.concrete_managers:
-            setattr(sender, name, money_manager(manager))
+        sender.copy_managers([
+            (_id, name, money_manager(manager))
+            for _id, name, manager in sender._meta.concrete_managers
+        ])
 
 
 class_prepared.connect(patch_managers)

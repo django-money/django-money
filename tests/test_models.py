@@ -17,6 +17,7 @@ from moneyed import Money
 from djmoney.models.fields import AUTO_CONVERT_MONEY, MoneyPatched
 
 from .testapp.models import (
+    AbstractModel,
     BaseModel,
     InheritedModel,
     InheritorModel,
@@ -367,3 +368,17 @@ class TestDifferentCurrencies:
     def test_exception(self):
         with pytest.raises(TypeError):
             MoneyPatched(10, 'EUR') == Money(10, 'USD')
+
+
+@pytest.mark.parametrize(
+    'model_class', (
+        AbstractModel,
+        ModelWithNonMoneyField,
+        InheritorModel,
+        InheritedModel,
+        ProxyModel,
+    )
+)
+def test_manager_instance_access(model_class):
+    with pytest.raises(AttributeError):
+        model_class().objects.all()
