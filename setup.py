@@ -6,7 +6,7 @@ from setuptools.command.test import test as TestCommand
 
 
 class PyTest(TestCommand):
-    user_options = [('pytest-args=', 'a', "Arguments to pass into py.test")]
+    user_options = [('pytest-args=', 'a', 'Arguments to pass into py.test')]
 
     def initialize_options(self):
         TestCommand.initialize_options(self)
@@ -33,29 +33,45 @@ if sys.version_info[:2] == (3, 2):
     test_requirements.append('coverage==3.7.1')
 
 
-setup(name="django-money",
-      version="0.7.7",
-      description="Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation.",
-      url="https://github.com/jakewins/django-money",
-      maintainer='Greg Reinbach',
-      maintainer_email='greg@reinbach.com',
-      packages=["djmoney",
-                "djmoney.forms",
-                "djmoney.models",
-                "djmoney.templatetags",
-                ],
-      install_requires=['setuptools',
-                        'Django >= 1.4',
-                        'py-moneyed > 0.4'],
-      platforms=['Any'],
-      keywords=['django', 'py-money', 'money'],
-      classifiers=["Development Status :: 5 - Production/Stable",
-                   "Intended Audience :: Developers",
-                   "License :: OSI Approved :: BSD License",
-                   "Operating System :: OS Independent",
-                   "Programming Language :: Python",
-                   "Programming Language :: Python :: 3",
-                   "Framework :: Django", ],
-      tests_require=test_requirements,
-      cmdclass={'test': PyTest},
-      )
+setup(
+    name='django-money',
+    version='0.7.7',
+    description='Adds support for using money and currency fields in django models and forms. '
+                'Uses py-moneyed as the money implementation.',
+    url='https://github.com/jakewins/django-money',
+    maintainer='Greg Reinbach',
+    maintainer_email='greg@reinbach.com',
+    packages=[
+        'djmoney',
+        'djmoney.forms',
+        'djmoney.models',
+        'djmoney.templatetags',
+    ],
+    install_requires=[
+        'setuptools',
+        'Django >= 1.4',
+        'py-moneyed > 0.4'
+    ],
+    platforms=['Any'],
+    keywords=['django', 'py-money', 'money'],
+    classifiers=[
+        'Development Status :: 5 - Production/Stable',
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License',
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: Implementation :: CPython',
+        'Programming Language :: Python :: Implementation :: PyPy',
+        'Framework :: Django',
+    ],
+    tests_require=test_requirements,
+    cmdclass={'test': PyTest},
+)
