@@ -355,7 +355,7 @@ class MoneyField(models.DecimalField):
         cls._meta.has_money_field = True
 
         # Don't run on abstract classes
-        # Removed, see https://github.com/jakewins/django-money/issues/42
+        # Removed, see https://github.com/django-money/django-money/issues/42
         # if cls._meta.abstract:
         #    return
 
