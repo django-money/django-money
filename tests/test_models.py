@@ -342,6 +342,9 @@ rates_is_available = pytest.mark.skipif(
 )
 
 
+pytest_plugins = 'pytester'
+
+
 class TestDifferentCurrencies:
     """Test add/sub operations between different currencies"""
 
@@ -368,6 +371,31 @@ class TestDifferentCurrencies:
     def test_exception(self):
         with pytest.raises(TypeError):
             MoneyPatched(10, 'EUR') == Money(10, 'USD')
+
+    @pytest.mark.parametrize(
+        'rates_installed', (
+            pytest.mark.xfail(VERSION >= (1, 9), reason='djmoney_rates doesn\'t support Django 1.9+')(True),
+            False
+        )
+    )
+    def test_app_is_installed(self, testdir, rates_installed):
+        """
+        See #173.
+        """
+        installed_apps = ['djmoney']
+        if rates_installed:
+            installed_apps.append('djmoney_rates')
+        testdir.makepyfile(test_settings='''
+        INSTALLED_APPS = %s
+        SECRET_KEY = 'foobar'
+        ''' % installed_apps)
+        testdir.makepyfile('''
+        def test_app_is_installed():
+            from djmoney.models.fields import AUTO_CONVERT_MONEY
+            assert AUTO_CONVERT_MONEY is %s
+        ''' % rates_installed)
+        result = testdir.runpytest_subprocess('--verbose', '-s', '--ds', 'test_settings')
+        assert 'test_app_is_installed.py::test_app_is_installed PASSED' in result.stdout.lines
 
 
 @pytest.mark.parametrize(

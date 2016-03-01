@@ -29,10 +29,14 @@ from ..utils import get_currency_field_name, prepare_expression
 
 # If django-money-rates is installed we can automatically
 # perform operations with different currencies
-try:
-    from djmoney_rates.utils import convert_money
-    AUTO_CONVERT_MONEY = True
-except ImportError:
+if 'djmoney_rates' in settings.INSTALLED_APPS:
+    try:
+        from djmoney_rates.utils import convert_money
+        AUTO_CONVERT_MONEY = True
+    except ImportError:
+        # NOTE. djmoney_rates doesn't support Django 1.9+
+        AUTO_CONVERT_MONEY = False
+else:
     AUTO_CONVERT_MONEY = False
 
 
