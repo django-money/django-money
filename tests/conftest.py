@@ -4,6 +4,8 @@ from decimal import Decimal
 import pytest
 from moneyed import Money
 
+from tests.testapp.models import InheritorModel, ModelWithDefaultAsInt
+
 from ._compat import patch
 
 
@@ -18,3 +20,15 @@ def patched_convert_money():
 
     with patch('djmoney.models.fields.convert_money', side_effect=convert_money) as patched:
         yield patched
+
+
+@pytest.fixture
+def m2m_object():
+    return ModelWithDefaultAsInt.objects.create(money=Money(100, 'USD'))
+
+
+@pytest.fixture
+def concrete_instance(m2m_object):
+    instance = InheritorModel.objects.create()
+    instance.m2m_field.add(m2m_object)
+    return instance
