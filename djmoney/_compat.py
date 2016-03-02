@@ -56,3 +56,14 @@ def set_expression_rhs(expr, value):
         expr.children[1] = value
     else:
         expr.rhs.value = value
+
+
+def get_fields(model):
+    """
+    Returns a set of fields associated to the model.
+    """
+    opts = model._meta
+    if VERSION < (1, 8):
+        return opts.get_all_field_names()
+    else:
+        return set(field.name for field in opts.get_fields())

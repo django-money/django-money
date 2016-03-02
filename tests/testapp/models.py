@@ -75,6 +75,7 @@ class ModelWithNonMoneyField(models.Model):
 
 class AbstractModel(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    m2m_field = models.ManyToManyField(ModelWithDefaultAsInt)
 
     class Meta:
         abstract = True
