@@ -373,6 +373,7 @@ class MoneyField(models.DecimalField):
                 choices=self.currency_choices
             )
             c_field.creation_counter = self.creation_counter
+            self.creation_counter += 1
             cls.add_to_class(c_field_name, c_field)
 
         super(MoneyField, self).contribute_to_class(cls, name)
