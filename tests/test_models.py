@@ -410,3 +410,15 @@ class TestDifferentCurrencies:
 def test_manager_instance_access(model_class):
     with pytest.raises(AttributeError):
         model_class().objects.all()
+
+
+@pytest.mark.skipif(VERSION >= (1, 10), reason='Django >= 1.10 dropped `get_field_by_name` method of `Options`.')
+def test_get_field_by_name():
+    assert BaseModel._meta.get_field_by_name('money')[0].__class__.__name__ == 'MoneyField'
+    assert BaseModel._meta.get_field_by_name('money_currency')[0].__class__.__name__ == 'CurrencyField'
+
+
+def test_different_hashes():
+    money = BaseModel._meta.get_field('money')
+    money_currency = BaseModel._meta.get_field('money_currency')
+    assert hash(money) != hash(money_currency)
