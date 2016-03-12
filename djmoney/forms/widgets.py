@@ -8,6 +8,7 @@ __all__ = ('MoneyWidget',)
 
 
 class MoneyWidget(MultiWidget):
+
     def __init__(self, choices=CURRENCY_CHOICES, amount_widget=None, currency_widget=None, *args, **kwargs):
         if not amount_widget:
             amount_widget = TextInput
