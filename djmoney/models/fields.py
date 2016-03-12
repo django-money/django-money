@@ -46,6 +46,7 @@ SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
 
 
 class NotSupportedLookup(Exception):
+
     def __init__(self, lookup):
         self.lookup = lookup
 
@@ -111,7 +112,6 @@ class MoneyPatched(Money):
         return False
 
     def __truediv__(self, other):
-
         if isinstance(other, Money):
             return super(MoneyPatched, self).__truediv__(other)
         else:
@@ -119,7 +119,6 @@ class MoneyPatched(Money):
                 super(MoneyPatched, self).__truediv__(other))
 
     def __rmod__(self, other):
-
         return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__rmod__(other))
 
@@ -155,9 +154,7 @@ class MoneyPatched(Money):
     __str__ = __unicode__
 
     def __repr__(self):
-        # small fix for tests
-        return "%s %s" % (self.amount.to_integral_value(ROUND_DOWN),
-                          self.currency)
+        return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
 
 
 def get_value(obj, expr):
@@ -280,9 +277,6 @@ class CurrencyField(models.CharField):
         super(CurrencyField, self).__init__(verbose_name, name, default=default,
                                             **kwargs)
 
-    def get_internal_type(self):
-        return 'CharField'
-
     def contribute_to_class(self, cls, name):
         if not self.frozen_by_south and name not in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
@@ -351,34 +345,29 @@ class MoneyField(models.DecimalField):
             value = str(value)
         return super(MoneyField, self).to_python(value)
 
-    def get_internal_type(self):
-        return 'DecimalField'
-
     def contribute_to_class(self, cls, name):
-
         cls._meta.has_money_field = True
 
-        # Don't run on abstract classes
-        # Removed, see https://github.com/django-money/django-money/issues/42
-        # if cls._meta.abstract:
-        #    return
-
         if not self.frozen_by_south:
-            c_field_name = get_currency_field_name(name)
-            # Do not change default=self.default_currency.code, needed
-            # for south compat.
-            c_field = CurrencyField(
-                max_length=3, price_field=self,
-                default=self.default_currency, editable=False,
-                choices=self.currency_choices
-            )
-            c_field.creation_counter = self.creation_counter
-            self.creation_counter += 1
-            cls.add_to_class(c_field_name, c_field)
+            self.add_currency_field(cls, name)
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
         setattr(cls, self.name, MoneyFieldProxy(self))
+
+    def add_currency_field(self, cls, name):
+        """
+        Adds CurrencyField instance to a model class.
+        """
+        currency_field = CurrencyField(
+            max_length=3, price_field=self,
+            default=self.default_currency, editable=False,
+            choices=self.currency_choices
+        )
+        currency_field.creation_counter = self.creation_counter
+        self.creation_counter += 1
+        currency_field_name = get_currency_field_name(name)
+        cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, Expression):
@@ -387,13 +376,11 @@ class MoneyField(models.DecimalField):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
-    def get_db_prep_lookup(self, lookup_type, value, connection,
-                           prepared=False):
+    def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
         if lookup_type not in SUPPORTED_LOOKUPS:
             raise NotSupportedLookup(lookup_type)
         value = self.get_db_prep_save(value, connection)
-        return super(MoneyField, self).get_db_prep_lookup(lookup_type, value,
-                                                          connection, prepared)
+        return super(MoneyField, self).get_db_prep_lookup(lookup_type, value, connection, prepared)
 
     def get_default(self):
         if isinstance(self.default, Money):

@@ -7,7 +7,7 @@ from ._compat import BaseExpression, set_expression_rhs, split_expression
 
 
 def get_currency_field_name(name):
-    return "%s_currency" % name
+    return '%s_currency' % name
 
 
 def get_amount(value):
