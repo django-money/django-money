@@ -48,3 +48,6 @@ def djmoney_contents(self):
 
 
 AdminReadonlyField.contents = djmoney_contents
+
+
+__version__ = '0.7.7'
