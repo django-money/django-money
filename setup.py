@@ -1,8 +1,19 @@
 # -*- coding: utf-8 -*-
+import os
+import re
 import sys
 
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
+
+
+def get_version(package):
+    """
+    Return package version as listed in `__version__` in `__init__.py`.
+    """
+    with open(os.path.join(package, '__init__.py')) as fd:
+        init = fd.read()
+    return re.search("__version__ = ['\"]([^'\"]+)['\"]", init).group(1)
 
 
 class PyTest(TestCommand):
@@ -35,7 +46,7 @@ if sys.version_info[:2] == (3, 2):
 
 setup(
     name='django-money',
-    version='0.7.7',
+    version=get_version('djmoney'),
     description='Adds support for using money and currency fields in django models and forms. '
                 'Uses py-moneyed as the money implementation.',
     url='https://github.com/django-money/django-money',
