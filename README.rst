@@ -81,6 +81,21 @@ Searching for models with money fields:
         BankAccount.objects.filter(balance__gt=Money(1, USD))
         # Returns the "account" object
 
+Special note on serialized arguments: if your model definition 
+requires serializing an instance of ``Money``, you can use ``MoneyPatched``
+instead.
+
+.. code:: python
+
+        from django.core.validators import MinValueValidator
+        from django.db import models
+        from djmoney.models.fields import MoneyField, MoneyPatched
+
+        class BankAccount(models.Model):
+
+            balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(MoneyPatched(100, 'GBP'))])
+
+
 If you use South to handle model migration, things will "Just Work" out
 of the box. South is an optional dependency and things will work fine
 without it.
