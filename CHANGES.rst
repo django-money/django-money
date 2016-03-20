@@ -1,5 +1,6 @@
 Changes in 0.8
 --------------
+- Added support for serialization of ``MoneyPatched`` instances in migrations (`Alex Riina <https://github.com/AlexRiina>`_)
 - Fixed fields caching `186 <https://github.com/django-money/django-money/issues/186>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Fixed m2m fields data loss on Django < 1.8 `184 <https://github.com/django-money/django-money/issues/184>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Improved django-money-rates support `173 <https://github.com/django-money/django-money/issues/173>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)

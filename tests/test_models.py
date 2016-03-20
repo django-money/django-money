@@ -9,6 +9,7 @@ from decimal import Decimal
 from django import VERSION
 from django.core.exceptions import ValidationError
 from django.db.models import F, Q
+from django.utils.six import PY2
 
 import moneyed
 import pytest
@@ -430,7 +431,9 @@ def test_different_hashes():
 
 @pytest.mark.skipif(VERSION < (1, 7), reason='Django < 1.7 handles migrations differently')
 def test_migration_serialization():
-    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (
-        'djmoney.models.fields.MoneyPatched(100, \'GBP\')',
-        {'import djmoney.models.fields'}
-    )
+    imports = {'import djmoney.models.fields'}
+    if PY2:
+        serialized = 'djmoney.models.fields.MoneyPatched(100, b\'GBP\')'
+    else:
+        serialized = 'djmoney.models.fields.MoneyPatched(100, \'GBP\')'
+    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (serialized, imports)
