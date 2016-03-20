@@ -38,6 +38,10 @@ from .testapp.models import (
 )
 
 
+if VERSION >= (1, 7):
+    from django.db.migrations.writer import MigrationWriter
+
+
 pytestmark = pytest.mark.django_db
 
 
@@ -422,3 +426,11 @@ def test_different_hashes():
     money = BaseModel._meta.get_field('money')
     money_currency = BaseModel._meta.get_field('money_currency')
     assert hash(money) != hash(money_currency)
+
+
+@pytest.mark.skipif(VERSION < (1, 7), reason='Django < 1.7 handles migrations differently')
+def test_migration_serialization():
+    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (
+        'djmoney.models.fields.MoneyPatched(100, \'GBP\')',
+        {'import djmoney.models.fields'}
+    )

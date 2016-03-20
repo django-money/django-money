@@ -38,6 +38,13 @@ except NameError:
     string_types = (str, bytes)
 
 
+if VERSION >= (1, 7):
+    from django.utils.deconstruct import deconstructible
+else:
+    def deconstructible(cls):
+        return cls
+
+
 def split_expression(expr):
     """
     Returns lhs and rhs of the expression.
