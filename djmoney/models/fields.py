@@ -19,6 +19,7 @@ from djmoney import forms
 from .._compat import (
     BaseExpression,
     Expression,
+    deconstructible,
     smart_unicode,
     split_expression,
     string_types,
@@ -54,6 +55,7 @@ class NotSupportedLookup(Exception):
         return 'Lookup \'%s\' is not supported for MoneyField' % self.lookup
 
 
+@deconstructible
 class MoneyPatched(Money):
 
     # Set to True or False has a higher priority
