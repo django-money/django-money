@@ -430,4 +430,7 @@ def test_different_hashes():
 
 @pytest.mark.skipif(VERSION < (1, 7), reason='Django < 1.7 handles migrations differently')
 def test_migration_serialization():
-    MigrationWriter.serialize(MoneyPatched(100, 'GBP'))
+    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (
+        'djmoney.models.fields.MoneyPatched(100, \'GBP\')',
+        {'import djmoney.models.fields'}
+    )
