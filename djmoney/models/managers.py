@@ -40,19 +40,18 @@ def _get_field(model, name):
     if num_parts > 1 and parts[-1] in qs.query_terms:
         # Traverse the lookup query to distinguish related fields from
         # lookup types.
-        lookup_model = model
-        for counter, field_name in enumerate(parts):
+        for counter, field_name in enumerate(parts, 1):
             try:
-                lookup_field = lookup_model._meta.get_field(field_name)
+                lookup_field = model._meta.get_field(field_name)
             except FieldDoesNotExist:
                 # Not a field. Bail out.
                 parts.pop()
                 break
             # Unless we're at the end of the list of lookups, let's attempt
             # to continue traversing relations.
-            if (counter + 1) < num_parts:
+            if counter < num_parts:
                 try:
-                    lookup_model = lookup_field.rel.to
+                    model = lookup_field.rel.to
                 except AttributeError:
                     # Not a related field. Bail out.
                     parts.pop()
