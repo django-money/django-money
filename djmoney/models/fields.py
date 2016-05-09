@@ -463,7 +463,7 @@ def patch_managers(sender, **kwargs):
     if hasattr(sender._meta, 'has_money_field'):
         sender.copy_managers([
             (_id, name, money_manager(manager))
-            for _id, name, manager in sender._meta.concrete_managers
+            for _id, name, manager in sender._meta.concrete_managers if name == 'objects'
         ])
 
 
