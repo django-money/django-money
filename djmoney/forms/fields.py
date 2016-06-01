@@ -35,6 +35,9 @@ class MoneyField(MultiValueField):
             warn('currency_choices will be deprecated in favor of choices', PendingDeprecationWarning)
             choices = currency_choices
 
+        # get the default currency if one was specified
+        default_currency = kwargs.pop('default_currency', None)
+
         amount_field = DecimalField(max_value, min_value, max_digits, decimal_places, *args, **kwargs)
         currency_field = ChoiceField(choices=choices)
 
@@ -53,6 +56,10 @@ class MoneyField(MultiValueField):
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
         super(MoneyField, self).__init__(fields, *args, **kwargs)
+
+        # set the initial value to the default currency so that the
+        # default currency appears as the selected menu item
+        self.initial = [None, default_currency]
 
     def compress(self, data_list):
         if data_list:
