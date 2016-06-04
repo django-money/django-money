@@ -20,6 +20,7 @@ from .._compat import (
     BaseExpression,
     Expression,
     deconstructible,
+    setup_managers,
     smart_unicode,
     split_expression,
     string_types,
@@ -456,15 +457,15 @@ except ImportError:
 
 def patch_managers(sender, **kwargs):
     """
-    Patches models managers
+    Patches models managers.
     """
-    from .managers import money_manager
+    if sender._meta.proxy_for_model:
+        has_money_field = hasattr(sender._meta.proxy_for_model._meta, 'has_money_field')
+    else:
+        has_money_field = hasattr(sender._meta, 'has_money_field')
 
-    if hasattr(sender._meta, 'has_money_field'):
-        sender.copy_managers([
-            (_id, name, money_manager(manager))
-            for _id, name, manager in sender._meta.concrete_managers
-        ])
+    if has_money_field:
+        setup_managers(sender)
 
 
 class_prepared.connect(patch_managers)

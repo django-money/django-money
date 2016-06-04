@@ -1,3 +1,7 @@
+Changes in 0.8.1
+----------------
+- Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+
 Changes in 0.8
 --------------
 - Added support for serialization of ``MoneyPatched`` instances in migrations (`Alex Riina <https://github.com/AlexRiina>`_)
