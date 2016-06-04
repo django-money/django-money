@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 from django import VERSION
+from django.db.models.manager import ManagerDescriptor
 
 
 try:
@@ -74,3 +75,16 @@ def get_fields(model):
         return opts.get_all_field_names()
     else:
         return set(field.name for field in opts.get_fields())
+
+
+def setup_managers(sender):
+    from .models.managers import money_manager
+
+    if VERSION >= (1, 10):
+        for manager in sender._meta.managers:
+            setattr(sender, manager.name, ManagerDescriptor(money_manager(manager)))
+    else:
+        sender.copy_managers([
+            (_id, name, money_manager(manager))
+            for _id, name, manager in sender._meta.concrete_managers
+        ])
