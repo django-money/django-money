@@ -9,6 +9,10 @@ env:
   - TOX_ENV=django_master-py34
   - TOX_ENV=django_master-py27
   - TOX_ENV=django_master-pypy
+  - TOX_ENV=django110-py35
+  - TOX_ENV=django110-py34
+  - TOX_ENV=django110-py27
+  - TOX_ENV=django110-pypy
   - TOX_ENV=django19-py35
   - TOX_ENV=django19-py34
   - TOX_ENV=django19-py27
