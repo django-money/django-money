@@ -400,6 +400,7 @@ class MoneyField(models.DecimalField):
         defaults = {'form_class': forms.MoneyField}
         defaults.update(kwargs)
         defaults['currency_choices'] = self.currency_choices
+        defaults['default_currency'] = self.default_currency
         return super(MoneyField, self).formfield(**defaults)
 
     def get_south_default(self):

@@ -35,7 +35,7 @@ if sys.version_info[:2] == (3, 2):
 
 setup(
     name='django-money',
-    version='0.8',
+    version='0.8.1',
     description='Adds support for using money and currency fields in django models and forms. '
                 'Uses py-moneyed as the money implementation.',
     url='https://github.com/django-money/django-money',
