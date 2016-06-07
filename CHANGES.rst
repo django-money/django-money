@@ -7,7 +7,7 @@ Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
-- Only make `objects` a MoneyManager instance automatically #194 and #195 (`Jeongkyu Shin <https://github.com/inureyes>`_)
+- Only make `objects` a MoneyManager instance automatically #194 and #201 (`Jeongkyu Shin <https://github.com/inureyes>`_)
 
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
