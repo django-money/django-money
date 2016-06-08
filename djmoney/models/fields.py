@@ -34,13 +34,15 @@ from ..utils import get_currency_field_name, prepare_expression
 if 'djmoney_rates' in settings.INSTALLED_APPS:
     try:
         from djmoney_rates.utils import convert_money
-        AUTO_CONVERT_MONEY = True
+        RATES_INSTALLED = True
     except ImportError:
         # NOTE. djmoney_rates doesn't support Django 1.9+
-        AUTO_CONVERT_MONEY = False
+        RATES_INSTALLED = False
 else:
-    AUTO_CONVERT_MONEY = False
+    RATES_INSTALLED = False
 
+
+AUTO_CONVERT_MONEY = RATES_INSTALLED
 
 __all__ = ('MoneyField', 'NotSupportedLookup')
 
