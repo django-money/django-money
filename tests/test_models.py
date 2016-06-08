@@ -15,11 +15,7 @@ import moneyed
 import pytest
 from moneyed import Money
 
-from djmoney.models.fields import (
-    AUTO_CONVERT_MONEY,
-    MoneyPatched,
-    NotSupportedLookup,
-)
+from djmoney.models.fields import MoneyPatched, NotSupportedLookup
 
 from .testapp.models import (
     AbstractModel,
@@ -351,7 +347,7 @@ class TestProxyModel:
 
 
 rates_is_available = pytest.mark.skipif(
-    not AUTO_CONVERT_MONEY,
+    not RATES_INSTALLED,
     reason='You need to install django-money-rates to run this test'
 )
 
@@ -405,8 +401,8 @@ class TestDifferentCurrencies:
         ''' % installed_apps)
         testdir.makepyfile('''
         def test_app_is_installed():
-            from djmoney.models.fields import AUTO_CONVERT_MONEY
-            assert AUTO_CONVERT_MONEY is %s
+            from djmoney.models.fields import RATES_INSTALLED
+            assert RATES_INSTALLED is %s
         ''' % rates_installed)
         result = testdir.runpytest_subprocess('--verbose', '-s', '--ds', 'test_settings')
         assert 'test_app_is_installed.py::test_app_is_installed PASSED' in result.stdout.lines
