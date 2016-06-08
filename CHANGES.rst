@@ -1,6 +1,9 @@
 Changes in 0.8.1
 ----------------
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
+  be off by default. You must now add ``DJMONEY_AUTO_CONVERT_MONEY = True`` in
+  your ``settings.py`` if you want this feature.
 
 Changes in 0.8
 --------------
