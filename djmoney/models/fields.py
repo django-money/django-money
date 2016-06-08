@@ -5,7 +5,7 @@ import inspect
 from decimal import ROUND_DOWN, Decimal
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ImproperlyConfigured
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import class_prepared
@@ -42,7 +42,10 @@ else:
     RATES_INSTALLED = False
 
 
-AUTO_CONVERT_MONEY = RATES_INSTALLED
+if getattr(settings, 'DJMONEY_AUTO_CONVERT_MONEY', False):
+    if not RATES_INSTALLED:
+        raise ImproperlyConfigured("You must install djmoney-rates to use DJMONEY_AUTO_CONVERT_MONEY==True")
+
 
 __all__ = ('MoneyField', 'NotSupportedLookup')
 
@@ -70,7 +73,7 @@ class MoneyPatched(Money):
         """
         Converts other Money instances to the local currency
         """
-        if AUTO_CONVERT_MONEY:
+        if getattr(settings, 'DJMONEY_AUTO_CONVERT_MONEY', False):
             return convert_money(other.amount, other.currency, self.currency)
         else:
             return other

@@ -8,15 +8,26 @@ Changes and new features
 
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Only make `objects` a MoneyManager instance automatically `194 <https://github.com/django-money/django-money/issues/194>`_ and `201 <https://github.com/django-money/django-money/issues/201>`_ (`Jeongkyu Shin <https://github.com/inureyes>`_)
+- Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
+  be off by default. You must now add ``DJMONEY_AUTO_CONVERT_MONEY = True`` in
+  your ``settings.py`` if you want this feature.
 
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In 0.8, Django-money automatically patches every model managers with MoneyManager. This causes migration problems if two or more managers are used in the same model. 
+In 0.8, Django-money automatically patches every model managers with
+``MoneyManager``. This causes migration problems if two or more managers are
+used in the same model. 
 
-As a side effect, other managers are also finally wrapped with ``MoneyManager``. This effect leads Django migration to point to fields with other managers to ``MoneyManager``, and raises ``ValueError`` (``MoneyManager`` only exists as a return of ``money_manager``, not a class-form. However migration procedure tries to find ``MoneyManager`` to patch other managers.)
+As a side effect, other managers are also finally wrapped with ``MoneyManager``.
+This effect leads Django migration to point to fields with other managers to
+``MoneyManager``, and raises ``ValueError`` (``MoneyManager`` only exists as a
+return of ``money_manager``, not a class-form. However migration procedure tries
+to find ``MoneyManager`` to patch other managers.)
 
-From 0.9, Django-money only patches ``objects`` with ``MoneyManager`` by default (as documented). To patch other managers (e.g. custom managers), patch them by wrapping with ``money_manager``.
+From 0.9, Django-money only patches ``objects`` with ``MoneyManager`` by default
+(as documented). To patch other managers (e.g. custom managers), patch them by
+wrapping with ``money_manager``.
 
 .. code-block:: python
     from djmoney.models.managers import money_manager

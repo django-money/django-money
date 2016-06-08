@@ -358,16 +358,26 @@ pytest_plugins = 'pytester'
 class TestDifferentCurrencies:
     """Test add/sub operations between different currencies"""
 
+    def test_add_default(self, settings):
+        with pytest.raises(TypeError):
+            MoneyPatched(10, 'EUR') + Money(1, 'USD')
+
+    def test_sub_default(self, settings):
+        with pytest.raises(TypeError):
+            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+
     @rates_is_available
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_add(self):
+    def test_add_with_auto_convert(self, settings):
+        settings.DJMONEY_AUTO_CONVERT_MONEY = True
         result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
         assert result.currency == moneyed.EUR
 
     @rates_is_available
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_sub(self):
+    def test_sub_with_auto_convert(self, settings):
+        settings.DJMONEY_AUTO_CONVERT_MONEY = True
         result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
         assert result.currency == moneyed.EUR
