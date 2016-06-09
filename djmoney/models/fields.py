@@ -5,7 +5,7 @@ import inspect
 from decimal import ROUND_DOWN, Decimal
 
 from django.conf import settings
-from django.core.exceptions import ValidationError, ImproperlyConfigured
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import class_prepared
