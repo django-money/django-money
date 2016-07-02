@@ -44,7 +44,7 @@ else:
 
 __all__ = ('MoneyField', 'NotSupportedLookup')
 
-SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
+SUPPORTED_LOOKUPS = ('exact', 'isnull', 'in', 'lt', 'gt', 'lte', 'gte')
 
 
 class NotSupportedLookup(Exception):
