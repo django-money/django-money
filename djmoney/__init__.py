@@ -48,3 +48,11 @@ def djmoney_contents(self):
 
 
 AdminReadonlyField.contents = djmoney_contents
+
+
+try:
+    from .contrib.django_rest_framework import register_money_field
+
+    register_money_field()
+except ImportError:
+    pass

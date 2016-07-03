@@ -104,7 +104,7 @@ class SimpleModel(models.Model):
 
 
 class NullMoneyFieldModel(models.Model):
-    field = MoneyField(max_digits=10, decimal_places=2, null=True)
+    field = MoneyField(max_digits=10, decimal_places=2, null=True, blank=True)
 
 
 class ProxyModel(SimpleModel):

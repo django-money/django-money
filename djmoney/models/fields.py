@@ -29,19 +29,6 @@ from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from ..utils import get_currency_field_name, prepare_expression
 
 
-# If django-money-rates is installed we can automatically
-# perform operations with different currencies
-if 'djmoney_rates' in settings.INSTALLED_APPS:
-    try:
-        from djmoney_rates.utils import convert_money
-        AUTO_CONVERT_MONEY = True
-    except ImportError:
-        # NOTE. djmoney_rates doesn't support Django 1.9+
-        AUTO_CONVERT_MONEY = False
-else:
-    AUTO_CONVERT_MONEY = False
-
-
 __all__ = ('MoneyField', 'NotSupportedLookup')
 
 SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
@@ -69,12 +56,18 @@ class MoneyPatched(Money):
 
     def _convert_to_local_currency(self, other):
         """
-        Converts other Money instances to the local currency
+        Converts other Money instances to the local currency.
+        If django-money-rates is installed we can automatically
+        perform operations with different currencies
         """
-        if AUTO_CONVERT_MONEY:
-            return convert_money(other.amount, other.currency, self.currency)
-        else:
-            return other
+        if 'djmoney_rates' in settings.INSTALLED_APPS:
+            try:
+                from djmoney_rates.utils import convert_money
+
+                return convert_money(other.amount, other.currency, self.currency)
+            except ImportError:
+                pass
+        return other
 
     @classmethod
     def _patch_to_current_class(cls, money):

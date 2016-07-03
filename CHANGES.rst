@@ -1,11 +1,12 @@
 Changes in 0.9
-----------------
+--------------
 
 NB! If you are using custom model managers **not** named `objects` and you expect them to still work, please read below.
 
 Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+- Added Django REST Framework support support `179 <https://github.com/django-money/django-money/issues/179>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Only make `objects` a MoneyManager instance automatically #194 and #201 (`Jeongkyu Shin <https://github.com/inureyes>`_)
 
