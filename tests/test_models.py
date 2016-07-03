@@ -15,7 +15,11 @@ import moneyed
 import pytest
 from moneyed import Money
 
-from djmoney.models.fields import AUTO_CONVERT_MONEY, MoneyPatched, NotSupportedLookup
+from djmoney.models.fields import (
+    AUTO_CONVERT_MONEY,
+    MoneyPatched,
+    NotSupportedLookup,
+)
 
 from .testapp.models import (
     AbstractModel,
