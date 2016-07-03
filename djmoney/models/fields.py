@@ -37,10 +37,7 @@ SUPPORTED_LOOKUPS = ('exact', 'isnull', 'lt', 'gt', 'lte', 'gte')
 class NotSupportedLookup(Exception):
 
     def __init__(self, lookup):
-        self.lookup = lookup
-
-    def __str__(self):
-        return 'Lookup \'%s\' is not supported for MoneyField' % self.lookup
+        super(NotSupportedLookup, self).__init__('Lookup \'%s\' is not supported for MoneyField' % lookup)
 
 
 @deconstructible
