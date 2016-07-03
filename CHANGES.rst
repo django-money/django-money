@@ -14,7 +14,7 @@ Changes and new features
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In 0.8, Django-money automatically patches every model managers with MoneyManager. This causes migration problems if two or more managers are used in the same model. 
+In 0.8, Django-money automatically patches every model managers with MoneyManager. This causes migration problems if two or more managers are used in the same model.
 
 As a side effect, other managers are also finally wrapped with ``MoneyManager``. This effect leads Django migration to point to fields with other managers to ``MoneyManager``, and raises ``ValueError`` (``MoneyManager`` only exists as a return of ``money_manager``, not a class-form. However migration procedure tries to find ``MoneyManager`` to patch other managers.)
 
