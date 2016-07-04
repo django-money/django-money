@@ -92,7 +92,6 @@ class MoneyPatched(Money):
             super(MoneyPatched, self).__sub__(other))
 
     def __mul__(self, other):
-
         return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__mul__(other))
 
@@ -100,16 +99,15 @@ class MoneyPatched(Money):
         if hasattr(other, 'currency'):
             if self.currency == other.currency:
                 return self.amount == other.amount
-            raise TypeError('Cannot add or subtract two Money ' +
+            raise TypeError('Cannot add or subtract two Money '
                             'instances with different currencies.')
         return False
 
     def __truediv__(self, other):
+        result = super(MoneyPatched, self).__truediv__(other)
         if isinstance(other, Money):
-            return super(MoneyPatched, self).__truediv__(other)
-        else:
-            return self._patch_to_current_class(
-                super(MoneyPatched, self).__truediv__(other))
+            return result
+        return self._patch_to_current_class(result)
 
     def __rmod__(self, other):
         return MoneyPatched._patch_to_current_class(
