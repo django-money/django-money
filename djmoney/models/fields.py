@@ -11,10 +11,9 @@ from django.db.models import F
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
+from djmoney import forms
 from moneyed import Currency, Money
 from moneyed.localization import _FORMATTER, format_money
-
-from djmoney import forms
 
 from .._compat import (
     BaseExpression,

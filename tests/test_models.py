@@ -5,20 +5,21 @@ Created on May 7, 2011
 @author: jake
 """
 from decimal import Decimal
-import pytest
 
 from django import VERSION
 from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 from django.utils.six import PY2
-from moneyed import Money
-import moneyed
 
+import pytest
+
+import moneyed
 from djmoney.models.fields import (
+    RATES_INSTALLED,
     MoneyPatched,
     NotSupportedLookup,
-    RATES_INSTALLED
 )
+from moneyed import Money
 
 from .testapp.models import (
     AbstractModel,
