@@ -113,4 +113,5 @@ class MoneyField(MultiValueField):
 
         return False
 
-    _has_changed = has_changed
+    if VERSION < (1, 8):
+        _has_changed = has_changed
