@@ -6,7 +6,7 @@ NB! If you are using custom model managers **not** named `objects` and you expec
 Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Added Django REST Framework support support `179 <https://github.com/django-money/django-money/issues/179>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Added Django REST Framework support `179 <https://github.com/django-money/django-money/issues/179>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Fixed ``_has_changed`` deprecation warnings `206 <https://github.com/django-money/django-money/issues/206>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Only make `objects` a MoneyManager instance automatically `194 <https://github.com/django-money/django-money/issues/194>`_ and `201 <https://github.com/django-money/django-money/issues/201>`_ (`Jeongkyu Shin <https://github.com/inureyes>`_)
