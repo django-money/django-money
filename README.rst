@@ -63,8 +63,8 @@ Use as normal model fields
         from djmoney.models.fields import MoneyField
         from django.db import models
 
-        class BankAccount(models.Model):
 
+        class BankAccount(models.Model):
             balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 Searching for models with money fields:
@@ -72,11 +72,10 @@ Searching for models with money fields:
 .. code:: python
 
         from moneyed import Money, USD, CHF
-        account = BankAccount(balance=Money(10, USD))
-        swissAccount = BankAccount(balance=Money(10, CHF))
 
-        account.save()
-        swissAccount.save()
+
+        account = BankAccount.objects.create(balance=Money(10, USD))
+        swissAccount = BankAccount.objects.create(balance=Money(10, CHF))
 
         BankAccount.objects.filter(balance__gt=Money(1, USD))
         # Returns the "account" object
@@ -91,8 +90,8 @@ instead.
         from django.db import models
         from djmoney.models.fields import MoneyField, MoneyPatched
 
-        class BankAccount(models.Model):
 
+        class BankAccount(models.Model):
             balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(MoneyPatched(100, 'GBP'))])
 
 
@@ -115,6 +114,7 @@ this two lines on your ``settings.py`` file
         from moneyed.localization import _FORMATTER
         from decimal import ROUND_HALF_EVEN
 
+
         BOB = moneyed.add_currency(
             code='BOB',
             numeric='068',
@@ -134,7 +134,8 @@ this two lines on your ``settings.py`` file
             group_size=3, group_separator=".", decimal_point=",",
             positive_sign="",  trailing_positive_sign="",
             negative_sign="-", trailing_negative_sign="",
-            rounding_method=ROUND_HALF_EVEN)
+            rounding_method=ROUND_HALF_EVEN
+        )
 
 To restrict the currencies listed on the project set a ``CURRENCIES``
 variable with a list of Currency codes on ``settings.py``
@@ -159,10 +160,10 @@ attribute, you have to wrap your manager manually, like so:
 .. code:: python
 
         from djmoney.models.managers import money_manager
+
+
         class BankAccount(models.Model):
-
             balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
-
             accounts = money_manager(MyCustomManager())
 
 Also, the money\_manager wrapper only wraps the standard QuerySet
@@ -173,6 +174,7 @@ need to manually decorate those custom methods, like so:
 .. code:: python
 
         from djmoney.models.managers import understand_money
+
 
         class MyCustomQuerySet(QuerySet):
 

@@ -50,10 +50,7 @@ SUPPORTED_LOOKUPS = ('exact', 'isnull', 'in', 'lt', 'gt', 'lte', 'gte')
 class NotSupportedLookup(Exception):
 
     def __init__(self, lookup):
-        self.lookup = lookup
-
-    def __str__(self):
-        return 'Lookup \'%s\' is not supported for MoneyField' % self.lookup
+        super(NotSupportedLookup, self).__init__('Lookup \'%s\' is not supported for MoneyField' % lookup)
 
 
 @deconstructible
@@ -102,7 +99,6 @@ class MoneyPatched(Money):
             super(MoneyPatched, self).__sub__(other))
 
     def __mul__(self, other):
-
         return MoneyPatched._patch_to_current_class(
             super(MoneyPatched, self).__mul__(other))
 
@@ -110,16 +106,15 @@ class MoneyPatched(Money):
         if hasattr(other, 'currency'):
             if self.currency == other.currency:
                 return self.amount == other.amount
-            raise TypeError('Cannot add or subtract two Money ' +
+            raise TypeError('Cannot add or subtract two Money '
                             'instances with different currencies.')
         return False
 
     def __truediv__(self, other):
+        result = super(MoneyPatched, self).__truediv__(other)
         if isinstance(other, Money):
-            return super(MoneyPatched, self).__truediv__(other)
-        else:
-            return self._patch_to_current_class(
-                super(MoneyPatched, self).__truediv__(other))
+            return result
+        return self._patch_to_current_class(result)
 
     def __rmod__(self, other):
         return MoneyPatched._patch_to_current_class(
@@ -379,11 +374,18 @@ class MoneyField(models.DecimalField):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
+    def validate_lookup(self, lookup):
+        if lookup not in SUPPORTED_LOOKUPS:
+            raise NotSupportedLookup(lookup)
+
     def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
-        if lookup_type not in SUPPORTED_LOOKUPS:
-            raise NotSupportedLookup(lookup_type)
+        self.validate_lookup(lookup_type)
         value = self.get_db_prep_save(value, connection)
         return super(MoneyField, self).get_db_prep_lookup(lookup_type, value, connection, prepared)
+
+    def get_lookup(self, lookup_name):
+        self.validate_lookup(lookup_name)
+        return super(MoneyField, self).get_lookup(lookup_name)
 
     def get_default(self):
         if isinstance(self.default, Money):

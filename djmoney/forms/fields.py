@@ -41,7 +41,7 @@ class MoneyField(MultiValueField):
         amount_field = DecimalField(max_value, min_value, max_digits, decimal_places, *args, **kwargs)
         currency_field = ChoiceField(choices=choices)
 
-        if VERSION < (1, 10) and hasattr(amount_field, '_has_changed') and hasattr(currency_field, '_has_changed'):
+        if VERSION < (1, 8) and hasattr(amount_field, '_has_changed') and hasattr(currency_field, '_has_changed'):
             amount_field.has_changed = amount_field._has_changed
             currency_field.has_changed = currency_field._has_changed
 
@@ -113,4 +113,5 @@ class MoneyField(MultiValueField):
 
         return False
 
-    _has_changed = has_changed
+    if VERSION < (1, 8):
+        _has_changed = has_changed

@@ -15,7 +15,11 @@ import moneyed
 import pytest
 from moneyed import Money
 
-from djmoney.models.fields import AUTO_CONVERT_MONEY, MoneyPatched
+from djmoney.models.fields import (
+    AUTO_CONVERT_MONEY,
+    MoneyPatched,
+    NotSupportedLookup,
+)
 
 from .testapp.models import (
     AbstractModel,
@@ -71,6 +75,11 @@ class TestVanillaMoneyField:
 
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
+
+    def test_not_supported_lookup(self):
+        with pytest.raises(NotSupportedLookup) as exc:
+            ModelWithVanillaMoneyField.objects.filter(money__regex='\d+').count()
+        assert str(exc.value) == "Lookup 'regex' is not supported for MoneyField"
 
     @pytest.mark.parametrize(
         'value',

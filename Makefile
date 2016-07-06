@@ -28,7 +28,7 @@ clean-test:
 	rm -fr htmlcov/
 
 test:
-	python setup.py test --pytest-args="--cov=djmoney"
+	python setup.py test --pytest-args="--cov=djmoney tests"
 
 coverage:
 	coverage run --source djmoney setup.py test
