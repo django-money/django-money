@@ -6,6 +6,7 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django import VERSION
 from django.db import models
 
 import moneyed
@@ -111,3 +112,9 @@ class ProxyModel(SimpleModel):
 
     class Meta:
         proxy = True
+
+
+if VERSION < (1, 7, 0):
+    from djmoney.contrib.django_rest_framework import register_money_field
+
+    register_money_field()
