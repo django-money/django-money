@@ -4,6 +4,8 @@ import sys
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 
+import djmoney
+
 
 class PyTest(TestCommand):
     user_options = [('pytest-args=', 'a', 'Arguments to pass into py.test')]
@@ -35,7 +37,7 @@ if sys.version_info[:2] == (3, 2):
 
 setup(
     name='django-money',
-    version='0.9dev',
+    version=djmoney.__version__,
     description='Adds support for using money and currency fields in django models and forms. '
                 'Uses py-moneyed as the money implementation.',
     url='https://github.com/django-money/django-money',
