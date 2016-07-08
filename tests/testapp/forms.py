@@ -10,7 +10,7 @@ from django import forms
 
 from djmoney.forms import MoneyField
 
-from .models import ModelWithVanillaMoneyField
+from .models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 
 
 class MoneyForm(forms.Form):
@@ -30,3 +30,10 @@ class MoneyModelForm(forms.ModelForm):
     class Meta:
         model = ModelWithVanillaMoneyField
         fields = ('money',)
+
+
+class NullableModelForm(forms.ModelForm):
+
+    class Meta:
+        model = NullMoneyFieldModel
+        fields = ('field', )
