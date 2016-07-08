@@ -6,6 +6,7 @@ NB! If you are using custom model managers **not** named `objects` and you expec
 Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+- Fixed default currency value for nullable fields in forms `138 <https://github.com/django-money/django-money/issues/138>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added ``in`` lookup support (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Fixed ``_has_changed`` deprecation warnings `206 <https://github.com/django-money/django-money/issues/206>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)

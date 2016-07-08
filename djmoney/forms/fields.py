@@ -51,8 +51,11 @@ class MoneyField(MultiValueField):
         if currency_widget:
             self.widget = currency_widget
         else:
-            self.widget = MoneyWidget(amount_widget=amount_field.widget, currency_widget=currency_field.widget)
-
+            self.widget = MoneyWidget(
+                amount_widget=amount_field.widget,
+                currency_widget=currency_field.widget,
+                default_currency=default_currency
+            )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
         super(MoneyField, self).__init__(fields, *args, **kwargs)
