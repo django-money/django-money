@@ -30,7 +30,7 @@ test_requirements = ['pytest>=2.8.0']
 
 
 if sys.version_info < (3, 3):
-    test_requirements.append('mock==1.0.1')
+    test_requirements.append('mock')
 if sys.version_info[:2] == (3, 2):
     test_requirements.append('coverage==3.7.1')
 
