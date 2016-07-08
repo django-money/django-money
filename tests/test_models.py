@@ -11,15 +11,15 @@ from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 from django.utils.six import PY2
 
-import moneyed
 import pytest
-from moneyed import Money
 
+import moneyed
 from djmoney.models.fields import (
-    AUTO_CONVERT_MONEY,
+    RATES_INSTALLED,
     MoneyPatched,
     NotSupportedLookup,
 )
+from moneyed import Money
 
 from .testapp.models import (
     AbstractModel,
@@ -351,7 +351,7 @@ class TestProxyModel:
 
 
 rates_is_available = pytest.mark.skipif(
-    not AUTO_CONVERT_MONEY,
+    not RATES_INSTALLED,
     reason='You need to install django-money-rates to run this test'
 )
 
@@ -362,16 +362,26 @@ pytest_plugins = 'pytester'
 class TestDifferentCurrencies:
     """Test add/sub operations between different currencies"""
 
+    def test_add_default(self, settings):
+        with pytest.raises(TypeError):
+            MoneyPatched(10, 'EUR') + Money(1, 'USD')
+
+    def test_sub_default(self, settings):
+        with pytest.raises(TypeError):
+            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+
     @rates_is_available
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_add(self):
+    def test_add_with_auto_convert(self, settings):
+        settings.DJMONEY_AUTO_CONVERT_MONEY = True
         result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
         assert result.currency == moneyed.EUR
 
     @rates_is_available
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_sub(self):
+    def test_sub_with_auto_convert(self, settings):
+        settings.DJMONEY_AUTO_CONVERT_MONEY = True
         result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
         assert result.currency == moneyed.EUR
@@ -405,8 +415,8 @@ class TestDifferentCurrencies:
         ''' % installed_apps)
         testdir.makepyfile('''
         def test_app_is_installed():
-            from djmoney.models.fields import AUTO_CONVERT_MONEY
-            assert AUTO_CONVERT_MONEY is %s
+            from djmoney.models.fields import RATES_INSTALLED
+            assert RATES_INSTALLED is %s
         ''' % rates_installed)
         result = testdir.runpytest_subprocess('--verbose', '-s', '--ds', 'test_settings')
         assert 'test_app_is_installed.py::test_app_is_installed PASSED' in result.stdout.lines

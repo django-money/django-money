@@ -5,16 +5,15 @@ import inspect
 from decimal import ROUND_DOWN, Decimal
 
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
+from djmoney import forms
 from moneyed import Currency, Money
 from moneyed.localization import _FORMATTER, format_money
-
-from djmoney import forms
 
 from .._compat import (
     BaseExpression,
@@ -34,12 +33,17 @@ from ..utils import get_currency_field_name, prepare_expression
 if 'djmoney_rates' in settings.INSTALLED_APPS:
     try:
         from djmoney_rates.utils import convert_money
-        AUTO_CONVERT_MONEY = True
+        RATES_INSTALLED = True
     except ImportError:
         # NOTE. djmoney_rates doesn't support Django 1.9+
-        AUTO_CONVERT_MONEY = False
+        RATES_INSTALLED = False
 else:
-    AUTO_CONVERT_MONEY = False
+    RATES_INSTALLED = False
+
+
+if getattr(settings, 'DJMONEY_AUTO_CONVERT_MONEY', False):
+    if not RATES_INSTALLED:
+        raise ImproperlyConfigured("You must install djmoney-rates to use DJMONEY_AUTO_CONVERT_MONEY==True")
 
 
 __all__ = ('MoneyField', 'NotSupportedLookup')
@@ -68,7 +72,7 @@ class MoneyPatched(Money):
         """
         Converts other Money instances to the local currency
         """
-        if AUTO_CONVERT_MONEY:
+        if getattr(settings, 'DJMONEY_AUTO_CONVERT_MONEY', False):
             return convert_money(other.amount, other.currency, self.currency)
         else:
             return other

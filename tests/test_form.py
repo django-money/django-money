@@ -6,8 +6,9 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
-import moneyed
 import pytest
+
+import moneyed
 from moneyed import Money
 
 from .testapp.forms import (
