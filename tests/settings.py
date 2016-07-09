@@ -25,7 +25,7 @@ TEMPLATES = [
 
 warnings.simplefilter('ignore', Warning)
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -37,7 +37,7 @@ INSTALLED_APPS = (
     'reversion',
 
     'tests.testapp'
-)
+]
 
 SITE_ID = 1
 ROOT_URLCONF = 'core.urls'

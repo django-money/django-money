@@ -275,3 +275,11 @@ Working with Exchange Rates
 To work with exchange rates, check out this repo that builds off of
 django-money: https://github.com/evonove/django-money-rates
 
+django-money can be configured to automatically use this app for currency
+conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
+settings. Note that currency conversion is a lossy process, so automatic
+conversion is usually a good strategy only for very simple use cases. For most
+use cases you will need to be clear about exactly when currency conversion
+occurs, and automatic conversion can hide bugs. Also, with automatic conversion
+you lose some properties like commutativity (``A + B == B + A``) due to
+conversions happening in different directions.

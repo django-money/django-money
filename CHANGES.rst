@@ -7,6 +7,9 @@ Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Added Django REST Framework support `179 <https://github.com/django-money/django-money/issues/179>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
+  be off by default. You must now add ``AUTO_CONVERT_MONEY = True`` in
+  your ``settings.py`` if you want this feature. `199 <https://github.com/django-money/django-money/issues/199>`_  `Luke Plant <https://github.com/spookylukey>`_
 - Fixed default currency value for nullable fields in forms `138 <https://github.com/django-money/django-money/issues/138>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added ``in`` lookup support (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Fixed ``_has_changed`` deprecation warnings `206 <https://github.com/django-money/django-money/issues/206>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
@@ -16,11 +19,19 @@ Changes and new features
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In 0.8, Django-money automatically patches every model managers with MoneyManager. This causes migration problems if two or more managers are used in the same model.
+In 0.8, Django-money automatically patches every model managers with
+``MoneyManager``. This causes migration problems if two or more managers are
+used in the same model.
 
-As a side effect, other managers are also finally wrapped with ``MoneyManager``. This effect leads Django migration to point to fields with other managers to ``MoneyManager``, and raises ``ValueError`` (``MoneyManager`` only exists as a return of ``money_manager``, not a class-form. However migration procedure tries to find ``MoneyManager`` to patch other managers.)
+As a side effect, other managers are also finally wrapped with ``MoneyManager``.
+This effect leads Django migration to point to fields with other managers to
+``MoneyManager``, and raises ``ValueError`` (``MoneyManager`` only exists as a
+return of ``money_manager``, not a class-form. However migration procedure tries
+to find ``MoneyManager`` to patch other managers.)
 
-From 0.9, Django-money only patches ``objects`` with ``MoneyManager`` by default (as documented). To patch other managers (e.g. custom managers), patch them by wrapping with ``money_manager``.
+From 0.9, Django-money only patches ``objects`` with ``MoneyManager`` by default
+(as documented). To patch other managers (e.g. custom managers), patch them by
+wrapping with ``money_manager``.
 
 .. code-block:: python
     from djmoney.models.managers import money_manager
