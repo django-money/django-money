@@ -6,7 +6,7 @@ from decimal import ROUND_DOWN, Decimal
 
 from django import VERSION
 from django.conf import settings
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import F
 from django.db.models.signals import class_prepared
@@ -28,19 +28,6 @@ from .._compat import (
 )
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from ..utils import get_currency_field_name, prepare_expression
-
-
-# If django-money-rates is installed we can automatically
-# perform operations with different currencies
-if 'djmoney_rates' in settings.INSTALLED_APPS:
-    try:
-        from djmoney_rates.utils import convert_money
-        AUTO_CONVERT_MONEY = True
-    except ImportError:
-        # NOTE. djmoney_rates doesn't support Django 1.9+
-        AUTO_CONVERT_MONEY = False
-else:
-    AUTO_CONVERT_MONEY = False
 
 
 __all__ = ('MoneyField', 'NotSupportedLookup')
@@ -67,12 +54,19 @@ class MoneyPatched(Money):
 
     def _convert_to_local_currency(self, other):
         """
-        Converts other Money instances to the local currency
+        Converts other Money instances to the local currency.
+        If django-money-rates is installed we can automatically perform operations with different currencies
         """
-        if AUTO_CONVERT_MONEY:
-            return convert_money(other.amount, other.currency, self.currency)
-        else:
-            return other
+        if getattr(settings, 'AUTO_CONVERT_MONEY', False):
+            if 'djmoney_rates' in settings.INSTALLED_APPS:
+                try:
+                    from djmoney_rates.utils import convert_money
+
+                    return convert_money(other.amount, other.currency, self.currency)
+                except ImportError:
+                    raise ImproperlyConfigured('djmoney_rates doesn\'t support Django 1.9+')
+            raise ImproperlyConfigured('You must install djmoney-rates to use AUTO_CONVERT_MONEY = True')
+        return other
 
     @classmethod
     def _patch_to_current_class(cls, money):
@@ -107,8 +101,7 @@ class MoneyPatched(Money):
         if hasattr(other, 'currency'):
             if self.currency == other.currency:
                 return self.amount == other.amount
-            raise TypeError('Cannot add or subtract two Money '
-                            'instances with different currencies.')
+            raise TypeError('Cannot add or subtract two Money instances with different currencies.')
         return False
 
     def __truediv__(self, other):

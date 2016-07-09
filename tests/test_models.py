@@ -7,7 +7,7 @@ Created on May 7, 2011
 from decimal import Decimal
 
 from django import VERSION
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
@@ -16,12 +16,7 @@ import moneyed
 import pytest
 from moneyed import Money
 
-from djmoney.models.fields import (
-    AUTO_CONVERT_MONEY,
-    MoneyField,
-    MoneyPatched,
-    NotSupportedLookup,
-)
+from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
 
 from .testapp.models import (
     AbstractModel,
@@ -366,28 +361,27 @@ class TestProxyModel:
         assert ProxyModel.objects.filter(money__gt=Money('50.00', 'GBP')).count() == 0
 
 
-rates_is_available = pytest.mark.skipif(
-    not AUTO_CONVERT_MONEY,
-    reason='You need to install django-money-rates to run this test'
-)
-
-
-pytest_plugins = 'pytester'
-
-
 class TestDifferentCurrencies:
     """Test add/sub operations between different currencies"""
 
-    @rates_is_available
+    def test_add_default(self):
+        with pytest.raises(TypeError):
+            MoneyPatched(10, 'EUR') + Money(1, 'USD')
+
+    def test_sub_default(self):
+        with pytest.raises(TypeError):
+            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_add(self):
+    def test_add_with_auto_convert(self, settings):
+        settings.AUTO_CONVERT_MONEY = True
         result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
         assert result.currency == moneyed.EUR
 
-    @rates_is_available
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_sub(self):
+    def test_sub_with_auto_convert(self, settings):
+        settings.AUTO_CONVERT_MONEY = True
         result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
         assert result.currency == moneyed.EUR
@@ -402,30 +396,20 @@ class TestDifferentCurrencies:
         with pytest.raises(TypeError):
             MoneyPatched(10, 'EUR') == Money(10, 'USD')
 
-    @pytest.mark.parametrize(
-        'rates_installed', (
-            pytest.mark.xfail(VERSION >= (1, 9), reason='djmoney_rates doesn\'t support Django 1.9+')(True),
-            False
-        )
-    )
-    def test_app_is_installed(self, testdir, rates_installed):
-        """
-        See #173.
-        """
-        installed_apps = ['djmoney']
-        if rates_installed:
-            installed_apps.append('djmoney_rates')
-        testdir.makepyfile(test_settings='''
-        INSTALLED_APPS = %s
-        SECRET_KEY = 'foobar'
-        ''' % installed_apps)
-        testdir.makepyfile('''
-        def test_app_is_installed():
-            from djmoney.models.fields import AUTO_CONVERT_MONEY
-            assert AUTO_CONVERT_MONEY is %s
-        ''' % rates_installed)
-        result = testdir.runpytest_subprocess('--verbose', '-s', '--ds', 'test_settings')
-        assert 'test_app_is_installed.py::test_app_is_installed PASSED' in result.stdout.lines
+    @pytest.mark.skipif(VERSION < (1, 9), reason='djmoney_rates supports only Django < 1.9')
+    def test_incompatibility(self, settings):
+        settings.AUTO_CONVERT_MONEY = True
+        with pytest.raises(ImproperlyConfigured) as exc:
+            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+        assert str(exc.value) == 'djmoney_rates doesn\'t support Django 1.9+'
+
+    def test_djmoney_rates_not_installed(self, settings):
+        settings.AUTO_CONVERT_MONEY = True
+        settings.INSTALLED_APPS.remove('djmoney_rates')
+
+        with pytest.raises(ImproperlyConfigured) as exc:
+            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+        assert str(exc.value) == 'You must install djmoney-rates to use AUTO_CONVERT_MONEY = True'
 
 
 @pytest.mark.parametrize(

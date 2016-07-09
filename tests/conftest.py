@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 
+from django import VERSION
+
 import pytest
 from moneyed import Money
 
@@ -14,11 +16,13 @@ def patched_convert_money():
     """
     The `convert_money` function will always return amount * 0.88.
     """
+    if VERSION >= (1, 9):
+        pytest.xfail('djmoney_rates doesn\'t support Django 1.9+')
 
     def convert_money(amount, currency_from, currency_to):  # noqa
         return Money(amount * Decimal('0.88'), currency_to)
 
-    with patch('djmoney.models.fields.convert_money', side_effect=convert_money) as patched:
+    with patch('djmoney_rates.utils.convert_money', side_effect=convert_money) as patched:
         yield patched
 
 
