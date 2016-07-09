@@ -11,15 +11,15 @@ from django.core.exceptions import ValidationError
 from django.db.models import F, Q
 from django.utils.six import PY2
 
-import pytest
-
 import moneyed
+import pytest
+from moneyed import Money
+
 from djmoney.models.fields import (
     RATES_INSTALLED,
     MoneyPatched,
     NotSupportedLookup,
 )
-from moneyed import Money
 
 from .testapp.models import (
     AbstractModel,

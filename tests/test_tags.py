@@ -5,9 +5,9 @@ from django.template import Context, Template
 from django.utils.translation import override
 
 import pytest
+from moneyed import Money
 
 from djmoney.models.fields import MoneyPatched
-from moneyed import Money
 
 
 def assert_template(string, result, context=None):
