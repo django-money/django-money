@@ -134,6 +134,7 @@ class TestVanillaMoneyField:
             (Q(amount1=F('amount2')), 1),
             (Q(amount1__gt=F('amount2')), 2),
             (Q(amount1__in=(Money(1, 'USD'), Money(5, 'EUR'))), 2),
+            (Q(id__in=(-1, -2)), 0),
             (Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD')) | Q(amount2=Money(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(5, 'USD')) | Q(amount2=Money(0, 'GHS')), 3),
