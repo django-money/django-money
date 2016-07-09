@@ -6,18 +6,21 @@ NB! If you are using custom model managers **not** named `objects` and you expec
 Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-- Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
-- Only make `objects` a MoneyManager instance automatically `194 <https://github.com/django-money/django-money/issues/194>`_ and `201 <https://github.com/django-money/django-money/issues/201>`_ (`Jeongkyu Shin <https://github.com/inureyes>`_)
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
   be off by default. You must now add ``DJMONEY_AUTO_CONVERT_MONEY = True`` in
-  your ``settings.py`` if you want this feature.
+  your ``settings.py`` if you want this feature. `199 <https://github.com/django-money/django-money/issues/199>`_  `Luke Plant <https://github.com/spookylukey>`_
+- Fixed default currency value for nullable fields in forms `138 <https://github.com/django-money/django-money/issues/138>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Added ``in`` lookup support (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Fixed ``_has_changed`` deprecation warnings `206 <https://github.com/django-money/django-money/issues/206>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Only make `objects` a MoneyManager instance automatically `194 <https://github.com/django-money/django-money/issues/194>`_ and `201 <https://github.com/django-money/django-money/issues/201>`_ (`Jeongkyu Shin <https://github.com/inureyes>`_)
 
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In 0.8, Django-money automatically patches every model managers with
 ``MoneyManager``. This causes migration problems if two or more managers are
-used in the same model. 
+used in the same model.
 
 As a side effect, other managers are also finally wrapped with ``MoneyManager``.
 This effect leads Django migration to point to fields with other managers to

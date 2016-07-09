@@ -41,7 +41,7 @@ class MoneyField(MultiValueField):
         amount_field = DecimalField(max_value, min_value, max_digits, decimal_places, *args, **kwargs)
         currency_field = ChoiceField(choices=choices)
 
-        if VERSION < (1, 10) and hasattr(amount_field, '_has_changed') and hasattr(currency_field, '_has_changed'):
+        if VERSION < (1, 8) and hasattr(amount_field, '_has_changed') and hasattr(currency_field, '_has_changed'):
             amount_field.has_changed = amount_field._has_changed
             currency_field.has_changed = currency_field._has_changed
 
@@ -51,8 +51,11 @@ class MoneyField(MultiValueField):
         if currency_widget:
             self.widget = currency_widget
         else:
-            self.widget = MoneyWidget(amount_widget=amount_field.widget, currency_widget=currency_field.widget)
-
+            self.widget = MoneyWidget(
+                amount_widget=amount_field.widget,
+                currency_widget=currency_field.widget,
+                default_currency=default_currency
+            )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
         super(MoneyField, self).__init__(fields, *args, **kwargs)

@@ -14,9 +14,10 @@ from .testapp.forms import (
     MoneyForm,
     MoneyFormMultipleCurrencies,
     MoneyModelForm,
+    NullableModelForm,
     OptionalMoneyForm,
 )
-from .testapp.models import ModelWithVanillaMoneyField
+from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 
 
 pytestmark = pytest.mark.django_db
@@ -93,3 +94,12 @@ def test_optional_money_form(data, result):
     in, but 'money_0' could be absent/empty.
     """
     assert OptionalMoneyForm(data).is_valid() is result
+
+
+def test_default_currency():
+    """
+    If field is nullable, then field's default_currency value should be selected by default.
+    """
+    instance = NullMoneyFieldModel.objects.create()
+    form = NullableModelForm(instance=instance)
+    assert '<option value="USD" selected="selected">US Dollar</option>' in form.as_p()
