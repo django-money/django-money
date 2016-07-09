@@ -7,6 +7,7 @@ Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Fixed default currency value for nullable fields in forms `138 <https://github.com/django-money/django-money/issues/138>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
+- Added ``in`` lookup support (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Fixed ``_has_changed`` deprecation warnings `206 <https://github.com/django-money/django-money/issues/206>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Only make `objects` a MoneyManager instance automatically `194 <https://github.com/django-money/django-money/issues/194>`_ and `201 <https://github.com/django-money/django-money/issues/201>`_ (`Jeongkyu Shin <https://github.com/inureyes>`_)
@@ -14,7 +15,7 @@ Changes and new features
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In 0.8, Django-money automatically patches every model managers with MoneyManager. This causes migration problems if two or more managers are used in the same model. 
+In 0.8, Django-money automatically patches every model managers with MoneyManager. This causes migration problems if two or more managers are used in the same model.
 
 As a side effect, other managers are also finally wrapped with ``MoneyManager``. This effect leads Django migration to point to fields with other managers to ``MoneyManager``, and raises ``ValueError`` (``MoneyManager`` only exists as a return of ``money_manager``, not a class-form. However migration procedure tries to find ``MoneyManager`` to patch other managers.)
 

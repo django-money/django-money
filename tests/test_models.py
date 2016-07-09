@@ -115,11 +115,23 @@ class TestVanillaMoneyField:
 
         assert retrieved.money == Money('100.06')
 
+    @pytest.fixture
+    def objects_setup(self):
+        ModelWithTwoMoneyFields.objects.bulk_create((
+            ModelWithTwoMoneyFields(amount1=Money(1, 'USD'), amount2=Money(2, 'USD')),
+            ModelWithTwoMoneyFields(amount1=Money(2, 'USD'), amount2=Money(0, 'USD')),
+            ModelWithTwoMoneyFields(amount1=Money(3, 'USD'), amount2=Money(0, 'USD')),
+            ModelWithTwoMoneyFields(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS')),
+            ModelWithTwoMoneyFields(amount1=Money(5, 'USD'), amount2=Money(5, 'USD')),
+            ModelWithTwoMoneyFields(amount1=Money(5, 'EUR'), amount2=Money(5, 'USD')),
+        ))
+
     @pytest.mark.parametrize(
         'filters, expected_count',
         (
             (Q(amount1=F('amount2')), 1),
             (Q(amount1__gt=F('amount2')), 2),
+            (Q(amount1__in=(Money(1, 'USD'), Money(5, 'EUR'))), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD')) | Q(amount2=Money(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(5, 'USD')) | Q(amount2=Money(0, 'GHS')), 3),
@@ -128,15 +140,8 @@ class TestVanillaMoneyField:
             (Q(amount1=Money(1, 'USD')) | Q(amount1__gte=Money(4, 'USD'), amount2=Money(0, 'GHS')), 2),
         )
     )
+    @pytest.mark.usefixtures('objects_setup')
     def test_comparison_lookup(self, filters, expected_count):
-        ModelWithTwoMoneyFields.objects.bulk_create((
-            ModelWithTwoMoneyFields(amount1=Money(1, 'USD'), amount2=Money(2, 'USD')),
-            ModelWithTwoMoneyFields(amount1=Money(2, 'USD'), amount2=Money(0, 'USD')),
-            ModelWithTwoMoneyFields(amount1=Money(3, 'USD'), amount2=Money(0, 'USD')),
-            ModelWithTwoMoneyFields(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS')),
-            ModelWithTwoMoneyFields(amount1=Money(5, 'USD'), amount2=Money(5, 'USD')),
-        ))
-
         assert ModelWithTwoMoneyFields.objects.filter(filters).count() == expected_count
 
     def test_exact_match(self):
@@ -163,6 +168,14 @@ class TestVanillaMoneyField:
 
         assert model_class.objects.filter(money__lt=Money('1000', moneyed.USD)).count() == 0
         assert model_class.objects.filter(money__lt=Money('1000', moneyed.ZWN)).count() == 1
+
+    @pytest.mark.usefixtures('objects_setup')
+    def test_in_lookup(self):
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(Money(1, 'USD'), Money(5, 'EUR'))).count() == 2
+        assert ModelWithTwoMoneyFields.objects.filter(
+            Q(amount1__lte=Money(2, 'USD')), amount1__in=(Money(1, 'USD'), Money(3, 'USD'))
+        ).count() == 1
+        assert ModelWithTwoMoneyFields.objects.exclude(amount1__in=(Money(1, 'USD'), Money(5, 'EUR'))).count() == 4
 
     def test_isnull_lookup(self):
         NullMoneyFieldModel.objects.create(field=None)

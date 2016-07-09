@@ -150,7 +150,7 @@ class TestKwargsExpand:
         )
     )
     def test_simple(self, value, expected):
-        assert _expand_money_kwargs(ModelWithNonMoneyField, value) == expected
+        assert _expand_money_kwargs(ModelWithNonMoneyField, kwargs=value)[1] == expected
 
     @pytest.mark.parametrize(
         'value, expected', (
@@ -161,14 +161,14 @@ class TestKwargsExpand:
         )
     )
     def test_complex_f_query(self, value, expected):
-        result = _expand_money_kwargs(ModelWithNonMoneyField, value)
-        assert isinstance(result['money_currency'], F)
-        assert result['money_currency'].name == 'money_currency'
-        rhs = split_expression(result['money'])[1]
+        _, kwargs = _expand_money_kwargs(ModelWithNonMoneyField, kwargs=value)
+        assert isinstance(kwargs['money_currency'], F)
+        assert kwargs['money_currency'].name == 'money_currency'
+        rhs = split_expression(kwargs['money'])[1]
         assert get_amount(rhs) == expected
 
     def test_simple_f_query(self):
-        result = _expand_money_kwargs(ModelWithNonMoneyField, {'money': F('money')})
-        assert isinstance(result['money_currency'], F)
-        assert result['money_currency'].name == 'money_currency'
-        assert result['money'].name == 'money'
+        _, kwargs = _expand_money_kwargs(ModelWithNonMoneyField, kwargs={'money': F('money')})
+        assert isinstance(kwargs['money_currency'], F)
+        assert kwargs['money_currency'].name == 'money_currency'
+        assert kwargs['money'].name == 'money'
