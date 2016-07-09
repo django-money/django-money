@@ -8,6 +8,7 @@ from decimal import Decimal
 
 from django import VERSION
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
 
@@ -19,7 +20,7 @@ from djmoney.models.fields import (
     AUTO_CONVERT_MONEY,
     MoneyPatched,
     NotSupportedLookup,
-)
+    MoneyField)
 
 from .testapp.models import (
     AbstractModel,
@@ -459,3 +460,26 @@ def test_migration_serialization():
     else:
         serialized = 'djmoney.models.fields.MoneyPatched(100, \'GBP\')'
     assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (serialized, imports)
+
+
+no_system_checks_framework = pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has system checks framework')
+
+
+class TestFieldAttributes:
+
+    @pytest.mark.parametrize('field_kwargs, message', (
+        no_system_checks_framework(
+            ({'max_digits': 10}, 'You have to provide a decimal_places attribute to Money fields.')
+        ),
+        no_system_checks_framework(
+            ({'decimal_places': 2}, 'You have to provide a max_digits attribute to Money fields.')
+        ),
+        ({'default': {}}, 'default value must be an instance of Money, is: {}'),
+    ))
+    def test_missing_attributes(self, field_kwargs, message):
+        with pytest.raises(ValueError) as exc:
+
+            class Model(models.Model):
+                field = MoneyField(**field_kwargs)
+
+        assert str(exc.value) == message

@@ -4,6 +4,7 @@ from __future__ import division
 import inspect
 from decimal import ROUND_DOWN, Decimal
 
+from django import VERSION
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
@@ -289,10 +290,23 @@ class MoneyField(models.DecimalField):
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES, **kwargs):
         nullable = kwargs.get('null', False)
+        default = self.setup_default(default, default_currency, nullable)
+        if not default_currency:
+            default_currency = default.currency
+
+        if VERSION < (1, 7):
+            self.check_field_attributes(decimal_places, max_digits)
+
+        self.default_currency = default_currency
+        self.currency_choices = currency_choices
+        self.frozen_by_south = kwargs.pop('frozen_by_south', False)
+
+        super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
+
+    def setup_default(self, default, default_currency, nullable):
         if default is None and not nullable:
             # Backwards compatible fix for non-nullable fields
             default = 0.0
-
         if isinstance(default, string_types):
             try:
                 # handle scenario where default is formatted like:
@@ -307,30 +321,19 @@ class MoneyField(models.DecimalField):
             default = Money(Decimal(amount), Currency(code=currency))
         elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
-
         if not (nullable and default is None) and not isinstance(default, Money):
-            raise Exception(
-                'default value must be an instance of Money, is: %s' % str(default))
+            raise ValueError('default value must be an instance of Money, is: %s' % default)
+        return default
 
-        # Avoid giving the user hard-to-debug errors if they miss required attributes
+    def check_field_attributes(self, decimal_places, max_digits):
+        """
+        Django < 1.7 has no system checks framework.
+        Avoid giving the user hard-to-debug errors if they miss required attributes.
+        """
         if max_digits is None:
-            raise Exception(
-                'You have to provide a max_digits attribute to Money fields.')
-
+            raise ValueError('You have to provide a max_digits attribute to Money fields.')
         if decimal_places is None:
-            raise Exception(
-                'You have to provide a decimal_places attribute to Money fields.')
-
-        if not default_currency:
-            default_currency = default.currency
-
-        self.default_currency = default_currency
-        self.currency_choices = currency_choices
-        self.frozen_by_south = kwargs.pop('frozen_by_south', False)
-
-        super(MoneyField, self).__init__(verbose_name, name, max_digits,
-                                         decimal_places, default=default,
-                                         **kwargs)
+            raise ValueError('You have to provide a decimal_places attribute to Money fields.')
 
     def to_python(self, value):
         if isinstance(value, Expression):
