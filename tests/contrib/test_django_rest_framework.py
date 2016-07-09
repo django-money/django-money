@@ -1,11 +1,15 @@
 # coding: utf-8
 import pytest
 from moneyed import Money
-from rest_framework import serializers
-
-from djmoney.contrib.django_rest_framework.helpers import IS_DRF_3
 
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
+
+
+try:
+    from rest_framework import serializers
+    from djmoney.contrib.django_rest_framework.helpers import IS_DRF_3
+except ImportError:
+    pytest.skip()
 
 
 pytestmark = pytest.mark.django_db
