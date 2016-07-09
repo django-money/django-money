@@ -360,9 +360,6 @@ class TestProxyModel:
         assert ProxyModel.objects.filter(money__gt=Money('50.00', 'GBP')).count() == 0
 
 
-pytest_plugins = 'pytester'
-
-
 class TestDifferentCurrencies:
     """Test add/sub operations between different currencies"""
 
