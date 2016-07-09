@@ -109,15 +109,15 @@ def _expand_money_args(model, args):
                             child,
                             (get_currency_field_name(clean_name), smart_unicode(value.currency))
                         ])
+                    field = _get_field(model, name)
                     if isinstance(value, (BaseExpression, F)):
-                        field = _get_field(model, name)
                         if isinstance(field, MoneyField):
                             clean_name = _get_clean_name(name)
                             arg.children[i] = Q(*[
                                 child,
                                 (get_currency_field_name(clean_name), F(get_currency_field_name(value.name)))
                             ])
-                    if is_in_lookup(name, value):
+                    if isinstance(field, MoneyField) and is_in_lookup(name, value):
                         arg.children[i] = _convert_in_lookup(model, name, value)
     return args
 
