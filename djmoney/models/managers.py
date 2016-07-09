@@ -65,6 +65,33 @@ def _get_field(model, name):
     return field
 
 
+def is_in_lookup(name, value):
+    return hasattr(value, '__iter__') & (name.split(LOOKUP_SEP)[-1] == 'in')
+
+
+def _convert_in_lookup(model, field_name, options):
+    """
+    ``in`` lookup can not be represented as keyword lookup.
+    It requires transformation to combination of ``Q`` objects.
+
+    Example:
+
+        amount__in=[Money(10, 'EUR'), Money(5, 'USD)]
+
+        is equivalent to:
+
+        Q(amount=10, amount_currency='EUR') or Q(amount=5, amount_currency='USD')
+    """
+    field = _get_field(model, field_name)
+    new_query = Q()
+    for value in options:
+        new_query |= Q(**{
+            field.name: value.amount,
+            get_currency_field_name(field.name): value.currency
+        })
+    return new_query
+
+
 def _expand_money_args(model, args):
     """
     Augments args so that they contain _currency lookups - ie.. Q() | Q()
@@ -90,10 +117,12 @@ def _expand_money_args(model, args):
                                 child,
                                 (get_currency_field_name(clean_name), F(get_currency_field_name(value.name)))
                             ])
+                    if is_in_lookup(name, value):
+                        arg.children[i] = _convert_in_lookup(model, name, value)
     return args
 
 
-def _expand_money_kwargs(model, kwargs):
+def _expand_money_kwargs(model, args=(), kwargs=None):
     """
     Augments kwargs so that they contain _currency lookups.
     """
@@ -102,13 +131,16 @@ def _expand_money_kwargs(model, kwargs):
             clean_name = _get_clean_name(name)
             kwargs[name] = value.amount
             kwargs[get_currency_field_name(clean_name)] = smart_unicode(value.currency)
-        elif isinstance(value, (BaseExpression, F)) and \
-                isinstance(_get_field(model, name), MoneyField):
-            clean_name = _get_clean_name(name)
-            if not isinstance(value, F):
-                value = prepare_expression(value)
-            kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
-    return kwargs
+        elif isinstance(_get_field(model, name), MoneyField):
+            if isinstance(value, (BaseExpression, F)):
+                clean_name = _get_clean_name(name)
+                if not isinstance(value, F):
+                    value = prepare_expression(value)
+                kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
+            if is_in_lookup(name, value):
+                args += (_convert_in_lookup(model, name, value), )
+                del kwargs[name]
+    return args, kwargs
 
 
 def understands_money(model, func):
@@ -126,8 +158,7 @@ def understands_money(model, func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         args = _expand_money_args(model, args)
-        kwargs = kwargs.copy()
-        kwargs = _expand_money_kwargs(model, kwargs)
+        args, kwargs = _expand_money_kwargs(model, args, kwargs)
         return func(*args, **kwargs)
 
     return wrapper
