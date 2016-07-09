@@ -7,7 +7,7 @@ Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
-  be off by default. You must now add ``DJMONEY_AUTO_CONVERT_MONEY = True`` in
+  be off by default. You must now add ``AUTO_CONVERT_MONEY = True`` in
   your ``settings.py`` if you want this feature. `199 <https://github.com/django-money/django-money/issues/199>`_  `Luke Plant <https://github.com/spookylukey>`_
 - Fixed default currency value for nullable fields in forms `138 <https://github.com/django-money/django-money/issues/138>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added ``in`` lookup support (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
