@@ -18,9 +18,10 @@ from moneyed import Money
 
 from djmoney.models.fields import (
     AUTO_CONVERT_MONEY,
+    MoneyField,
     MoneyPatched,
     NotSupportedLookup,
-    MoneyField)
+)
 
 from .testapp.models import (
     AbstractModel,
