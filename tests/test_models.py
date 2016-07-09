@@ -469,3 +469,7 @@ class TestFieldAttributes:
                 field = MoneyField(**field_kwargs)
 
         assert str(exc.value) == message
+
+
+def test_package_is_importable():
+    __import__('djmoney.__init__')
