@@ -27,7 +27,7 @@ class TestMoneyField:
 
     @pytest.mark.parametrize(
         'model_class, create_kwargs, expected', (
-            (NullMoneyFieldModel, {'field': None}, {'field': None, 'field_currency': 'XYZ'}),
+            (NullMoneyFieldModel, {'field': None}, {'field': None, 'field_currency': 'USD'}),
             (
                 NullMoneyFieldModel,
                 {'field': Money(10, 'USD')},
