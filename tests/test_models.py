@@ -453,6 +453,16 @@ no_system_checks_framework = pytest.mark.skipif(VERSION >= (1, 7), reason='Djang
 
 class TestFieldAttributes:
 
+    def create_class(self, **field_kwargs):
+
+        class Model(models.Model):
+            field = MoneyField(**field_kwargs)
+
+            class Meta:
+                app_label = 'test'
+
+        return Model
+
     @pytest.mark.parametrize('field_kwargs, message', (
         no_system_checks_framework(
             ({'max_digits': 10}, 'You have to provide a decimal_places attribute to Money fields.')
@@ -464,11 +474,14 @@ class TestFieldAttributes:
     ))
     def test_missing_attributes(self, field_kwargs, message):
         with pytest.raises(ValueError) as exc:
-
-            class Model(models.Model):
-                field = MoneyField(**field_kwargs)
-
+            self.create_class(**field_kwargs)
         assert str(exc.value) == message
+
+    def test_default_currency(self):
+        klass = self.create_class(default_currency=None, default=Money(10, 'EUR'), max_digits=10, decimal_places=2)
+        assert str(klass._meta.fields[2].default_currency) == 'EUR'
+        instance = klass()
+        assert instance.field == Money(10, 'EUR')
 
 
 def test_package_is_importable():
