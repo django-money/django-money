@@ -34,9 +34,9 @@ except ImportError:
     from django.utils.encoding import smart_text as smart_unicode
 
 try:
-    from django.db.models import Value
+    from django.db.models import Case, Func, Value, When
 except ImportError:
-    Value = None
+    Case, Func, Value, When = None, None, None, None
 
 try:
     string_types = (basestring,)

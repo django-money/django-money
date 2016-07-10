@@ -20,6 +20,7 @@ from djmoney import forms
 from .._compat import (
     BaseExpression,
     Expression,
+    Func,
     Value,
     deconstructible,
     setup_managers,
@@ -235,6 +236,8 @@ class MoneyFieldProxy(object):
         if isinstance(value, BaseExpression):
             if Value and isinstance(value, Value):
                 value = self.prepare_value(obj, value.value)
+            elif Func and isinstance(value, Func):
+                pass
             else:
                 validate_money_expression(obj, value)
                 prepare_expression(value)

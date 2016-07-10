@@ -16,7 +16,7 @@ import moneyed
 import pytest
 from moneyed import Money
 
-from djmoney._compat import Value
+from djmoney._compat import Case, Func, Value, When
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
 
 from .testapp.models import (
@@ -306,20 +306,39 @@ class TestFExpressions:
 
 
 @pytest.mark.skipif(VERSION < (1, 8), reason='Only Django 1.8+ supports query expressions')
-class TestValueExpressions:
+class TestExpressions:
+
+    def test_conditional_update(self):
+        ModelWithVanillaMoneyField.objects.bulk_create((
+            ModelWithVanillaMoneyField(money=Money(1, 'USD'), integer=0),
+            ModelWithVanillaMoneyField(money=Money(2, 'USD'), integer=1),
+        ))
+        ModelWithVanillaMoneyField.objects.update(money=Case(
+            When(integer=0, then=Value(10)),
+            default=Value(0)
+        ))
+        assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(10, 'USD')
+        assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(0, 'USD')
+
+    @pytest.mark.skipif(VERSION < (1, 9), reason='Only Django 1.9+ supports this')
+    def test_create_func(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Func(Value(-10), function='ABS'))
+        instance.refresh_from_db()
+        assert instance.money.amount == 10
 
     @pytest.mark.parametrize(
         'value, expected', (
-            (10, Money(10, 'XYZ')),
-            (Money(10, 'USD'), Money(10, 'USD')),
+            (None, None),
+            (10, Money(10, 'USD')),
+            (Money(10, 'EUR'), Money(10, 'EUR')),
         )
     )
-    def test_valid(self, value, expected):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Value(value))
+    def test_value_create(self, value, expected):
+        instance = NullMoneyFieldModel.objects.create(field=Value(value))
         instance.refresh_from_db()
-        assert instance.money == expected
+        assert instance.field == expected
 
-    def test_invalid(self):
+    def test_value_create_invalid(self):
         with pytest.raises(ValidationError):
             ModelWithVanillaMoneyField.objects.create(money=Value('string'))
 
