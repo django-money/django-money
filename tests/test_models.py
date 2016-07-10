@@ -316,7 +316,7 @@ class TestValueExpressions:
     )
     def test_valid(self, value, expected):
         instance = ModelWithVanillaMoneyField.objects.create(money=Value(value))
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
 
     def test_invalid(self):
