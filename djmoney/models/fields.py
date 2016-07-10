@@ -224,11 +224,12 @@ class MoneyFieldProxy(object):
     def __get__(self, obj, type=None):
         if obj is None:
             raise AttributeError('Can only be accessed via an instance.')
-        if isinstance(obj.__dict__[self.field.name], BaseExpression):
-            return obj.__dict__[self.field.name]
-        if not isinstance(obj.__dict__[self.field.name], Money):
-            obj.__dict__[self.field.name] = self._money_from_obj(obj)
-        return obj.__dict__[self.field.name]
+        data = obj.__dict__
+        if isinstance(data[self.field.name], BaseExpression):
+            return data[self.field.name]
+        if not isinstance(data[self.field.name], Money):
+            data[self.field.name] = self._money_from_obj(obj)
+        return data[self.field.name]
 
     def __set__(self, obj, value):  # noqa
         if isinstance(value, BaseExpression):
@@ -336,9 +337,6 @@ class MoneyField(models.DecimalField):
             raise ValueError('You have to provide a decimal_places attribute to Money fields.')
 
     def to_python(self, value):
-        if isinstance(value, Expression):
-            assert 0
-            return value
         if isinstance(value, Money):
             value = value.amount
         if isinstance(value, tuple):
