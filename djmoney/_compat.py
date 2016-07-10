@@ -34,6 +34,11 @@ except ImportError:
     from django.utils.encoding import smart_text as smart_unicode
 
 try:
+    from django.db.models import Value
+except ImportError:
+    Value = None
+
+try:
     string_types = (basestring,)
 except NameError:
     string_types = (str, bytes)

@@ -20,6 +20,7 @@ from djmoney import forms
 from .._compat import (
     BaseExpression,
     Expression,
+    Value,
     deconstructible,
     setup_managers,
     smart_unicode,
@@ -231,15 +232,21 @@ class MoneyFieldProxy(object):
 
     def __set__(self, obj, value):  # noqa
         if isinstance(value, BaseExpression):
-            validate_money_expression(obj, value)
-            prepare_expression(value)
+            if Value and isinstance(value, Value):
+                value = self.prepare_value(obj, value.value)
+            else:
+                validate_money_expression(obj, value)
+                prepare_expression(value)
         else:
-            validate_money_value(value)
-            currency = get_currency(value)
-            if currency:
-                self.set_currency(obj, currency)
-            value = self.field.to_python(value)
+            value = self.prepare_value(obj, value)
         obj.__dict__[self.field.name] = value
+
+    def prepare_value(self, obj, value):
+        validate_money_value(value)
+        currency = get_currency(value)
+        if currency:
+            self.set_currency(obj, currency)
+        return self.field.to_python(value)
 
     def set_currency(self, obj, value):
         # we have to determine whether to replace the currency.
@@ -330,6 +337,7 @@ class MoneyField(models.DecimalField):
 
     def to_python(self, value):
         if isinstance(value, Expression):
+            assert 0
             return value
         if isinstance(value, Money):
             value = value.amount

@@ -16,6 +16,7 @@ import moneyed
 import pytest
 from moneyed import Money
 
+from djmoney._compat import Value
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
 
 from .testapp.models import (
@@ -302,6 +303,25 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
         with pytest.raises(ValidationError):
             instance.money = f_obj
+
+
+@pytest.mark.skipif(VERSION < (1, 8), reason='Only Django 1.8+ supports query expressions')
+class TestValueExpressions:
+
+    @pytest.mark.parametrize(
+        'value, expected', (
+            (10, Money(10, 'XYZ')),
+            (Money(10, 'USD'), Money(10, 'USD')),
+        )
+    )
+    def test_valid(self, value, expected):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Value(value))
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.money == expected
+
+    def test_invalid(self):
+        with pytest.raises(ValidationError):
+            ModelWithVanillaMoneyField.objects.create(money=Value('string'))
 
 
 def test_find_models_related_to_money_models():
