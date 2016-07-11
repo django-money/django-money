@@ -6,6 +6,7 @@ NB! If you are using custom model managers **not** named `objects` and you expec
 Changes and new features
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
+- Improved South support (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added support for ``Value`` and ``Func`` expressions in queries (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added Django REST Framework support `179 <https://github.com/django-money/django-money/issues/179>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to

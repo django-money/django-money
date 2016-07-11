@@ -6,7 +6,7 @@ from django import VERSION
 import pytest
 
 
-INITIAL_MIGRATION = '''# -*- coding: utf-8 -*-
+INITIAL_SOUTH_MIGRATION = '''# -*- coding: utf-8 -*-
 from south.utils import datetime_utils as datetime
 from south.db import db
 from south.v2 import SchemaMigration
@@ -50,7 +50,7 @@ class TestSouth:
     @pytest.fixture(autouse=True)
     def setup(self, testdir):
         """
-        Creates application module and settings file with basic config.
+        Creates application module, helpers and settings file with basic config.
         """
         self.testdir = testdir
         self.project_root = testdir.mkpydir('money_app')
@@ -63,6 +63,32 @@ class TestSouth:
         }
         INSTALLED_APPS = ['djmoney', 'south', 'money_app']
         SECRET_KEY = 'foobar'
+        ''')
+        testdir.makepyfile(helpers='''
+        from django.core.management import call_command
+
+
+        def schemamigration(initial=False):
+            if initial:
+                call_command('schemamigration', 'money_app', initial=True)
+            else:
+                call_command('schemamigration', 'money_app', 'auto', auto=True)
+
+
+        def migrate():
+            call_command('migrate', 'money_app')
+
+
+        def syncdb():
+            call_command('syncdb')
+
+        def get_migration(name):
+            return __import__('money_app.migrations.%s' % name, fromlist=['Migration'])
+
+
+        def get_models(migration_name):
+            migration = get_migration(migration_name)
+            return migration.Migration.models['money_app.model']
         ''')
 
     def make_models(self, content):
@@ -77,14 +103,19 @@ class TestSouth:
         migration = self.project_root.join('migrations/%s.py' % name)
         migration.write(dedent(content))
 
-    def run_test(self, content):
+    def migrate(self):
+        self.run('from helpers import syncdb, migrate; syncdb(); migrate()', False)
+
+    def run(self, content, check=True):
         """
         Executes given test code in subprocess.
         """
         self.testdir.makepyfile(test_migration=content)
-        return self.testdir.runpytest_subprocess(
+        result = self.testdir.runpytest_subprocess(
             '--ds', 'app_settings', '-s', '--verbose', '--cov', 'djmoney', '--cov-config', 'coveragerc.ini'
         )
+        if check:
+            assert result.ret == 0
 
     def test_create_initial(self):
         self.make_models('''
@@ -96,16 +127,13 @@ class TestSouth:
         class Model(models.Model):
             field = MoneyField(max_digits=10, decimal_places=2)''')
 
-        result = self.run_test('''
-        from django.core.management import call_command
+        self.run('''
+        from helpers import get_models, schemamigration
 
 
         def test_create_initial():
-            call_command('schemamigration', 'money_app', initial=True)
-
-            migration = __import__('money_app.migrations.0001_initial', fromlist=['Migration'])
-
-            models = migration.Migration.models['money_app.model']
+            schemamigration(initial=True)
+            models = get_models('0001_initial')
             assert models['field'] == (
                 'djmoney.models.fields.MoneyField',
                 [],
@@ -113,10 +141,10 @@ class TestSouth:
             )
             assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
         ''')
-        assert result.ret == 0
+        self.migrate()
 
-    def test_migrate_field(self):
-        self.make_migration('0001_initial', INITIAL_MIGRATION)
+    def test_alter_field(self):
+        self.make_migration('0001_initial', INITIAL_SOUTH_MIGRATION)
         self.make_models('''
         from django.db import models
 
@@ -126,26 +154,82 @@ class TestSouth:
         class Model(models.Model):
             field = MoneyField(max_digits=15, decimal_places=2)''')
 
-        result = self.run_test('''
-        from django.core.management import call_command
-
+        self.run('''
         import pytest
+
+        from helpers import get_models, schemamigration
 
 
         @pytest.mark.django_db
-        def test_migrate_field():
-            call_command('schemamigration', 'money_app', auto=True)
-
-            migration = __import__('money_app.migrations.0002_auto__chg_field_model_field', fromlist=['Migration'])
-
-            models = migration.Migration.models['money_app.model']
+        def test_alter_field():
+            schemamigration()
+            models = get_models('0002_auto')
             assert models['field'] == (
                 'djmoney.models.fields.MoneyField',
                 [],
                 {'max_digits': '15', 'decimal_places': '2', 'default_currency': "'XYZ'"}
             )
             assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
-
-            call_command('migrate', 'money_app')
         ''')
-        assert result.ret == 0
+        self.migrate()
+
+    def test_add_field(self):
+        self.make_migration('0001_initial', INITIAL_SOUTH_MIGRATION)
+        self.make_models('''
+        from django.db import models
+
+        from djmoney.models.fields import MoneyField
+
+
+        class Model(models.Model):
+            field = MoneyField(max_digits=10, decimal_places=2)
+            value = MoneyField(max_digits=5, decimal_places=2, default_currency='GBP')''')
+        self.run('''
+        import pytest
+
+        from helpers import get_models, schemamigration
+
+
+        @pytest.mark.django_db
+        def test_add_field():
+            schemamigration()
+            models = get_models('0002_auto')
+            assert models['field'] == (
+                'djmoney.models.fields.MoneyField',
+                [],
+                {'max_digits': '10', 'decimal_places': '2', 'default_currency': "'XYZ'"}
+            )
+            assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
+            assert models['value'] == (
+                'djmoney.models.fields.MoneyField',
+                [],
+                {'max_digits': '5', 'decimal_places': '2', 'default_currency': "'GBP'"}
+            )
+            assert models['value_currency'] == ('djmoney.models.fields.CurrencyField', [], {'default': "'GBP'"})
+        ''')
+        self.migrate()
+
+    def test_remove_field(self):
+        self.make_migration('0001_initial', INITIAL_SOUTH_MIGRATION)
+        self.make_models('''
+        from django.db import models
+
+
+        class Model(models.Model):
+            pass''')
+        self.run('''
+        import pytest
+
+        from helpers import get_models, schemamigration
+
+
+        @pytest.mark.django_db
+        def test_remove_field():
+            schemamigration()
+            models = get_models('0002_auto')
+            assert models == {
+                'Meta': {'object_name': 'Model'},
+                'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            }
+        ''')
+        self.migrate()
