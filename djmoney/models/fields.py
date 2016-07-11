@@ -410,17 +410,11 @@ class MoneyField(models.DecimalField):
         defaults['default_currency'] = self.default_currency
         return super(MoneyField, self).formfield(**defaults)
 
-    def get_south_default(self):
-        return '%s' % str(self.default)
-
-    def get_south_default_currency(self):
-        return '"%s"' % str(self.default_currency.code)
-
     def value_to_string(self, obj):
         value = self._get_val_from_obj(obj)
         return self.get_prep_value(value)
 
-    # # South support
+    # South support
     def south_field_triple(self):
         """Returns a suitable description of this field for South."""
         # Note: This method gets automatically with schemamigration time.
@@ -434,7 +428,7 @@ class MoneyField(models.DecimalField):
         kwargs['default_currency'] = "'%s'" % self.default_currency
         return field_class, args, kwargs
 
-    # # Django 1.7 migration support
+    # Django 1.7 migration support
     def deconstruct(self):
         name, path, args, kwargs = super(MoneyField, self).deconstruct()
 
