@@ -51,7 +51,7 @@ class TestSouth:
             assert models['field'] == (
                 'djmoney.models.fields.MoneyField',
                 [],
-                {'max_digits': '10', 'decimal_places': '2', 'default_currency': u"'XYZ'"}
+                {'max_digits': '10', 'decimal_places': '2', 'default_currency': "'XYZ'"}
             )
             assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
         ''')
@@ -121,7 +121,7 @@ class Migration(SchemaMigration):
             assert models['field'] == (
                 'djmoney.models.fields.MoneyField',
                 [],
-                {'max_digits': '15', 'decimal_places': '2', 'default_currency': u"'XYZ'"}
+                {'max_digits': '15', 'decimal_places': '2', 'default_currency': "'XYZ'"}
             )
             assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
 
