@@ -74,24 +74,24 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        db.create_table(u'money_app_model', (
-            (u'id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+        db.create_table('money_app_model', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('field_currency', self.gf('djmoney.models.fields.CurrencyField')()),
             ('field', self.gf('djmoney.models.fields.MoneyField')(default_currency='XYZ', decimal_places=2, max_digits=10)),
         ))
-        db.send_create_signal(u'money_app', ['Model'])
+        db.send_create_signal('money_app', ['Model'])
 
 
     def backwards(self, orm):
-        db.delete_table(u'money_app_model')
+        db.delete_table('money_app_model')
 
 
     models = {
-        u'money_app.model': {
+        'money_app.model': {
             'Meta': {'object_name': 'Model'},
             'field': ('djmoney.models.fields.MoneyField', [], {'default_currency': u"'XYZ'", 'decimal_places': '2', 'max_digits': '10'}),
             'field_currency': ('djmoney.models.fields.CurrencyField', [], {}),
-            u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         }
     }
 
