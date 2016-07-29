@@ -187,6 +187,9 @@ class TestVanillaMoneyField:
         instance = NullMoneyFieldModel.objects.create()
         assert instance.field is None
 
+
+class TestGetOrCreate:
+
     @pytest.mark.parametrize(
         'kwargs, currency',
         (
@@ -197,6 +200,11 @@ class TestVanillaMoneyField:
     def test_get_or_create_respects_currency(self, kwargs, currency):
         instance, created = ModelWithVanillaMoneyField.objects.get_or_create(**kwargs)
         assert str(instance.money.currency) == currency, 'currency should be taken into account in get_or_create'
+
+    def test_defaults(self):
+        money = Money(10, 'EUR')
+        instance, _ = ModelWithVanillaMoneyField.objects.get_or_create(integer=1, defaults={'money': money})
+        assert instance.money == money
 
 
 class TestFExpressions:
