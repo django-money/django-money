@@ -26,6 +26,7 @@ from .testapp.models import (
     InheritorModel,
     ModelRelatedToModelWithMoney,
     ModelWithChoicesMoneyField,
+    ModelWithCustomManager,
     ModelWithDefaultAsDecimal,
     ModelWithDefaultAsFloat,
     ModelWithDefaultAsInt,
@@ -529,6 +530,12 @@ class TestFieldAttributes:
         assert str(klass._meta.fields[2].default_currency) == 'EUR'
         instance = klass()
         assert instance.field == Money(10, 'EUR')
+
+
+class TestCustomManager:
+
+    def test_method(self):
+        assert ModelWithCustomManager.manager.super_method().count() == 0
 
 
 def test_package_is_importable():

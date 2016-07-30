@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
+import functools
+
 from django import VERSION
 from django.db.models.manager import ManagerDescriptor
 
@@ -37,6 +39,19 @@ try:
     from django.db.models import Case, Func, Value, When
 except ImportError:
     Case, Func, Value, When = None, None, None, None
+
+try:
+    from django.utils.six import wraps
+except ImportError:
+    # Django 1.5, and some versions from 1.4.x branch
+    def wraps(wrapped, assigned=functools.WRAPPER_ASSIGNMENTS, updated=functools.WRAPPER_UPDATES):
+
+        def wrapper(f):
+            f = functools.wraps(wrapped)(f)
+            f.__wrapped__ = wrapped
+            return f
+
+        return wrapper
 
 try:
     string_types = (basestring,)

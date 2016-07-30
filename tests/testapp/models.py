@@ -12,6 +12,7 @@ from django.db import models
 import moneyed
 
 from djmoney.models.fields import MoneyField
+from djmoney.models.managers import money_manager, understands_money
 
 from .._compat import reversion
 
@@ -112,6 +113,19 @@ class ProxyModel(SimpleModel):
 
     class Meta:
         proxy = True
+
+
+class MoneyManager(models.Manager):
+
+    @understands_money
+    def super_method(self, **kwargs):
+        return self.filter(**kwargs)
+
+
+class ModelWithCustomManager(models.Model):
+    field = MoneyField(max_digits=10, decimal_places=2)
+
+    manager = money_manager(MoneyManager())
 
 
 if VERSION < (1, 7, 0):

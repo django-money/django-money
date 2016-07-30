@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-from functools import wraps
-
 from django import VERSION
 from django.db.models import F
 from django.db.models.query_utils import Q
@@ -9,7 +7,7 @@ from django.db.models.sql.query import Query
 
 from moneyed import Money
 
-from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode
+from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode, wraps
 from ..utils import get_currency_field_name, prepare_expression
 from .fields import MoneyField
 
@@ -145,7 +143,24 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     return args, kwargs
 
 
-def understands_money(model, func):
+def _get_model(args, func):
+    """
+    Returns the model class for given function.
+    Note, that ``self`` is not available for proxy models.
+    """
+    if hasattr(func, '__self__'):
+        # Bound method
+        model = func.__self__.model
+    elif hasattr(func, '__wrapped__'):
+        # Proxy model
+        model = func.__wrapped__.__self__.model
+    else:
+        # Custom method on user-defined model manager.
+        model = args[0].model
+    return model
+
+
+def understands_money(func):
     """
     Used to wrap a queryset method with logic to expand
     a query from something like:
@@ -159,6 +174,7 @@ def understands_money(model, func):
 
     @wraps(func)
     def wrapper(*args, **kwargs):
+        model = _get_model(args, func)
         args = _expand_money_args(model, args)
         exclusions = EXPAND_EXCLUSIONS.get(func.__name__, ())
         args, kwargs = _expand_money_kwargs(model, args, kwargs, exclusions)
@@ -173,10 +189,10 @@ EXPAND_EXCLUSIONS = {
 }
 
 
-def add_money_comprehension_to_queryset(model, qs):
+def add_money_comprehension_to_queryset(qs):
     # Decorate each relevant method with understands_money in the queryset given
     for attr in RELEVANT_QUERYSET_METHODS:
-        setattr(qs, attr, understands_money(model, getattr(qs, attr)))
+        setattr(qs, attr, understands_money(getattr(qs, attr)))
     return qs
 
 
@@ -208,7 +224,7 @@ def money_manager(manager):
             s = super(MoneyManager, self)
             method = getattr(s, 'get_queryset',
                              getattr(s, 'get_query_set', None))
-            return add_money_comprehension_to_queryset(self.model, method(*args, **kwargs))
+            return add_money_comprehension_to_queryset(method(*args, **kwargs))
 
         # If we are being called by code pre Django 1.6, need
         # 'get_query_set'.
