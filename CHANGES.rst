@@ -22,7 +22,7 @@ Changes and new features
 - Fixed ``_has_changed`` deprecation warnings `206 <https://github.com/django-money/django-money/issues/206>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Added Django 1.10 support `198 <https://github.com/django-money/django-money/issues/198>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_)
 - Only make `objects` a MoneyManager instance automatically `194 <https://github.com/django-money/django-money/issues/194>`_ and `201 <https://github.com/django-money/django-money/issues/201>`_ (`Jeongkyu Shin <https://github.com/inureyes>`_)
-- Fixed ``get_or_create`` crash, when ``defaults`` is passed. `213 <https://github.com/django-money/django-money/issues/213>` (`Dmitry Dygalo <https://github.com/Stranger6667>`_, `Luke Plant <https://github.com/spookylukey>`_)
+- Fixed ``get_or_create`` crash, when ``defaults`` is passed. `213 <https://github.com/django-money/django-money/issues/213>`_ (`Dmitry Dygalo <https://github.com/Stranger6667>`_, `Luke Plant <https://github.com/spookylukey>`_)
 
 Note about automatic model manager patches
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
