@@ -1,5 +1,10 @@
-Changes in 0.9
---------------
+Changes in 0.9.1
+----------------
+
+- Fix packaging.
+
+Changes in 0.9.0
+----------------
 
 NB! If you are using custom model managers **not** named `objects` and you expect them to still work, please read below.
 

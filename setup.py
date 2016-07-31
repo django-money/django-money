@@ -48,6 +48,8 @@ setup(
         'djmoney.forms',
         'djmoney.models',
         'djmoney.templatetags',
+        'djmoney.contrib',
+        'djmoney.contrib.django_rest_framework',
     ],
     install_requires=[
         'setuptools',
