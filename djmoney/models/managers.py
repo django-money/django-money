@@ -122,11 +122,13 @@ def _expand_money_args(model, args):
     return args
 
 
-def _expand_money_kwargs(model, args=(), kwargs=None):
+def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     """
     Augments kwargs so that they contain _currency lookups.
     """
     for name, value in list(kwargs.items()):
+        if name in exclusions:
+            continue
         if isinstance(value, Money):
             clean_name = _get_clean_name(name)
             kwargs[name] = value.amount
@@ -148,24 +150,27 @@ def understands_money(model, func):
     Used to wrap a queryset method with logic to expand
     a query from something like:
 
-    mymodel.objects.filter(money=Money(100,"USD"))
+    mymodel.objects.filter(money=Money(100, "USD"))
 
     To something equivalent to:
 
-    mymodel.objects.filter(money=Decimal("100.0), money_currency="USD")
+    mymodel.objects.filter(money=Decimal("100.0"), money_currency="USD")
     """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
         args = _expand_money_args(model, args)
-        args, kwargs = _expand_money_kwargs(model, args, kwargs)
+        exclusions = EXPAND_EXCLUSIONS.get(func.__name__, ())
+        args, kwargs = _expand_money_kwargs(model, args, kwargs, exclusions)
         return func(*args, **kwargs)
 
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ['distinct', 'get', 'get_or_create', 'filter',
-                             'exclude']
+RELEVANT_QUERYSET_METHODS = ('distinct', 'get', 'get_or_create', 'filter', 'exclude')
+EXPAND_EXCLUSIONS = {
+    'get_or_create': ('defaults', )
+}
 
 
 def add_money_comprehension_to_queryset(model, qs):
