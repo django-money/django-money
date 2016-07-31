@@ -173,13 +173,13 @@ need to manually decorate those custom methods, like so:
 
 .. code:: python
 
-        from djmoney.models.managers import understand_money
+        from djmoney.models.managers import understands_money
 
 
         class MyCustomQuerySet(QuerySet):
 
-           @understand_money
-           def my_custom_method(*args,**kwargs):
+           @understands_money
+           def my_custom_method(*args, **kwargs):
                # Awesome stuff
 
 Format localization
@@ -198,7 +198,7 @@ library ``djmoney``:
 
 .. code:: python
 
-        INSTALLED_APPS += ( 'djmoney', )
+        INSTALLED_APPS += ('djmoney', )
 
 In the template, add:
 
