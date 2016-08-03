@@ -1,3 +1,8 @@
+Changes in 0.9.2
+----------------
+
+- Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
+
 Changes in 0.9.1
 ----------------
 
@@ -159,6 +164,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#215: https://github.com/django-money/django-money/issues/215
 .. _#213: https://github.com/django-money/django-money/issues/213
 .. _#206: https://github.com/django-money/django-money/issues/206
 .. _#201: https://github.com/django-money/django-money/issues/201
