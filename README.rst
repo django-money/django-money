@@ -283,3 +283,11 @@ use cases you will need to be clear about exactly when currency conversion
 occurs, and automatic conversion can hide bugs. Also, with automatic conversion
 you lose some properties like commutativity (``A + B == B + A``) due to
 conversions happening in different directions.
+
+Known Issues
+-----------
+Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.0 and is expected to be fixed in Django 1.10.2.
+::
+
+     https://github.com/django/django/pull/7217
+
