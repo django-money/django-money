@@ -286,9 +286,8 @@ conversions happening in different directions.
 
 Known Issues
 -----------
-Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.0 and is expected to be fixed in Djano 1.10.2.
+Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.0 and is expected to be fixed in Django 1.10.2.
 ::
 
      https://github.com/django/django/pull/7217
-   
-::
+
