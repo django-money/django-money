@@ -26,7 +26,7 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-test_requirements = ['pytest>=2.8.0']
+test_requirements = ['pytest>=2.8.0,<3.0.0']
 
 
 if sys.version_info < (3, 3):
