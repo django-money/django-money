@@ -6,6 +6,8 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django import VERSION
+
 import moneyed
 import pytest
 from moneyed import Money
@@ -23,6 +25,7 @@ from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 pytestmark = pytest.mark.django_db
 
 
+@pytest.mark.xfail(VERSION[:3] == (1, 10, 1), reason='Bug in this Django version.')
 def test_save():
     money = Money(Decimal('10'), moneyed.SEK)
     form = MoneyModelForm({'money_0': money.amount, 'money_1': money.currency})
