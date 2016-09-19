@@ -2,6 +2,7 @@ Changes in 0.9.2
 ----------------
 
 - Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
+- Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming` and `ivirabyan`)
 
 Changes in 0.9.1
 ----------------

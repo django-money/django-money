@@ -102,7 +102,6 @@ class MoneyPatched(Money):
         if hasattr(other, 'currency'):
             if self.currency == other.currency:
                 return self.amount == other.amount
-            raise TypeError('Cannot compare two Money instances with different currencies.')
         return False
 
     def __truediv__(self, other):
