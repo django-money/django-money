@@ -1,4 +1,4 @@
-Changes in 0.9.2
+Changes in 0.10
 ----------------
 
 - Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
