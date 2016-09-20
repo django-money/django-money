@@ -12,12 +12,12 @@ from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
 
-import pytest
-
 import moneyed
+import pytest
+from moneyed import Money
+
 from djmoney._compat import Case, Func, Value, When
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
-from moneyed import Money
 
 from .testapp.models import (
     AbstractModel,
