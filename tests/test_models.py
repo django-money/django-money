@@ -12,12 +12,12 @@ from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
 
-import moneyed
 import pytest
-from moneyed import Money
 
+import moneyed
 from djmoney._compat import Case, Func, Value, When
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
+from moneyed import Money
 
 from .testapp.models import (
     AbstractModel,
@@ -440,9 +440,8 @@ class TestDifferentCurrencies:
     def test_ne(self):
         assert MoneyPatched(1, 'EUR') != Money(2, 'EUR')
 
-    def test_exception(self):
-        with pytest.raises(TypeError):
-            MoneyPatched(10, 'EUR') == Money(10, 'USD')
+    def test_ne_currency(self):
+        assert MoneyPatched(10, 'EUR') != Money(10, 'USD')
 
     @pytest.mark.skipif(VERSION < (1, 9), reason='djmoney_rates supports only Django < 1.9')
     def test_incompatibility(self, settings):

@@ -12,10 +12,9 @@ from django.db.models import F
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
+from djmoney import forms
 from moneyed import Currency, Money
 from moneyed.localization import _FORMATTER, format_money
-
-from djmoney import forms
 
 from .._compat import (
     BaseExpression,
@@ -103,7 +102,6 @@ class MoneyPatched(Money):
         if hasattr(other, 'currency'):
             if self.currency == other.currency:
                 return self.amount == other.amount
-            raise TypeError('Cannot add or subtract two Money instances with different currencies.')
         return False
 
     def __truediv__(self, other):
