@@ -2,7 +2,7 @@ Changes in 0.10
 ----------------
 
 - Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
-- Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming` and `ivirabyan`)
+- Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
 
 Changes in 0.9.1
 ----------------
@@ -219,3 +219,4 @@ Changes in 0.3
 .. _tsouvarev: https://github.com/tsouvarev
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
+.. _ivirabyan: https://github.com/ivirabyan
