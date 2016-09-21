@@ -9,7 +9,7 @@ from moneyed import Money
 
 from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode, wraps
 from ..utils import get_currency_field_name, prepare_expression
-from .fields import MoneyField
+from .fields import CurrencyField, MoneyField
 
 
 def _get_clean_name(name):
@@ -124,6 +124,7 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     """
     Augments kwargs so that they contain _currency lookups.
     """
+    involved_fields = [_get_clean_name(name) for name in kwargs]
     for name, value in list(kwargs.items()):
         if name in exclusions:
             continue
@@ -131,15 +132,23 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
             clean_name = _get_clean_name(name)
             kwargs[name] = value.amount
             kwargs[get_currency_field_name(clean_name)] = smart_unicode(value.currency)
-        elif isinstance(_get_field(model, name), MoneyField):
-            if isinstance(value, (BaseExpression, F)):
-                clean_name = _get_clean_name(name)
-                if not isinstance(value, F):
-                    value = prepare_expression(value)
-                kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
-            if is_in_lookup(name, value):
-                args += (_convert_in_lookup(model, name, value), )
-                del kwargs[name]
+        else:
+            field = _get_field(model, name)
+            if isinstance(field, MoneyField):
+                if isinstance(value, (BaseExpression, F)):
+                    clean_name = _get_clean_name(name)
+                    if not isinstance(value, F):
+                        value = prepare_expression(value)
+                    kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
+                if is_in_lookup(name, value):
+                    args += (_convert_in_lookup(model, name, value), )
+                    del kwargs[name]
+            elif isinstance(field, CurrencyField):
+                money_field_name = name[:-9]  # Remove '_currency'
+                if money_field_name not in involved_fields:
+                    money_field = _get_field(model, money_field_name)
+                    kwargs[money_field_name] = money_field.default.amount
+
     return args, kwargs
 
 
