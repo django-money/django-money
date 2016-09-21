@@ -1,5 +1,5 @@
 Changes in 0.10
-----------------
+---------------
 
 - Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
 - Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
@@ -166,6 +166,8 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#225: https://github.com/django-money/django-money/issues/225
+.. _#221: https://github.com/django-money/django-money/issues/221
 .. _#215: https://github.com/django-money/django-money/issues/215
 .. _#213: https://github.com/django-money/django-money/issues/213
 .. _#206: https://github.com/django-money/django-money/issues/206
@@ -220,7 +222,4 @@ Changes in 0.3
 .. _tsouvarev: https://github.com/tsouvarev
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
-<<<<<<< e6efad2071e1281609732cc5c9d5c1cbf5c17c18
 .. _ivirabyan: https://github.com/ivirabyan
-=======
->>>>>>> Add release note
