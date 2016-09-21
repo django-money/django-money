@@ -3,6 +3,7 @@ Changes in 0.10
 
 - Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
 - Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
+- Fixed: Not possible to revert MoneyField currency back to default `#221`_ (`benjaoming`_)
 
 Changes in 0.9.1
 ----------------
@@ -219,4 +220,7 @@ Changes in 0.3
 .. _tsouvarev: https://github.com/tsouvarev
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
+<<<<<<< e6efad2071e1281609732cc5c9d5c1cbf5c17c18
 .. _ivirabyan: https://github.com/ivirabyan
+=======
+>>>>>>> Add release note
