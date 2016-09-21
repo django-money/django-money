@@ -4,6 +4,7 @@ Created on May 7, 2011
 
 @author: jake
 """
+from copy import copy
 from decimal import Decimal
 
 from django import VERSION
@@ -12,12 +13,12 @@ from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
 
-import moneyed
 import pytest
-from moneyed import Money
 
+import moneyed
 from djmoney._compat import Case, Func, Value, When
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
+from moneyed import Money
 
 from .testapp.models import (
     AbstractModel,
@@ -74,6 +75,35 @@ class TestVanillaMoneyField:
 
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
+
+    @pytest.mark.parametrize(
+        'model_class, other_value',
+        (
+            (ModelWithVanillaMoneyField, Money('100.0')),
+            (BaseModel, Money(0, 'USD')),
+            (ModelWithDefaultAsMoney, Money('0.01', 'RUB')),
+            (ModelWithDefaultAsFloat, Money('12.05', 'PLN')),
+        )
+    )
+    def test_revert_to_default(self, model_class, other_value):
+        if hasattr(model_class._meta, 'get_field'):
+            default_instance = model_class._meta.get_field('money').get_default()
+        else:
+            default_instance = model_class._meta.get_field_by_name('money').default
+        instance1 = model_class.objects.create()
+        pk = instance1.pk
+        # Grab a fresh instance, change the currency to something non-default
+        # and unexpected
+        instance2 = model_class.objects.get(id=pk)
+        instance2.money = Money(other_value.amount, "DKK")
+        instance2.save()
+        instance3 = model_class.objects.get(id=pk)
+        assert instance3.money == Money(other_value.amount, "DKK")
+        # Now change the field back to the default currency
+        instance3.money = copy(default_instance)
+        instance3.save()
+        instance4 = model_class.objects.get(id=pk)
+        assert instance4.money == default_instance
 
     def test_not_supported_lookup(self):
         with pytest.raises(NotSupportedLookup) as exc:

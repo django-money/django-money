@@ -12,10 +12,9 @@ from django.db.models import F
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
+from djmoney import forms
 from moneyed import Currency, Money
 from moneyed.localization import _FORMATTER, format_money
-
-from djmoney import forms
 
 from .._compat import (
     BaseExpression,
@@ -258,9 +257,13 @@ class MoneyFieldProxy(object):
         # then the currency is already set up, before this code hits
         # __set__ of MoneyField. This is because the currency field
         # has less creation counter than money field.
+        #
+        # Gotcha:
+        # But we should also allow setting a field back to its original default
+        # value!
+        # https://github.com/django-money/django-money/issues/221
         object_currency = obj.__dict__[self.currency_field_name]
-        default_currency = str(self.field.default_currency)
-        if object_currency != value and (object_currency == default_currency or value != default_currency):
+        if object_currency != value:
             # in other words, update the currency only if it wasn't
             # changed before.
             setattr(obj, self.currency_field_name, value)

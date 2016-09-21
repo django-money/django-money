@@ -1,8 +1,8 @@
-# coding: utf-8
-from moneyed import Money
+# -*- coding: utf-8 -*-
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
+from moneyed import Money
 
 from .helpers import IS_DRF_3
 
