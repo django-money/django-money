@@ -8,8 +8,9 @@ from decimal import Decimal
 
 from django import VERSION
 
-import moneyed
 import pytest
+
+import moneyed
 from moneyed import Money
 
 from .testapp.forms import (
