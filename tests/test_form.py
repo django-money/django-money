@@ -26,7 +26,7 @@ from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.xfail(VERSION[:3] >= (1, 10, 1), reason='Bug in this Django version.', strict=True)
+@pytest.mark.xfail(VERSION[:3] == (1, 10, 1), reason='Bug in this Django version.', strict=True)
 def test_save():
     money = Money(Decimal('10'), moneyed.SEK)
     form = MoneyModelForm({'money_0': money.amount, 'money_1': money.currency})
@@ -106,4 +106,8 @@ def test_default_currency():
     """
     instance = NullMoneyFieldModel.objects.create()
     form = NullableModelForm(instance=instance)
-    assert '<option value="USD" selected="selected">US Dollar</option>' in form.as_p()
+    if VERSION[:3] > (1, 10, 1):
+        expected = '<option value="USD" selected>US Dollar</option>'
+    else:
+        expected = '<option value="USD" selected="selected">US Dollar</option>'
+    assert expected in form.as_p()
