@@ -1,19 +1,58 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.template import Context, Template
+from django.template import Context, Template, TemplateSyntaxError
 from django.utils.translation import override
 
 import pytest
 
 from djmoney.models.fields import MoneyPatched
+from djmoney.templatetags.djmoney import MoneyLocalizeNode
 from moneyed import Money
+
+
+def render(template, context):
+    return Template(template).render(Context(context))
+
+
+class TestMoneyLocalizeNode:
+
+    def test_repr(self):
+        assert repr(MoneyLocalizeNode(Money(5, 'EUR'))) == '<MoneyLocalizeNode 5 EUR>'
+
+    def test_invalid_instance(self):
+        with pytest.raises(Exception) as exc:
+            MoneyLocalizeNode(Money(5, 'EUR'), amount=15)
+        assert str(exc.value) == 'You can define either "money" or the "amount" and "currency".'
+
+
+@pytest.mark.parametrize('template, context, error_text', (
+    (
+        '{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M and blabla %}{{NEW_M}}',
+        {},
+        'Wrong number of input data to the tag.'
+    ),
+    (
+        '{% load djmoney %}{% money_localize money %}{{NEW_M}}',
+        {'money': 'Something else'},
+        'The variable "money" must be an instance of Money.'
+    ),
+    (
+        '{% load djmoney %}{% money_localize amount currency %}',
+        {'amount': None, 'currency': 'PLN'},
+        'You must define both variables: amount and currency.'
+    )
+))
+def test_invalid_input(template, context, error_text):
+    with pytest.raises(TemplateSyntaxError) as exc:
+        render(template, context)
+    assert str(exc.value) == error_text
 
 
 def assert_template(string, result, context=None):
     context = context or {}
     with override('pl'):
-        assert Template(string).render(Context(context)) == result
+        assert render(string, context) == result
 
 
 @pytest.mark.parametrize(
