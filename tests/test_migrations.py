@@ -112,7 +112,8 @@ class TestSouth:
         """
         self.testdir.makepyfile(test_migration=content)
         result = self.testdir.runpytest_subprocess(
-            '--ds', 'app_settings', '-s', '--verbose', '--cov', 'djmoney', '--cov-config', 'coveragerc.ini'
+            '--ds', 'app_settings', '-s', '--verbose',
+            '--cov-append', '--cov', 'djmoney', '--cov-config', 'coveragerc.ini'
         )
         if check:
             assert result.ret == 0
