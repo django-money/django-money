@@ -1,3 +1,8 @@
+.. _changes:
+
+Changelog
+=========
+
 Changes in 0.10
 ---------------
 
@@ -49,6 +54,7 @@ From 0.9, Django-money only patches ``objects`` with ``MoneyManager`` by default
 wrapping with ``money_manager``.
 
 .. code-block:: python
+
     from djmoney.models.managers import money_manager
 
 

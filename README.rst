@@ -1,14 +1,21 @@
 Django-money
-------------
+============
 
-|Travis| |codecov.io| |PyPi|
-
-.. |Travis| image:: https://travis-ci.org/django-money/django-money.svg
+.. image:: https://travis-ci.org/django-money/django-money.svg?branch=master
    :target: https://travis-ci.org/django-money/django-money
-.. |codecov.io| image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=master
+   :alt: Build Status
+
+.. image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=master
    :target: http://codecov.io/github/django-money/django-money?branch=master
-.. |PyPi| image:: https://badge.fury.io/py/django-money.svg
+   :alt: Coverage Status
+
+.. image:: https://readthedocs.org/projects/django-money/badge/?version=stable
+   :target: http://django-money.readthedocs.io/en/stable/?badge=stable
+   :alt: Documentation Status
+
+.. image:: https://badge.fury.io/py/django-money.svg
    :target: https://pypi.python.org/pypi/django-money
+   :alt: PyPI
 
 A little Django app that uses ``py-moneyed`` to add support for Money
 fields in your models and forms.
