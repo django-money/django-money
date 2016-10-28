@@ -23,10 +23,16 @@ class TestMoneyField:
         empty = None
 
     def get_serializer(self, model_class, instance=None, data=empty):
-        class Serializer(serializers.ModelSerializer):
-            class Meta:
-                model = model_class
-                fields = '__all__'
+
+        if IS_DRF_3:
+            class Serializer(serializers.ModelSerializer):
+                class Meta:
+                    model = model_class
+                    fields = '__all__'
+        else:
+            class Serializer(serializers.ModelSerializer):
+                class Meta:
+                    model = model_class
 
         return Serializer(instance=instance, data=data)
 
