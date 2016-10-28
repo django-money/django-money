@@ -26,6 +26,7 @@ class TestMoneyField:
         class Serializer(serializers.ModelSerializer):
             class Meta:
                 model = model_class
+                fields = '__all__'
 
         return Serializer(instance=instance, data=data)
 
