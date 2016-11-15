@@ -294,17 +294,8 @@ conversions happening in different directions.
 Usage with Django REST Framework
 --------------------------------
 
-To automatically register MoneyFields in your models, run the 
-``register_money_field`` function before your serializers.
-
-::
-
-            from djmoney.contrib.django_rest_framework import register_money_field
-
-            register_money_field()
-
-Alternatively, directly use the ``MoneyField`` found at 
-``djmoney.contrib.django_rest_framework.MoneyField``.
+For MoneyFields to automatically work with Django REST Framework, make sure
+that ``djmoney`` is in the ``INSTALLED_APPS`` of your ``settings.py``.
 
 Known Issues
 ------------
