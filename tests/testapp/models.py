@@ -90,6 +90,7 @@ class InheritorModel(AbstractModel):
 class RevisionedModel(models.Model):
     amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
+
 reversion.register(RevisionedModel)
 
 
