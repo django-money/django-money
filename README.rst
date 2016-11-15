@@ -291,6 +291,21 @@ occurs, and automatic conversion can hide bugs. Also, with automatic conversion
 you lose some properties like commutativity (``A + B == B + A``) due to
 conversions happening in different directions.
 
+Usage with Django REST Framework
+--------------------------------
+
+To automatically register MoneyFields in your models, run the 
+``register_money_field`` function before your serializers.
+
+::
+
+            from djmoney.contrib.django_rest_framework import register_money_field
+
+            register_money_field()
+
+Alternatively, directly use the ``MoneyField`` found at 
+``djmoney.contrib.django_rest_framework.MoneyField``.
+
 Known Issues
 ------------
 Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.0 and is expected to be fixed in Django 1.10.2.
