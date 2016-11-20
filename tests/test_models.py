@@ -16,7 +16,7 @@ from django.utils.six import PY2
 import pytest
 
 import moneyed
-from djmoney._compat import Case, Func, Value, When
+from djmoney._compat import Case, Func, Value, When, get_fields
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
 from moneyed import Money
 
@@ -569,3 +569,11 @@ class TestCustomManager:
 
 def test_package_is_importable():
     __import__('djmoney.__init__')
+
+
+def test_hash_uniqueness():
+    """
+    All fields of any model should have unique hash.
+    """
+    hashes = [hash(field) for field in get_fields(ModelWithVanillaMoneyField)]
+    assert len(hashes) == len(set(hashes))

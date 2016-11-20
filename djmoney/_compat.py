@@ -86,15 +86,26 @@ def set_expression_rhs(expr, value):
         expr.rhs.value = value
 
 
-def get_fields(model):
+def get_field_names(model):
     """
-    Returns a set of fields associated to the model.
+    Returns a set of field names associated with the model.
     """
     opts = model._meta
     if VERSION < (1, 8):
         return opts.get_all_field_names()
     else:
         return set(field.name for field in opts.get_fields())
+
+
+def get_fields(model):
+    """
+    Returns a set of field instances associated with the model.
+    """
+    opts = model._meta
+    if VERSION < (1, 8):
+        return opts.fields
+    else:
+        return opts.get_fields()
 
 
 def setup_managers(sender):

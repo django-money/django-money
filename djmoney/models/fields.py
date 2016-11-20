@@ -8,7 +8,7 @@ from django import VERSION
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
-from django.db.models import F
+from django.db.models import F, Field
 from django.db.models.signals import class_prepared
 from django.utils import translation
 
@@ -308,6 +308,8 @@ class MoneyField(models.DecimalField):
         self.frozen_by_south = kwargs.pop('frozen_by_south', False)
 
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
+        self.creation_counter += 1
+        Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
         if default is None and not nullable:
@@ -369,8 +371,7 @@ class MoneyField(models.DecimalField):
             default=self.default_currency, editable=False,
             choices=self.currency_choices
         )
-        currency_field.creation_counter = self.creation_counter
-        self.creation_counter += 1
+        currency_field.creation_counter = self.creation_counter - 1
         currency_field_name = get_currency_field_name(name)
         cls.add_to_class(currency_field_name, currency_field)
 
