@@ -58,7 +58,7 @@ def _get_field(model, name):
     if VERSION < (1, 6):
         field = qs.setup_joins(parts, opts, alias, False)[0]
     else:
-        field = qs.setup_joins(parts, opts, alias)[0]
+        field = qs.names_to_path(parts, opts, True, fail_on_missing=False)[1]
 
     return field
 
