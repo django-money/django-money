@@ -7,7 +7,13 @@ from django.db.models.sql.query import Query
 
 from moneyed import Money
 
-from .._compat import LOOKUP_SEP, BaseExpression, resolve_field, smart_unicode, wraps
+from .._compat import (
+    LOOKUP_SEP,
+    BaseExpression,
+    resolve_field,
+    smart_unicode,
+    wraps,
+)
 from ..utils import get_currency_field_name, prepare_expression
 from .fields import CurrencyField, MoneyField
 
