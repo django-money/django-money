@@ -10,6 +10,7 @@ Changes in 0.10
 - Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
 - Fixed: Not possible to revert MoneyField currency back to default `#221`_ (`benjaoming`_)
 - Fixed invalid ``creation_counter`` handling. `#235`_ (`msgre`_ and `Stranger6667`_)
+- Fixed broken field resolving. `#241`_ (`Stranger6667`_)
 
 Changes in 0.9.1
 ----------------
@@ -173,6 +174,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#241: https://github.com/django-money/django-money/issues/241
 .. _#235: https://github.com/django-money/django-money/issues/235
 .. _#225: https://github.com/django-money/django-money/issues/225
 .. _#221: https://github.com/django-money/django-money/issues/221

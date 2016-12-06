@@ -108,6 +108,15 @@ def get_fields(model):
         return opts.get_fields()
 
 
+def resolve_field(qs, parts, opts, alias):
+    if VERSION < (1, 6):
+        return qs.setup_joins(parts, opts, alias, False)[0]
+    elif VERSION[:2] == (1, 6):
+        return qs.names_to_path(parts, opts, True, True)[1]
+    else:
+        return qs.names_to_path(parts, opts, True, fail_on_missing=False)[1]
+
+
 def setup_managers(sender):
     from .models.managers import money_manager
 

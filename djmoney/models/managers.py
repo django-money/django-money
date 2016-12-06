@@ -7,7 +7,13 @@ from django.db.models.sql.query import Query
 
 from moneyed import Money
 
-from .._compat import LOOKUP_SEP, BaseExpression, smart_unicode, wraps
+from .._compat import (
+    LOOKUP_SEP,
+    BaseExpression,
+    resolve_field,
+    smart_unicode,
+    wraps,
+)
 from ..utils import get_currency_field_name, prepare_expression
 from .fields import CurrencyField, MoneyField
 
@@ -55,12 +61,7 @@ def _get_field(model, name):
                     parts.pop()
                     break
 
-    if VERSION < (1, 6):
-        field = qs.setup_joins(parts, opts, alias, False)[0]
-    else:
-        field = qs.setup_joins(parts, opts, alias)[0]
-
-    return field
+    return resolve_field(qs, parts, opts, alias)
 
 
 def is_in_lookup(name, value):

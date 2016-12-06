@@ -23,6 +23,7 @@ from moneyed import Money
 from .testapp.models import (
     AbstractModel,
     BaseModel,
+    DateTimeModel,
     InheritedModel,
     InheritorModel,
     ModelRelatedToModelWithMoney,
@@ -173,6 +174,12 @@ class TestVanillaMoneyField:
     @pytest.mark.usefixtures('objects_setup')
     def test_comparison_lookup(self, filters, expected_count):
         assert ModelWithTwoMoneyFields.objects.filter(filters).count() == expected_count
+
+    @pytest.mark.skipif(VERSION < (1, 9), reason='Only Django 1.9+ supports __date lookup')
+    def test_date_lookup(self):
+        DateTimeModel.objects.create(field=Money(1, 'USD'), created='2016-12-05')
+        assert DateTimeModel.objects.filter(created__date='2016-12-01').count() == 0
+        assert DateTimeModel.objects.filter(created__date='2016-12-05').count() == 1
 
     def test_exact_match(self):
         money = Money('100.0')
