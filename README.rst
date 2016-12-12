@@ -87,7 +87,7 @@ Searching for models with money fields:
         BankAccount.objects.filter(balance__gt=Money(1, USD))
         # Returns the "account" object
 
-Special note on serialized arguments: if your model definition 
+Special note on serialized arguments: if your model definition
 requires serializing an instance of ``Money``, you can use ``MoneyPatched``
 instead.
 
@@ -303,4 +303,3 @@ Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.
 ::
 
      https://github.com/django/django/pull/7217
-
