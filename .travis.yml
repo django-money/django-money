@@ -5,6 +5,7 @@ cache: pip
 install: travis_retry pip install "virtualenv<14.0.0" tox codecov
 script: tox -e $TOX_ENV
 env:
+  - TOX_ENV=docs
   - TOX_ENV=lint
   - TOX_ENV=no_rest_framework
   - TOX_ENV=django_master-py35
