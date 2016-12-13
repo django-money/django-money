@@ -13,10 +13,6 @@ Django-money
    :target: http://django-money.readthedocs.io/en/stable/?badge=stable
    :alt: Documentation Status
 
-.. image:: https://badge.fury.io/py/django-money.svg
-   :target: https://pypi.python.org/pypi/django-money
-   :alt: PyPI
-
 A little Django app that uses ``py-moneyed`` to add support for Money
 fields in your models and forms.
 
@@ -87,7 +83,7 @@ Searching for models with money fields:
         BankAccount.objects.filter(balance__gt=Money(1, USD))
         # Returns the "account" object
 
-Special note on serialized arguments: if your model definition 
+Special note on serialized arguments: if your model definition
 requires serializing an instance of ``Money``, you can use ``MoneyPatched``
 instead.
 
@@ -303,4 +299,3 @@ Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.
 ::
 
      https://github.com/django/django/pull/7217
-
