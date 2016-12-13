@@ -9,8 +9,8 @@ Django-money
    :target: http://codecov.io/github/django-money/django-money?branch=master
    :alt: Coverage Status
 
-.. image:: https://readthedocs.org/projects/django-money/badge/?version=stable
-   :target: http://django-money.readthedocs.io/en/stable/?badge=stable
+.. image:: https://readthedocs.org/projects/django-money/badge/?version=latest
+   :target: http://django-money.readthedocs.io/en/latest/
    :alt: Documentation Status
 
 A little Django app that uses ``py-moneyed`` to add support for Money
