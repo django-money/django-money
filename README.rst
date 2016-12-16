@@ -13,6 +13,10 @@ Django-money
    :target: http://django-money.readthedocs.io/en/latest/
    :alt: Documentation Status
 
+.. image:: https://img.shields.io/pypi/v/django-money.svg
+   :target: https://pypi.python.org/pypi/django-money
+   :alt: PyPI
+
 A little Django app that uses ``py-moneyed`` to add support for Money
 fields in your models and forms.
 
