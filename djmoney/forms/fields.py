@@ -25,7 +25,8 @@ class MoneyField(MultiValueField):
 
     def __init__(self, currency_widget=None, currency_choices=CURRENCY_CHOICES,
                  choices=CURRENCY_CHOICES, max_value=None, min_value=None,
-                 max_digits=None, decimal_places=None, *args, **kwargs):
+                 max_digits=None, decimal_places=None, default_amount=None,
+                 *args, **kwargs):
 
         # choices does not make sense in this context, it would mean we had
         # to replace two widgets with one widget dynamically... which is a
@@ -62,7 +63,7 @@ class MoneyField(MultiValueField):
 
         # set the initial value to the default currency so that the
         # default currency appears as the selected menu item
-        self.initial = [None, default_currency]
+        self.initial = [default_amount, default_currency]
 
     def compress(self, data_list):
         if data_list:

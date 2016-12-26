@@ -411,6 +411,8 @@ class MoneyField(models.DecimalField):
         defaults.update(kwargs)
         defaults['currency_choices'] = self.currency_choices
         defaults['default_currency'] = self.default_currency
+        if self.default is not None:
+            defaults['default_amount'] = self.default.amount
         return super(MoneyField, self).formfield(**defaults)
 
     def value_to_string(self, obj):

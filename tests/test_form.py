@@ -14,6 +14,7 @@ import moneyed
 from moneyed import Money
 
 from .testapp.forms import (
+    DefaultMoneyModelForm,
     MoneyForm,
     MoneyFormMultipleCurrencies,
     MoneyModelForm,
@@ -111,3 +112,12 @@ def test_default_currency():
     else:
         expected = '<option value="USD" selected="selected">US Dollar</option>'
     assert expected in form.as_p()
+
+
+def test_fields_default_amount_becomes_forms_initial():
+    """
+    Formfield should take field's default amount
+    and put it in form field's initial value
+    """
+    form = DefaultMoneyModelForm()
+    assert form.fields['money'].initial == [123, 'PLN']
