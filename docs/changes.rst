@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Changes in 0.10.1.dev0
+----------------------
+
+- Fixed default value for ``djmoney.forms.fields.MoneyField``. `#249`_ (`tsouvarev`_)
+
 Changes in 0.10
 ---------------
 
@@ -174,6 +179,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#249: https://github.com/django-money/django-money/pull/249
 .. _#241: https://github.com/django-money/django-money/issues/241
 .. _#235: https://github.com/django-money/django-money/issues/235
 .. _#225: https://github.com/django-money/django-money/issues/225
