@@ -3,6 +3,12 @@
 Changelog
 =========
 
+Changes in 0.10.2dev
+--------------------
+
+- (none so far)
+
+
 Changes in 0.10.1
 -----------------
 
