@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Changes in 0.10.1.dev0
-----------------------
+Changes in 0.10.1
+-----------------
 
 - Fixed default value for ``djmoney.forms.fields.MoneyField``. `#249`_ (`tsouvarev`_)
 
