@@ -22,3 +22,4 @@ else:
                         c.code != DEFAULT_CURRENCY_CODE]
 
 CURRENCY_CHOICES.sort(key=operator.itemgetter(1, 0))
+DECIMAL_PLACES = getattr(settings, 'CURRENCY_DECIMAL_PLACES', 2)
