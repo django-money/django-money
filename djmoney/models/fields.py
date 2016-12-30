@@ -27,7 +27,7 @@ from .._compat import (
     split_expression,
     string_types,
 )
-from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import get_currency_field_name, prepare_expression
 
 
@@ -139,9 +139,9 @@ class MoneyPatched(Money):
         if self.__use_l10n():
             locale = self.__get_current_locale()
             if locale:
-                return format_money(self, locale=locale)
+                return format_money(self, locale=locale, decimal_places=DECIMAL_PLACES)
 
-        return format_money(self)
+        return format_money(self, decimal_places=DECIMAL_PLACES)
 
     __str__ = __unicode__
 
