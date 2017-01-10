@@ -6,7 +6,7 @@ Changelog
 Changes in 0.10.2dev
 --------------------
 
-- (none so far)
+- Added ability to configure decimal places output. `#154`_, `#251`_ (`ivanchenkodmitry`_)
 
 
 Changes in 0.10.1
@@ -185,6 +185,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#251: https://github.com/django-money/django-money/pull/251
 .. _#249: https://github.com/django-money/django-money/pull/249
 .. _#241: https://github.com/django-money/django-money/issues/241
 .. _#235: https://github.com/django-money/django-money/issues/235
@@ -204,6 +205,7 @@ Changes in 0.3
 .. _#173: https://github.com/django-money/django-money/issues/173
 .. _#172: https://github.com/django-money/django-money/issues/172
 .. _#166: https://github.com/django-money/django-money/issues/166
+.. _#154: https://github.com/django-money/django-money/issues/154
 .. _#149: https://github.com/django-money/django-money/issues/149
 .. _#138: https://github.com/django-money/django-money/issues/138
 .. _#103: https://github.com/django-money/django-money/issues/103
@@ -229,6 +231,7 @@ Changes in 0.3
 .. _edwinlunando: https://github.com/edwinlunando
 .. _glarrain: https://github.com/glarrain
 .. _inureyes: https://github.com/inureyes
+.. _ivanchenkodmitry: https://github.com/ivanchenkodmitry
 .. _jack-cvr: https://github.com/jack-cvr
 .. _jakewins: https://github.com/jakewins
 .. _kjagiello: https://github.com/kjagiello
