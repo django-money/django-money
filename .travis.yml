@@ -8,10 +8,13 @@ env:
   - TOX_ENV=docs
   - TOX_ENV=lint
   - TOX_ENV=no_rest_framework
+  - TOX_ENV=django_master-py36
   - TOX_ENV=django_master-py35
-  - TOX_ENV=django_master-py34
-  - TOX_ENV=django_master-py27
-  - TOX_ENV=django_master-pypy
+  - TOX_ENV=django111-py36
+  - TOX_ENV=django111-py35
+  - TOX_ENV=django111-py34
+  - TOX_ENV=django111-py27
+  - TOX_ENV=django111-pypy
   - TOX_ENV=django110-py35
   - TOX_ENV=django110-py34
   - TOX_ENV=django110-py27
