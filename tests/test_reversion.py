@@ -2,7 +2,7 @@
 import pytest
 from moneyed import Money
 
-from ._compat import reversion, get_deleted
+from ._compat import get_deleted, reversion
 from .testapp.models import RevisionedModel
 
 
