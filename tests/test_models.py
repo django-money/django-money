@@ -482,7 +482,6 @@ class TestDifferentCurrencies:
 
     @pytest.mark.skipif(VERSION < (1, 9) or VERSION > (2, 0), reason='djmoney_rates supports only Django < 1.9')
     def test_incompatibility(self, settings):
-        print(VERSION[:2], (1, 9) > VERSION[:2] >= (2, 0))
         settings.AUTO_CONVERT_MONEY = True
         with pytest.raises(ImproperlyConfigured) as exc:
             MoneyPatched(10, 'EUR') - Money(1, 'USD')

@@ -2,14 +2,14 @@
 import pytest
 from moneyed import Money
 
-from ._compat import get_deleted, reversion
+from ._compat import create_revision, get_deleted
 from .testapp.models import RevisionedModel
 
 
 @pytest.mark.django_db
 def test_that_can_safely_restore_deleted_object():
     amount = Money(100, 'GHS')
-    with reversion.create_revision():
+    with create_revision():
         instance = RevisionedModel.objects.create(amount=amount)
     instance.delete()
     version = get_deleted(RevisionedModel)[0]
