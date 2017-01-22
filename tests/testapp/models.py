@@ -56,7 +56,7 @@ class ModelWithTwoMoneyFields(models.Model):
 
 
 class ModelRelatedToModelWithMoney(models.Model):
-    moneyModel = models.ForeignKey(ModelWithVanillaMoneyField)
+    moneyModel = models.ForeignKey(ModelWithVanillaMoneyField, on_delete=models.CASCADE)
 
 
 class ModelWithChoicesMoneyField(models.Model):

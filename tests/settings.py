@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 import warnings
 from decimal import ROUND_HALF_EVEN
 
+from django import VERSION
+
 import moneyed
 from moneyed.localization import _FORMATTER, DEFAULT
 
@@ -33,11 +35,14 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'djmoney',
-    'djmoney_rates',
     'reversion',
 
     'tests.testapp'
 ]
+# Application will not start on Django 2.0
+if VERSION < (2, 0):
+    INSTALLED_APPS.append('djmoney_rates')
+
 
 SITE_ID = 1
 ROOT_URLCONF = 'core.urls'

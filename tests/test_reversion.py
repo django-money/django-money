@@ -2,7 +2,7 @@
 import pytest
 from moneyed import Money
 
-from ._compat import reversion
+from ._compat import reversion, get_deleted
 from .testapp.models import RevisionedModel
 
 
@@ -12,7 +12,7 @@ def test_that_can_safely_restore_deleted_object():
     with reversion.create_revision():
         instance = RevisionedModel.objects.create(amount=amount)
     instance.delete()
-    version = reversion.get_deleted(RevisionedModel)[0]
+    version = get_deleted(RevisionedModel)[0]
     version.revision.revert()
     instance = RevisionedModel.objects.get(pk=1)
     assert instance.amount == amount

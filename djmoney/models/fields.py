@@ -416,7 +416,10 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).formfield(**defaults)
 
     def value_to_string(self, obj):
-        value = self._get_val_from_obj(obj)
+        if VERSION < (2, 0):
+            value = self._get_val_from_obj(obj)
+        else:
+            value = self.value_from_object(obj)
         return self.get_prep_value(value)
 
     # South support
