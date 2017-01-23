@@ -14,7 +14,7 @@ import moneyed
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
 
-from .._compat import reversion
+from .._compat import register
 
 
 class ModelWithVanillaMoneyField(models.Model):
@@ -56,7 +56,7 @@ class ModelWithTwoMoneyFields(models.Model):
 
 
 class ModelRelatedToModelWithMoney(models.Model):
-    moneyModel = models.ForeignKey(ModelWithVanillaMoneyField)
+    moneyModel = models.ForeignKey(ModelWithVanillaMoneyField, on_delete=models.CASCADE)
 
 
 class ModelWithChoicesMoneyField(models.Model):
@@ -91,7 +91,7 @@ class RevisionedModel(models.Model):
     amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
 
 
-reversion.register(RevisionedModel)
+register(RevisionedModel)
 
 
 class BaseModel(models.Model):

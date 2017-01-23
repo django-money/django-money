@@ -480,13 +480,14 @@ class TestDifferentCurrencies:
     def test_ne_currency(self):
         assert MoneyPatched(10, 'EUR') != Money(10, 'USD')
 
-    @pytest.mark.skipif(VERSION < (1, 9), reason='djmoney_rates supports only Django < 1.9')
+    @pytest.mark.skipif(VERSION < (1, 9) or VERSION > (2, 0), reason='djmoney_rates supports only Django < 1.9')
     def test_incompatibility(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         with pytest.raises(ImproperlyConfigured) as exc:
             MoneyPatched(10, 'EUR') - Money(1, 'USD')
         assert str(exc.value) == 'djmoney_rates doesn\'t support Django 1.9+'
 
+    @pytest.mark.skipif(VERSION[:2] >= (2, 0), reason='djmoney_rates supports only Django < 1.9')
     def test_djmoney_rates_not_installed(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         settings.INSTALLED_APPS.remove('djmoney_rates')
