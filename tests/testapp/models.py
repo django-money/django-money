@@ -27,6 +27,13 @@ class ModelWithDefaultAsInt(models.Model):
     money = MoneyField(default=123, max_digits=10, decimal_places=2, default_currency='GHS')
 
 
+class ModelWithUniqueIdAndCurrency(models.Model):
+    money = MoneyField(default=123, max_digits=10, decimal_places=2, default_currency='GHS')
+
+    class Meta:
+        unique_together = ('id', 'money')
+
+
 class ModelWithDefaultAsStringWithCurrency(models.Model):
     money = MoneyField(default='123 USD', max_digits=10, decimal_places=2)
 
