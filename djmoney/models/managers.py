@@ -144,11 +144,12 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                 if is_in_lookup(name, value):
                     args += (_convert_in_lookup(model, name, value), )
                     del kwargs[name]
-            elif isinstance(field, CurrencyField):
+            elif isinstance(field, CurrencyField) and 'defaults' in exclusions:
                 money_field_name = name[:-9]  # Remove '_currency'
                 if money_field_name not in involved_fields:
                     money_field = _get_field(model, money_field_name)
-                    kwargs[money_field_name] = money_field.default.amount
+                    kwargs['defaults'] = kwargs.get('defaults', {})
+                    kwargs['defaults'][money_field_name] = money_field.default.amount
 
     return args, kwargs
 
