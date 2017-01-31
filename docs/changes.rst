@@ -7,7 +7,7 @@ Changes in 0.10.2dev
 --------------------
 
 - Added ability to configure decimal places output. `#154`_, `#251`_ (`ivanchenkodmitry`_)
-
+- Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. `#257`_ (`kjagiello`_)
 
 Changes in 0.10.1
 -----------------
@@ -185,6 +185,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#257: https://github.com/django-money/django-money/pull/257
 .. _#251: https://github.com/django-money/django-money/pull/251
 .. _#249: https://github.com/django-money/django-money/pull/249
 .. _#241: https://github.com/django-money/django-money/issues/241
