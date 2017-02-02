@@ -36,6 +36,7 @@ from .testapp.models import (
     ModelWithDefaultAsString,
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
+    ModelWithNullableCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
     ModelWithVanillaMoneyField,
@@ -257,6 +258,19 @@ class TestGetOrCreate:
         ModelWithVanillaMoneyField.objects.create(money=Money(0, 'EUR'))
         instance, created = ModelWithVanillaMoneyField.objects.get_or_create(money_currency__iexact='eur')
         assert not created
+
+
+class TestNullableCurrency:
+
+    def test_create_nullable(self):
+        instance = ModelWithNullableCurrency.objects.create()
+        assert instance.money is None
+        assert instance.money_currency is None
+
+    def test_create_default(self):
+        money = Money(100, 'SEK')
+        instance = ModelWithNullableCurrency.objects.create(money=money)
+        assert instance.money == money
 
 
 class TestFExpressions:

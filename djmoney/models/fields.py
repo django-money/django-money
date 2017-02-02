@@ -297,7 +297,7 @@ class MoneyField(models.DecimalField):
                  currency_choices=CURRENCY_CHOICES, **kwargs):
         nullable = kwargs.get('null', False)
         default = self.setup_default(default, default_currency, nullable)
-        if not default_currency:
+        if not default_currency and default is not None:
             default_currency = default.currency
 
         if VERSION < (1, 7):
@@ -369,7 +369,7 @@ class MoneyField(models.DecimalField):
         currency_field = CurrencyField(
             max_length=3, price_field=self,
             default=self.default_currency, editable=False,
-            choices=self.currency_choices
+            choices=self.currency_choices, null=self.default_currency is None
         )
         currency_field.creation_counter = self.creation_counter - 1
         currency_field_name = get_currency_field_name(name)
