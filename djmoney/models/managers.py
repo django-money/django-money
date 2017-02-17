@@ -97,28 +97,47 @@ def _expand_money_args(model, args):
     """
     for arg in args:
         if isinstance(arg, Q):
-            for i, child in enumerate(arg.children):
-                if isinstance(child, Q):
-                    _expand_money_args(model, [child])
-                elif isinstance(child, (list, tuple)):
-                    name, value = child
-                    if isinstance(value, Money):
-                        clean_name = _get_clean_name(name)
-                        arg.children[i] = Q(*[
-                            child,
-                            (get_currency_field_name(clean_name), smart_unicode(value.currency))
-                        ])
-                    field = _get_field(model, name)
-                    if isinstance(value, (BaseExpression, F)):
-                        if isinstance(field, MoneyField):
-                            clean_name = _get_clean_name(name)
-                            arg.children[i] = Q(*[
-                                child,
-                                (get_currency_field_name(clean_name), F(get_currency_field_name(value.name)))
-                            ])
-                    if isinstance(field, MoneyField) and is_in_lookup(name, value):
-                        arg.children[i] = _convert_in_lookup(model, name, value)
+            _expand_arg(model, arg)
     return args
+
+
+def _expand_arg(model, arg):
+    for i, child in enumerate(arg.children):
+        if isinstance(child, Q):
+            _expand_arg(model, child)
+        elif isinstance(child, (list, tuple)):
+            name, value = child
+            if isinstance(value, Money):
+                clean_name = _get_clean_name(name)
+                arg.children[i] = Q(*[
+                    child,
+                    (get_currency_field_name(clean_name), smart_unicode(value.currency))
+                ])
+            field = _get_field(model, name)
+            if isinstance(field, MoneyField):
+                if isinstance(value, (BaseExpression, F)):
+                    clean_name = _get_clean_name(name)
+                    if not isinstance(value, F):
+                        value = prepare_expression(value)
+                    if not _is_money_field(model, value, name):
+                        continue
+                    arg.children[i] = Q(*[
+                        child,
+                        (get_currency_field_name(clean_name), F(get_currency_field_name(value.name)))
+                    ])
+                if is_in_lookup(name, value):
+                    arg.children[i] = _convert_in_lookup(model, name, value)
+
+
+def _is_money_field(model, rhs, lhs_name):
+    """
+    Checks if the target field from the expression is instance of MoneyField.
+    """
+    # If the right side is the same field, then no reason to check
+    if rhs.name == lhs_name:
+        return True
+    target_field = _get_field(model, rhs.name)
+    return isinstance(target_field, MoneyField)
 
 
 def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
@@ -139,6 +158,8 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                     clean_name = _get_clean_name(name)
                     if not isinstance(value, F):
                         value = prepare_expression(value)
+                    if not _is_money_field(model, value, name):
+                        continue
                     kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
                 if is_in_lookup(name, value):
                     args += (_convert_in_lookup(model, name, value), )
