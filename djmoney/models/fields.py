@@ -409,7 +409,7 @@ class MoneyField(models.DecimalField):
     def formfield(self, **kwargs):
         defaults = {'form_class': forms.MoneyField}
         defaults.update(kwargs)
-        defaults['currency_choices'] = self.currency_choices
+        defaults['choices'] = self.currency_choices
         defaults['default_currency'] = self.default_currency
         if self.default is not None:
             defaults['default_amount'] = self.default.amount

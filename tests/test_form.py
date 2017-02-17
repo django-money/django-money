@@ -13,6 +13,7 @@ import pytest
 import moneyed
 from moneyed import Money
 
+from djmoney.models.fields import MoneyField
 from .testapp.forms import (
     DefaultMoneyModelForm,
     MoneyForm,
@@ -121,3 +122,12 @@ def test_fields_default_amount_becomes_forms_initial():
     """
     form = DefaultMoneyModelForm()
     assert form.fields['money'].initial == [123, 'PLN']
+
+
+def test_no_deprecation_warning():
+    """
+    The library's code shouldn't generate any warnings itself. See #262.
+    """
+    with pytest.warns(None) as warning:
+        MoneyField(currency_choices=(('USD', 'USD'),)).formfield()
+    assert not warning
