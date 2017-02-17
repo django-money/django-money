@@ -405,6 +405,7 @@ class TestExpressions:
     def test_expressions_for_non_money_fields(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(1, 'USD'), integer=0)
         assert ModelWithVanillaMoneyField.objects.get(money=F('integer') + 1) == instance
+        assert ModelWithVanillaMoneyField.objects.get(Q(money=F('integer') + 1)) == instance
 
 
 def test_find_models_related_to_money_models():
