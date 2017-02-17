@@ -97,14 +97,14 @@ def _expand_money_args(model, args):
     """
     for arg in args:
         if isinstance(arg, Q):
-            _expand_arg(arg, model)
+            _expand_arg(model, arg)
     return args
 
 
-def _expand_arg(arg, model):
+def _expand_arg(model, arg):
     for i, child in enumerate(arg.children):
         if isinstance(child, Q):
-            _expand_money_args(model, [child])
+            _expand_arg(model, child)
         elif isinstance(child, (list, tuple)):
             name, value = child
             if isinstance(value, Money):
