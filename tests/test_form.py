@@ -11,9 +11,9 @@ from django import VERSION
 import pytest
 
 import moneyed
+from djmoney.models.fields import MoneyField
 from moneyed import Money
 
-from djmoney.models.fields import MoneyField
 from .testapp.forms import (
     DefaultMoneyModelForm,
     MoneyForm,
