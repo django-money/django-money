@@ -10,7 +10,7 @@ Changes in 0.10.2dev
 - Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. `#257`_ (`kjagiello`_)
 - Fixed handling of currency fields lookups in ``get_or_create`` method. `#258`_ (`Stranger6667`_)
 - Fixed ``PendingDeprecationWarning`` during form initialization. `#262`_ (`Stranger6667`_, `spookylukey`_)
-- Fixed handling of ``F`` expressions which involves non-Money fields. `265`_ (`Stranger6667`_)
+- Fixed handling of ``F`` expressions which involves non-Money fields. `#265`_ (`Stranger6667`_)
 
 Changes in 0.10.1
 -----------------
