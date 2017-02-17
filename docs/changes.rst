@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Changes in 0.10.2dev
---------------------
+Changes in 0.10.2
+-----------------
 
 - Added ability to configure decimal places output. `#154`_, `#251`_ (`ivanchenkodmitry`_)
 - Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. `#257`_ (`kjagiello`_)
