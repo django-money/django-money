@@ -125,7 +125,6 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     """
     Augments kwargs so that they contain _currency lookups.
     """
-    involved_fields = [_get_clean_name(name) for name in kwargs]
     for name, value in list(kwargs.items()):
         if name in exclusions:
             continue
@@ -147,10 +146,9 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
             elif isinstance(field, CurrencyField) and 'defaults' in exclusions:
                 name = _get_clean_name(name)
                 money_field_name = name[:-9]  # Remove '_currency'
-                if money_field_name not in involved_fields:
-                    money_field = _get_field(model, money_field_name)
-                    kwargs['defaults'] = kwargs.get('defaults', {})
-                    kwargs['defaults'][money_field_name] = money_field.default.amount
+                money_field = _get_field(model, money_field_name)
+                kwargs['defaults'] = kwargs.get('defaults', {})
+                kwargs['defaults'][money_field_name] = money_field.default.amount
 
     return args, kwargs
 
