@@ -139,6 +139,10 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                     clean_name = _get_clean_name(name)
                     if not isinstance(value, F):
                         value = prepare_expression(value)
+                    if value.name != name:
+                        target_field = _get_field(model, value.name)
+                        if not isinstance(target_field, MoneyField):
+                            continue
                     kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
                 if is_in_lookup(name, value):
                     args += (_convert_in_lookup(model, name, value), )
