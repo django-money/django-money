@@ -165,13 +165,18 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                     args += (_convert_in_lookup(model, name, value), )
                     del kwargs[name]
             elif isinstance(field, CurrencyField) and 'defaults' in exclusions:
-                name = _get_clean_name(name)
-                money_field_name = name[:-9]  # Remove '_currency'
-                money_field = _get_field(model, money_field_name)
-                kwargs['defaults'] = kwargs.get('defaults', {})
-                kwargs['defaults'][money_field_name] = money_field.default.amount
+                _handle_currency_field(model, name, kwargs)
 
     return args, kwargs
+
+
+def _handle_currency_field(model, name, kwargs):
+    name = _get_clean_name(name)
+    money_field_name = name[:-9]  # Remove '_currency'
+    money_field = _get_field(model, money_field_name)
+    if money_field.default is not None:
+        kwargs['defaults'] = kwargs.get('defaults', {})
+        kwargs['defaults'][money_field_name] = money_field.default.amount
 
 
 def _get_model(args, func):
