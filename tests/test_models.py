@@ -258,6 +258,11 @@ class TestGetOrCreate:
         instance, created = ModelWithVanillaMoneyField.objects.get_or_create(money_currency__iexact='eur')
         assert not created
 
+    def test_no_default_model(self):
+        NullMoneyFieldModel.objects.create(field=Money(100, 'USD'))
+        instance, created = NullMoneyFieldModel.objects.get_or_create(field=100, field_currency='USD')
+        assert not created
+
 
 class TestFExpressions:
 

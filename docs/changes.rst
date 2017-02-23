@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Changes in 0.10.3dev
+--------------------
+
+- Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. `#268`_ (`Stranger6667`_, `lobziik`_)
+
 Changes in 0.10.2
 -----------------
 
@@ -188,6 +193,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#268: https://github.com/django-money/django-money/issues/268
 .. _#265: https://github.com/django-money/django-money/issues/265
 .. _#262: https://github.com/django-money/django-money/issues/262
 .. _#258: https://github.com/django-money/django-money/issues/258
@@ -242,6 +248,7 @@ Changes in 0.3
 .. _jack-cvr: https://github.com/jack-cvr
 .. _jakewins: https://github.com/jakewins
 .. _kjagiello: https://github.com/kjagiello
+.. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
