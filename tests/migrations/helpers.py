@@ -60,3 +60,9 @@ def get_operations(migration_name):
 
 def get_models(migration_name):
     return get_migration(migration_name).models['money_app.model']
+
+
+def migrate():
+    if VERSION < (1, 7):
+        call_command('syncdb')
+    call_command('migrate', 'money_app')
