@@ -3,13 +3,10 @@
 This module contains various helpers for migrations testing.
 """
 import os
-from os.path import abspath, dirname, join
+from os.path import abspath, join
 
 from django import VERSION
 from django.core.management import call_command
-
-
-os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
 
 
 if VERSION >= (1, 7):
@@ -18,7 +15,6 @@ if VERSION >= (1, 7):
 
 
 MIGRATION_NAME = 'test'
-MIGRATIONS_DIR = join(dirname(abspath(__file__)), 'money_app/migrations')
 
 
 def makemigrations():
@@ -28,7 +24,7 @@ def makemigrations():
     elif VERSION >= (1, 7):
         run_migration_command()
     else:
-        if '0001_test.py' not in os.listdir(MIGRATIONS_DIR):
+        if '0001_test.py' not in os.listdir(join(abspath(os.curdir), 'money_app/migrations')):
             kwargs = {'initial': True}
         else:
             kwargs = {'auto': True}
