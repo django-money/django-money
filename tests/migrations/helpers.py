@@ -6,22 +6,21 @@ from django import VERSION
 from django.core.management import call_command
 
 
+MIGRATION_NAME = 'test'
+
+
 def makemigrations():
     if VERSION >= (1, 7):
-        call_command('makemigrations')
+        call_command('makemigrations', name=MIGRATION_NAME)
     else:
         try:
-            call_command('schemamigration', 'money_app', 'auto', auto=True)
+            call_command('schemamigration', 'money_app', MIGRATION_NAME, auto=True)
         except SystemExit:
-            call_command('schemamigration', 'money_app', initial=True)
+            call_command('schemamigration', 'money_app', MIGRATION_NAME, initial=True)
 
 
 def get_migration(name):
-    migrations = __import__('money_app.migrations').migrations
-    for member in dir(migrations):
-        if member[:4] == name:
-            return getattr(migrations, member).Migration
-    return __import__('money_app.migrations.%s' % name, fromlist=['Migration']).Migration
+    return __import__('money_app.migrations.%s_%s' % (name, MIGRATION_NAME), fromlist=['Migration']).Migration
 
 
 def get_operations(migration_name):

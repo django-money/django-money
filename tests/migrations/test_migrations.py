@@ -101,7 +101,7 @@ class TestSouth(BaseMigrationTests):
 
 
         def test_create_initial():
-            models = get_models('0001_initial')
+            models = get_models('0001')
             assert models['field'] == (
                 'djmoney.models.fields.MoneyField',
                 [],
