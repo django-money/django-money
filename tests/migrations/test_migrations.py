@@ -69,8 +69,8 @@ class BaseMigrationTests:
         self.make_migration_file()
 
     def make_migration_file(self):
-        self.run('from helpers import makemigrations; makemigrations();', False)
-        
+        self.testdir.runpython_c('from helpers import makemigrations; makemigrations();')
+
     def make_default_migration(self):
         self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
 

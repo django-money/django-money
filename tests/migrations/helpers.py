@@ -2,23 +2,37 @@
 """
 This module contains various helpers for migrations testing.
 """
+import os
+from os.path import abspath, dirname, join
+
 from django import VERSION
 from django.core.management import call_command
 
 
+os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
+
+
+if VERSION >= (1, 7):
+    from django import setup
+    setup()
+
+
 MIGRATION_NAME = 'test'
+MIGRATIONS_DIR = join(dirname(abspath(__file__)), 'money_app/migrations')
 
 
 def makemigrations():
+    os.system('find . -name \*.pyc -delete')
     if VERSION >= (1, 10):
         call_command('makemigrations', 'money_app', name=MIGRATION_NAME)
     elif VERSION >= (1, 7):
         run_migration_command()
     else:
-        try:
-            call_command('schemamigration', 'money_app', MIGRATION_NAME, auto=True)
-        except SystemExit:
-            call_command('schemamigration', 'money_app', MIGRATION_NAME, initial=True)
+        if '0001_test.py' not in os.listdir(MIGRATIONS_DIR):
+            kwargs = {'initial': True}
+        else:
+            kwargs = {'auto': True}
+        call_command('schemamigration', 'money_app', MIGRATION_NAME, **kwargs)
 
 
 def run_migration_command():
