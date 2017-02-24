@@ -190,8 +190,23 @@ class TestSouth(BaseMigrationTests):
 @pytest.mark.skipif(VERSION < (1, 7), reason='Django 1.7+ has migration framework')
 class TestMigrationFramework(BaseMigrationTests):
 
+    def assert_migrate(self):
+        """
+        Tun migrations and checks if 2 migrations were applied.
+        """
+        migration = self.migrate()
+        migration.stdout.fnmatch_lines([
+            '*Applying money_app.0001_test... OK*',
+            '*Applying money_app.0002_test... OK*',
+        ])
+
     def test_create_initial(self):
-        self.make_default_migration()
+        migration = self.make_default_migration()
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*money_app/migrations/0001_test.py*',
+            '*- Create model Model*',
+        ])
         operations = get_operations('0001')
         assert len(operations) == 1
 
@@ -203,10 +218,18 @@ class TestMigrationFramework(BaseMigrationTests):
         assert isinstance(fields[0][1], MoneyField)
         assert fields[1][0] == 'field_currency'
         assert isinstance(fields[1][1], CurrencyField)
+        migration = self.migrate()
+        migration.stdout.fnmatch_lines(['*Applying money_app.0001_test... OK*'])
 
     def test_add_field(self):
         self.make_migration()
-        self.make_default_migration()
+        migration = self.make_default_migration()
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*money_app/migrations/0002_test.py*',
+            '*- Add field field to model*',
+            '*- Add field field_currency to model*',
+        ])
 
         operations = get_operations('0002')
         assert len(operations) == 2
@@ -214,20 +237,33 @@ class TestMigrationFramework(BaseMigrationTests):
         assert isinstance(operations[0].field, MoneyField)
         assert isinstance(operations[1], migrations.AddField)
         assert isinstance(operations[1].field, CurrencyField)
+        self.assert_migrate()
 
     def test_alter_field(self):
         self.make_default_migration()
-        self.make_migration(field='MoneyField(max_digits=15, decimal_places=2)')
+        migration = self.make_migration(field='MoneyField(max_digits=15, decimal_places=2)')
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*money_app/migrations/0002_test.py*',
+            '*- Alter field field on model*',
+        ])
 
         operations = get_operations('0002')
         assert len(operations) == 1
         assert isinstance(operations[0], migrations.AlterField)
         assert isinstance(operations[0].field, MoneyField)
         assert operations[0].field.max_digits == 15
+        self.assert_migrate()
 
     def test_remove_field(self):
         self.make_default_migration()
-        self.make_migration()
+        migration = self.make_migration()
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*money_app/migrations/0002_test.py*',
+            '*- Remove field field from model*',
+            '*- Remove field field_currency from model*',
+        ])
 
         operations = get_operations('0002')
         assert len(operations) == 2
@@ -235,3 +271,4 @@ class TestMigrationFramework(BaseMigrationTests):
         assert operations[0].name == 'field'
         assert isinstance(operations[1], migrations.RemoveField)
         assert operations[1].name == 'field_currency'
+        self.assert_migrate()
