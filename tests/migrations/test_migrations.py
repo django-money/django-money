@@ -204,7 +204,7 @@ class TestMigrationFramework(BaseMigrationTests):
         migration = self.make_default_migration()
         migration.stdout.fnmatch_lines([
             "*Migrations for 'money_app':*",
-            '*money_app/migrations/0001_test.py*',
+            '*0001_test.py*',
             '*- Create model Model*',
         ])
         operations = get_operations('0001')
@@ -226,7 +226,7 @@ class TestMigrationFramework(BaseMigrationTests):
         migration = self.make_default_migration()
         migration.stdout.fnmatch_lines([
             "*Migrations for 'money_app':*",
-            '*money_app/migrations/0002_test.py*',
+            '*0002_test.py*',
             '*- Add field field to model*',
             '*- Add field field_currency to model*',
         ])
@@ -244,7 +244,7 @@ class TestMigrationFramework(BaseMigrationTests):
         migration = self.make_migration(field='MoneyField(max_digits=15, decimal_places=2)')
         migration.stdout.fnmatch_lines([
             "*Migrations for 'money_app':*",
-            '*money_app/migrations/0002_test.py*',
+            '*0002_test.py*',
             '*- Alter field field on model*',
         ])
 
@@ -260,7 +260,7 @@ class TestMigrationFramework(BaseMigrationTests):
         migration = self.make_migration()
         migration.stdout.fnmatch_lines([
             "*Migrations for 'money_app':*",
-            '*money_app/migrations/0002_test.py*',
+            '*0002_test.py*',
             '*- Remove field field from model*',
             '*- Remove field field_currency from model*',
         ])
