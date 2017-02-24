@@ -68,6 +68,12 @@ class BaseMigrationTests:
             %s''' % fields_definition)
         self.make_migration_file()
 
+    def make_migration_file(self):
+        self.run('from helpers import makemigrations; makemigrations();', False)
+        
+    def make_default_migration(self):
+        self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
+
     def run(self, content, check=True):
         """
         Executes given test code in subprocess.
@@ -79,12 +85,6 @@ class BaseMigrationTests:
         )
         if check:
             assert result.ret == 0
-
-    def make_migration_file(self):
-        self.run('from helpers import makemigrations; makemigrations();', False)
-        
-    def make_default_migration(self):
-        self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
 
 
 @pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has migration framework')

@@ -10,13 +10,34 @@ MIGRATION_NAME = 'test'
 
 
 def makemigrations():
-    if VERSION >= (1, 7):
-        call_command('makemigrations', name=MIGRATION_NAME)
+    if VERSION >= (1, 10):
+        call_command('makemigrations', 'money_app', name=MIGRATION_NAME)
+    elif VERSION >= (1, 7):
+        run_migration_command()
     else:
         try:
             call_command('schemamigration', 'money_app', MIGRATION_NAME, auto=True)
         except SystemExit:
             call_command('schemamigration', 'money_app', MIGRATION_NAME, initial=True)
+
+
+def run_migration_command():
+    """
+    In Django 1.8 & 1.9 first argument name clashes with command option.
+    In Django 1.7 there is no built-in option to name a migration.
+    """
+    from django.core.management.commands.makemigrations import Command
+
+    if VERSION < (1, 8):
+
+        class Command(Command):
+
+            def write_migration_files(self, changes):
+                migration = changes.items()[0][1][0]
+                migration.name = migration.name.split('_')[0] + '_' + MIGRATION_NAME
+                super(Command, self).write_migration_files(changes)
+
+    Command().execute('money_app', name=MIGRATION_NAME, verbosity=1)
 
 
 def get_migration(name):
