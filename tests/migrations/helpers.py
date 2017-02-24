@@ -33,7 +33,7 @@ def run_migration_command():
         class Command(Command):
 
             def write_migration_files(self, changes):
-                migration = changes.items()[0][1][0]
+                migration = list(changes.items())[0][1][0]
                 migration.name = migration.name.split('_')[0] + '_' + MIGRATION_NAME
                 super(Command, self).write_migration_files(changes)
 
