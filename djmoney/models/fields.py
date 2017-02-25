@@ -136,14 +136,19 @@ class MoneyPatched(Money):
         return self.use_l10n
 
     def __unicode__(self):
+        kwargs = {'money': self, 'decimal_places': DECIMAL_PLACES}
         if self.__use_l10n():
             locale = self.__get_current_locale()
             if locale:
-                return format_money(self, locale=locale, decimal_places=DECIMAL_PLACES)
+                kwargs['locale'] = locale
 
-        return format_money(self, decimal_places=DECIMAL_PLACES)
+        return format_money(**kwargs)
 
-    __str__ = __unicode__
+    def __str__(self):
+        value = self.__unicode__()
+        if not isinstance(value, str):
+            value = value.encode('utf8')
+        return value
 
     def __repr__(self):
         return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
