@@ -12,11 +12,11 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
+from django.utils.translation import override
 
 import pytest
 
 import moneyed
-from django.utils.translation import override
 
 from djmoney._compat import Case, Func, Value, When, get_fields
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
