@@ -19,6 +19,7 @@ else:
 @pytest.mark.usefixtures('coveragerc')
 class BaseMigrationTests:
     installed_apps = ['djmoney', 'money_app']
+    migration_output = ()
 
     @pytest.fixture(autouse=True)
     def setup(self, testdir):
@@ -81,6 +82,13 @@ class BaseMigrationTests:
     def migrate(self):
         return self.run('from tests.migrations.helpers import migrate; migrate();')
 
+    def assert_migrate(self):
+        """
+        Runs migrations and checks if 2 migrations were applied.
+        """
+        migration = self.migrate()
+        migration.stdout.fnmatch_lines(self.migration_output)
+
 
 @pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has migration framework')
 class TestSouth(BaseMigrationTests):
@@ -88,18 +96,12 @@ class TestSouth(BaseMigrationTests):
     Tests for South-based migrations on Django < 1.7.
     """
     installed_apps = BaseMigrationTests.installed_apps + ['south']
-
-    def assert_migrate(self):
-        """
-        Tun migrations and checks if 2 migrations were applied.
-        """
-        migration = self.migrate()
-        migration.stdout.fnmatch_lines([
-            '* - Migrating forwards to 0002_test.*',
-            '*> money_app:0001_test*',
-            '*> money_app:0002_test*',
-            '*- Loading initial data for money_app.*',
-        ])
+    migration_output = [
+        '* - Migrating forwards to 0002_test.*',
+        '*> money_app:0001_test*',
+        '*> money_app:0002_test*',
+        '*- Loading initial data for money_app.*',
+    ]
 
     def test_create_initial(self):
         migration = self.make_default_migration()
@@ -189,16 +191,10 @@ class TestSouth(BaseMigrationTests):
 
 @pytest.mark.skipif(VERSION < (1, 7), reason='Django 1.7+ has migration framework')
 class TestMigrationFramework(BaseMigrationTests):
-
-    def assert_migrate(self):
-        """
-        Tun migrations and checks if 2 migrations were applied.
-        """
-        migration = self.migrate()
-        migration.stdout.fnmatch_lines([
-            '*Applying money_app.0001_test... OK*',
-            '*Applying money_app.0002_test... OK*',
-        ])
+    migration_output = [
+        '*Applying money_app.0001_test... OK*',
+        '*Applying money_app.0002_test... OK*',
+    ]
 
     def test_create_initial(self):
         migration = self.make_default_migration()
