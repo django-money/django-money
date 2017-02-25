@@ -12,10 +12,12 @@ from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
 from django.db.models import F, Q
 from django.utils.six import PY2
+from django.utils.translation import override
 
 import pytest
 
 import moneyed
+
 from djmoney._compat import Case, Func, Value, When, get_fields
 from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
 from moneyed import Money
@@ -609,3 +611,11 @@ def test_hash_uniqueness():
     """
     hashes = [hash(field) for field in get_fields(ModelWithVanillaMoneyField)]
     assert len(hashes) == len(set(hashes))
+
+
+def test_override_decorator():
+    """
+    When current locale is changed, MoneyPatched instances should be represented correctly.
+    """
+    with override('cs'):
+        assert str(MoneyPatched(10, 'CZK')) == 'Kč10.00'
