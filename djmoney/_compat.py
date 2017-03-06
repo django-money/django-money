@@ -55,8 +55,10 @@ except ImportError:
 
 try:
     string_types = (basestring,)
+    text_type = unicode
 except NameError:
     string_types = (str, bytes)
+    text_type = str
 
 
 if VERSION >= (1, 7):

@@ -1,5 +1,6 @@
 # coding: utf-8
-from djmoney.models.fields import MoneyField
+from ._compat import text_type
+from .models.fields import MoneyField
 
 
 def setup_admin_integration():
@@ -9,7 +10,7 @@ def setup_admin_integration():
 
     def display_for_field(value, field, empty):
         if isinstance(field, MoneyField):
-            return str(value)
+            return text_type(value)
         return original_display_for_field(value, field, empty)
 
     django.contrib.admin.utils.display_for_field = display_for_field
