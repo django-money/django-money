@@ -251,6 +251,22 @@ Formatting the number with currency:
 
         MoneyPatched object
 
+Admin integration
+-----------------
+
+For Django 1.7+ integration works automatically if ``djmoney`` is in the ``INSTALLED_APPS``,
+for older versions you should use the following code:
+
+.. code:: python
+
+    from djmoney.admin import setup_admin_integration
+
+    setup_admin_integration()
+
+
+There is no single opinion about where to place on-start-up code in Django < 1.7, but we'd recommend to place it
+in the top-level `urls.py`.
+
 Testing
 -------
 
@@ -296,6 +312,14 @@ Usage with Django REST Framework
 
 For MoneyFields to automatically work with Django REST Framework, make sure
 that ``djmoney`` is in the ``INSTALLED_APPS`` of your ``settings.py``.
+for older versions you should use the following code:
+
+.. code:: python
+
+    from djmoney.contrib.django_rest_framework import register_money_field
+
+    register_money_field()
+
 
 Known Issues
 ------------

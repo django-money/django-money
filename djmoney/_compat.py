@@ -7,6 +7,12 @@ from django.db.models.manager import ManagerDescriptor
 
 
 try:
+    import django.contrib.admin.utils as admin_utils
+except ImportError:
+    # Django < 1.5
+    import django.contrib.admin.util as admin_utils
+
+try:
     from django.db.models.constants import LOOKUP_SEP
 except ImportError:
     # Django < 1.5

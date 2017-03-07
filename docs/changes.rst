@@ -3,11 +3,13 @@
 Changelog
 =========
 
-Changes in 0.10.3dev
+Changes in 0.11.0dev
 --------------------
 
 - Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. `#268`_ (`Stranger6667`_, `lobziik`_)
 - Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. `#272`_ (`Stranger6667`_)
+- Fixed various displaying errors in Django Admin . `#232`_, `#220`_, `#196`_, `#102`_, `#90`_ (`Stranger6667`_,
+  `arthurk`_, `mstarostik`_, `eriktelepovsky`_, `jplehmann`_, `graik`_, `benjaoming`_, `k8n`_, `yellow-sky`_)
 
 Changes in 0.10.2
 -----------------
@@ -204,14 +206,17 @@ Changes in 0.3
 .. _#249: https://github.com/django-money/django-money/pull/249
 .. _#241: https://github.com/django-money/django-money/issues/241
 .. _#235: https://github.com/django-money/django-money/issues/235
+.. _#232: https://github.com/django-money/django-money/issues/232
 .. _#225: https://github.com/django-money/django-money/issues/225
 .. _#221: https://github.com/django-money/django-money/issues/221
+.. _#220: https://github.com/django-money/django-money/issues/220
 .. _#215: https://github.com/django-money/django-money/issues/215
 .. _#213: https://github.com/django-money/django-money/issues/213
 .. _#206: https://github.com/django-money/django-money/issues/206
 .. _#201: https://github.com/django-money/django-money/issues/201
 .. _#199: https://github.com/django-money/django-money/issues/199
 .. _#198: https://github.com/django-money/django-money/issues/198
+.. _#196: https://github.com/django-money/django-money/issues/196
 .. _#194: https://github.com/django-money/django-money/issues/194
 .. _#186: https://github.com/django-money/django-money/issues/186
 .. _#184: https://github.com/django-money/django-money/issues/184
@@ -224,8 +229,10 @@ Changes in 0.3
 .. _#149: https://github.com/django-money/django-money/issues/149
 .. _#138: https://github.com/django-money/django-money/issues/138
 .. _#103: https://github.com/django-money/django-money/issues/103
+.. _#102: https://github.com/django-money/django-money/issues/102
 .. _#101: https://github.com/django-money/django-money/issues/101
 .. _#95: https://github.com/django-money/django-money/issues/95
+.. _#90: https://github.com/django-money/django-money/issues/90
 .. _#86: https://github.com/django-money/django-money/issues/86
 .. _#80: https://github.com/django-money/django-money/issues/80
 
@@ -236,6 +243,7 @@ Changes in 0.3
 .. _adambregenzer: https://github.com/adambregenzer
 .. _akumria: https://github.com/akumria
 .. _alexhayes: https://github.com/alexhayes
+.. _arthurk: https://github.com/arthurk
 .. _benjaoming: https://github.com/benjaoming
 .. _briankung: https://github.com/briankung
 .. _browniebroke: https://github.com/browniebroke
@@ -244,14 +252,21 @@ Changes in 0.3
 .. _devlocal: https://github.com/devlocal
 .. _dnmellen: https://github.com/dnmellen
 .. _edwinlunando: https://github.com/edwinlunando
+.. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _glarrain: https://github.com/glarrain
+.. _graik: https://github.com/graik
 .. _inureyes: https://github.com/inureyes
 .. _ivanchenkodmitry: https://github.com/ivanchenkodmitry
 .. _jack-cvr: https://github.com/jack-cvr
 .. _jakewins: https://github.com/jakewins
+.. _jplehmann: https://github.com/jplehmann
 .. _kjagiello: https://github.com/kjagiello
+.. _ivirabyan: https://github.com/ivirabyan
+.. _k8n: https://github.com/k8n
 .. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
+.. _msgre: https://github.com/msgre
+.. _mstarostik: https://github.com/mstarostik
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach
@@ -261,7 +276,6 @@ Changes in 0.3
 .. _synotna: https://github.com/synotna
 .. _toudi: https://github.com/toudi
 .. _tsouvarev: https://github.com/tsouvarev
+.. _yellow-sky: https://github.com/yellow-sky
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
-.. _ivirabyan: https://github.com/ivirabyan
-.. _msgre: https://github.com/msgre
