@@ -143,5 +143,7 @@ class DateTimeModel(models.Model):
 
 if VERSION < (1, 7, 0):
     from djmoney.contrib.django_rest_framework import register_money_field
+    from djmoney.admin import setup_admin_integration
 
     register_money_field()
+    setup_admin_integration()
