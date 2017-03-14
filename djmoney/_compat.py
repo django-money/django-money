@@ -66,6 +66,16 @@ except NameError:
     string_types = (str, bytes)
     text_type = str
 
+try:
+    # Python 2
+    reload_module = reload
+except NameError:
+    try:
+        # Python 3.4+
+        from importlib import reload as reload_module
+    except ImportError:
+        # Python 3.2 & 3.3
+        from imp import reload as reload_module
 
 if VERSION >= (1, 7):
     from django.utils.deconstruct import deconstructible

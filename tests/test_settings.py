@@ -1,51 +1,21 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-import pytest
+import djmoney.settings
+from djmoney._compat import reload_module
 
 
-@pytest.mark.usefixtures('coveragerc')
 class TestCurrencies:
 
-    def assert_test_passed(self, testdir, lines):
-        result = testdir.runpytest_subprocess(
-            '--verbose', '-s',
-            '--ds', 'app_settings',
-            '--cov', 'djmoney',
-            '--cov-config', 'coveragerc.ini',
-        )
-        result.stdout.fnmatch_lines(lines)
+    def assert_choices(self, expected):
+        reload_module(djmoney.settings)
+        assert djmoney.settings.CURRENCY_CHOICES == expected
 
-    def test_project_currencies(self, testdir):
-        testdir.makepyfile(app_settings='''
-        # -*- coding: utf-8 -*-
-        INSTALLED_APPS = ['djmoney']
-        CURRENCIES = ['USD', 'EUR']
-        SECRET_KEY = 'foobar'
-        ''')
-        testdir.makepyfile('''
-        def test():
-            from djmoney.settings import CURRENCY_CHOICES
+    def test_project_currencies(self, settings):
+        settings.CURRENCIES = ['USD', 'EUR']
+        self.assert_choices([('EUR', 'Euro'), ('USD', 'US Dollar')])
 
-            assert CURRENCY_CHOICES == [('EUR', 'Euro'), ('USD', 'US Dollar')]
-        ''')
-        self.assert_test_passed(testdir, ['test_project_currencies.py::test PASSED'])
-
-    def test_custom_currencies(self, testdir):
-        testdir.makepyfile(app_settings='''
-        # -*- coding: utf-8 -*-
-        INSTALLED_APPS = ['djmoney']
-        CURRENCIES = ['USD', 'EUR']
-        CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
-
-        SECRET_KEY = 'foobar'
-        ''')
-        testdir.makepyfile('''
-        # -*- coding: utf-8 -*-
-
-        def test():
-            from djmoney.settings import CURRENCY_CHOICES
-
-            assert CURRENCY_CHOICES == [('EUR', 'EUR €'), ('USD', 'USD $')]
-        ''')
-        self.assert_test_passed(testdir, ['test_custom_currencies.py::test PASSED'])
+    def test_custom_currencies(self, settings):
+        settings.CURRENCIES = ['USD', 'EUR']
+        settings.CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
+        self.assert_choices([('EUR', 'EUR €'), ('USD', 'USD $')])
