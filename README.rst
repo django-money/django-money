@@ -153,6 +153,13 @@ variable with a list of Currency codes on ``settings.py``
 
 **The list has to contain valid Currency codes**
 
+Additionally there is an ability to specify currency choices directly:
+
+.. code:: python
+
+        CURRENCIES = ('USD', 'EUR')
+        CURRENCY_CHOICES = (('USD', 'USD $'), ('EUR', 'EUR €'))
+
 Important note on model managers
 --------------------------------
 
