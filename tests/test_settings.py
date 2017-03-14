@@ -1,24 +1,21 @@
 # -*- coding: utf-8 -*-
-import pytest
+from __future__ import unicode_literals
+
+import djmoney.settings
+from djmoney._compat import reload_module
 
 
-@pytest.mark.usefixtures('coveragerc')
-def test_project_currencies(testdir):
-    testdir.makepyfile(test_settings='''
-    INSTALLED_APPS = ['djmoney']
-    CURRENCIES = ['USD', 'EUR']
-    SECRET_KEY = 'foobar'
-    ''')
-    testdir.makepyfile('''
-    def test_project_currencies():
-        from djmoney.settings import CURRENCY_CHOICES
+class TestCurrencies:
 
-        assert CURRENCY_CHOICES == [('EUR', 'Euro'), ('USD', 'US Dollar')]
-    ''')
-    result = testdir.runpytest_subprocess(
-        '--verbose', '-s',
-        '--ds', 'test_settings',
-        '--cov', 'djmoney',
-        '--cov-config', 'coveragerc.ini',
-    )
-    assert 'test_project_currencies.py::test_project_currencies PASSED' in result.stdout.lines
+    def assert_choices(self, expected):
+        reload_module(djmoney.settings)
+        assert djmoney.settings.CURRENCY_CHOICES == expected
+
+    def test_project_currencies(self, settings):
+        settings.CURRENCIES = ['USD', 'EUR']
+        self.assert_choices([('EUR', 'Euro'), ('USD', 'US Dollar')])
+
+    def test_custom_currencies(self, settings):
+        settings.CURRENCIES = ['USD', 'EUR']
+        settings.CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
+        self.assert_choices([('EUR', 'EUR €'), ('USD', 'USD $')])

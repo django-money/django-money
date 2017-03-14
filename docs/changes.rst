@@ -10,6 +10,7 @@ Changes in 0.11.0dev
 - Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. `#272`_ (`Stranger6667`_)
 - Fixed various displaying errors in Django Admin . `#232`_, `#220`_, `#196`_, `#102`_, `#90`_ (`Stranger6667`_,
   `arthurk`_, `mstarostik`_, `eriktelepovsky`_, `jplehmann`_, `graik`_, `benjaoming`_, `k8n`_, `yellow-sky`_)
+- Added ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
 
 Changes in 0.10.2
 -----------------
@@ -212,6 +213,7 @@ Changes in 0.3
 .. _#220: https://github.com/django-money/django-money/issues/220
 .. _#215: https://github.com/django-money/django-money/issues/215
 .. _#213: https://github.com/django-money/django-money/issues/213
+.. _#211: https://github.com/django-money/django-money/issues/211
 .. _#206: https://github.com/django-money/django-money/issues/206
 .. _#201: https://github.com/django-money/django-money/issues/201
 .. _#199: https://github.com/django-money/django-money/issues/199
@@ -237,6 +239,7 @@ Changes in 0.3
 .. _#80: https://github.com/django-money/django-money/issues/80
 
 .. _AlexRiina: https://github.com/AlexRiina
+.. _ChessSpider: https://github.com/ChessSpider
 .. _GheloAce: https://github.com/GheloAce
 .. _Stranger6667: https://github.com/Stranger6667
 .. _YAmikep: https://github.com/YAmikep
