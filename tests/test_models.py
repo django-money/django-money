@@ -179,14 +179,16 @@ class TestVanillaMoneyField:
         assert DateTimeModel.objects.filter(created__date='2016-12-01').count() == 0
         assert DateTimeModel.objects.filter(created__date='2016-12-05').count() == 1
 
+    skip_lookup = pytest.mark.skipif(VERSION < (1, 6), reason='This lookup doesn\'t play well on Django < 1.6')
+
     @pytest.mark.parametrize('lookup, rhs, expected', (
         ('startswith', 2, 1),
-        ('regex', '^[134]', 3),
+        skip_lookup(('regex', '^[134]', 3)),
+        skip_lookup(('iregex', '^[134]', 3)),
         ('istartswith', 2, 1),
         ('contains', 5, 2),
         ('lt', 5, 4),
         ('endswith', 5, 2),
-        ('iregex', '^[134]', 3),
         ('iendswith', 5, 2),
         ('gte', 4, 3),
         ('iexact', 3, 1),
