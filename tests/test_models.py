@@ -216,6 +216,8 @@ class TestVanillaMoneyField:
             Q(amount1__lte=Money(2, 'USD')), amount1__in=(Money(1, 'USD'), Money(3, 'USD'))
         ).count() == 1
         assert ModelWithTwoMoneyFields.objects.exclude(amount1__in=(Money(1, 'USD'), Money(5, 'EUR'))).count() == 4
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(1, Money(5, 'EUR'))).count() == 2
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(1, 5)).count() == 3
 
     def test_isnull_lookup(self):
         NullMoneyFieldModel.objects.create(field=None)
