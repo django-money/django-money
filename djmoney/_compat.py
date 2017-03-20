@@ -25,12 +25,6 @@ except ImportError:
     from django.db.models.expressions import ExpressionNode as BaseExpression
 
 try:
-    from django.db.models.expressions import Expression
-except ImportError:
-    # Django < 1.8
-    from django.db.models.sql.expressions import SQLEvaluator as Expression
-
-try:
     from django.contrib.admin.utils import lookup_field
 except ImportError:
     from django.contrib.admin.util import lookup_field

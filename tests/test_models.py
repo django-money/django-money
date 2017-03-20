@@ -19,7 +19,7 @@ import pytest
 import moneyed
 
 from djmoney._compat import Case, Func, Value, When, get_fields
-from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
+from djmoney.models.fields import MoneyField, MoneyPatched
 from moneyed import Money
 
 from .testapp.models import (
@@ -109,11 +109,6 @@ class TestVanillaMoneyField:
         instance4 = model_class.objects.get(id=pk)
         assert instance4.money == default_instance
 
-    def test_not_supported_lookup(self):
-        with pytest.raises(NotSupportedLookup) as exc:
-            ModelWithVanillaMoneyField.objects.filter(money__regex='\d+').count()
-        assert str(exc.value) == "Lookup 'regex' is not supported for MoneyField"
-
     @pytest.mark.parametrize(
         'value',
         (
@@ -183,6 +178,32 @@ class TestVanillaMoneyField:
         DateTimeModel.objects.create(field=Money(1, 'USD'), created='2016-12-05')
         assert DateTimeModel.objects.filter(created__date='2016-12-01').count() == 0
         assert DateTimeModel.objects.filter(created__date='2016-12-05').count() == 1
+
+    skip_lookup = pytest.mark.skipif(VERSION < (1, 6), reason='This lookup doesn\'t play well on Django < 1.6')
+
+    @pytest.mark.parametrize('lookup, rhs, expected', (
+        ('startswith', 2, 1),
+        skip_lookup(('regex', '^[134]', 3)),
+        skip_lookup(('iregex', '^[134]', 3)),
+        ('istartswith', 2, 1),
+        ('contains', 5, 2),
+        ('lt', 5, 4),
+        ('endswith', 5, 2),
+        ('iendswith', 5, 2),
+        ('gte', 4, 3),
+        ('iexact', 3, 1),
+        ('exact', 3, 1),
+        ('isnull', True, 0),
+        ('range', (3, 5), 4),
+        ('lte', 2, 2),
+        ('gt', 3, 3),
+        ('icontains', 5, 2),
+        ('in', (1, 0), 1)
+    ))
+    @pytest.mark.usefixtures('objects_setup')
+    def test_all_lookups(self, lookup, rhs, expected):
+        kwargs = {'amount1__' + lookup: rhs}
+        assert ModelWithTwoMoneyFields.objects.filter(**kwargs).count() == expected
 
     def test_exact_match(self):
         money = Money('100.0')

@@ -18,7 +18,6 @@ from moneyed.localization import _FORMATTER, format_money
 
 from .._compat import (
     BaseExpression,
-    Expression,
     Func,
     Value,
     deconstructible,
@@ -31,15 +30,7 @@ from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import get_currency_field_name, prepare_expression
 
 
-__all__ = ('MoneyField', 'NotSupportedLookup')
-
-SUPPORTED_LOOKUPS = ('exact', 'isnull', 'in', 'lt', 'gt', 'lte', 'gte')
-
-
-class NotSupportedLookup(Exception):
-
-    def __init__(self, lookup):
-        super(NotSupportedLookup, self).__init__('Lookup \'%s\' is not supported for MoneyField' % lookup)
+__all__ = ('MoneyField', )
 
 
 @deconstructible
@@ -381,24 +372,9 @@ class MoneyField(models.DecimalField):
         cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
-        if isinstance(value, Expression):
-            return value
         if isinstance(value, Money):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
-
-    def validate_lookup(self, lookup):
-        if lookup not in SUPPORTED_LOOKUPS:
-            raise NotSupportedLookup(lookup)
-
-    def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
-        self.validate_lookup(lookup_type)
-        value = self.get_db_prep_save(value, connection)
-        return super(MoneyField, self).get_db_prep_lookup(lookup_type, value, connection, prepared)
-
-    def get_lookup(self, lookup_name):
-        self.validate_lookup(lookup_name)
-        return super(MoneyField, self).get_lookup(lookup_name)
 
     def get_default(self):
         if isinstance(self.default, Money):
