@@ -18,7 +18,6 @@ from moneyed.localization import _FORMATTER, format_money
 
 from .._compat import (
     BaseExpression,
-    Expression,
     Func,
     Value,
     deconstructible,
@@ -373,8 +372,6 @@ class MoneyField(models.DecimalField):
         cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
-        if isinstance(value, Expression):
-            return value
         if isinstance(value, Money):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
