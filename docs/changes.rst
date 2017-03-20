@@ -11,6 +11,7 @@ Changes in 0.11.0dev
 - Fixed various displaying errors in Django Admin . `#232`_, `#220`_, `#196`_, `#102`_, `#90`_ (`Stranger6667`_,
   `arthurk`_, `mstarostik`_, `eriktelepovsky`_, `jplehmann`_, `graik`_, `benjaoming`_, `k8n`_, `yellow-sky`_)
 - Added ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
+- Fixed non-Money values support for ``in`` lookup. `#278`_ (`Stranger6667`_)
 
 Changes in 0.10.2
 -----------------
@@ -197,6 +198,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#278: https://github.com/django-money/django-money/issues/278
 .. _#272: https://github.com/django-money/django-money/issues/272
 .. _#268: https://github.com/django-money/django-money/issues/268
 .. _#265: https://github.com/django-money/django-money/issues/265
