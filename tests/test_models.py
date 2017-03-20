@@ -199,7 +199,7 @@ class TestVanillaMoneyField:
         ('in', (1, 0), 1)
     ))
     @pytest.mark.usefixtures('objects_setup')
-    def test_not_supported_lookup(self, lookup, rhs, expected):
+    def test_all_lookups(self, lookup, rhs, expected):
         kwargs = {'amount1__' + lookup: rhs}
         assert ModelWithTwoMoneyFields.objects.filter(**kwargs).count() == expected
 

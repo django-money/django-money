@@ -379,10 +379,6 @@ class MoneyField(models.DecimalField):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
-    def get_db_prep_lookup(self, lookup_type, value, connection, prepared=False):
-        value = self.get_db_prep_save(value, connection)
-        return super(MoneyField, self).get_db_prep_lookup(lookup_type, value, connection, prepared)
-
     def get_default(self):
         if isinstance(self.default, Money):
             frm = inspect.stack()[1]
