@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-from moneyed import Money
+from djmoney.money import Money
 
 from ._compat import create_revision, get_deleted
 from .testapp.models import RevisionedModel

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.db.models import F
 
-from moneyed import Money
+from djmoney.money import Money
 
 from ._compat import BaseExpression, set_expression_rhs, split_expression
 

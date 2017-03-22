@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
-from moneyed import Money
+from djmoney.money import Money
 
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 

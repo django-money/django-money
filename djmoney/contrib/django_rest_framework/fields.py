@@ -2,7 +2,7 @@
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
-from moneyed import Money
+from djmoney.money import Money
 
 from .helpers import IS_DRF_3
 

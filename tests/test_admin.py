@@ -6,7 +6,7 @@ from django import VERSION
 import pytest
 
 from djmoney._compat import admin_utils
-from moneyed import Money
+from djmoney.money import Money
 
 from .testapp.models import ModelWithVanillaMoneyField
 

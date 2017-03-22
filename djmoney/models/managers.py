@@ -5,7 +5,7 @@ from django.db.models.query_utils import Q
 from django.db.models.sql.constants import QUERY_TERMS
 from django.db.models.sql.query import Query
 
-from moneyed import Money
+from djmoney.money import Money
 
 from .._compat import (
     LOOKUP_SEP,

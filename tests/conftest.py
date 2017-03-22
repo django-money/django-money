@@ -4,7 +4,7 @@ from decimal import Decimal
 from django import VERSION
 
 import pytest
-from moneyed import Money
+from djmoney.money import Money
 
 from tests.testapp.models import InheritorModel, ModelWithDefaultAsInt
 

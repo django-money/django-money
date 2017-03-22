@@ -9,7 +9,7 @@ from django.core.serializers.python import (
 )
 from django.utils import six
 
-from moneyed import Money
+from djmoney.money import Money
 
 from ._compat import get_field_names
 from .models.fields import MoneyField

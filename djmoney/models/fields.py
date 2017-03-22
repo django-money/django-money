@@ -2,147 +2,31 @@
 from __future__ import division
 
 import inspect
-from decimal import ROUND_DOWN, Decimal
+from decimal import Decimal
 
 from django import VERSION
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Field
 from django.db.models.signals import class_prepared
-from django.utils import translation
 
 from djmoney import forms
-from moneyed import Currency, Money
-from moneyed.localization import _FORMATTER, format_money
+from djmoney.money import Currency, Money
 
 from .._compat import (
     BaseExpression,
     Func,
     Value,
-    deconstructible,
     setup_managers,
     smart_unicode,
     split_expression,
     string_types,
 )
-from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
+from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from ..utils import get_currency_field_name, prepare_expression
 
 
 __all__ = ('MoneyField', )
-
-
-@deconstructible
-class MoneyPatched(Money):
-
-    # Set to True or False has a higher priority
-    # than USE_L10N == True in the django settings file.
-    # The variable "self.use_l10n" has three states:
-    use_l10n = None
-
-    def __float__(self):
-        return float(self.amount)
-
-    def _convert_to_local_currency(self, other):
-        """
-        Converts other Money instances to the local currency.
-        If django-money-rates is installed we can automatically perform operations with different currencies
-        """
-        if getattr(settings, 'AUTO_CONVERT_MONEY', False):
-            if 'djmoney_rates' in settings.INSTALLED_APPS:
-                try:
-                    from djmoney_rates.utils import convert_money
-
-                    return convert_money(other.amount, other.currency, self.currency)
-                except ImportError:
-                    raise ImproperlyConfigured('djmoney_rates doesn\'t support Django 1.9+')
-            raise ImproperlyConfigured('You must install djmoney-rates to use AUTO_CONVERT_MONEY = True')
-        return other
-
-    @classmethod
-    def _patch_to_current_class(cls, money):
-        """
-        Converts object of type MoneyPatched on the object of type Money.
-        """
-        return cls(money.amount, money.currency)
-
-    def __pos__(self):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__pos__())
-
-    def __neg__(self):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__neg__())
-
-    def __add__(self, other):
-        other = self._convert_to_local_currency(other)
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__add__(other))
-
-    def __sub__(self, other):
-        other = self._convert_to_local_currency(other)
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__sub__(other))
-
-    def __mul__(self, other):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__mul__(other))
-
-    def __eq__(self, other):
-        if hasattr(other, 'currency'):
-            if self.currency == other.currency:
-                return self.amount == other.amount
-        return False
-
-    def __truediv__(self, other):
-        result = super(MoneyPatched, self).__truediv__(other)
-        if isinstance(other, Money):
-            return result
-        return self._patch_to_current_class(result)
-
-    def __rmod__(self, other):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__rmod__(other))
-
-    def __get_current_locale(self):
-        # get_language can return None starting on django 1.8
-        language = translation.get_language() or settings.LANGUAGE_CODE
-        locale = translation.to_locale(language)
-
-        if _FORMATTER.get_formatting_definition(locale):
-            return locale
-
-        if _FORMATTER.get_formatting_definition('%s_%s' % (locale, locale)):
-            return '%s_%s' % (locale, locale)
-
-        return ''
-
-    def __use_l10n(self):
-        """
-        Return boolean.
-        """
-        if self.use_l10n is None:
-            return settings.USE_L10N
-        return self.use_l10n
-
-    def __unicode__(self):
-        kwargs = {'money': self, 'decimal_places': DECIMAL_PLACES}
-        if self.__use_l10n():
-            locale = self.__get_current_locale()
-            if locale:
-                kwargs['locale'] = locale
-
-        return format_money(**kwargs)
-
-    def __str__(self):
-        value = self.__unicode__()
-        if not isinstance(value, str):
-            value = value.encode('utf8')
-        return value
-
-    def __repr__(self):
-        return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
 
 
 def get_value(obj, expr):
@@ -214,7 +98,7 @@ class MoneyFieldProxy(object):
         currency = obj.__dict__[self.currency_field_name]
         if amount is None:
             return None
-        return MoneyPatched(amount=amount, currency=currency)
+        return Money(amount=amount, currency=currency)
 
     def __get__(self, obj, type=None):
         if obj is None:

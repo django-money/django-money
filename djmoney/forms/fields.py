@@ -8,7 +8,7 @@ from django.core import validators
 from django.core.exceptions import ValidationError
 from django.forms import ChoiceField, DecimalField, MultiValueField
 
-from moneyed.classes import Money
+from djmoney.money import Money
 
 from ..settings import CURRENCY_CHOICES
 from .widgets import MoneyWidget

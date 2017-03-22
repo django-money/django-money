@@ -1,0 +1,87 @@
+# coding: utf-8
+from decimal import ROUND_DOWN
+
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
+from django.utils import translation
+
+from moneyed import Money as DefaultMoney, Currency
+from moneyed.localization import format_money, _FORMATTER
+
+from djmoney._compat import deconstructible
+from djmoney.settings import DECIMAL_PLACES
+
+
+__all__ = ['Money', 'Currency']
+
+
+@deconstructible
+class Money(DefaultMoney):
+    """
+    Extends functionality of Money with Django-related features.
+    """
+    use_l10n = None
+
+    def __float__(self):
+        return float(self.amount)
+
+    def __add__(self, other):
+        other = convert_money(other, self.currency)
+        return super(Money, self).__add__(other)
+
+    def __sub__(self, other):
+        other = convert_money(other, self.currency)
+        return super(Money, self).__sub__(other)
+
+    @property
+    def is_localized(self):
+        return self.use_l10n or settings.USE_L10N
+
+    def __unicode__(self):
+        kwargs = {'money': self, 'decimal_places': DECIMAL_PLACES}
+        if self.is_localized:
+            locale = get_current_locale()
+            if locale:
+                kwargs['locale'] = locale
+
+        return format_money(**kwargs)
+
+    def __str__(self):
+        value = self.__unicode__()
+        if not isinstance(value, str):
+            value = value.encode('utf8')
+        return value
+
+    def __repr__(self):
+        return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
+
+
+def get_current_locale():
+    # get_language can return None starting from Django 1.8
+    language = translation.get_language() or settings.LANGUAGE_CODE
+    locale = translation.to_locale(language)
+
+    if _FORMATTER.get_formatting_definition(locale):
+        return locale
+
+    if _FORMATTER.get_formatting_definition('%s_%s' % (locale, locale)):
+        return '%s_%s' % (locale, locale)
+
+    return ''
+
+
+def convert_money(value, currency):
+    """
+    Converts other Money instances to the local currency.
+    If django-money-rates is installed we can automatically perform operations with different currencies.
+    """
+    if getattr(settings, 'AUTO_CONVERT_MONEY', False):
+        if 'djmoney_rates' in settings.INSTALLED_APPS:
+            try:
+                from djmoney_rates.utils import convert_money
+
+                return convert_money(value.amount, value.currency, currency)
+            except ImportError:
+                raise ImproperlyConfigured('djmoney_rates doesn\'t support Django 1.9+')
+        raise ImproperlyConfigured('You must install djmoney-rates to use AUTO_CONVERT_MONEY = True')
+    return value

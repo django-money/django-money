@@ -12,7 +12,7 @@ import pytest
 
 import moneyed
 from djmoney.models.fields import MoneyField
-from moneyed import Money
+from djmoney.money import Money
 
 from .testapp.forms import (
     DefaultMoneyModelForm,

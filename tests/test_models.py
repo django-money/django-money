@@ -19,8 +19,8 @@ import pytest
 import moneyed
 
 from djmoney._compat import Case, Func, Value, When, get_fields
-from djmoney.models.fields import MoneyField, MoneyPatched
-from moneyed import Money
+from djmoney.models.fields import MoneyField
+from djmoney.money import Money
 
 from .testapp.models import (
     AbstractModel,
@@ -500,40 +500,40 @@ class TestDifferentCurrencies:
 
     def test_add_default(self):
         with pytest.raises(TypeError):
-            MoneyPatched(10, 'EUR') + Money(1, 'USD')
+            Money(10, 'EUR') + Money(1, 'USD')
 
     def test_sub_default(self):
         with pytest.raises(TypeError):
-            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+            Money(10, 'EUR') - Money(1, 'USD')
 
     @pytest.mark.usefixtures('patched_convert_money')
     def test_add_with_auto_convert(self, settings):
         settings.AUTO_CONVERT_MONEY = True
-        result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
+        result = Money(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
         assert result.currency == moneyed.EUR
 
     @pytest.mark.usefixtures('patched_convert_money')
     def test_sub_with_auto_convert(self, settings):
         settings.AUTO_CONVERT_MONEY = True
-        result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
+        result = Money(10, 'EUR') - Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
         assert result.currency == moneyed.EUR
 
     def test_eq(self):
-        assert MoneyPatched(1, 'EUR') == Money(1, 'EUR')
+        assert Money(1, 'EUR') == Money(1, 'EUR')
 
     def test_ne(self):
-        assert MoneyPatched(1, 'EUR') != Money(2, 'EUR')
+        assert Money(1, 'EUR') != Money(2, 'EUR')
 
     def test_ne_currency(self):
-        assert MoneyPatched(10, 'EUR') != Money(10, 'USD')
+        assert Money(10, 'EUR') != Money(10, 'USD')
 
     @pytest.mark.skipif(VERSION < (1, 9) or VERSION > (2, 0), reason='djmoney_rates supports only Django < 1.9')
     def test_incompatibility(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         with pytest.raises(ImproperlyConfigured) as exc:
-            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+            Money(10, 'EUR') - Money(1, 'USD')
         assert str(exc.value) == 'djmoney_rates doesn\'t support Django 1.9+'
 
     @pytest.mark.skipif(VERSION[:2] >= (2, 0), reason='djmoney_rates supports only Django < 1.9')
@@ -542,7 +542,7 @@ class TestDifferentCurrencies:
         settings.INSTALLED_APPS.remove('djmoney_rates')
 
         with pytest.raises(ImproperlyConfigured) as exc:
-            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+            Money(10, 'EUR') - Money(1, 'USD')
         assert str(exc.value) == 'You must install djmoney-rates to use AUTO_CONVERT_MONEY = True'
 
 
@@ -574,12 +574,12 @@ def test_different_hashes():
 
 @pytest.mark.skipif(VERSION < (1, 7), reason='Django < 1.7 handles migrations differently')
 def test_migration_serialization():
-    imports = set(['import djmoney.models.fields'])
+    imports = set(['import djmoney.money'])
     if PY2:
-        serialized = 'djmoney.models.fields.MoneyPatched(100, b\'GBP\')'
+        serialized = 'djmoney.money.Money(100, b\'GBP\')'
     else:
-        serialized = 'djmoney.models.fields.MoneyPatched(100, \'GBP\')'
-    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (serialized, imports)
+        serialized = 'djmoney.money.Money(100, \'GBP\')'
+    assert MigrationWriter.serialize(Money(100, 'GBP')) == (serialized, imports)
 
 
 no_system_checks_framework = pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has system checks framework')
@@ -638,7 +638,7 @@ def test_hash_uniqueness():
 
 def test_override_decorator():
     """
-    When current locale is changed, MoneyPatched instances should be represented correctly.
+    When current locale is changed, Money instances should be represented correctly.
     """
     with override('cs'):
-        assert str(MoneyPatched(10, 'CZK')) == 'Kč10.00'
+        assert str(Money(10, 'CZK')) == 'Kč10.00'
