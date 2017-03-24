@@ -3,6 +3,7 @@ from decimal import ROUND_DOWN
 
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
+from django.db.models import F
 from django.utils import translation
 
 from moneyed import Money as DefaultMoney, Currency
@@ -26,10 +27,14 @@ class Money(DefaultMoney):
         return float(self.amount)
 
     def __add__(self, other):
+        if isinstance(other, F):
+            return other.__radd__(self)
         other = convert_money(other, self.currency)
         return super(Money, self).__add__(other)
 
     def __sub__(self, other):
+        if isinstance(other, F):
+            return other.__rsub__(self)
         other = convert_money(other, self.currency)
         return super(Money, self).__sub__(other)
 

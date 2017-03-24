@@ -295,7 +295,9 @@ class TestFExpressions:
         'f_obj, expected',
         (
             (F('money') + Money(100, 'USD'), Money(200, 'USD')),
+            (Money(100, 'USD') + F('money'), Money(200, 'USD')),
             (F('money') - Money(100, 'USD'), Money(0, 'USD')),
+            (Money(100, 'USD') - F('money'), Money(0, 'USD')),
             (F('money') * 2, Money(200, 'USD')),
             (F('money') * F('integer'), Money(200, 'USD')),
             (F('money') / 2, Money(50, 'USD')),

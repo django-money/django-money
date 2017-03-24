@@ -98,6 +98,16 @@ def set_expression_rhs(expr, value):
         expr.rhs.value = value
 
 
+def set_expression_lhs(expr, value):
+    """
+    Sets left hand side value of the expression.
+    """
+    if VERSION < (1, 8):
+        expr.children[0] = value
+    else:
+        expr.lhs.value = value
+
+
 def get_field_names(model):
     """
     Returns a set of field names associated with the model.
