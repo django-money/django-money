@@ -261,13 +261,15 @@ Formatting the number with currency:
 Admin integration
 -----------------
 
-For Django 1.7+ integration works automatically if ``djmoney`` is in the ``INSTALLED_APPS``,
-for older versions you should use the following code:
+For Django **1.7+** integration works automatically if ``djmoney`` is in the ``INSTALLED_APPS``.
+
+For older versions you should use the following code:
 
 .. code:: python
 
     from djmoney.admin import setup_admin_integration
-
+    
+    # NOTE. Only for Django < 1.7
     setup_admin_integration()
 
 
@@ -317,17 +319,21 @@ conversions happening in different directions.
 Usage with Django REST Framework
 --------------------------------
 
-For MoneyFields to automatically work with Django REST Framework, make sure
+In Django **1.7+**, for MoneyFields to automatically work with Django REST Framework, make sure
 that ``djmoney`` is in the ``INSTALLED_APPS`` of your ``settings.py``.
-for older versions you should use the following code:
+
+For older versions you should use the following code:
 
 .. code:: python
 
     from djmoney.contrib.django_rest_framework import register_money_field
-
+ 
+    # NOTE. Only for Django < 1.7
     register_money_field()
 
-Just put it in the end of your root ``urls.py`` file. Built-in serializer works in the following way:
+Just put it in the end of your root ``urls.py`` file.
+
+Built-in serializer works in the following way:
 
 .. code:: python
 
