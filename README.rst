@@ -327,6 +327,27 @@ for older versions you should use the following code:
 
     register_money_field()
 
+Just put it in the end of your root ``urls.py`` file. Built-in serializer works in the following way:
+
+.. code:: python
+
+    class Expenses(models.Model):
+        amount = MoneyField(max_digits=10, decimal_places=2)
+
+
+    class Serializer(serializers.ModelSerializer):
+        class Meta:
+            model = Expenses
+            fields = '__all__'
+
+    >>> instance = Expenses.objects.create(amount=Money(10, 'EUR'))
+    >>> serializer = Serializer(instance=instance)
+    >>> serializer.data
+    ReturnDict([
+        ('id', 1),
+        ('amount_currency', 'EUR'),
+        ('amount', '10.000'),
+    ])
 
 Known Issues
 ------------
