@@ -35,7 +35,9 @@ class Money(DefaultMoney):
 
     @property
     def is_localized(self):
-        return self.use_l10n or settings.USE_L10N
+        if self.use_l10n is None:
+            return settings.USE_L10N
+        return self.use_l10n
 
     def __unicode__(self):
         kwargs = {'money': self, 'decimal_places': DECIMAL_PLACES}
