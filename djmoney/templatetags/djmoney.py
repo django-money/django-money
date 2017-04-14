@@ -166,10 +166,10 @@ def money_localize_no_decimal(parser, token):
     """
     Usage::
 
-        {% money_localize <money_object> %}
+        {% money_localize_no_decimal <money_object> %}
     Example:
 
-        {% money_localize money_object %}
+        {% money_localize_no_decimal money_object %}
 
     Return::
 
