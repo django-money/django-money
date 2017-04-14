@@ -3,6 +3,7 @@ from django import template
 from django.conf import settings
 from django.template import TemplateSyntaxError, VariableDoesNotExist
 from moneyed import Money
+from moneyed.localization import format_money
 
 from ..models.fields import MoneyPatched
 
@@ -15,7 +16,7 @@ class MoneyLocalizeNode(template.Node):
         return "<MoneyLocalizeNode %r>" % self.money
 
     def __init__(self, money=None, amount=None, currency=None, use_l10n=None,
-                 var_name=None):
+                 var_name=None, no_decimal=False):
 
         if money and (amount or currency):
             raise Exception('You can define either "money" or the'
@@ -29,15 +30,21 @@ class MoneyLocalizeNode(template.Node):
 
         self.request = template.Variable('request')
         self.country_code = None
+        self.no_decimal = no_decimal
 
     @classmethod
-    def handle_token(cls, parser, token):
+    def handle_token(cls, parser, token, no_decimal=False):
 
         tokens = token.contents.split()
-
         # default value
         var_name = None
         use_l10n = True
+
+        if no_decimal:
+            return cls(money=parser.compile_filter(tokens[1]),
+                       var_name=var_name,
+                       use_l10n=use_l10n,
+                       no_decimal=no_decimal)
 
         # GET variable var_name
         if len(tokens) > 3:
@@ -112,7 +119,7 @@ class MoneyLocalizeNode(template.Node):
         return ''
 
     def _str_override_currency_sign(self, money):
-        str_money = unicode(money)
+        str_money = unicode(format_money(money, decimal_places=0)) if self.no_decimal else unicode(money)
         if hasattr(settings, 'CURRENCY_CONFIG_MODULE'):
             currency_config = importlib.import_module(settings.CURRENCY_CONFIG_MODULE)
             overrides = currency_config.override_currency_by_location
@@ -152,3 +159,21 @@ def money_localize(parser, token):
 
     """
     return MoneyLocalizeNode.handle_token(parser, token)
+
+
+@register.tag
+def money_localize_no_decimal(parser, token):
+    """
+    Usage::
+
+        {% money_localize_no_decimal <money_object> %}
+    Example:
+
+        {% money_localize_no_decimal money_object %}
+
+    Return::
+
+        MoneyPatched object
+
+    """
+    return MoneyLocalizeNode.handle_token(parser, token, no_decimal=True)
