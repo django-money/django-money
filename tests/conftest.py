@@ -4,8 +4,8 @@ from decimal import Decimal
 from django import VERSION
 
 import pytest
-from moneyed import Money
 
+from moneyed import Money
 from tests.testapp.models import InheritorModel, ModelWithDefaultAsInt
 
 from ._compat import patch

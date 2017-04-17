@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import pytest
+
 from moneyed import Money
 
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel

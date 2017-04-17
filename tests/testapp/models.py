@@ -10,7 +10,6 @@ from django import VERSION
 from django.db import models
 
 import moneyed
-
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
 
