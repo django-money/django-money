@@ -147,22 +147,17 @@ class MoneyPatched(Money):
         return self.use_l10n
 
     def __unicode__(self):
-
-        if self.__use_l10n():
-            locale = self.__get_current_locale()
-            if locale:
-                return format_money(self, locale=locale)
-
-        return format_money(self)
+        return self.__str__()
 
     def __str__(self):
+        decimal_places = getattr(self, "decimal_places", 2)
 
         if self.__use_l10n():
             locale = self.__get_current_locale()
             if locale:
-                return format_money(self, locale=locale)
+                return format_money(self, locale=locale, decimal_places=decimal_places)
 
-        return format_money(self)
+        return format_money(self, decimal_places=decimal_places)
 
     def __repr__(self):
         # small fix for tests
