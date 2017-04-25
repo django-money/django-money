@@ -150,10 +150,7 @@ class MoneyPatched(Money):
         return self.__str__()
 
     def __str__(self):
-        try:
-            decimal_places = self.decimal_places
-        except AttributeError:
-            decimal_places == 2
+        decimal_places = getattr(self, "decimal_places", 2)
 
         if self.__use_l10n():
             locale = self.__get_current_locale()
