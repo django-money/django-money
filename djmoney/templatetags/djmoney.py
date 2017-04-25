@@ -16,7 +16,7 @@ class MoneyLocalizeNode(template.Node):
         return "<MoneyLocalizeNode %r>" % self.money
 
     def __init__(self, money=None, amount=None, currency=None, use_l10n=None,
-                 var_name=None, no_decimal=False):
+                 var_name=None, decimal_places=2):
 
         if money and (amount or currency):
             raise Exception('You can define either "money" or the'
@@ -30,7 +30,7 @@ class MoneyLocalizeNode(template.Node):
 
         self.request = template.Variable('request')
         self.country_code = None
-        self.no_decimal = no_decimal
+        self.decimal_places = decimal_places
 
     @classmethod
     def handle_token(cls, parser, token, no_decimal=False):
@@ -44,7 +44,7 @@ class MoneyLocalizeNode(template.Node):
             return cls(money=parser.compile_filter(tokens[1]),
                        var_name=var_name,
                        use_l10n=use_l10n,
-                       no_decimal=no_decimal)
+                       decimal_places=0)
 
         # GET variable var_name
         if len(tokens) > 3:
@@ -107,6 +107,7 @@ class MoneyLocalizeNode(template.Node):
                                       'amount and currency.')
 
         money.use_l10n = self.use_l10n
+        money.decimal_places = self.decimal_places
 
         money = self._str_override_currency_sign(money)
 
@@ -119,7 +120,7 @@ class MoneyLocalizeNode(template.Node):
         return ''
 
     def _str_override_currency_sign(self, money):
-        str_money = unicode(format_money(money, decimal_places=0)) if self.no_decimal else unicode(money)
+        str_money = unicode(money)
         if hasattr(settings, 'CURRENCY_CONFIG_MODULE'):
             currency_config = importlib.import_module(settings.CURRENCY_CONFIG_MODULE)
             overrides = currency_config.override_currency_by_location
