@@ -152,7 +152,7 @@ class MoneyPatched(Money):
     def __str__(self):
         try:
             decimal_places = self.decimal_places
-        except attributeError:
+        except AttributeError:
             decimal_places == 2
 
         if self.__use_l10n():
