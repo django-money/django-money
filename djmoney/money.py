@@ -68,11 +68,12 @@ def get_current_locale():
     language = translation.get_language() or settings.LANGUAGE_CODE
     locale = translation.to_locale(language)
 
-    if _FORMATTER.get_formatting_definition(locale):
+    if locale.upper() in _FORMATTER.formatting_definitions:
         return locale
 
-    if _FORMATTER.get_formatting_definition('%s_%s' % (locale, locale)):
-        return '%s_%s' % (locale, locale)
+    locale = ('%s_%s' % (locale, locale)).upper()
+    if locale in _FORMATTER.formatting_definitions:
+        return locale
 
     return ''
 
