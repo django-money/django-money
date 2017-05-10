@@ -344,3 +344,6 @@ def patch_managers(sender, **kwargs):
 
 
 class_prepared.connect(patch_managers)
+
+# Backward compatibility
+MoneyPatched = Money
