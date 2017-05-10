@@ -22,7 +22,7 @@ def get_args(value):
 
 
 @pytest.mark.parametrize('value, kwargs, expected', (
-    (Money(10, 'RUB'), {}, 'руб.10.00'),  # Issue 232
+    (Money(10, 'RUB'), {}, '10.00 руб.'),  # Issue 232
     (Money(1234), {'USE_L10N': True, 'USE_THOUSAND_SEPARATOR': True}, '1,234.00 XYZ'),  # Issue 220
     (Money(1000, 'SAR'), {'USE_I18N': True, 'LANGUAGE_CODE': 'en-us'}, 'ر.س1,000.00'),  # Issue 196
     (Money(1000, 'PLN'), {}, '1,000.00 zł'),  # Issue 102

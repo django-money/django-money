@@ -15,7 +15,7 @@ register = template.Library()
 class MoneyLocalizeNode(template.Node):
 
     def __repr__(self):
-        return '<MoneyLocalizeNode %r>' % self.money
+        return '<MoneyLocalizeNode %d %s>' % (self.money.amount, self.money.currency)
 
     def __init__(self, money=None, amount=None, currency=None, use_l10n=None, var_name=None):
         if money and (amount or currency):

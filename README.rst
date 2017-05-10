@@ -41,7 +41,7 @@ Via ``py-moneyed``, ``django-money`` gets:
 Installation
 ------------
 
-Django-money currently needs ``py-moneyed`` v0.4 (or later) to work.
+Django-money currently needs ``py-moneyed`` v0.7 (or later) to work.
 
 You can obtain the source code for ``django-money`` from here:
 
