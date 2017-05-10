@@ -13,6 +13,7 @@ Changes in 0.11.0dev
 - Added ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
 - Fixed non-Money values support for ``in`` lookup. `#278`_ (`Stranger6667`_)
 - Fixed available lookups with removing of needless lookup check. `#277`_ (`Stranger6667`_)
+- Fixed compatibility with ``py-moneyed``. (`Stranger6667`_)
 
 Changes in 0.10.2
 -----------------
