@@ -25,9 +25,9 @@ http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10
+Django versions supported: 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11
 
-Python versions supported: 2.6, 2.7, 3.2, 3.3, 3.4, 3.5
+Python versions supported: 2.6, 2.7, 3.2, 3.3, 3.4, 3.5, 3.6
 
 PyPy versions supported: PyPy 2.6, PyPy3 2.4
 
@@ -41,7 +41,7 @@ Via ``py-moneyed``, ``django-money`` gets:
 Installation
 ------------
 
-Django-money currently needs ``py-moneyed`` v0.4 (or later) to work.
+Django-money currently needs ``py-moneyed`` v0.7 (or later) to work.
 
 You can obtain the source code for ``django-money`` from here:
 
@@ -261,13 +261,15 @@ Formatting the number with currency:
 Admin integration
 -----------------
 
-For Django 1.7+ integration works automatically if ``djmoney`` is in the ``INSTALLED_APPS``,
-for older versions you should use the following code:
+For Django **1.7+** integration works automatically if ``djmoney`` is in the ``INSTALLED_APPS``.
+
+For older versions you should use the following code:
 
 .. code:: python
 
     from djmoney.admin import setup_admin_integration
-
+    
+    # NOTE. Only for Django < 1.7
     setup_admin_integration()
 
 
@@ -317,16 +319,41 @@ conversions happening in different directions.
 Usage with Django REST Framework
 --------------------------------
 
-For MoneyFields to automatically work with Django REST Framework, make sure
+In Django **1.7+**, for MoneyFields to automatically work with Django REST Framework, make sure
 that ``djmoney`` is in the ``INSTALLED_APPS`` of your ``settings.py``.
-for older versions you should use the following code:
+
+For older versions you should use the following code:
 
 .. code:: python
 
     from djmoney.contrib.django_rest_framework import register_money_field
-
+ 
+    # NOTE. Only for Django < 1.7
     register_money_field()
 
+Just put it in the end of your root ``urls.py`` file.
+
+Built-in serializer works in the following way:
+
+.. code:: python
+
+    class Expenses(models.Model):
+        amount = MoneyField(max_digits=10, decimal_places=2)
+
+
+    class Serializer(serializers.ModelSerializer):
+        class Meta:
+            model = Expenses
+            fields = '__all__'
+
+    >>> instance = Expenses.objects.create(amount=Money(10, 'EUR'))
+    >>> serializer = Serializer(instance=instance)
+    >>> serializer.data
+    ReturnDict([
+        ('id', 1),
+        ('amount_currency', 'EUR'),
+        ('amount', '10.000'),
+    ])
 
 Known Issues
 ------------
