@@ -51,7 +51,7 @@ def test_invalid_input(template, context, error_text):
 
 def assert_template(string, result, context=None):
     context = context or {}
-    with override('pl_PL'):
+    with override('pl'):
         assert render(string, context) == result
 
 
