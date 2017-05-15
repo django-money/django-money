@@ -13,6 +13,13 @@ class MoneyField(DecimalField):
     does decimal's validation during transformation to native value.
     """
 
+    def get_value(self, data):
+        amount = super().get_value(data)
+        currency = data.get('{}_currency'.format(self.field_name), None)
+        if currency:
+            return Money(amount, currency)
+        return amount
+
     if IS_DRF_3:
 
         def to_representation(self, obj):
