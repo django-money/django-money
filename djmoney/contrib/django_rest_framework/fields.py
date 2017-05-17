@@ -13,14 +13,7 @@ class MoneyField(DecimalField):
     does decimal's validation during transformation to native value.
     """
 
-    def get_value(self, data):
-        amount = super(MoneyField, self).get_value(data)
-        currency = data.get('{}_currency'.format(self.field_name), None)
-        if currency:
-            return Money(amount, currency)
-        return amount
-
-    if IS_DRF_3:
+    if IS_DRF_3:  # noqa
 
         def to_representation(self, obj):
             return super(MoneyField, self).to_representation(obj.amount)
@@ -30,6 +23,13 @@ class MoneyField(DecimalField):
                 amount = super(MoneyField, self).to_internal_value(data.amount)
                 return Money(amount, data.currency)
             return super(MoneyField, self).to_internal_value(data)
+
+        def get_value(self, data):
+            amount = super(MoneyField, self).get_value(data)
+            currency = data.get('{}_currency'.format(self.field_name), None)
+            if currency:
+                return Money(amount, currency)
+            return amount
 
     else:
 
@@ -46,6 +46,12 @@ class MoneyField(DecimalField):
         def validate(self, value):
             amount = value.amount if isinstance(value, Money) else value
             return super(MoneyField, self).validate(amount)
+
+        def field_from_native(self, data, files, field_name, into):
+            super(MoneyField, self).field_from_native(data, files, field_name, into)
+            currency = data.get('{}_currency'.format(field_name), None)
+            if currency:
+                into[field_name] = Money(into[field_name], currency)
 
 
 def register_money_field():

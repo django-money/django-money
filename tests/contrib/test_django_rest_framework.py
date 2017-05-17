@@ -92,4 +92,7 @@ class TestMoneyField:
     def test_post_put_values(self, body, expected):
         serializer = self.get_serializer(NullMoneyFieldModel, data=body)
         serializer.is_valid()
-        assert serializer.validated_data['field'] == expected
+        if IS_DRF_3:
+            assert serializer.validated_data['field'] == expected
+        else:
+            assert Money(serializer.data['field'], serializer.data['field_currency']) == expected
