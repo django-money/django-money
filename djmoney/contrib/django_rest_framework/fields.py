@@ -14,7 +14,7 @@ class MoneyField(DecimalField):
     """
 
     def get_value(self, data):
-        amount = super().get_value(data)
+        amount = super(MoneyField, self).get_value(data)
         currency = data.get('{}_currency'.format(self.field_name), None)
         if currency:
             return Money(amount, currency)
