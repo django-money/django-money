@@ -2,6 +2,7 @@
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
+from djmoney.utils import get_currency_field_name
 from moneyed import Money
 
 from .helpers import IS_DRF_3
@@ -26,7 +27,7 @@ class MoneyField(DecimalField):
 
         def get_value(self, data):
             amount = super(MoneyField, self).get_value(data)
-            currency = data.get('{}_currency'.format(self.field_name), None)
+            currency = data.get(get_currency_field_name(self.field_name), None)
             if currency:
                 return Money(amount, currency)
             return amount
@@ -49,7 +50,7 @@ class MoneyField(DecimalField):
 
         def field_from_native(self, data, files, field_name, into):
             super(MoneyField, self).field_from_native(data, files, field_name, into)
-            currency = data.get('{}_currency'.format(field_name), None)
+            currency = data.get(get_currency_field_name(field_name), None)
             if currency:
                 into[field_name] = Money(into[field_name], currency)
 
