@@ -14,6 +14,7 @@ Changes in 0.11.0dev
 - Fixed non-Money values support for ``in`` lookup. `#278`_ (`Stranger6667`_)
 - Fixed available lookups with removing of needless lookup check. `#277`_ (`Stranger6667`_)
 - Fixed compatibility with ``py-moneyed``. (`Stranger6667`_)
+- Fixed ignored currency value in Django REST Framework integration. `#292`_ (`gonzalobf`_)
 
 Changes in 0.10.2
 -----------------
@@ -200,6 +201,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#292: https://github.com/django-money/django-money/issues/292
 .. _#278: https://github.com/django-money/django-money/issues/278
 .. _#277: https://github.com/django-money/django-money/issues/277
 .. _#272: https://github.com/django-money/django-money/issues/272
@@ -263,6 +265,7 @@ Changes in 0.3
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
+.. _gonzalobf: https://github.com/gonzalobf
 .. _inureyes: https://github.com/inureyes
 .. _ivanchenkodmitry: https://github.com/ivanchenkodmitry
 .. _jack-cvr: https://github.com/jack-cvr
