@@ -44,13 +44,5 @@ env:
   - TOX_ENV=django15-pypy
   - TOX_ENV=django14-py27
   - TOX_ENV=django14-pypy
-matrix:
-  include:
-  - python: "2.6"
-    env: TOX_ENV=django16-py26
-  - python: "2.6"
-    env: TOX_ENV=django15-py26
-  - python: "2.6"
-    env: TOX_ENV=django14-py26
 after_success:
   - codecov
