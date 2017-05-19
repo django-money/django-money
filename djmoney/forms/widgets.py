@@ -9,11 +9,9 @@ __all__ = ('MoneyWidget',)
 
 class MoneyWidget(MultiWidget):
 
-    def __init__(self, choices=CURRENCY_CHOICES, amount_widget=None, currency_widget=None, default_currency=None,
+    def __init__(self, choices=CURRENCY_CHOICES, amount_widget=TextInput, currency_widget=None, default_currency=None,
                  *args, **kwargs):
         self.default_currency = default_currency
-        if not amount_widget:
-            amount_widget = TextInput
         if not currency_widget:
             currency_widget = Select(choices=choices)
         widgets = (amount_widget, currency_widget)

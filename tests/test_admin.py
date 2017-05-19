@@ -11,6 +11,7 @@ from .testapp.models import ModelWithVanillaMoneyField
 
 
 MONEY_FIELD = ModelWithVanillaMoneyField._meta.get_field('money')
+INTEGER_FIELD = ModelWithVanillaMoneyField._meta.get_field('integer')
 
 
 @pytest.mark.parametrize('value, kwargs, expected', (
@@ -24,3 +25,7 @@ def test_display_for_field(settings, value, kwargs, expected):
     for k, v in kwargs.items():
         setattr(settings, k, v)
     assert admin_utils.display_for_field(value, MONEY_FIELD, '') == expected
+
+
+def test_default_display():
+    assert admin_utils.display_for_field(10, INTEGER_FIELD, '') == '10'
