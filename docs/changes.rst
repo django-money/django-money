@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Changes in 0.11.0dev
---------------------
+Changes in 0.11
+---------------
 
 - Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. `#268`_ (`Stranger6667`_, `lobziik`_)
 - Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. `#272`_ (`Stranger6667`_)
