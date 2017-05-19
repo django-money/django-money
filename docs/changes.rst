@@ -6,7 +6,8 @@ Changelog
 Changes in 0.12.0dev
 --------------------
 
-- Dropped support for Python 2.6
+- Dropped support for Python 2.6. (`Stranger6667`_)
+- Dropped support for Django < 1.8. (`Stranger6667`_)
 
 
 Changes in 0.11

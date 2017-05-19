@@ -1,25 +1,20 @@
 # -*- coding: utf-8 -*-
-from django import VERSION
-from django.db.models import F
-from django.db.models.query_utils import Q
+from django.db.models import F, Q
+from django.db.models.constants import LOOKUP_SEP
+from django.db.models.expressions import BaseExpression
+from django.db.models.fields import FieldDoesNotExist
 from django.db.models.sql.constants import QUERY_TERMS
 from django.db.models.sql.query import Query
+from django.utils.six import wraps
 
 from moneyed import Money
 
-from .._compat import (
-    LOOKUP_SEP,
-    BaseExpression,
-    resolve_field,
-    smart_unicode,
-    wraps,
-)
+from .._compat import smart_unicode
 from ..utils import get_currency_field_name, prepare_expression
 from .fields import CurrencyField, MoneyField
 
 
 def _get_clean_name(name):
-
     # Get rid of __lt, __gt etc for the currency lookup
     path = name.split(LOOKUP_SEP)
     if path[-1] in QUERY_TERMS:
@@ -29,19 +24,14 @@ def _get_clean_name(name):
 
 
 def _get_field(model, name):
-    from django.db.models.fields import FieldDoesNotExist
 
     # Create a fake query object so we can easily work out what field
     # type we are dealing with
-    qs = Query(model)
-    opts = qs.get_meta()
-    alias = qs.get_initial_alias()
-
     parts = name.split(LOOKUP_SEP)
 
     # The following is borrowed from the innards of Query.add_filter - it strips out __gt, __exact et al.
     num_parts = len(parts)
-    if num_parts > 1 and parts[-1] in qs.query_terms:
+    if num_parts > 1 and parts[-1] in Query.query_terms:
         # Traverse the lookup query to distinguish related fields from
         # lookup types.
         for counter, field_name in enumerate(parts, 1):
@@ -61,7 +51,8 @@ def _get_field(model, name):
                     parts.pop()
                     break
 
-    return resolve_field(qs, parts, opts, alias)
+    qs = Query(model)
+    return qs.names_to_path(parts, qs.get_meta(), True, fail_on_missing=False)[1]
 
 
 def is_in_lookup(name, value):
@@ -259,17 +250,8 @@ def money_manager(manager):
     class MoneyManager(manager.__class__):
 
         def get_queryset(self, *args, **kwargs):
-            # If we are calling code that is pre-Django 1.6, need to
-            # spell it 'get_query_set'
-            s = super(MoneyManager, self)
-            method = getattr(s, 'get_queryset',
-                             getattr(s, 'get_query_set', None))
-            return add_money_comprehension_to_queryset(method(*args, **kwargs))
-
-        # If we are being called by code pre Django 1.6, need
-        # 'get_query_set'.
-        if VERSION < (1, 6):
-            get_query_set = get_queryset
+            queryset = super(MoneyManager, self).get_queryset(*args, **kwargs)
+            return add_money_comprehension_to_queryset(queryset)
 
     manager.__class__ = MoneyManager
     return manager
