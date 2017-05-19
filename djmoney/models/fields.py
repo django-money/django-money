@@ -144,7 +144,7 @@ def get_value(obj, expr):
     """
     if isinstance(expr, F):
         expr = getattr(obj, expr.name)
-    elif hasattr(expr, 'value'):
+    else:
         expr = expr.value
     return expr
 
