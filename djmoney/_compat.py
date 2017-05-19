@@ -106,7 +106,7 @@ def get_field_names(model):
     if VERSION < (1, 8):
         return opts.get_all_field_names()
     else:
-        return set(field.name for field in opts.get_fields())
+        return {field.name for field in opts.get_fields()}
 
 
 def get_fields(model):

@@ -3,6 +3,12 @@
 Changelog
 =========
 
+Changes in 0.12.0dev
+--------------------
+
+- Dropped support for Python 2.6
+
+
 Changes in 0.11
 ---------------
 
