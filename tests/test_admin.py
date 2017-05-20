@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 import django.contrib.admin.utils as admin_utils
+from django import VERSION
 
 import pytest
 
@@ -11,6 +12,16 @@ from .testapp.models import ModelWithVanillaMoneyField
 
 
 MONEY_FIELD = ModelWithVanillaMoneyField._meta.get_field('money')
+INTEGER_FIELD = ModelWithVanillaMoneyField._meta.get_field('integer')
+
+
+def get_args(value, field):
+    """
+    Constructs arguments for `display_for_field`.
+    """
+    if VERSION[:2] == (1, 8):
+        return value, field
+    return value, field, ''
 
 
 @pytest.mark.parametrize('value, kwargs, expected', (
@@ -23,4 +34,8 @@ MONEY_FIELD = ModelWithVanillaMoneyField._meta.get_field('money')
 def test_display_for_field(settings, value, kwargs, expected):
     for k, v in kwargs.items():
         setattr(settings, k, v)
-    assert admin_utils.display_for_field(value, MONEY_FIELD, '') == expected
+    assert admin_utils.display_for_field(*get_args(value, MONEY_FIELD)) == expected
+
+
+def test_default_display():
+    assert admin_utils.display_for_field(*get_args(10, INTEGER_FIELD)) == '10'
