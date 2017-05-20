@@ -4,8 +4,8 @@ from django.db.models import F, Q
 import pytest
 
 from djmoney.models.managers import _expand_money_args, _expand_money_kwargs
-from djmoney.utils import get_amount
 from djmoney.money import Money
+from djmoney.utils import get_amount
 
 from .testapp.models import ModelWithNonMoneyField
 

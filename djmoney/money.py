@@ -5,12 +5,11 @@ from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
 from django.utils import translation
+from django.utils.deconstruct import deconstructible
 
-from moneyed import Money as DefaultMoney, Currency
-from moneyed.localization import format_money, _FORMATTER
-
-from djmoney._compat import deconstructible
 from djmoney.settings import DECIMAL_PLACES
+from moneyed import Currency, Money as DefaultMoney
+from moneyed.localization import _FORMATTER, format_money
 
 
 __all__ = ['Money', 'Currency']

@@ -562,10 +562,10 @@ def test_different_hashes():
 
 def test_migration_serialization():
     if PY2:
-        serialized = 'djmoney.models.fields.Money(100, b\'GBP\')'
+        serialized = 'djmoney.money.Money(100, b\'GBP\')'
     else:
-        serialized = 'djmoney.models.fields.Money(100, \'GBP\')'
-    assert MigrationWriter.serialize(Money(100, 'GBP')) == (serialized, {'import djmoney.models.fields'})
+        serialized = 'djmoney.money.Money(100, \'GBP\')'
+    assert MigrationWriter.serialize(Money(100, 'GBP')) == (serialized, {'import djmoney.money'})
 
 
 class TestFieldAttributes:

@@ -6,8 +6,8 @@ from django.utils.translation import override
 
 import pytest
 
-from djmoney.templatetags.djmoney import MoneyLocalizeNode
 from djmoney.money import Money
+from djmoney.templatetags.djmoney import MoneyLocalizeNode
 
 
 def render(template, context):

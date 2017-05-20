@@ -8,9 +8,9 @@ from decimal import Decimal
 
 from django.db import models
 
-from djmoney.money import Money
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
+from djmoney.money import Money
 
 from .._compat import register
 
