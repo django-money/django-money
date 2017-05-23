@@ -269,6 +269,11 @@ class CurrencyField(models.CharField):
         if name not in [f.name for f in cls._meta.fields]:
             super(CurrencyField, self).contribute_to_class(cls, name)
 
+    def pre_save(self, obj, add):
+        if self.price_field.__class__.__name__ == 'DenormDBField':
+            self.price_field.pre_save(obj, add)
+        return super(CurrencyField, self).pre_save(obj, add)
+
 
 class MoneyField(models.DecimalField):
     description = 'A field which stores both the currency and amount of money.'
