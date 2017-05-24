@@ -78,13 +78,13 @@ Searching for models with money fields:
 
 .. code:: python
 
-        from moneyed import Money, USD, CHF
+        from djmoney.money import Money
 
 
-        account = BankAccount.objects.create(balance=Money(10, USD))
-        swissAccount = BankAccount.objects.create(balance=Money(10, CHF))
+        account = BankAccount.objects.create(balance=Money(10, 'USD'))
+        swissAccount = BankAccount.objects.create(balance=Money(10, 'CHF'))
 
-        BankAccount.objects.filter(balance__gt=Money(1, USD))
+        BankAccount.objects.filter(balance__gt=Money(1, 'USD'))
         # Returns the "account" object
 
 .. code:: python
