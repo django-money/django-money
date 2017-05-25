@@ -3,6 +3,11 @@
 Changelog
 =========
 
+Changes in 0.11.1
+-----------------
+
+- Fixed access to models properties `#297`_ (`mithrilstar`_, `Stranger6667`_)
+
 Changes in 0.11
 ---------------
 
@@ -201,6 +206,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#297: https://github.com/django-money/django-money/issues/297
 .. _#292: https://github.com/django-money/django-money/issues/292
 .. _#278: https://github.com/django-money/django-money/issues/278
 .. _#277: https://github.com/django-money/django-money/issues/277
@@ -276,6 +282,7 @@ Changes in 0.3
 .. _k8n: https://github.com/k8n
 .. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
+.. _mithrilstar: https://github.com/mithrilstar
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
 .. _pjdelport: https://github.com/pjdelport
