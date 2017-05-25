@@ -619,7 +619,6 @@ def test_override_decorator():
 
 
 def test_model_properties():
-    assert ModelWithVanillaMoneyField._meta._property_names == {'prop', 'pk'}
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, 'USD'), bla=1)
     assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
