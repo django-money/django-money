@@ -20,6 +20,10 @@ class ModelWithVanillaMoneyField(models.Model):
     second_money = MoneyField(max_digits=10, decimal_places=2, default_currency='EUR')
     integer = models.IntegerField(default=0)
 
+    @property
+    def prop(self):
+        return 1
+
 
 class ModelWithDefaultAsInt(models.Model):
     money = MoneyField(default=123, max_digits=10, decimal_places=2, default_currency='GHS')
