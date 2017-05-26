@@ -616,3 +616,9 @@ def test_override_decorator():
     """
     with override('cs'):
         assert str(MoneyPatched(10, 'CZK')) == 'Kč10.00'
+
+
+def test_properties_access():
+    with pytest.raises(TypeError) as exc:
+        ModelWithVanillaMoneyField(money=Money(1, 'USD'), bla=1)
+    assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
