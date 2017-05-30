@@ -3,15 +3,17 @@
 Changelog
 =========
 
-Changes in 0.12.0dev
---------------------
+Changes in 0.11.2.0dev
+----------------------
+
+- Fixed field lookup regression. `#300`_ (`lmdsp`_, `Stranger6667`_)
 
 Changes in 0.11.1
 -----------------
 
 - Dropped support for Python 2.6. (`Stranger6667`_)
 - Dropped support for Django < 1.8. (`Stranger6667`_)
-- Fixed access to models properties `#297`_ (`mithrilstar`_, `Stranger6667`_)
+- Fixed access to models properties. `#297`_ (`mithrilstar`_, `Stranger6667`_)
 
 Changes in 0.11
 ---------------
@@ -211,6 +213,7 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+.. _#300: https://github.com/django-money/django-money/issues/300
 .. _#297: https://github.com/django-money/django-money/issues/297
 .. _#292: https://github.com/django-money/django-money/issues/292
 .. _#278: https://github.com/django-money/django-money/issues/278
@@ -285,6 +288,7 @@ Changes in 0.3
 .. _kjagiello: https://github.com/kjagiello
 .. _ivirabyan: https://github.com/ivirabyan
 .. _k8n: https://github.com/k8n
+.. _lmdsp: https://github.com/lmdsp
 .. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
 .. _mithrilstar: https://github.com/mithrilstar

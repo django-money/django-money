@@ -4,6 +4,7 @@ Created on May 7, 2011
 
 @author: jake
 """
+import datetime
 from copy import copy
 from decimal import Decimal
 
@@ -27,6 +28,7 @@ from .testapp.models import (
     DateTimeModel,
     InheritedModel,
     InheritorModel,
+    ModelIssue300,
     ModelRelatedToModelWithMoney,
     ModelWithChoicesMoneyField,
     ModelWithCustomManager,
@@ -205,6 +207,11 @@ class TestVanillaMoneyField:
         retrieved = ModelWithVanillaMoneyField.objects.get(money=money)
 
         assert instance.pk == retrieved.pk
+
+    def test_issue_300_regression(self):
+        date = datetime.datetime(year=2017, month=2, day=1)
+        ModelIssue300.objects.filter(money__created=date)
+        ModelIssue300.objects.filter(money__created__gt=date)
 
     def test_range_search(self):
         money = Money('3')

@@ -27,6 +27,7 @@ def _get_field(model, name):
 
     # Create a fake query object so we can easily work out what field
     # type we are dealing with
+    qs = Query(model)
     parts = name.split(LOOKUP_SEP)
 
     # The following is borrowed from the innards of Query.add_filter - it strips out __gt, __exact et al.
@@ -51,7 +52,6 @@ def _get_field(model, name):
                     parts.pop()
                     break
 
-    qs = Query(model)
     return qs.names_to_path(parts, qs.get_meta(), True, fail_on_missing=False)[1]
 
 
