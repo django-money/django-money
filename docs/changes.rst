@@ -213,7 +213,10 @@ Changes in 0.3
 - South support: Declare default attribute values. (`pjdelport`_)
 
 
+<<<<<<< 5f41c0aca50a966fa1fd6bbe6b092879d5443046
 .. _#300: https://github.com/django-money/django-money/issues/300
+=======
+>>>>>>> Fixed access to models properties. Fixes #297
 .. _#297: https://github.com/django-money/django-money/issues/297
 .. _#292: https://github.com/django-money/django-money/issues/292
 .. _#278: https://github.com/django-money/django-money/issues/278
