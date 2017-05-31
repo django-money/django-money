@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Changes in 0.11.2.0dev
-----------------------
+Changes in 0.11.2
+-----------------
 
 - Fixed field lookup regression. `#300`_ (`lmdsp`_, `Stranger6667`_)
 
