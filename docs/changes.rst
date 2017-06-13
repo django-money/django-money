@@ -3,78 +3,113 @@
 Changelog
 =========
 
-Changes in 0.11.2
------------------
+`Unreleased`_
+-------------
+
+`0.11.2`_ - 2017-05-31
+----------------------
+
+Fixed
+~~~~~
 
 - Fixed field lookup regression. `#300`_ (`lmdsp`_, `Stranger6667`_)
 
-Changes in 0.11.1
------------------
+`0.11.1`_ - 2017-05-26
+----------------------
 
-- Dropped support for Python 2.6. (`Stranger6667`_)
-- Dropped support for Django < 1.8. (`Stranger6667`_)
+Fixed
+~~~~~
 - Fixed access to models properties. `#297`_ (`mithrilstar`_, `Stranger6667`_)
 
-Changes in 0.11
----------------
+Removed
+~~~~~~~
+- Dropped support for Python 2.6. (`Stranger6667`_)
+- Dropped support for Django < 1.8. (`Stranger6667`_)
 
+`0.11`_ - 2017-05-19
+--------------------
+
+Added
+~~~~~
+- An ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
+
+Fixed
+~~~~~
 - Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. `#268`_ (`Stranger6667`_, `lobziik`_)
 - Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. `#272`_ (`Stranger6667`_)
 - Fixed various displaying errors in Django Admin . `#232`_, `#220`_, `#196`_, `#102`_, `#90`_ (`Stranger6667`_,
   `arthurk`_, `mstarostik`_, `eriktelepovsky`_, `jplehmann`_, `graik`_, `benjaoming`_, `k8n`_, `yellow-sky`_)
-- Added ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
 - Fixed non-Money values support for ``in`` lookup. `#278`_ (`Stranger6667`_)
 - Fixed available lookups with removing of needless lookup check. `#277`_ (`Stranger6667`_)
 - Fixed compatibility with ``py-moneyed``. (`Stranger6667`_)
 - Fixed ignored currency value in Django REST Framework integration. `#292`_ (`gonzalobf`_)
 
-Changes in 0.10.2
------------------
+`0.10.2`_ - 2017-02-18
+----------------------
 
+Added
+~~~~~
 - Added ability to configure decimal places output. `#154`_, `#251`_ (`ivanchenkodmitry`_)
+
+Fixed
+~~~~~
 - Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. `#257`_ (`kjagiello`_)
 - Fixed handling of currency fields lookups in ``get_or_create`` method. `#258`_ (`Stranger6667`_)
 - Fixed ``PendingDeprecationWarning`` during form initialization. `#262`_ (`Stranger6667`_, `spookylukey`_)
 - Fixed handling of ``F`` expressions which involve non-Money fields. `#265`_ (`Stranger6667`_)
 
-Changes in 0.10.1
------------------
+`0.10.1`_ - 2016-12-26
+----------------------
 
+Fixed
+~~~~~
 - Fixed default value for ``djmoney.forms.fields.MoneyField``. `#249`_ (`tsouvarev`_)
 
-Changes in 0.10
----------------
+`0.10`_ - 2016-12-19
+--------------------
 
-- Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
+Changed
+~~~~~~~
 - Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
+
+Fixed
+~~~~~
+- Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
 - Fixed: Not possible to revert MoneyField currency back to default `#221`_ (`benjaoming`_)
 - Fixed invalid ``creation_counter`` handling. `#235`_ (`msgre`_ and `Stranger6667`_)
 - Fixed broken field resolving. `#241`_ (`Stranger6667`_)
 
-Changes in 0.9.1
-----------------
+`0.9.1`_ - 2016-08-01
+---------------------
 
+Fixed
+~~~~~
 - Fix packaging.
 
-Changes in 0.9.0
-----------------
+`0.9.0`_ - 2016-07-31
+---------------------
 
 NB! If you are using custom model managers **not** named `objects` and you expect them to still work, please read below.
 
-Changes and new features
-^^^^^^^^^^^^^^^^^^^^^^^^
+Added
+~~~~~
+- Support for ``Value`` and ``Func`` expressions in queries. (`Stranger6667`_)
+- Support for ``in`` lookup. (`Stranger6667`_)
+- Django REST Framework support. `#179`_ (`Stranger6667`_)
+- Django 1.10 support. `#198`_ (`Stranger6667`_)
+- Improved South support. (`Stranger6667`_)
 
-- Improved South support (`Stranger6667`_)
-- Added support for ``Value`` and ``Func`` expressions in queries (`Stranger6667`_)
-- Added Django REST Framework support `#179`_ (`Stranger6667`_)
+Changed
+~~~~~~~
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
   be off by default. You must now add ``AUTO_CONVERT_MONEY = True`` in
   your ``settings.py`` if you want this feature. `#199`_ (`spookylukey`_)
-- Fixed default currency value for nullable fields in forms `#138`_ (`Stranger6667`_)
-- Added ``in`` lookup support (`Stranger6667`_)
-- Fixed ``_has_changed`` deprecation warnings `#206`_ (`Stranger6667`_)
-- Added Django 1.10 support `#198`_ (`Stranger6667`_)
-- Only make `objects` a MoneyManager instance automatically `#194`_ and `#201`_ (`inureyes`_)
+- Only make `objects` a MoneyManager instance automatically. `#194`_ and `#201`_ (`inureyes`_)
+
+Fixed
+~~~~~
+- Fixed default currency value for nullable fields in forms. `#138`_ (`Stranger6667`_)
+- Fixed ``_has_changed`` deprecation warnings. `#206`_ (`Stranger6667`_)
 - Fixed ``get_or_create`` crash, when ``defaults`` is passed. `#213`_ (`Stranger6667`_, `spookylukey`_)
 
 Note about automatic model manager patches
@@ -103,115 +138,235 @@ wrapping with ``money_manager``.
         balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
         accounts = money_manager(MyCustomManager())
 
-Changes in 0.8
---------------
-- Added support for serialization of ``MoneyPatched`` instances in migrations (`AlexRiina`_)
-- Fixed fields caching `#186`_ (`Stranger6667`_)
-- Fixed m2m fields data loss on Django < 1.8 `#184`_ (`Stranger6667`_)
-- Improved django-money-rates support `#173`_ (`Stranger6667`_)
-- Fixed managers access via instances `#86`_ (`Stranger6667`_)
-- Fixed currency handling behaviour `#172`_ (`Stranger6667`_)
-- Many PEP8 & flake8 fixes (`benjaoming`_)
-- Added pre-commit hooks support (`benjaoming`_)
-- Fixed filtration with ``F`` expressions `#174`_ (`Stranger6667`_)
-- Fixed querying on Django 1.8+ `#166`_ (`Stranger6667`_)
-- Extended ``F`` expressions support (`Stranger6667`_)
-- Added isort integration (`Stranger6667`_)
+`0.8`_ - 2016-04-23
+-------------------
+
+Added
+~~~~~
+- Support for serialization of ``MoneyPatched`` instances in migrations. (`AlexRiina`_)
+- Improved django-money-rates support. `#173`_ (`Stranger6667`_)
+- Extended ``F`` expressions support. (`Stranger6667`_)
+- Pre-commit hooks support. (`benjaoming`_)
+- Isort integration. (`Stranger6667`_)
+- Makefile for common commands. (`Stranger6667`_)
+- Codecov.io integration. (`Stranger6667`_)
+- Python 3.5 builds to tox.ini and travis.yml. (`Stranger6667`_)
+- Django master support. (`Stranger6667`_)
+- Python 3.2 compatibility. (`Stranger6667`_)
+
+Changed
+~~~~~~~
 - Refactored test suite (`Stranger6667`_)
-- Added Django master support (`Stranger6667`_)
-- Fixed Python 3.2 compatibility (`Stranger6667`_)
-- Added Makefile for common commands (`Stranger6667`_)
-- Added Codecov.io integration (`Stranger6667`_)
-- Added Python 3.5 builds to tox.ini and travis.yml (`Stranger6667`_)
 
-Changes in 0.7.6
-----------------
-- Fix for ``get_or_create`` / ``create`` manager methods not respecting currency code (`toudi`_)
-- Fix unit tests (`toudi`_)
-- Fix for using ``MoneyField`` with ``F`` expressions when using Django >= 1.8 (`toudi`_)
-- Mention Django 1.9 in tox.ini (`benjaoming`_)
-- Added correct paths for py.test discovery (`benjaoming`_)
+Fixed
+~~~~~
+- Fixed fields caching. `#186`_ (`Stranger6667`_)
+- Fixed m2m fields data loss on Django < 1.8. `#184`_ (`Stranger6667`_)
+- Fixed managers access via instances. `#86`_ (`Stranger6667`_)
+- Fixed currency handling behaviour. `#172`_ (`Stranger6667`_)
+- Many PEP8 & flake8 fixes. (`benjaoming`_)
+- Fixed filtration with ``F`` expressions. `#174`_ (`Stranger6667`_)
+- Fixed querying on Django 1.8+. `#166`_ (`Stranger6667`_)
 
-Changes in 0.7.5
-----------------
+`0.7.6`_ - 2016-01-08
+---------------------
+
+Added
+~~~~~
+- Added correct paths for py.test discovery. (`benjaoming`_)
+- Mention Django 1.9 in tox.ini. (`benjaoming`_)
+
+Fixed
+~~~~~
+- Fix for ``get_or_create`` / ``create`` manager methods not respecting currency code. (`toudi`_)
+- Fix unit tests. (`toudi`_)
+- Fix for using ``MoneyField`` with ``F`` expressions when using Django >= 1.8. (`toudi`_)
+
+`0.7.5`_ - 2015-12-22
+---------------------
+
+Fixed
+~~~~~
 - Fallback to ``_meta.fields`` if ``_meta.get_fields`` raises ``AttributeError`` `#149`_ (`browniebroke`_)
-- pip Instructions updated (`GheloAce`_)
+- pip instructions updated. (`GheloAce`_)
 
-Changes in 0.7.4
-----------------
-- Fixed loaddata (`jack-cvr`_)
-- Python 2.6 fixes (`jack-cvr`_)
-- Fixed currency choices ordering (`synotna`_)
+`0.7.4`_ - 2015-11-02
+---------------------
+
+Added
+~~~~~
 - Support for Django 1.9 (`kjagiello`_)
 
-Changes in 0.7.3
-----------------
-- Sum different currencies (`dnmellen`_)
-- Added ``__eq__`` method (`benjaoming`_)
-- Comparison of different currencies (`benjaoming`_)
-- Default currency (`benjaoming`_)
-- Fix using Choices for setting currency choices (`benjaoming`_)
-- Fix tests for Python 2.6 (`plumdog`_)
+Fixed
+~~~~~
+- Fixed loaddata. (`jack-cvr`_)
+- Python 2.6 fixes. (`jack-cvr`_)
+- Fixed currency choices ordering. (`synotna`_)
 
-Changes in 0.7.2
-----------------
-- Better checks on ``None`` values (`tsouvarev`_, `sjdines`_)
-- Consistency with South declarations and calling ``str`` function (`sjdines`_)
+`0.7.3`_ - 2015-10-16
+---------------------
 
-Changes in 0.7
---------------
-- Django 1.8 compatibility (`willhcr`_)
-- Fix bug in printing ``MoneyField`` (`YAmikep`_)
+Added
+~~~~~
+- Sum different currencies. (`dnmellen`_)
+- ``__eq__`` method. (`benjaoming`_)
+- Comparison of different currencies. (`benjaoming`_)
+- Default currency. (`benjaoming`_)
 
-Changes in 0.6
---------------
-- Tox cleanup (`edwinlunando`_)
-- Added Python 3 trove classifier (`dekkers`_)
-- Improved ``README`` (`glarrain`_)
-- Appends _currency to non-money ExpressionFields `#101`_ (`alexhayes`_, `AlexRiina`_, `briankung`_)
-- Data truncated for column `#103`_ (`alexhayes`_)
-- Proxy Model with MoneyField returns wrong class `#80`_ (`spookylukey`_)
-- Fixed ``has_changed`` not working `#95`_ (`spookylukey`_)
-- Added/Cleaned up tests (`spookylukey`_, `AlexRiina`_)
+Fixed
+~~~~~
+- Fix using Choices for setting currency choices. (`benjaoming`_)
+- Fix tests for Python 2.6. (`plumdog`_)
 
-Changes in 0.5
---------------
-- Django 1.7 compatibility (`w00kie`_)
-- Added ``choices=`` to instantiation of currency widget (`davidstockwell`_)
-- Nullable ``MoneyField`` should act as ``default=None`` (`jakewins`_)
-- Fixed bug where a non-required ``MoneyField`` threw an exception (`spookylukey`_)
+`0.7.2`_ - 2015-09-01
+---------------------
 
-Changes in 0.4
---------------
-- Python 3 compatibility
-- Added tox tests
-- Added format localization
-- Added tag ``money_localize``
+Fixed
+~~~~~
+- Better checks on ``None`` values. (`tsouvarev`_, `sjdines`_)
+- Consistency with South declarations and calling ``str`` function. (`sjdines`_)
 
-Changes in 0.3.3
-----------------
-- Fixed issues with money widget not passing attrs up to django's render method, caused id attribute to not be set in html for widgets (`adambregenzer`_)
-- Fixed issue of default currency not being passed on to widget (`snbuchholz`_)
-- Implemented the ``south_triple_field`` to add support for South migration (`mattions`_)
-- Return the right default for South (`mattions`_)
-- Django 1.5 compatibility fix (`devlocal`_)
+`0.7.1`_ - 2015-08-11
+---------------------
 
-Changes in 0.3.2
-----------------
-- Fixed issues with ``display_for_field`` not detecting fields correctly (`adambregenzer`_)
-- Added South ignore rule to avoid duplicate currency field when using the frozen ORM (`rach`_)
-- Disallow override of objects manager if not setting it up with an instance (`rach`_)
+Fixed
+~~~~~
+- Fix bug in printing ``MoneyField``. (`YAmikep`_)
+- Added fallback value for current locale getter. (`sjdines`_)
 
-Changes in 0.3.1
-----------------
-- Fix ``AttributeError`` when Model inherit a manager (`rach`_)
-- Correctly serialize the field (`akumria`_)
+`0.7.0`_ - 2015-06-14
+---------------------
 
-Changes in 0.3
---------------
-- Allow django-money to be specified as read-only in a model (`akumria`_)
+Added
+~~~~~
+- Django 1.8 compatibility. (`willhcr`_)
+
+`0.6.0`_ - 2015-05-23
+---------------------
+
+Added
+~~~~~
+- Python 3 trove classifier. (`dekkers`_)
+
+Changed
+~~~~~~~
+- Tox cleanup. (`edwinlunando`_)
+- Improved ``README``. (`glarrain`_)
+- Added/Cleaned up tests. (`spookylukey`_, `AlexRiina`_)
+
+Fixed
+~~~~~
+- Append ``_currency`` to non-money ExpressionFields. `#101`_ (`alexhayes`_, `AlexRiina`_, `briankung`_)
+- Data truncated for column. `#103`_ (`alexhayes`_)
+- Fixed ``has_changed`` not working. `#95`_ (`spookylukey`_)
+- Fixed proxy model with ``MoneyField`` returns wrong class. `#80`_ (`spookylukey`_)
+
+`0.5.0`_ - 2014-12-15
+---------------------
+
+Added
+~~~~~
+- Django 1.7 compatibility. (`w00kie`_)
+
+Fixed
+~~~~~
+- Added ``choices=`` to instantiation of currency widget. (`davidstockwell`_)
+- Nullable ``MoneyField`` should act as ``default=None``. (`jakewins`_)
+- Fixed bug where a non-required ``MoneyField`` threw an exception. (`spookylukey`_)
+
+`0.4.2`_ - 2014-07-31
+---------------------
+`0.4.1`_ - 2013-11-28
+---------------------
+`0.4.0.0`_ - 2013-11-26
+-----------------------
+
+Added
+~~~~~
+- Python 3 compatibility.
+- tox tests.
+- Format localization.
+- Template tag ``money_localize``.
+
+`0.3.4`_ - 2013-11-25
+---------------------
+`0.3.3.2`_ - 2013-10-31
+-----------------------
+`0.3.3.1`_ - 2013-10-01
+-----------------------
+`0.3.3`_ - 2013-02-17
+---------------------
+
+Added
+~~~~~
+- South support via implementing the ``south_triple_field`` method. (`mattions`_)
+
+Fixed
+~~~~~
+- Fixed issues with money widget not passing attrs up to django's render method, caused id attribute to not be set in html for widgets. (`adambregenzer`_)
+- Fixed issue of default currency not being passed on to widget. (`snbuchholz`_)
+- Return the right default for South. (`mattions`_)
+- Django 1.5 compatibility. (`devlocal`_)
+
+`0.3.2`_ - 2012-11-30
+---------------------
+
+Fixed
+~~~~~
+- Fixed issues with ``display_for_field`` not detecting fields correctly. (`adambregenzer`_)
+- Added South ignore rule to avoid duplicate currency field when using the frozen ORM. (`rach`_)
+- Disallow override of objects manager if not setting it up with an instance. (`rach`_)
+
+`0.3.1`_ - 2012-10-11
+---------------------
+
+Fixed
+~~~~~
+- Fix ``AttributeError`` when Model inherit a manager. (`rach`_)
+- Correctly serialize the field. (`akumria`_)
+
+`0.3`_ - 2012-09-30
+-------------------
+
+Added
+~~~~~
+- Allow django-money to be specified as read-only in a model. (`akumria`_)
 - South support: Declare default attribute values. (`pjdelport`_)
 
+`0.2`_ - 2012-04-10
+-------------------
+
+- Initial public release
+
+.. _Unreleased: https://github.com/Stranger6667/postmarker/compare/0.11.2...HEAD
+.. _0.11.2: https://github.com/Stranger6667/postmarker/compare/0.11.1...0.11.2
+.. _0.11.1: https://github.com/Stranger6667/postmarker/compare/0.11...0.11.1
+.. _0.11: https://github.com/Stranger6667/postmarker/compare/0.10.2...0.11
+.. _0.10.2: https://github.com/Stranger6667/postmarker/compare/0.10.1...0.10.2
+.. _0.10.1: https://github.com/Stranger6667/postmarker/compare/0.10...0.10.1
+.. _0.10: https://github.com/Stranger6667/postmarker/compare/0.9.1...0.10
+.. _0.9.1: https://github.com/Stranger6667/postmarker/compare/0.9.0...0.9.1
+.. _0.9.0: https://github.com/Stranger6667/postmarker/compare/0.8...0.9.0
+.. _0.8: https://github.com/Stranger6667/postmarker/compare/0.7.6...0.8
+.. _0.7.6: https://github.com/Stranger6667/postmarker/compare/0.7.5...0.7.6
+.. _0.7.5: https://github.com/Stranger6667/postmarker/compare/0.7.4...0.7.5
+.. _0.7.4: https://github.com/Stranger6667/postmarker/compare/0.7.3...0.7.4
+.. _0.7.3: https://github.com/Stranger6667/postmarker/compare/0.7.2...0.7.3
+.. _0.7.2: https://github.com/Stranger6667/postmarker/compare/0.7.1...0.7.2
+.. _0.7.1: https://github.com/Stranger6667/postmarker/compare/0.7.0...0.7.1
+.. _0.7.0: https://github.com/Stranger6667/postmarker/compare/0.6.0...0.7.0
+.. _0.6.0: https://github.com/Stranger6667/postmarker/compare/0.5.0...0.6.0
+.. _0.5.0: https://github.com/Stranger6667/postmarker/compare/0.4.2...0.5.0
+.. _0.4.2: https://github.com/Stranger6667/postmarker/compare/0.4.1...0.4.2
+.. _0.4.1: https://github.com/Stranger6667/postmarker/compare/0.4.0.0...0.4.1
+.. _0.4.0.0: https://github.com/Stranger6667/postmarker/compare/0.3.4...0.4.0.0
+.. _0.3.4: https://github.com/Stranger6667/postmarker/compare/0.3.3.2...0.3.4
+.. _0.3.3.2: https://github.com/Stranger6667/postmarker/compare/0.3.3.1...0.3.3.2
+.. _0.3.3.1: https://github.com/Stranger6667/postmarker/compare/0.3.3...0.3.3.1
+.. _0.3.3: https://github.com/Stranger6667/postmarker/compare/0.3.2...0.3.3
+.. _0.3.2: https://github.com/Stranger6667/postmarker/compare/0.3.1...0.3.2
+.. _0.3.1: https://github.com/Stranger6667/postmarker/compare/0.3...0.3.1
+.. _0.3: https://github.com/Stranger6667/postmarker/compare/0.2...0.3
 
 .. _#300: https://github.com/django-money/django-money/issues/300
 .. _#297: https://github.com/django-money/django-money/issues/297
