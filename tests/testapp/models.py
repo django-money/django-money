@@ -6,9 +6,11 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django import VERSION
 from django.db import models
 
 import moneyed
+
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
 
@@ -137,6 +139,14 @@ class ModelWithCustomManager(models.Model):
 class DateTimeModel(models.Model):
     field = MoneyField(max_digits=10, decimal_places=2)
     created = models.DateTimeField(null=True, blank=True)
+
+
+if VERSION < (1, 7, 0):
+    from djmoney.contrib.django_rest_framework import register_money_field
+    from djmoney.admin import setup_admin_integration
+
+    register_money_field()
+    setup_admin_integration()
 
 
 class ModelIssue300(models.Model):
