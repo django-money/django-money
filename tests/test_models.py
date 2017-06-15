@@ -18,7 +18,6 @@ from django.utils.translation import override
 import pytest
 
 import moneyed
-
 from djmoney._compat import Case, Func, Value, When, get_fields
 from djmoney.models.fields import MoneyField, MoneyPatched
 from moneyed import Money
