@@ -39,7 +39,10 @@ class MoneyField(MultiValueField):
         # get the default currency if one was specified
         default_currency = kwargs.pop('default_currency', None)
 
-        amount_field = DecimalField(max_value, min_value, max_digits, decimal_places, *args, **kwargs)
+        amount_field = DecimalField(
+            *args, max_value=max_value, min_value=min_value, max_digits=max_digits, decimal_places=decimal_places,
+            **kwargs
+        )
         currency_field = ChoiceField(choices=choices)
 
         if VERSION < (1, 8) and hasattr(amount_field, '_has_changed') and hasattr(currency_field, '_has_changed'):

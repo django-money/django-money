@@ -39,7 +39,7 @@ def _get_field(model, name):
 
     # The following is borrowed from the innards of Query.add_filter - it strips out __gt, __exact et al.
     num_parts = len(parts)
-    if num_parts > 1 and parts[-1] in qs.query_terms:
+    if num_parts > 1 and parts[-1] in QUERY_TERMS:
         # Traverse the lookup query to distinguish related fields from
         # lookup types.
         for counter, field_name in enumerate(parts, 1):
