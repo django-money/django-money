@@ -6,7 +6,7 @@ Changelog
 Changes in 0.11.3.dev0
 ----------------------
 
-- Restored support for Django < 1.8 & Python 2.6
+- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6
 
 Changes in 0.11.2
 -----------------
