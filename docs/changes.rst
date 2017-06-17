@@ -6,15 +6,15 @@ Changelog
 `Unreleased`_
 -------------
 
-Added
-~~~~~
+Changed
+~~~~~~~
 
-- Improved `Money` support. `#276`_ (`Stranger6667`_)
+- Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
 
 Deprecated
 ~~~~~~~~~~
 
-- `djmoney.models.fields.MoneyPatched` is now deprecated. Use `djmoney.money.Money` instead.
+- ``djmoney.models.fields.MoneyPatched`` is now deprecated. Use ``djmoney.money.Money`` instead.
 
 `0.11.2`_ - 2017-05-31
 ----------------------
