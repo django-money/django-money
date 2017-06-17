@@ -6,6 +6,16 @@ Changelog
 `Unreleased`_
 -------------
 
+Added
+~~~~~
+
+- Improved `Money` support. `#276`_ (`Stranger6667`_)
+
+Deprecated
+~~~~~~~~~~
+
+- `djmoney.models.fields.MoneyPatched` is now deprecated. Use `djmoney.money.Money` instead.
+
 `0.11.2`_ - 2017-05-31
 ----------------------
 
@@ -373,6 +383,7 @@ Added
 .. _#292: https://github.com/django-money/django-money/issues/292
 .. _#278: https://github.com/django-money/django-money/issues/278
 .. _#277: https://github.com/django-money/django-money/issues/277
+.. _#276: https://github.com/django-money/django-money/issues/276
 .. _#272: https://github.com/django-money/django-money/issues/272
 .. _#268: https://github.com/django-money/django-money/issues/268
 .. _#265: https://github.com/django-money/django-money/issues/265
