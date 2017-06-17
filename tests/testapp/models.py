@@ -137,3 +137,8 @@ class ModelWithCustomManager(models.Model):
 class DateTimeModel(models.Model):
     field = MoneyField(max_digits=10, decimal_places=2)
     created = models.DateTimeField(null=True, blank=True)
+
+
+class ModelIssue300(models.Model):
+    money = models.ForeignKey(DateTimeModel, on_delete=models.CASCADE)
+    price = MoneyField(max_digits=10, decimal_places=2, default_currency='EUR', default=Decimal('0.0'))

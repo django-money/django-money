@@ -27,11 +27,12 @@ def _get_field(model, name):
 
     # Create a fake query object so we can easily work out what field
     # type we are dealing with
+    qs = Query(model)
     parts = name.split(LOOKUP_SEP)
 
     # The following is borrowed from the innards of Query.add_filter - it strips out __gt, __exact et al.
     num_parts = len(parts)
-    if num_parts > 1 and parts[-1] in Query.query_terms:
+    if num_parts > 1 and parts[-1] in QUERY_TERMS:
         # Traverse the lookup query to distinguish related fields from
         # lookup types.
         for counter, field_name in enumerate(parts, 1):
@@ -51,7 +52,6 @@ def _get_field(model, name):
                     parts.pop()
                     break
 
-    qs = Query(model)
     return qs.names_to_path(parts, qs.get_meta(), True, fail_on_missing=False)[1]
 
 
