@@ -8,7 +8,7 @@ from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 
 try:
     from rest_framework import serializers
-    from rest_framework.fields import empty
+    from djmoney.contrib.django_rest_framework.helpers import IS_DRF_3
 except ImportError:
     pytest.skip()
 
@@ -18,12 +18,22 @@ pytestmark = pytest.mark.django_db
 
 class TestMoneyField:
 
+    if IS_DRF_3:
+        from rest_framework.fields import empty
+    else:
+        empty = None
+
     def get_serializer(self, model_class, instance=None, data=empty):
 
-        class Serializer(serializers.ModelSerializer):
-            class Meta:
-                model = model_class
-                fields = '__all__'
+        if IS_DRF_3:
+            class Serializer(serializers.ModelSerializer):
+                class Meta:
+                    model = model_class
+                    fields = '__all__'
+        else:
+            class Serializer(serializers.ModelSerializer):
+                class Meta:
+                    model = model_class
 
         return Serializer(instance=instance, data=data)
 
@@ -33,16 +43,16 @@ class TestMoneyField:
             (
                 NullMoneyFieldModel,
                 {'field': Money(10, 'USD')},
-                {'field': '10.00', 'field_currency': 'USD'}
+                {'field': '10.00' if IS_DRF_3 else 10, 'field_currency': 'USD'}
             ),
             (
                 ModelWithVanillaMoneyField,
                 {'money': Money(10, 'USD')},
                 {
                     'integer': 0,
-                    'money': '10.00',
+                    'money': '10.00' if IS_DRF_3 else 10,
                     'money_currency': 'USD',
-                    'second_money': '0.00',
+                    'second_money': '0.00' if IS_DRF_3 else 0,
                     'second_money_currency': 'EUR'}
             ),
         )
@@ -70,7 +80,7 @@ class TestMoneyField:
     def test_invalid_value(self):
         serializer = self.get_serializer(ModelWithVanillaMoneyField, data={'money': None})
         assert not serializer.is_valid()
-        error_text = 'This field may not be null.'
+        error_text = 'This field may not be null.' if IS_DRF_3 else 'This field is required.'
         assert serializer.errors == {'money': [error_text]}
 
     @pytest.mark.parametrize(
@@ -83,4 +93,7 @@ class TestMoneyField:
     def test_post_put_values(self, body, expected):
         serializer = self.get_serializer(NullMoneyFieldModel, data=body)
         serializer.is_valid()
-        assert serializer.validated_data['field'] == expected
+        if IS_DRF_3:
+            assert serializer.validated_data['field'] == expected
+        else:
+            assert Money(serializer.data['field'], serializer.data['field_currency']) == expected
