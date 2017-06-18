@@ -14,7 +14,7 @@ Changed
 Deprecated
 ~~~~~~~~~~
 
-- ``djmoney.models.fields.MoneyPatched`` is now deprecated. Use ``djmoney.money.Money`` instead.
+- ``djmoney.models.fields.MoneyPatched`` and `moneyed.Money` are deprecated. Use ``djmoney.money.Money`` instead.
 
 `0.11.2`_ - 2017-05-31
 ----------------------
