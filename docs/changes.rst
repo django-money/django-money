@@ -6,6 +6,16 @@ Changelog
 `Unreleased`_
 -------------
 
+- (...)
+
+`0.11.3`_ - 2017-06-19
+----------------------
+
+Fixed
+~~~~~
+
+- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6 `#304`_ (`Stranger6667`_)
+
 `0.11.2`_ - 2017-05-31
 ----------------------
 
@@ -339,6 +349,7 @@ Added
 - Initial public release
 
 .. _Unreleased: https://github.com/django-money/django-money/compare/0.11.2...HEAD
+.. _0.11.3: https://github.com/django-money/django-money/compare/0.11.2...0.11.3
 .. _0.11.2: https://github.com/django-money/django-money/compare/0.11.1...0.11.2
 .. _0.11.1: https://github.com/django-money/django-money/compare/0.11...0.11.1
 .. _0.11: https://github.com/django-money/django-money/compare/0.10.2...0.11
@@ -368,6 +379,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#304: https://github.com/django-money/django-money/issues/304
 .. _#300: https://github.com/django-money/django-money/issues/300
 .. _#297: https://github.com/django-money/django-money/issues/297
 .. _#292: https://github.com/django-money/django-money/issues/292
