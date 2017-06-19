@@ -3,10 +3,10 @@
 Changelog
 =========
 
-Changes in 0.11.3.dev0
-----------------------
+Changes in 0.11.3
+-----------------
 
-- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6
+- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6 #304 (`Stranger6667`_)
 
 Changes in 0.11.2
 -----------------
