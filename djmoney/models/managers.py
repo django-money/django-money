@@ -11,6 +11,7 @@ from moneyed import Money
 from .._compat import (
     LOOKUP_SEP,
     BaseExpression,
+    Case,
     resolve_field,
     smart_unicode,
     wraps,
@@ -156,7 +157,7 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
         else:
             field = _get_field(model, name)
             if isinstance(field, MoneyField):
-                if isinstance(value, (BaseExpression, F)):
+                if isinstance(value, (BaseExpression, F)) and not (Case and isinstance(value, Case)):
                     clean_name = _get_clean_name(name)
                     if not isinstance(value, F):
                         value = prepare_expression(value)
