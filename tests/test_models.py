@@ -327,6 +327,13 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
         assert instance.money == expected
 
+    def test_default_update(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        second_money = Money(100, 'USD')
+        ModelWithVanillaMoneyField.objects.update(second_money=second_money)
+        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        assert instance.second_money == second_money
+
     @pytest.mark.parametrize(
         'create_kwargs, filter_value, in_result',
         (
