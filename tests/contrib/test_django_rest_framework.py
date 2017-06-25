@@ -6,19 +6,14 @@ from moneyed import Money
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 
 
-try:
-    from rest_framework import serializers
-    from rest_framework.fields import empty
-except ImportError:
-    pytest.skip()
-
-
 pytestmark = pytest.mark.django_db
+serializers = pytest.importorskip('rest_framework.serializers')
+fields = pytest.importorskip('rest_framework.fields')
 
 
 class TestMoneyField:
 
-    def get_serializer(self, model_class, instance=None, data=empty):
+    def get_serializer(self, model_class, instance=None, data=fields.empty):
 
         class Serializer(serializers.ModelSerializer):
             class Meta:
