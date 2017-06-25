@@ -69,12 +69,11 @@ class TestMigrationFramework:
         return self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
 
     def run(self, content):
-        # To collect coverage data from the call
-        self.testdir.makepyfile(test_migration=content)
-        return self.testdir.runpytest_subprocess(
-            '--ds', 'app_settings', '-s', '--verbose',
-            '--cov-append', '--cov', 'djmoney', '--cov-config', 'coveragerc.ini'
-        )
+        return self.testdir.runpython_c(dedent('''
+        import os
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
+        %s
+        ''' % content))
 
     def migrate(self):
         return self.run('from tests.migrations.helpers import migrate; migrate();')
