@@ -31,6 +31,8 @@ Python versions supported: 2.7, 3.2, 3.3, 3.4, 3.5, 3.6
 
 PyPy versions supported: PyPy 2.6, PyPy3 2.4
 
+If you need support for older versions of Django and Python you can use the latest version in 0.11.x branch.
+
 Via ``py-moneyed``, ``django-money`` gets:
 
 -  Support for proper Money value handling (using the standard Money
