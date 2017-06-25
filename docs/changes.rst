@@ -6,6 +6,9 @@ Changelog
 `Unreleased`_
 -------------
 
+`0.11.4`_ - 2017-06-26
+----------------------
+
 Fixed
 ~~~~~
 - Fixed money parameters processing in update queries. `#309`_ (`Stranger6667`_)
@@ -348,7 +351,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.11.3...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.11.4...HEAD
+.. _0.11.4: https://github.com/django-money/django-money/compare/0.11.3...0.11.4
 .. _0.11.3: https://github.com/django-money/django-money/compare/0.11.2...0.11.3
 .. _0.11.2: https://github.com/django-money/django-money/compare/0.11.1...0.11.2
 .. _0.11.1: https://github.com/django-money/django-money/compare/0.11...0.11.1
