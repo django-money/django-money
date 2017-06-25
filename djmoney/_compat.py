@@ -25,7 +25,7 @@ except NameError:
         # Python 3.4+
         from importlib import reload as reload_module
     except ImportError:
-        # Python 3.2 & 3.3
+        # Python 3.3
         from imp import reload as reload_module
 
 

@@ -2,7 +2,7 @@ language: python
 python:
   - 3.6
 cache: pip
-install: travis_retry pip install "virtualenv<14.0.0" tox codecov
+install: travis_retry pip install tox codecov
 script: tox -e $TOX_ENV
 env:
   - TOX_ENV=docs
@@ -26,7 +26,6 @@ env:
   - TOX_ENV=django18-py35
   - TOX_ENV=django18-py34
   - TOX_ENV=django18-py33
-  - TOX_ENV=django18-py32
   - TOX_ENV=django18-py27
   - TOX_ENV=django18-pypy
 after_success:
