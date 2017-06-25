@@ -6,6 +6,11 @@ Changelog
 `Unreleased`_
 -------------
 
+Removed
+~~~~~~~
+- Dropped support for Python 2.6. (`Stranger6667`_)
+- Dropped support for Django < 1.8. (`Stranger6667`_)
+
 `0.11.4`_ - 2017-06-26
 ----------------------
 

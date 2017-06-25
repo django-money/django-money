@@ -1,11 +1,11 @@
 # coding: utf-8
 from __future__ import unicode_literals
 
+import django.contrib.admin.utils as admin_utils
 from django import VERSION
 
 import pytest
 
-from djmoney._compat import admin_utils
 from moneyed import Money
 
 from .testapp.models import ModelWithVanillaMoneyField
@@ -19,7 +19,7 @@ def get_args(value, field):
     """
     Constructs arguments for `display_for_field`.
     """
-    if VERSION < (1, 9):
+    if VERSION[:2] == (1, 8):
         return value, field
     return value, field, ''
 

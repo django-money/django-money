@@ -11,14 +11,14 @@ from decimal import Decimal
 from django import VERSION
 from django.core.exceptions import ImproperlyConfigured, ValidationError
 from django.db import models
-from django.db.models import F, Q
+from django.db.migrations.writer import MigrationWriter
+from django.db.models import Case, F, Func, Q, Value, When
 from django.utils.six import PY2
 from django.utils.translation import override
 
 import pytest
 
 import moneyed
-from djmoney._compat import Case, Func, Value, When, get_fields
 from djmoney.models.fields import MoneyField, MoneyPatched
 from moneyed import Money
 
@@ -46,10 +46,6 @@ from .testapp.models import (
     ProxyModel,
     SimpleModel,
 )
-
-
-if VERSION >= (1, 7):
-    from django.db.migrations.writer import MigrationWriter
 
 
 pytestmark = pytest.mark.django_db
@@ -180,12 +176,10 @@ class TestVanillaMoneyField:
         assert DateTimeModel.objects.filter(created__date='2016-12-01').count() == 0
         assert DateTimeModel.objects.filter(created__date='2016-12-05').count() == 1
 
-    skip_lookup = pytest.mark.skipif(VERSION < (1, 6), reason='This lookup doesn\'t play well on Django < 1.6')
-
     @pytest.mark.parametrize('lookup, rhs, expected', (
         ('startswith', 2, 1),
-        skip_lookup(('regex', '^[134]', 3)),
-        skip_lookup(('iregex', '^[134]', 3)),
+        ('regex', '^[134]', 3),
+        ('iregex', '^[134]', 3),
         ('istartswith', 2, 1),
         ('contains', 5, 2),
         ('lt', 5, 4),
@@ -317,21 +311,21 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = f_obj
         instance.save()
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
 
     @parametrize_f_objects
     def test_f_update(self, f_obj, expected):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         ModelWithVanillaMoneyField.objects.update(money=f_obj)
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
 
     def test_default_update(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         second_money = Money(100, 'USD')
         ModelWithVanillaMoneyField.objects.update(second_money=second_money)
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.second_money == second_money
 
     @pytest.mark.parametrize(
@@ -378,12 +372,11 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(**create_kwargs)
         assert (instance in ModelWithVanillaMoneyField.objects.filter(**filter_value)) is in_result
 
-    @pytest.mark.skipif(VERSION < (1, 5), reason='Django < 1.5 does not support `update_fields` kwarg')
     def test_update_fields_save(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = F('money') + Money(100, 'USD')
         instance.save(update_fields=['money'])
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == Money(200, 'USD')
 
     INVALID_EXPRESSIONS = [
@@ -393,13 +386,10 @@ class TestFExpressions:
         F('money') % F('money'),
         F('money') + F('integer'),
         F('money') + F('second_money'),
+        F('money') ** F('money'),
+        F('money') ** F('integer'),
+        F('money') ** 2,
     ]
-    if VERSION >= (1, 7):
-        INVALID_EXPRESSIONS.extend([
-            F('money') ** F('money'),
-            F('money') ** F('integer'),
-            F('money') ** 2,
-        ])
 
     @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
     def test_invalid_expressions_access(self, f_obj):
@@ -408,7 +398,6 @@ class TestFExpressions:
             instance.money = f_obj
 
 
-@pytest.mark.skipif(VERSION < (1, 8), reason='Only Django 1.8+ supports query expressions')
 class TestExpressions:
 
     def test_conditional_update(self):
@@ -585,17 +574,12 @@ def test_different_hashes():
     assert hash(money) != hash(money_currency)
 
 
-@pytest.mark.skipif(VERSION < (1, 7), reason='Django < 1.7 handles migrations differently')
 def test_migration_serialization():
-    imports = set(['import djmoney.models.fields'])
     if PY2:
         serialized = 'djmoney.models.fields.MoneyPatched(100, b\'GBP\')'
     else:
         serialized = 'djmoney.models.fields.MoneyPatched(100, \'GBP\')'
-    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (serialized, imports)
-
-
-no_system_checks_framework = pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has system checks framework')
+    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (serialized, {'import djmoney.models.fields'})
 
 
 class TestFieldAttributes:
@@ -610,19 +594,10 @@ class TestFieldAttributes:
 
         return Model
 
-    @pytest.mark.parametrize('field_kwargs, message', (
-        no_system_checks_framework(
-            ({'max_digits': 10}, 'You have to provide a decimal_places attribute to Money fields.')
-        ),
-        no_system_checks_framework(
-            ({'decimal_places': 2}, 'You have to provide a max_digits attribute to Money fields.')
-        ),
-        ({'default': {}}, 'default value must be an instance of Money, is: {}'),
-    ))
-    def test_missing_attributes(self, field_kwargs, message):
+    def test_missing_attributes(self):
         with pytest.raises(ValueError) as exc:
-            self.create_class(**field_kwargs)
-        assert str(exc.value) == message
+            self.create_class(default={})
+        assert str(exc.value) == 'default value must be an instance of Money, is: {}'
 
     def test_default_currency(self):
         klass = self.create_class(default_currency=None, default=Money(10, 'EUR'), max_digits=10, decimal_places=2)
@@ -645,7 +620,7 @@ def test_hash_uniqueness():
     """
     All fields of any model should have unique hash.
     """
-    hashes = [hash(field) for field in get_fields(ModelWithVanillaMoneyField)]
+    hashes = [hash(field) for field in ModelWithVanillaMoneyField._meta.get_fields()]
     assert len(hashes) == len(set(hashes))
 
 
