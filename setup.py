@@ -26,10 +26,10 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-test_requirements = ['pytest>=2.8.0,<3.0.0']
+test_requirements = ['pytest>=3.1.0']
 
 
-if sys.version_info < (3, 3):
+if sys.version_info[0] == 2:
     test_requirements.append('mock')
 
 setup(
