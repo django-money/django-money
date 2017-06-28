@@ -37,6 +37,11 @@ class Money(DefaultMoney):
         other = convert_money(other, self.currency)
         return super(Money, self).__sub__(other)
 
+    def __mul__(self, other):
+        if isinstance(other, F):
+            return other.__rmul__(self)
+        return super(Money, self).__mul__(other)
+
     @property
     def is_localized(self):
         if self.use_l10n is None:

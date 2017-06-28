@@ -24,6 +24,12 @@ def prepare_expression(expr):
     """
     Prepares some complex money expression to be used in query.
     """
-    amount = get_amount(expr.rhs)
-    expr.rhs.value = amount
-    return expr.lhs
+    if isinstance(expr.rhs, F):
+        # Money(...) + F('money')
+        target, return_value = expr.lhs, expr.rhs
+    else:
+        # F('money') + Money(...)
+        target, return_value = expr.rhs, expr.lhs
+    amount = get_amount(target)
+    target.value = amount
+    return return_value
