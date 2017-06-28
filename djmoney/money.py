@@ -42,6 +42,11 @@ class Money(DefaultMoney):
             return other.__rmul__(self)
         return super(Money, self).__mul__(other)
 
+    def __truediv__(self, other):
+        if isinstance(other, F):
+            return other.__rtruediv__(self)
+        return super(Money, self).__truediv__(other)
+
     @property
     def is_localized(self):
         if self.use_l10n is None:
