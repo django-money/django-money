@@ -1,25 +1,22 @@
 # -*- coding: utf-8 -*-
 from textwrap import dedent
 
-from django import VERSION
+from django.db import migrations
 
 import pytest
 
 from djmoney.models.fields import CurrencyField, MoneyField
 
-from .helpers import get_models, get_operations
-
-
-if VERSION >= (1, 7):
-    from django.db import migrations
-else:
-    migrations = None
+from .helpers import get_operations
 
 
 @pytest.mark.usefixtures('coveragerc')
-class BaseMigrationTests:
+class TestMigrationFramework:
     installed_apps = ['djmoney', 'money_app']
-    migration_output = ()
+    migration_output = [
+        '*Applying money_app.0001_test... OK*',
+        '*Applying money_app.0002_test... OK*',
+    ]
 
     @pytest.fixture(autouse=True)
     def setup(self, testdir):
@@ -29,15 +26,15 @@ class BaseMigrationTests:
         self.testdir = testdir
         self.project_root = testdir.mkpydir('money_app')
         testdir.makepyfile(app_settings='''
-        DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',
-                'NAME': ':memory:',
+            DATABASES = {
+                'default': {
+                    'ENGINE': 'django.db.backends.sqlite3',
+                    'NAME': ':memory:',
+                }
             }
-        }
-        INSTALLED_APPS = %s
-        SECRET_KEY = 'foobar'
-        ''' % str(self.installed_apps))
+            INSTALLED_APPS = %s
+            SECRET_KEY = 'foobar'
+            ''' % str(self.installed_apps))
         self.project_root.join('migrations/__init__.py').ensure()
         testdir.syspathinsert()
 
@@ -59,25 +56,24 @@ class BaseMigrationTests:
         else:
             fields_definition = 'pass'
         self.make_models('''
-        from django.db import models
+            from django.db import models
 
-        from djmoney.models.fields import MoneyField
+            from djmoney.models.fields import MoneyField
 
 
-        class Model(models.Model):
-            %s''' % fields_definition)
+            class Model(models.Model):
+                %s''' % fields_definition)
         return self.run('from tests.migrations.helpers import makemigrations; makemigrations();')
 
     def make_default_migration(self):
         return self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
 
     def run(self, content):
-        # To collect coverage data from the call
-        self.testdir.makepyfile(test_migration=content)
-        return self.testdir.runpytest_subprocess(
-            '--ds', 'app_settings', '-s', '--verbose',
-            '--cov-append', '--cov', 'djmoney', '--cov-config', 'coveragerc.ini'
-        )
+        return self.testdir.runpython_c(dedent('''
+        import os
+        os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
+        %s
+        ''' % content))
 
     def migrate(self):
         return self.run('from tests.migrations.helpers import migrate; migrate();')
@@ -88,113 +84,6 @@ class BaseMigrationTests:
         """
         migration = self.migrate()
         migration.stdout.fnmatch_lines(self.migration_output)
-
-
-@pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has migration framework')
-class TestSouth(BaseMigrationTests):
-    """
-    Tests for South-based migrations on Django < 1.7.
-    """
-    installed_apps = BaseMigrationTests.installed_apps + ['south']
-    migration_output = [
-        '* - Migrating forwards to 0002_test.*',
-        '*> money_app:0001_test*',
-        '*> money_app:0002_test*',
-        '*- Loading initial data for money_app.*',
-    ]
-
-    def test_create_initial(self):
-        migration = self.make_default_migration()
-        migration.stderr.fnmatch_lines([
-            '*Added model money_app.Model*',
-            '*Created 0001_test.py*'
-        ])
-
-        models = get_models('0001')
-        assert models['field'] == (
-            'djmoney.models.fields.MoneyField',
-            [],
-            {
-                'max_digits': '10',
-                'decimal_places': '2',
-                'default_currency': "'XYZ'"
-            }
-        )
-        assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
-        migration = self.migrate()
-        migration.stdout.fnmatch_lines([
-            '*Creating table south_migrationhistory*',
-            '* - Migrating forwards to 0001_test.*',
-            '*> money_app:0001_test*',
-        ])
-
-    def test_alter_field(self):
-        self.make_default_migration()
-        migration = self.make_migration(field='MoneyField(max_digits=15, decimal_places=2)')
-        migration.stderr.fnmatch_lines([
-            '*~ Changed field field on money_app.Model*',
-            '*Created 0002_test.py*',
-        ])
-
-        models = get_models('0002')
-        assert models['field'] == (
-            'djmoney.models.fields.MoneyField',
-            [],
-            {'max_digits': '15', 'decimal_places': '2', 'default_currency': "'XYZ'"}
-        )
-        assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
-        self.assert_migrate()
-
-    def test_add_field(self):
-        self.make_default_migration()
-        migration = self.make_migration(
-            field='MoneyField(max_digits=10, decimal_places=2)',
-            value="MoneyField(max_digits=5, decimal_places=2, default_currency='GBP')"
-        )
-        migration.stderr.fnmatch_lines(['*+ Added field value_currency on money_app.Model*'])
-        migration.stderr.fnmatch_lines([
-            '*+ Added field value on money_app.Model*',
-            '*Created 0002_test.py*',
-        ])
-
-        models = get_models('0002')
-        assert models['field'] == (
-            'djmoney.models.fields.MoneyField',
-            [],
-            {'max_digits': '10', 'decimal_places': '2', 'default_currency': "'XYZ'"}
-        )
-        assert models['field_currency'] == ('djmoney.models.fields.CurrencyField', [], {})
-        assert models['value'] == (
-            'djmoney.models.fields.MoneyField',
-            [],
-            {'max_digits': '5', 'decimal_places': '2', 'default_currency': "'GBP'"}
-        )
-        assert models['value_currency'] == ('djmoney.models.fields.CurrencyField', [], {'default': "'GBP'"})
-        self.assert_migrate()
-
-    def test_remove_field(self):
-        self.make_default_migration()
-        migration = self.make_migration()
-        migration.stderr.fnmatch_lines(['*- Deleted field field_currency on money_app.Model*'])
-        migration.stderr.fnmatch_lines([
-            '*- Deleted field field on money_app.Model*',
-            '*Created 0002_test.py*',
-        ])
-
-        models = get_models('0002')
-        assert models == {
-            'Meta': {'object_name': 'Model'},
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
-        }
-        self.assert_migrate()
-
-
-@pytest.mark.skipif(VERSION < (1, 7), reason='Django 1.7+ has migration framework')
-class TestMigrationFramework(BaseMigrationTests):
-    migration_output = [
-        '*Applying money_app.0001_test... OK*',
-        '*Applying money_app.0002_test... OK*',
-    ]
 
     def test_create_initial(self):
         migration = self.make_default_migration()

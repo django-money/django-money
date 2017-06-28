@@ -26,14 +26,11 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-test_requirements = ['pytest>=2.8.0,<3.0.0']
+test_requirements = ['pytest>=3.1.0']
 
 
-if sys.version_info < (3, 3):
+if sys.version_info[0] == 2:
     test_requirements.append('mock')
-if sys.version_info[:2] == (3, 2):
-    test_requirements.append('coverage==3.7.1')
-
 
 setup(
     name='django-money',
@@ -53,7 +50,7 @@ setup(
     ],
     install_requires=[
         'setuptools',
-        'Django>=1.4',
+        'Django>=1.8',
         'py-moneyed>=0.7'
     ],
     platforms=['Any'],
@@ -65,10 +62,8 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',

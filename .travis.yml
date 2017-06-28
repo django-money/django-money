@@ -2,7 +2,7 @@ language: python
 python:
   - 3.6
 cache: pip
-install: travis_retry pip install "virtualenv<14.0.0" tox codecov
+install: travis_retry pip install tox codecov
 script: tox -e $TOX_ENV
 env:
   - TOX_ENV=docs
@@ -19,38 +19,10 @@ env:
   - TOX_ENV=django110-py34
   - TOX_ENV=django110-py27
   - TOX_ENV=django110-pypy
-  - TOX_ENV=django19-py35
-  - TOX_ENV=django19-py34
-  - TOX_ENV=django19-py27
-  - TOX_ENV=django19-pypy
   - TOX_ENV=django18-py35
   - TOX_ENV=django18-py34
   - TOX_ENV=django18-py33
-  - TOX_ENV=django18-py32
   - TOX_ENV=django18-py27
   - TOX_ENV=django18-pypy
-  - TOX_ENV=django17-py34
-  - TOX_ENV=django17-py33
-  - TOX_ENV=django17-py32
-  - TOX_ENV=django17-py27
-  - TOX_ENV=django17-pypy
-  - TOX_ENV=django16-py33
-  - TOX_ENV=django16-py32
-  - TOX_ENV=django16-py27
-  - TOX_ENV=django16-pypy
-  - TOX_ENV=django15-py27
-  - TOX_ENV=django15-py33
-  - TOX_ENV=django15-py32
-  - TOX_ENV=django15-pypy
-  - TOX_ENV=django14-py27
-  - TOX_ENV=django14-pypy
-matrix:
-  include:
-  - python: "2.6"
-    env: TOX_ENV=django16-py26
-  - python: "2.6"
-    env: TOX_ENV=django15-py26
-  - python: "2.6"
-    env: TOX_ENV=django14-py26
 after_success:
   - codecov

@@ -25,11 +25,13 @@ http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 1.10, 1.11
+Django versions supported: 1.8, 1.10, 1.11
 
-Python versions supported: 2.6, 2.7, 3.2, 3.3, 3.4, 3.5, 3.6
+Python versions supported: 2.7, 3.3, 3.4, 3.5, 3.6
 
 PyPy versions supported: PyPy 2.6, PyPy3 2.4
+
+If you need support for older versions of Django and Python you can use the latest version in 0.11.x branch.
 
 Via ``py-moneyed``, ``django-money`` gets:
 
@@ -101,10 +103,6 @@ instead.
         class BankAccount(models.Model):
             balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(MoneyPatched(100, 'GBP'))])
 
-
-If you use South to handle model migration, things will "Just Work" out
-of the box. South is an optional dependency and things will work fine
-without it.
 
 Adding a new Currency
 ---------------------
@@ -258,23 +256,6 @@ Formatting the number with currency:
 
         MoneyPatched object
 
-Admin integration
------------------
-
-For Django **1.7+** integration works automatically if ``djmoney`` is in the ``INSTALLED_APPS``.
-
-For older versions you should use the following code:
-
-.. code:: python
-
-    from djmoney.admin import setup_admin_integration
-    
-    # NOTE. Only for Django < 1.7
-    setup_admin_integration()
-
-
-There is no single opinion about where to place on-start-up code in Django < 1.7, but we'd recommend to place it
-in the top-level `urls.py`.
 
 Testing
 -------
@@ -319,19 +300,8 @@ conversions happening in different directions.
 Usage with Django REST Framework
 --------------------------------
 
-In Django **1.7+**, for MoneyFields to automatically work with Django REST Framework, make sure
-that ``djmoney`` is in the ``INSTALLED_APPS`` of your ``settings.py``.
-
-For older versions you should use the following code:
-
-.. code:: python
-
-    from djmoney.contrib.django_rest_framework import register_money_field
- 
-    # NOTE. Only for Django < 1.7
-    register_money_field()
-
-Just put it in the end of your root ``urls.py`` file.
+Make sure that ``djmoney`` is in the ``INSTALLED_APPS`` of your ``settings.py`` and MoneyFields to automatically
+work with Django REST Framework.
 
 Built-in serializer works in the following way:
 

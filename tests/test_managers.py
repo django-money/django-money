@@ -3,7 +3,6 @@ from django.db.models import F, Q
 
 import pytest
 
-from djmoney._compat import split_expression
 from djmoney.models.managers import _expand_money_args, _expand_money_kwargs
 from djmoney.utils import get_amount
 from moneyed import Money
@@ -164,8 +163,7 @@ class TestKwargsExpand:
         _, kwargs = _expand_money_kwargs(ModelWithNonMoneyField, kwargs=value)
         assert isinstance(kwargs['money_currency'], F)
         assert kwargs['money_currency'].name == 'money_currency'
-        rhs = split_expression(kwargs['money'])[1]
-        assert get_amount(rhs) == expected
+        assert get_amount(kwargs['money'].rhs) == expected
 
     def test_simple_f_query(self):
         _, kwargs = _expand_money_kwargs(ModelWithNonMoneyField, kwargs={'money': F('money')})

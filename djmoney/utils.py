@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.db.models import F
+from django.db.models.expressions import BaseExpression
 
 from moneyed import Money
-
-from ._compat import BaseExpression, set_expression_rhs, split_expression
 
 
 def get_currency_field_name(name):
@@ -25,7 +24,6 @@ def prepare_expression(expr):
     """
     Prepares some complex money expression to be used in query.
     """
-    lhs, rhs = split_expression(expr)
-    amount = get_amount(rhs)
-    set_expression_rhs(expr, amount)
-    return lhs
+    amount = get_amount(expr.rhs)
+    expr.rhs.value = amount
+    return expr.lhs
