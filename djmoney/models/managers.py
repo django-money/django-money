@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.db.models import F, Q
+from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
 from django.db.models.fields import FieldDoesNotExist
@@ -24,7 +24,6 @@ def _get_clean_name(name):
 
 
 def _get_field(model, name):
-
     # Create a fake query object so we can easily work out what field
     # type we are dealing with
     qs = Query(model)
@@ -149,7 +148,7 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
         else:
             field = _get_field(model, name)
             if isinstance(field, MoneyField):
-                if isinstance(value, (BaseExpression, F)):
+                if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):
                     clean_name = _get_clean_name(name)
                     if not isinstance(value, F):
                         value = prepare_expression(value)
@@ -214,7 +213,7 @@ def understands_money(func):
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ('distinct', 'get', 'get_or_create', 'filter', 'exclude')
+RELEVANT_QUERYSET_METHODS = ('distinct', 'get', 'get_or_create', 'filter', 'exclude', 'update')
 EXPAND_EXCLUSIONS = {
     'get_or_create': ('defaults', )
 }

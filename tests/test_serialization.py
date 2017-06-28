@@ -35,7 +35,7 @@ def dumpdata(capsys):
 
 
 def loaddata(fixture_file, ignore_value=False):
-    call_command('loaddata', str(fixture_file), **{'ignorenonexistent': ignore_value})
+    call_command('loaddata', str(fixture_file), ignorenonexistent=ignore_value)
 
 
 def test_dumpdata(capsys, fixture_file):

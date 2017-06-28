@@ -5,8 +5,6 @@ This module contains various helpers for migrations testing.
 import os
 
 from django import VERSION, setup
-from django.core.management import call_command
-from django.core.management.commands.makemigrations import Command
 
 
 setup()
@@ -16,6 +14,9 @@ MIGRATION_NAME = 'test'
 
 
 def makemigrations():
+    from django.core.management import call_command
+    from django.core.management.commands.makemigrations import Command
+
     os.system('find . -name \*.pyc -delete')
     if VERSION >= (1, 10):
         call_command('makemigrations', 'money_app', name=MIGRATION_NAME)
@@ -33,4 +34,6 @@ def get_operations(migration_name):
 
 
 def migrate():
+    from django.core.management import call_command
+
     call_command('migrate', 'money_app')

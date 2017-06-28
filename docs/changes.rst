@@ -8,20 +8,36 @@ Changelog
 
 Changed
 ~~~~~~~
-
 - Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
 
 Deprecated
 ~~~~~~~~~~
-
 - ``djmoney.models.fields.MoneyPatched`` and `moneyed.Money` are deprecated. Use ``djmoney.money.Money`` instead.
+
+Removed
+~~~~~~~
+- Dropped support for Python 2.6 and 3.2. (`Stranger6667`_)
+- Dropped support for Django 1.4, 1.5, 1.6, 1.7 and 1.9. (`Stranger6667`_)
+
+`0.11.4`_ - 2017-06-26
+----------------------
+
+Fixed
+~~~~~
+- Fixed money parameters processing in update queries. `#309`_ (`Stranger6667`_)
+
+`0.11.3`_ - 2017-06-19
+----------------------
+
+Fixed
+~~~~~
+- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6 `#304`_ (`Stranger6667`_)
 
 `0.11.2`_ - 2017-05-31
 ----------------------
 
 Fixed
 ~~~~~
-
 - Fixed field lookup regression. `#300`_ (`lmdsp`_, `Stranger6667`_)
 
 `0.11.1`_ - 2017-05-26
@@ -348,7 +364,9 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.11.2...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.11.4...HEAD
+.. _0.11.4: https://github.com/django-money/django-money/compare/0.11.3...0.11.4
+.. _0.11.3: https://github.com/django-money/django-money/compare/0.11.2...0.11.3
 .. _0.11.2: https://github.com/django-money/django-money/compare/0.11.1...0.11.2
 .. _0.11.1: https://github.com/django-money/django-money/compare/0.11...0.11.1
 .. _0.11: https://github.com/django-money/django-money/compare/0.10.2...0.11
@@ -378,6 +396,8 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#309: https://github.com/django-money/django-money/issues/309
+.. _#304: https://github.com/django-money/django-money/issues/304
 .. _#300: https://github.com/django-money/django-money/issues/300
 .. _#297: https://github.com/django-money/django-money/issues/297
 .. _#292: https://github.com/django-money/django-money/issues/292

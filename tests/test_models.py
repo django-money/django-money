@@ -311,15 +311,22 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = f_obj
         instance.save()
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
 
     @parametrize_f_objects
     def test_f_update(self, f_obj, expected):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         ModelWithVanillaMoneyField.objects.update(money=f_obj)
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
+
+    def test_default_update(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        second_money = Money(100, 'USD')
+        ModelWithVanillaMoneyField.objects.update(second_money=second_money)
+        instance.refresh_from_db()
+        assert instance.second_money == second_money
 
     @pytest.mark.parametrize(
         'create_kwargs, filter_value, in_result',
@@ -369,7 +376,7 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = F('money') + Money(100, 'USD')
         instance.save(update_fields=['money'])
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == Money(200, 'USD')
 
     INVALID_EXPRESSIONS = [
