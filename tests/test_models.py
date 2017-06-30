@@ -518,14 +518,14 @@ class TestDifferentCurrencies:
         settings.AUTO_CONVERT_MONEY = True
         result = Money(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
-        assert result.currency == 'EUR'
+        assert str(result.currency) == 'EUR'
 
     @pytest.mark.usefixtures('patched_convert_money')
     def test_sub_with_auto_convert(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         result = Money(10, 'EUR') - Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
-        assert result.currency == 'EUR'
+        assert str(result.currency) == 'EUR'
 
     def test_eq(self):
         assert Money(1, 'EUR') == Money(1, 'EUR')
