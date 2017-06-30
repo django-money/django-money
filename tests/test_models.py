@@ -18,7 +18,6 @@ from django.utils.translation import override
 
 import pytest
 
-import moneyed
 from djmoney.models.fields import MoneyField, MoneyPatched
 from djmoney.money import Money
 
@@ -124,11 +123,11 @@ class TestVanillaMoneyField:
 
         # Try setting the value directly
         retrieved = ModelWithVanillaMoneyField.objects.get()
-        setattr(retrieved, field_name, Money(1, moneyed.DKK))
+        setattr(retrieved, field_name, Money(1, 'DKK'))
         retrieved.save()
         retrieved = ModelWithVanillaMoneyField.objects.get()
 
-        assert getattr(retrieved, field_name) == Money(1, moneyed.DKK)
+        assert getattr(retrieved, field_name) == Money(1, 'DKK')
 
     def test_rounding(self):
         money = Money('100.0623456781123219')
@@ -225,10 +224,10 @@ class TestVanillaMoneyField:
 
     @pytest.mark.parametrize('model_class', (ModelWithVanillaMoneyField, ModelWithChoicesMoneyField))
     def test_currency_querying(self, model_class):
-        model_class.objects.create(money=Money('100.0', moneyed.ZWN))
+        model_class.objects.create(money=Money('100.0', 'ZWN'))
 
-        assert model_class.objects.filter(money__lt=Money('1000', moneyed.USD)).count() == 0
-        assert model_class.objects.filter(money__lt=Money('1000', moneyed.ZWN)).count() == 1
+        assert model_class.objects.filter(money__lt=Money('1000', 'USD')).count() == 0
+        assert model_class.objects.filter(money__lt=Money('1000', 'ZWN')).count() == 1
 
     @pytest.mark.usefixtures('objects_setup')
     def test_in_lookup(self):
@@ -447,11 +446,11 @@ class TestExpressions:
 
 
 def test_find_models_related_to_money_models():
-    moneyModel = ModelWithVanillaMoneyField.objects.create(money=Money('100.0', moneyed.ZWN))
+    moneyModel = ModelWithVanillaMoneyField.objects.create(money=Money('100.0', 'ZWN'))
     ModelRelatedToModelWithMoney.objects.create(moneyModel=moneyModel)
 
-    ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money('100.0', moneyed.ZWN))
-    ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money('1000.0', moneyed.ZWN))
+    ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money('100.0', 'ZWN'))
+    ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money('1000.0', 'ZWN'))
 
 
 def test_allow_expression_nodes_without_money():
@@ -474,8 +473,8 @@ class TestInheritance:
         assert model_class.objects.model == model_class
 
     def test_fields(self, model_class):
-        first_value = Money('100.0', moneyed.ZWN)
-        second_value = Money('200.0', moneyed.USD)
+        first_value = Money('100.0', 'ZWN')
+        second_value = Money('200.0', 'USD')
         instance = model_class.objects.create(money=first_value, second_field=second_value)
         assert instance.money == first_value
         assert instance.second_field == second_value
@@ -519,14 +518,14 @@ class TestDifferentCurrencies:
         settings.AUTO_CONVERT_MONEY = True
         result = Money(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
-        assert result.currency == moneyed.EUR
+        assert result.currency == 'EUR'
 
     @pytest.mark.usefixtures('patched_convert_money')
     def test_sub_with_auto_convert(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         result = Money(10, 'EUR') - Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
-        assert result.currency == moneyed.EUR
+        assert result.currency == 'EUR'
 
     def test_eq(self):
         assert Money(1, 'EUR') == Money(1, 'EUR')

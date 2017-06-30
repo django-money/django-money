@@ -68,7 +68,6 @@ Use as normal model fields
 
 .. code:: python
 
-        import moneyed
         from djmoney.models.fields import MoneyField
         from django.db import models
 
