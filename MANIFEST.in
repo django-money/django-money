@@ -1,5 +1,4 @@
 include setup.py
-include CHANGES.rst
 include LICENSE.txt
 include README.rst
 recursive-include djmoney *.py
