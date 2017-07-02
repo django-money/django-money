@@ -92,7 +92,7 @@ class MoneyFieldProxy(object):
 
     def __init__(self, field):
         self.field = field
-        self.currency_field_name = self.field.currency_field_name or get_currency_field_name(self.field.name)
+        self.currency_field_name = get_currency_field_name(self.field.name, self.field)
 
     def _money_from_obj(self, obj):
         amount = obj.__dict__[self.field.name]
@@ -241,10 +241,7 @@ class MoneyField(models.DecimalField):
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True
 
-        currency_field_name = self.currency_field_name or get_currency_field_name(name)
-
-        # if not hasattr(cls, currency_field_name):
-        self.add_currency_field(cls, currency_field_name)
+        self.add_currency_field(cls, name)
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
@@ -260,7 +257,8 @@ class MoneyField(models.DecimalField):
             choices=self.currency_choices
         )
         currency_field.creation_counter = self.creation_counter - 1
-        cls.add_to_class(name, currency_field)
+        currency_field_name = get_currency_field_name(name, self)
+        cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, MONEY_CLASSES):

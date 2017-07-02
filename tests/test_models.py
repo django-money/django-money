@@ -40,13 +40,13 @@ from .testapp.models import (
     ModelWithDefaultAsString,
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
+    ModelWithSharedCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
     ProxyModel,
     SimpleModel,
-    ModelWithSharedCurrency,
 )
 
 
