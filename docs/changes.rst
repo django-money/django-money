@@ -19,7 +19,7 @@ Fixed
 
 - Fixed model field validation. `#308`_ (`Stranger6667`_).
 - Fixed managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
-- Fixed ``F`` expressions support in ``in`` lookups. `#321`_ (`Stranger6667`_).
+- Fixed ``F`` expressions support for ``in`` lookups. `#321`_ (`Stranger6667`_).
 
 Removed
 ~~~~~~~
