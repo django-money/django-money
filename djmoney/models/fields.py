@@ -6,10 +6,12 @@ from warnings import warn
 
 from django import VERSION
 from django.core.exceptions import ValidationError
+from django.core.validators import DecimalValidator
 from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
+from django.utils.functional import cached_property
 
 from djmoney import forms
 from djmoney.money import Currency, Money
@@ -157,6 +159,12 @@ class CurrencyField(models.CharField):
             super(CurrencyField, self).contribute_to_class(cls, name)
 
 
+class MoneyValidator(DecimalValidator):
+
+    def __call__(self, value):
+        return super(MoneyValidator, self).__call__(value.amount)
+
+
 class MoneyField(models.DecimalField):
     description = 'A field which stores both the currency and amount of money.'
 
@@ -209,6 +217,24 @@ class MoneyField(models.DecimalField):
         if isinstance(value, float):
             value = str(value)
         return super(MoneyField, self).to_python(value)
+
+    def clean(self, value, model_instance):
+        """
+        We need to run validation against ``Money`` instance.
+        """
+        output = self.to_python(value)
+        self.validate(value, model_instance)
+        self.run_validators(value)
+        return output
+
+    @cached_property
+    def validators(self):
+        """
+        Default ``DecimalValidator`` doesn't work with ``Money`` instances.
+        """
+        return super(models.DecimalField, self).validators + [
+            MoneyValidator(self.max_digits, self.decimal_places)
+        ]
 
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True

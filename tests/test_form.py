@@ -18,6 +18,7 @@ from .testapp.forms import (
     MoneyForm,
     MoneyFormMultipleCurrencies,
     MoneyModelForm,
+    MoneyModelFormWithValidation,
     NullableModelForm,
     OptionalMoneyForm,
 )
@@ -129,3 +130,9 @@ def test_no_deprecation_warning():
     with pytest.warns(None) as warning:
         MoneyField(max_digits=10, decimal_places=2, currency_choices=(('USD', 'USD'),)).formfield()
     assert not warning
+
+
+def test_validation():
+    form = MoneyModelFormWithValidation(data={'balance_0': 0, 'balance_1': 'GBP'})
+    assert not form.is_valid()
+    assert form.errors == {'balance': ['Ensure this value is greater than or equal to 100.00 GBP.']}

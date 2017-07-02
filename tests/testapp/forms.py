@@ -12,6 +12,7 @@ from djmoney.forms import MoneyField
 
 from .models import (
     ModelWithDefaultAsString,
+    ModelWithValidation,
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
 )
@@ -48,3 +49,10 @@ class DefaultMoneyModelForm(forms.ModelForm):
     class Meta:
         model = ModelWithDefaultAsString
         fields = ('money', )
+
+
+class MoneyModelFormWithValidation(forms.ModelForm):
+
+    class Meta:
+        model = ModelWithValidation
+        fields = ('balance', )

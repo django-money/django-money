@@ -14,6 +14,11 @@ Deprecated
 ~~~~~~~~~~
 - ``djmoney.models.fields.MoneyPatched`` and ``moneyed.Money`` are deprecated. Use ``djmoney.money.Money`` instead.
 
+Fixed
+~~~~~
+
+- Fix model field validation. `#308`_ (`Stranger6667`_).
+
 Removed
 ~~~~~~~
 - Dropped support for Python 2.6 and 3.2. (`Stranger6667`_)
@@ -397,6 +402,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
 .. _#309: https://github.com/django-money/django-money/issues/309
+.. _#308: https://github.com/django-money/django-money/issues/308
 .. _#304: https://github.com/django-money/django-money/issues/304
 .. _#300: https://github.com/django-money/django-money/issues/300
 .. _#297: https://github.com/django-money/django-money/issues/297
