@@ -101,6 +101,7 @@ Removed
 ~~~~~~~
 - Dropped support for Python 2.6 and 3.2. (`Stranger6667`_)
 - Dropped support for Django 1.4, 1.5, 1.6, 1.7 and 1.9. (`Stranger6667`_)
+- Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (`Stranger6667`_)
 
 `0.11.4`_ - 2017-06-26
 ----------------------
