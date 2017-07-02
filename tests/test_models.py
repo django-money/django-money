@@ -708,3 +708,9 @@ class TestSharedCurrency:
     @parametrize_with_q(first__in=[Money(10, 'USD'), Money(100, 'USD')])
     def test_in_lookup(self, instance, args, kwargs):
         assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    def test_create_with_money(self):
+        value = Money(10, 'USD')
+        instance = ModelWithSharedCurrency.objects.create(first=value, second=value)
+        assert instance.first == value
+        assert instance.second == value
