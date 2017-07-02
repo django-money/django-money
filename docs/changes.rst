@@ -18,7 +18,7 @@ Fixed
 ~~~~~
 
 - Fix model field validation. `#308`_ (`Stranger6667`_).
-- Fix managers caching. `#318`_ (`Stranger6667`_).
+- Fix managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
 
 Removed
 ~~~~~~~
