@@ -139,12 +139,16 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     for name, value in list(kwargs.items()):
         if name in exclusions:
             continue
+        field = _get_field(model, name)
         if isinstance(value, MONEY_CLASSES):
             clean_name = _get_clean_name(name)
             kwargs[name] = value.amount
-            kwargs[get_currency_field_name(clean_name)] = smart_unicode(value.currency)
+            if isinstance(field, MoneyField) and field.currency_field_name:
+                currency_field_name = field.currency_field_name
+            else:
+                currency_field_name = get_currency_field_name(clean_name)
+            kwargs[currency_field_name] = smart_unicode(value.currency)
         else:
-            field = _get_field(model, name)
             if isinstance(field, MoneyField):
                 if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):
                     clean_name = _get_clean_name(name)
@@ -152,7 +156,11 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                         value = prepare_expression(value)
                     if not _is_money_field(model, value, name):
                         continue
-                    kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
+                    if field.currency_field_name:
+                        currency_field_name = field.currency_field_name
+                    else:
+                        currency_field_name = get_currency_field_name(clean_name)
+                    kwargs[currency_field_name] = F(get_currency_field_name(value.name))
                 if is_in_lookup(name, value):
                     args += (_convert_in_lookup(model, name, value), )
                     del kwargs[name]

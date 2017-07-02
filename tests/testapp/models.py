@@ -152,3 +152,8 @@ class ModelIssue300(models.Model):
 
 class ModelWithValidation(models.Model):
     balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Money(100, 'GBP'))])
+
+
+class ModelWithSharedCurrency(models.Model):
+    first = MoneyField(max_digits=10, decimal_places=2, currency_field_name='currency')
+    second = MoneyField(max_digits=10, decimal_places=2, currency_field_name='currency')

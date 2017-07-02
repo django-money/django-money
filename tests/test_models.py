@@ -46,6 +46,7 @@ from .testapp.models import (
     NullMoneyFieldModel,
     ProxyModel,
     SimpleModel,
+    ModelWithSharedCurrency,
 )
 
 
@@ -671,3 +672,12 @@ def test_properties_access():
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, 'USD'), bla=1)
     assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+
+
+def test_shared():
+    instance = ModelWithSharedCurrency.objects.create(first=10, second=15, currency='USD')
+    assert instance.first == Money(10, 'USD')
+    assert instance.second == Money(15, 'USD')
+    assert instance.currency == 'USD'
+    assert instance in ModelWithSharedCurrency.objects.filter(first=Money(10, 'USD'))
+    assert instance not in ModelWithSharedCurrency.objects.filter(first=Money(10, 'EUR'))
