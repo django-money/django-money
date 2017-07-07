@@ -528,8 +528,7 @@ class TestDifferentCurrencies:
             Money(10, 'EUR') - Money(1, 'USD')
 
     @pytest.mark.usefixtures('patched_convert_money')
-    @pytest.mark.parametrize('Money', (Money, OldMoney))
-    def test_add_with_auto_convert(self, settings, Money):
+    def test_add_with_auto_convert(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         result = Money(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
