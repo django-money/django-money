@@ -206,7 +206,7 @@ class MoneyField(models.DecimalField):
             value = value.amount
         elif isinstance(value, tuple):
             value = value[0]
-        elif isinstance(value, float):
+        if isinstance(value, float):
             value = str(value)
         return super(MoneyField, self).to_python(value)
 
