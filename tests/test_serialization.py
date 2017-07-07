@@ -6,8 +6,8 @@ from django.core.serializers.base import DeserializationError
 
 import pytest
 
+from djmoney.money import Money
 from djmoney.serializers import Deserializer, Serializer
-from moneyed import Money
 
 from .testapp.models import ModelWithDefaultAsInt
 

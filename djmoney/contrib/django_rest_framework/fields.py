@@ -2,8 +2,8 @@
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
-from djmoney.utils import get_currency_field_name
-from moneyed import Money
+from djmoney.money import Money
+from djmoney.utils import MONEY_CLASSES, get_currency_field_name
 
 
 class MoneyField(DecimalField):
@@ -16,7 +16,7 @@ class MoneyField(DecimalField):
         return super(MoneyField, self).to_representation(obj.amount)
 
     def to_internal_value(self, data):
-        if isinstance(data, Money):
+        if isinstance(data, MONEY_CLASSES):
             amount = super(MoneyField, self).to_internal_value(data.amount)
             return Money(amount, data.currency)
         return super(MoneyField, self).to_internal_value(data)

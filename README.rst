@@ -68,7 +68,6 @@ Use as normal model fields
 
 .. code:: python
 
-        import moneyed
         from djmoney.models.fields import MoneyField
         from django.db import models
 
@@ -80,28 +79,25 @@ Searching for models with money fields:
 
 .. code:: python
 
-        from moneyed import Money, USD, CHF
+        from djmoney.money import Money
 
 
-        account = BankAccount.objects.create(balance=Money(10, USD))
-        swissAccount = BankAccount.objects.create(balance=Money(10, CHF))
+        account = BankAccount.objects.create(balance=Money(10, 'USD'))
+        swissAccount = BankAccount.objects.create(balance=Money(10, 'CHF'))
 
-        BankAccount.objects.filter(balance__gt=Money(1, USD))
+        BankAccount.objects.filter(balance__gt=Money(1, 'USD'))
         # Returns the "account" object
-
-Special note on serialized arguments: if your model definition
-requires serializing an instance of ``Money``, you can use ``MoneyPatched``
-instead.
 
 .. code:: python
 
         from django.core.validators import MinValueValidator
         from django.db import models
-        from djmoney.models.fields import MoneyField, MoneyPatched
+        from djmoney.models.fields import MoneyField
+        from djmoney.money import Money
 
 
         class BankAccount(models.Model):
-            balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(MoneyPatched(100, 'GBP'))])
+            balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Money(100, 'GBP'))])
 
 
 Adding a new Currency
@@ -254,7 +250,7 @@ Formatting the number with currency:
 
     Return::
 
-        MoneyPatched object
+        Money object
 
 
 Testing

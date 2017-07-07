@@ -6,9 +6,8 @@ from django.utils.translation import override
 
 import pytest
 
-from djmoney.models.fields import MoneyPatched
+from djmoney.money import Money
 from djmoney.templatetags.djmoney import MoneyLocalizeNode
-from moneyed import Money
 
 
 def render(template, context):
@@ -98,7 +97,7 @@ def assert_template(string, result, context=None):
             # without a tag template "money_localize"
             '{{ money }}',
             '2,30 zł',
-            {'money': MoneyPatched(2.3, 'PLN')}
+            {'money': Money(2.3, 'PLN')}
         ),
         (
             '{% load djmoney %}{% money_localize money off %}',
@@ -144,6 +143,6 @@ def test_l10n_off(settings, string, result, context):
 
 
 def test_forced_l10n():
-    mp = MoneyPatched(2.3, 'PLN')
+    mp = Money(2.3, 'PLN')
     mp.use_l10n = True
     assert_template('{{ money }}', '2,30 zł', {'money': mp})

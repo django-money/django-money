@@ -8,9 +8,10 @@ from decimal import Decimal
 
 from django.db import models
 
-import moneyed
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
+from djmoney.money import Money
+from moneyed import Money as OldMoney
 
 from .._compat import register
 
@@ -52,7 +53,11 @@ class ModelWithDefaultAsDecimal(models.Model):
 
 
 class ModelWithDefaultAsMoney(models.Model):
-    money = MoneyField(default=moneyed.Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
+    money = MoneyField(default=Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
+
+
+class ModelWithDefaultAsOldMoney(models.Model):
+    money = MoneyField(default=OldMoney('0.01', 'RUB'), max_digits=10, decimal_places=2)
 
 
 class ModelWithTwoMoneyFields(models.Model):
@@ -69,8 +74,8 @@ class ModelWithChoicesMoneyField(models.Model):
         max_digits=10,
         decimal_places=2,
         currency_choices=[
-            (moneyed.USD, 'US Dollars'),
-            (moneyed.ZWN, 'Zimbabwian')
+            ('USD', 'US Dollars'),
+            ('ZWN', 'Zimbabwian')
         ],
     )
 

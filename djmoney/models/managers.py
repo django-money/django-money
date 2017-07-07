@@ -7,10 +7,8 @@ from django.db.models.sql.constants import QUERY_TERMS
 from django.db.models.sql.query import Query
 from django.utils.six import wraps
 
-from moneyed import Money
-
 from .._compat import smart_unicode
-from ..utils import get_currency_field_name, prepare_expression
+from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 from .fields import CurrencyField, MoneyField
 
 
@@ -74,7 +72,7 @@ def _convert_in_lookup(model, field_name, options):
     field = _get_field(model, field_name)
     new_query = Q()
     for value in options:
-        if isinstance(value, Money):
+        if isinstance(value, MONEY_CLASSES):
             option = Q(**{
                 field.name: value.amount,
                 get_currency_field_name(field.name): value.currency
@@ -101,7 +99,7 @@ def _expand_arg(model, arg):
             _expand_arg(model, child)
         elif isinstance(child, (list, tuple)):
             name, value = child
-            if isinstance(value, Money):
+            if isinstance(value, MONEY_CLASSES):
                 clean_name = _get_clean_name(name)
                 arg.children[i] = Q(*[
                     child,
@@ -141,7 +139,7 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     for name, value in list(kwargs.items()):
         if name in exclusions:
             continue
-        if isinstance(value, Money):
+        if isinstance(value, MONEY_CLASSES):
             clean_name = _get_clean_name(name)
             kwargs[name] = value.amount
             kwargs[get_currency_field_name(clean_name)] = smart_unicode(value.currency)

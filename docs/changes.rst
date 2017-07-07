@@ -6,6 +6,14 @@ Changelog
 `Unreleased`_
 -------------
 
+Changed
+~~~~~~~
+- Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
+
+Deprecated
+~~~~~~~~~~
+- ``djmoney.models.fields.MoneyPatched`` and ``moneyed.Money`` are deprecated. Use ``djmoney.money.Money`` instead.
+
 Removed
 ~~~~~~~
 - Dropped support for Python 2.6 and 3.2. (`Stranger6667`_)
@@ -395,6 +403,7 @@ Added
 .. _#292: https://github.com/django-money/django-money/issues/292
 .. _#278: https://github.com/django-money/django-money/issues/278
 .. _#277: https://github.com/django-money/django-money/issues/277
+.. _#276: https://github.com/django-money/django-money/issues/276
 .. _#272: https://github.com/django-money/django-money/issues/272
 .. _#268: https://github.com/django-money/django-money/issues/268
 .. _#265: https://github.com/django-money/django-money/issues/265

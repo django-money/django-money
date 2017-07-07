@@ -1,141 +1,26 @@
 # -*- coding: utf-8 -*-
 from __future__ import division
 
-from decimal import ROUND_DOWN, Decimal
+from decimal import Decimal
+from warnings import warn
 
 from django import VERSION
-from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
-from django.utils import translation
-from django.utils.deconstruct import deconstructible
 
 from djmoney import forms
-from moneyed import Currency, Money
-from moneyed.localization import _FORMATTER, format_money
+from djmoney.money import Currency, Money
+from moneyed import Money as OldMoney
 
 from .._compat import setup_managers, smart_unicode, string_types
-from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
-from ..utils import get_currency_field_name, prepare_expression
+from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
 __all__ = ('MoneyField', )
-
-
-@deconstructible
-class MoneyPatched(Money):
-
-    # Set to True or False has a higher priority
-    # than USE_L10N == True in the django settings file.
-    # The variable "self.use_l10n" has three states:
-    use_l10n = None
-
-    def __float__(self):
-        return float(self.amount)
-
-    def _convert_to_local_currency(self, other):
-        """
-        Converts other Money instances to the local currency.
-        If django-money-rates is installed we can automatically perform operations with different currencies
-        """
-        if getattr(settings, 'AUTO_CONVERT_MONEY', False):
-            if 'djmoney_rates' in settings.INSTALLED_APPS:
-                try:
-                    from djmoney_rates.utils import convert_money
-
-                    return convert_money(other.amount, other.currency, self.currency)
-                except ImportError:
-                    raise ImproperlyConfigured('djmoney_rates doesn\'t support Django 1.9+')
-            raise ImproperlyConfigured('You must install djmoney-rates to use AUTO_CONVERT_MONEY = True')
-        return other
-
-    @classmethod
-    def _patch_to_current_class(cls, money):
-        """
-        Converts object of type MoneyPatched on the object of type Money.
-        """
-        return cls(money.amount, money.currency)
-
-    def __pos__(self):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__pos__())
-
-    def __neg__(self):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__neg__())
-
-    def __add__(self, other):
-        other = self._convert_to_local_currency(other)
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__add__(other))
-
-    def __sub__(self, other):
-        other = self._convert_to_local_currency(other)
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__sub__(other))
-
-    def __mul__(self, other):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__mul__(other))
-
-    def __eq__(self, other):
-        if hasattr(other, 'currency'):
-            if self.currency == other.currency:
-                return self.amount == other.amount
-        return False
-
-    def __truediv__(self, other):
-        result = super(MoneyPatched, self).__truediv__(other)
-        if isinstance(other, Money):
-            return result
-        return self._patch_to_current_class(result)
-
-    def __rmod__(self, other):
-        return MoneyPatched._patch_to_current_class(
-            super(MoneyPatched, self).__rmod__(other))
-
-    def __get_current_locale(self):
-        # get_language can return None starting on django 1.8
-        language = translation.get_language() or settings.LANGUAGE_CODE
-        locale = translation.to_locale(language)
-
-        if locale.upper() in _FORMATTER.formatting_definitions:
-            return locale
-
-        locale = ('%s_%s' % (locale, locale)).upper()
-        if locale in _FORMATTER.formatting_definitions:
-            return locale
-
-        return ''
-
-    def __use_l10n(self):
-        """
-        Return boolean.
-        """
-        if self.use_l10n is None:
-            return settings.USE_L10N
-        return self.use_l10n
-
-    def __unicode__(self):
-        kwargs = {'money': self, 'decimal_places': DECIMAL_PLACES}
-        if self.__use_l10n():
-            locale = self.__get_current_locale()
-            if locale:
-                kwargs['locale'] = locale
-
-        return format_money(**kwargs)
-
-    def __str__(self):
-        value = self.__unicode__()
-        if not isinstance(value, str):
-            value = value.encode('utf8')
-        return value
-
-    def __repr__(self):
-        return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
 
 
 def get_value(obj, expr):
@@ -146,6 +31,8 @@ def get_value(obj, expr):
         expr = getattr(obj, expr.name)
     else:
         expr = expr.value
+    if isinstance(expr, OldMoney):
+        expr.__class__ = Money
     return expr
 
 
@@ -189,7 +76,7 @@ def get_currency(value):
     """
     Extracts currency from value.
     """
-    if isinstance(value, Money):
+    if isinstance(value, MONEY_CLASSES):
         return smart_unicode(value.currency)
     elif isinstance(value, (list, tuple)):
         return value[1]
@@ -206,7 +93,7 @@ class MoneyFieldProxy(object):
         currency = obj.__dict__[self.currency_field_name]
         if amount is None:
             return None
-        return MoneyPatched(amount=amount, currency=currency)
+        return Money(amount=amount, currency=currency)
 
     def __get__(self, obj, type=None):
         if obj is None:
@@ -308,14 +195,16 @@ class MoneyField(models.DecimalField):
             default = Money(Decimal(amount), Currency(code=currency))
         elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
+        elif isinstance(default, OldMoney):
+            default.__class__ = Money
         if not (nullable and default is None) and not isinstance(default, Money):
             raise ValueError('default value must be an instance of Money, is: %s' % default)
         return default
 
     def to_python(self, value):
-        if isinstance(value, Money):
+        if isinstance(value, MONEY_CLASSES):
             value = value.amount
-        if isinstance(value, tuple):
+        elif isinstance(value, tuple):
             value = value[0]
         if isinstance(value, float):
             value = str(value)
@@ -344,7 +233,7 @@ class MoneyField(models.DecimalField):
         cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
-        if isinstance(value, Money):
+        if isinstance(value, MONEY_CLASSES):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
 
@@ -396,3 +285,13 @@ def patch_managers(sender, **kwargs):
 
 
 class_prepared.connect(patch_managers)
+
+
+class MoneyPatched(Money):
+
+    def __init__(self, *args, **kwargs):
+        warn(
+            "'djmoney.models.fields.MoneyPatched' is deprecated. Use 'djmoney.money.Money' instead",
+            PendingDeprecationWarning
+        )
+        super(MoneyPatched, self).__init__(*args, **kwargs)

@@ -10,9 +10,8 @@ from django import VERSION
 
 import pytest
 
-import moneyed
 from djmoney.models.fields import MoneyField
-from moneyed import Money
+from djmoney.money import Money
 
 from .testapp.forms import (
     DefaultMoneyModelForm,
@@ -29,7 +28,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_save():
-    money = Money(Decimal('10'), moneyed.SEK)
+    money = Money(Decimal('10'), 'SEK')
     form = MoneyModelForm({'money_0': money.amount, 'money_1': money.currency})
 
     assert form.is_valid()
@@ -40,7 +39,7 @@ def test_save():
 
 
 def test_validate():
-    money = Money(Decimal('10'), moneyed.SEK)
+    money = Money(Decimal('10'), 'SEK')
     form = MoneyForm({'money_0': money.amount, 'money_1': money.currency})
 
     assert form.is_valid()
@@ -52,10 +51,10 @@ def test_validate():
 @pytest.mark.parametrize(
     'data',
     (
-        {'money_0': 'xyz*|\\', 'money_1': moneyed.SEK},
-        {'money_0': 10000, 'money_1': moneyed.SEK},
-        {'money_0': 1, 'money_1': moneyed.SEK},
-        {'money_0': 10, 'money_1': moneyed.EUR}
+        {'money_0': 'xyz*|\\', 'money_1': 'SEK'},
+        {'money_0': 10000, 'money_1': 'SEK'},
+        {'money_0': 1, 'money_1': 'SEK'},
+        {'money_0': 10, 'money_1': 'EUR'}
     )
 )
 def test_form_is_invalid(data):
@@ -65,8 +64,8 @@ def test_form_is_invalid(data):
 @pytest.mark.parametrize(
     'data, result',
     (
-        ({'money_0': '', 'money_1': moneyed.SEK}, []),
-        ({'money_0': '1.23', 'money_1': moneyed.SEK}, ['money']),
+        ({'money_0': '', 'money_1': 'SEK'}, []),
+        ({'money_0': '1.23', 'money_1': 'SEK'}, ['money']),
     )
 )
 def test_changed_data(data, result):
@@ -79,8 +78,8 @@ def test_change_currency_not_amount():
     should consider this to be a change.
     """
     form = MoneyFormMultipleCurrencies(
-        {'money_0': Decimal(10), 'money_1': moneyed.EUR},
-        initial={'money': Money(Decimal(10), moneyed.SEK)}
+        {'money_0': Decimal(10), 'money_1': 'EUR'},
+        initial={'money': Money(Decimal(10), 'SEK')}
     )
     assert form.changed_data == ['money']
 
@@ -88,9 +87,9 @@ def test_change_currency_not_amount():
 @pytest.mark.parametrize(
     'data, result',
     (
-        ({'money_1': moneyed.SEK}, True),
-        ({'money_0': '', 'money_1': moneyed.SEK}, True),
-        ({'money_0': 'xyz*|\\', 'money_1': moneyed.SEK}, False),
+        ({'money_1': 'SEK'}, True),
+        ({'money_0': '', 'money_1': 'SEK'}, True),
+        ({'money_0': 'xyz*|\\', 'money_1': 'SEK'}, False),
     )
 )
 def test_optional_money_form(data, result):

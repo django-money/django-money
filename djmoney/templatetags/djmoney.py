@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 from decimal import Decimal
 
 from django import template
 from django.template import TemplateSyntaxError
 
-from moneyed import Money
-
-from ..models.fields import MoneyPatched
+from ..money import Money
+from ..utils import MONEY_CLASSES
 
 
 register = template.Library()
@@ -69,13 +70,11 @@ class MoneyLocalizeNode(template.Node):
         currency = self.currency.resolve(context) if self.currency else None
 
         if money is not None:
-            if isinstance(money, Money):
-                money = MoneyPatched._patch_to_current_class(money)
-            else:
+            if not isinstance(money, MONEY_CLASSES):
                 raise TemplateSyntaxError('The variable "money" must be an instance of Money.')
 
         elif amount is not None and currency is not None:
-            money = MoneyPatched(Decimal(str(amount)), str(currency))
+            money = Money(Decimal(str(amount)), str(currency))
         else:
             raise TemplateSyntaxError('You must define both variables: amount and currency.')
 
@@ -111,7 +110,7 @@ def money_localize(parser, token):
 
     Return::
 
-        MoneyPatched object
+        Money object
 
     """
     return MoneyLocalizeNode.handle_token(parser, token)
