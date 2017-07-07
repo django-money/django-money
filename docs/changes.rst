@@ -12,7 +12,7 @@ Changed
 
 Deprecated
 ~~~~~~~~~~
-- ``djmoney.models.fields.MoneyPatched`` and `moneyed.Money` are deprecated. Use ``djmoney.money.Money`` instead.
+- ``djmoney.models.fields.MoneyPatched`` and ``moneyed.Money`` are deprecated. Use ``djmoney.money.Money`` instead.
 
 Removed
 ~~~~~~~
