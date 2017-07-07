@@ -10,12 +10,18 @@ from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
+from django.utils.functional import cached_property
 
 from djmoney import forms
 from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
-from .._compat import setup_managers, smart_unicode, string_types
+from .._compat import (
+    MoneyValidator,
+    setup_managers,
+    smart_unicode,
+    string_types,
+)
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
@@ -209,6 +215,26 @@ class MoneyField(models.DecimalField):
         if isinstance(value, float):
             value = str(value)
         return super(MoneyField, self).to_python(value)
+
+    def clean(self, value, model_instance):
+        """
+        We need to run validation against ``Money`` instance.
+        """
+        output = self.to_python(value)
+        self.validate(value, model_instance)
+        self.run_validators(value)
+        return output
+
+    if VERSION[:2] > (1, 8):
+
+        @cached_property
+        def validators(self):
+            """
+            Default ``DecimalValidator`` doesn't work with ``Money`` instances.
+            """
+            return super(models.DecimalField, self).validators + [
+                MoneyValidator(self.max_digits, self.decimal_places)
+            ]
 
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True

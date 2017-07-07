@@ -29,6 +29,18 @@ except NameError:
         from imp import reload as reload_module
 
 
+try:
+    from django.core.validators import DecimalValidator
+
+    class MoneyValidator(DecimalValidator):
+
+        def __call__(self, value):
+            return super(MoneyValidator, self).__call__(value.amount)
+
+except ImportError:
+    MoneyValidator = None
+
+
 def setup_managers(sender):
     from .models.managers import money_manager
 
