@@ -13,10 +13,11 @@ from django.db.models.signals import class_prepared
 
 from djmoney import forms
 from djmoney.money import Currency, Money
+from moneyed import Money as OldMoney
 
 from .._compat import setup_managers, smart_unicode, string_types
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
-from ..utils import get_currency_field_name, prepare_expression
+from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
 __all__ = ('MoneyField', )
@@ -30,6 +31,8 @@ def get_value(obj, expr):
         expr = getattr(obj, expr.name)
     else:
         expr = expr.value
+    if isinstance(expr, OldMoney):
+        expr.__class__ = Money
     return expr
 
 
@@ -73,7 +76,7 @@ def get_currency(value):
     """
     Extracts currency from value.
     """
-    if isinstance(value, Money):
+    if isinstance(value, MONEY_CLASSES):
         return smart_unicode(value.currency)
     elif isinstance(value, (list, tuple)):
         return value[1]
@@ -192,16 +195,18 @@ class MoneyField(models.DecimalField):
             default = Money(Decimal(amount), Currency(code=currency))
         elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
+        elif isinstance(default, OldMoney):
+            default.__class__ = Money
         if not (nullable and default is None) and not isinstance(default, Money):
             raise ValueError('default value must be an instance of Money, is: %s' % default)
         return default
 
     def to_python(self, value):
-        if isinstance(value, Money):
+        if isinstance(value, MONEY_CLASSES):
             value = value.amount
-        if isinstance(value, tuple):
+        elif isinstance(value, tuple):
             value = value[0]
-        if isinstance(value, float):
+        elif isinstance(value, float):
             value = str(value)
         return super(MoneyField, self).to_python(value)
 
@@ -228,7 +233,7 @@ class MoneyField(models.DecimalField):
         cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
-        if isinstance(value, Money):
+        if isinstance(value, MONEY_CLASSES):
             value = value.amount
         return super(MoneyField, self).get_db_prep_save(value, connection)
 

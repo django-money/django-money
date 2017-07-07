@@ -6,7 +6,8 @@ from decimal import Decimal
 from django import template
 from django.template import TemplateSyntaxError
 
-from djmoney.money import Money
+from ..money import Money
+from ..utils import MONEY_CLASSES
 
 
 register = template.Library()
@@ -69,7 +70,7 @@ class MoneyLocalizeNode(template.Node):
         currency = self.currency.resolve(context) if self.currency else None
 
         if money is not None:
-            if not isinstance(money, Money):
+            if not isinstance(money, MONEY_CLASSES):
                 raise TemplateSyntaxError('The variable "money" must be an instance of Money.')
 
         elif amount is not None and currency is not None:

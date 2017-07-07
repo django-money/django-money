@@ -6,6 +6,7 @@ import pytest
 from djmoney.models.managers import _expand_money_args, _expand_money_kwargs
 from djmoney.money import Money
 from djmoney.utils import get_amount
+from moneyed import Money as OldMoney
 
 from .testapp.models import ModelWithNonMoneyField
 
@@ -144,6 +145,7 @@ class TestKwargsExpand:
             (
                 ({'money': 100, 'desc': 'test'}, {'money': 100, 'desc': 'test'}),
                 ({'money': Money(100, 'USD')}, {'money': 100, 'money_currency': 'USD'}),
+                ({'money': OldMoney(100, 'USD')}, {'money': 100, 'money_currency': 'USD'}),
                 ({'money': Money(100, 'USD'), 'desc': 'test'}, {'money': 100, 'money_currency': 'USD', 'desc': 'test'}),
             )
         )

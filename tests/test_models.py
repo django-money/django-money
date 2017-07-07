@@ -20,6 +20,7 @@ import pytest
 
 from djmoney.models.fields import MoneyField, MoneyPatched
 from djmoney.money import Money
+from moneyed import Money as OldMoney
 
 from .testapp.models import (
     AbstractModel,
@@ -35,6 +36,7 @@ from .testapp.models import (
     ModelWithDefaultAsFloat,
     ModelWithDefaultAsInt,
     ModelWithDefaultAsMoney,
+    ModelWithDefaultAsOldMoney,
     ModelWithDefaultAsString,
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
@@ -56,9 +58,11 @@ class TestVanillaMoneyField:
         'model_class, kwargs, expected',
         (
             (ModelWithVanillaMoneyField, {'money': Money('100.0')}, Money('100.0')),
+            (ModelWithVanillaMoneyField, {'money': OldMoney('100.0')}, Money('100.0')),
             (BaseModel, {}, Money(0, 'USD')),
             (BaseModel, {'money': '111.2'}, Money('111.2', 'USD')),
             (BaseModel, {'money': Money('123', 'PLN')}, Money('123', 'PLN')),
+            (BaseModel, {'money': OldMoney('123', 'PLN')}, Money('123', 'PLN')),
             (BaseModel, {'money': ('123', 'PLN')}, Money('123', 'PLN')),
             (BaseModel, {'money': (123.0, 'PLN')}, Money('123', 'PLN')),
             (ModelWithDefaultAsMoney, {}, Money('0.01', 'RUB')),
@@ -76,12 +80,17 @@ class TestVanillaMoneyField:
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
 
+    def test_old_money_defaults(self):
+        instance = ModelWithDefaultAsOldMoney.objects.create()
+        assert instance.money == Money('.01', 'RUB')
+
     @pytest.mark.parametrize(
         'model_class, other_value',
         (
             (ModelWithVanillaMoneyField, Money('100.0')),
             (BaseModel, Money(0, 'USD')),
             (ModelWithDefaultAsMoney, Money('0.01', 'RUB')),
+            (ModelWithDefaultAsFloat, OldMoney('12.05', 'PLN')),
             (ModelWithDefaultAsFloat, Money('12.05', 'PLN')),
         )
     )
@@ -117,8 +126,9 @@ class TestVanillaMoneyField:
         with pytest.raises(ValidationError):
             BaseModel.objects.create(money=value)
 
+    @pytest.mark.parametrize('Money', (Money, OldMoney))
     @pytest.mark.parametrize('field_name', ('money', 'second_money'))
-    def test_save_new_value(self, field_name):
+    def test_save_new_value(self, field_name, Money):
         ModelWithVanillaMoneyField.objects.create(**{field_name: Money('100.0')})
 
         # Try setting the value directly
@@ -139,8 +149,9 @@ class TestVanillaMoneyField:
 
         assert retrieved.money == Money('100.06')
 
-    @pytest.fixture
-    def objects_setup(self):
+    @pytest.fixture(params=[Money, OldMoney])
+    def objects_setup(self, request):
+        Money = request.param
         ModelWithTwoMoneyFields.objects.bulk_create((
             ModelWithTwoMoneyFields(amount1=Money(1, 'USD'), amount2=Money(2, 'USD')),
             ModelWithTwoMoneyFields(amount1=Money(2, 'USD'), amount2=Money(0, 'USD')),
@@ -159,6 +170,7 @@ class TestVanillaMoneyField:
             (Q(id__in=(-1, -2)), 0),
             (Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD')) | Q(amount2=Money(0, 'GHS')), 2),
+            (Q(amount1=OldMoney(1, 'USD')) | Q(amount1=OldMoney(4, 'USD')) | Q(amount2=OldMoney(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(5, 'USD')) | Q(amount2=Money(0, 'GHS')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1__gt=Money(4, 'USD'), amount2=Money(0, 'GHS')), 1),
@@ -257,7 +269,8 @@ class TestGetOrCreate:
         'kwargs, currency',
         (
             ({'money_currency': 'PLN'}, 'PLN'),
-            ({'money': Money(0, 'EUR')}, 'EUR')
+            ({'money': Money(0, 'EUR')}, 'EUR'),
+            ({'money': OldMoney(0, 'EUR')}, 'EUR'),
         )
     )
     def test_get_or_create_respects_currency(self, kwargs, currency):
@@ -294,6 +307,7 @@ class TestFExpressions:
         'f_obj, expected',
         (
             (F('money') + Money(100, 'USD'), Money(200, 'USD')),
+            (F('money') + OldMoney(100, 'USD'), Money(200, 'USD')),
             (Money(100, 'USD') + F('money'), Money(200, 'USD')),
             (F('money') - Money(100, 'USD'), Money(0, 'USD')),
             (Money(100, 'USD') - F('money'), Money(0, 'USD')),
@@ -514,7 +528,8 @@ class TestDifferentCurrencies:
             Money(10, 'EUR') - Money(1, 'USD')
 
     @pytest.mark.usefixtures('patched_convert_money')
-    def test_add_with_auto_convert(self, settings):
+    @pytest.mark.parametrize('Money', (Money, OldMoney))
+    def test_add_with_auto_convert(self, settings, Money):
         settings.AUTO_CONVERT_MONEY = True
         result = Money(10, 'EUR') + Money(1, 'USD')
         assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')

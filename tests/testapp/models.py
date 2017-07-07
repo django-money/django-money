@@ -11,6 +11,7 @@ from django.db import models
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
 from djmoney.money import Money
+from moneyed import Money as OldMoney
 
 from .._compat import register
 
@@ -53,6 +54,10 @@ class ModelWithDefaultAsDecimal(models.Model):
 
 class ModelWithDefaultAsMoney(models.Model):
     money = MoneyField(default=Money('0.01', 'RUB'), max_digits=10, decimal_places=2)
+
+
+class ModelWithDefaultAsOldMoney(models.Model):
+    money = MoneyField(default=OldMoney('0.01', 'RUB'), max_digits=10, decimal_places=2)
 
 
 class ModelWithTwoMoneyFields(models.Model):
