@@ -18,6 +18,7 @@ Fixed
 ~~~~~
 
 - Fix model field validation. `#308`_ (`Stranger6667`_).
+- Fix managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
 
 Removed
 ~~~~~~~
@@ -401,6 +402,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#318: https://github.com/django-money/django-money/issues/318
 .. _#309: https://github.com/django-money/django-money/issues/309
 .. _#308: https://github.com/django-money/django-money/issues/308
 .. _#304: https://github.com/django-money/django-money/issues/304

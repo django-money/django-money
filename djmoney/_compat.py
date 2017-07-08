@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 from django import VERSION
-from django.db.models.manager import ManagerDescriptor
 
 
 try:
@@ -45,8 +44,8 @@ def setup_managers(sender):
     from .models.managers import money_manager
 
     if VERSION >= (1, 10):
-        for manager in filter(lambda m: m.name == 'objects', sender._meta.managers):
-            setattr(sender, manager.name, ManagerDescriptor(money_manager(manager)))
+        for manager in filter(lambda m: m.name == 'objects', sender._meta.local_managers):
+            money_manager(manager)
     else:
         sender.copy_managers([
             (_id, name, money_manager(manager))

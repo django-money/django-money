@@ -601,6 +601,15 @@ def test_migration_serialization():
     assert MigrationWriter.serialize(Money(100, 'GBP')) == (serialized, {'import djmoney.money'})
 
 
+def test_clear_meta_cache():
+    """
+    See issue GH-318.
+    """
+    ModelWithVanillaMoneyField._meta._expire_cache()
+    manager_class = ModelWithVanillaMoneyField.objects.__class__
+    assert manager_class.__module__ + '.' + manager_class.__name__ == 'djmoney.models.managers.MoneyManager'
+
+
 class TestFieldAttributes:
 
     def create_class(self, **field_kwargs):
