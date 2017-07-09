@@ -251,6 +251,10 @@ class TestVanillaMoneyField:
         assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(1, Money(5, 'EUR'))).count() == 2
         assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(1, 5)).count() == 3
 
+    @pytest.mark.usefixtures('objects_setup')
+    def test_in_lookup_f_expression(self):
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(Money(4, 'USD'), F('amount2'))).count() == 2
+
     def test_isnull_lookup(self):
         NullMoneyFieldModel.objects.create(field=None)
         NullMoneyFieldModel.objects.create(field=Money(100, 'USD'))

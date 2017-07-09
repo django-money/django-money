@@ -17,8 +17,9 @@ Deprecated
 Fixed
 ~~~~~
 
-- Fix model field validation. `#308`_ (`Stranger6667`_).
-- Fix managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
+- Fixed model field validation. `#308`_ (`Stranger6667`_).
+- Fixed managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
+- Fixed ``F`` expressions support in ``in`` lookups. `#321`_ (`Stranger6667`_).
 
 Removed
 ~~~~~~~
@@ -116,7 +117,7 @@ Fixed
 
 Fixed
 ~~~~~
-- Fix packaging.
+- Fixed packaging.
 
 `0.9.0`_ - 2016-07-31
 ---------------------
@@ -402,6 +403,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#321: https://github.com/django-money/django-money/issues/321
 .. _#318: https://github.com/django-money/django-money/issues/318
 .. _#309: https://github.com/django-money/django-money/issues/309
 .. _#308: https://github.com/django-money/django-money/issues/308
