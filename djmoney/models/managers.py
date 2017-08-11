@@ -214,7 +214,8 @@ def understands_money(func):
         args = _expand_money_args(model, args)
         exclusions = EXPAND_EXCLUSIONS.get(func.__name__, ())
         args, kwargs = _expand_money_kwargs(model, args, kwargs, exclusions)
-        return func(*args, **kwargs)
+        queryset = func(*args, **kwargs)
+        return add_money_comprehension_to_queryset(queryset)
 
     return wrapper
 
@@ -228,7 +229,9 @@ EXPAND_EXCLUSIONS = {
 def add_money_comprehension_to_queryset(qs):
     # Decorate each relevant method with understands_money in the queryset given
     for attr in RELEVANT_QUERYSET_METHODS:
-        setattr(qs, attr, understands_money(getattr(qs, attr)))
+        method = getattr(qs, attr, None)
+        if method is not None:
+            setattr(qs, attr, understands_money(method))
     return qs
 
 

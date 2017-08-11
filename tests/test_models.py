@@ -234,6 +234,13 @@ class TestVanillaMoneyField:
 
         assert ModelWithVanillaMoneyField.objects.filter(money__lt=money).count() == 0
 
+    def test_filter_chaining(self):
+        usd_instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
+        ModelWithVanillaMoneyField.objects.create(money=Money(100, 'EUR'))
+        query = ModelWithVanillaMoneyField.objects.filter().filter(money=Money(100, 'USD'))
+        assert usd_instance in query
+        assert query.count() == 1
+
     @pytest.mark.parametrize('model_class', (ModelWithVanillaMoneyField, ModelWithChoicesMoneyField))
     def test_currency_querying(self, model_class):
         model_class.objects.create(money=Money('100.0', 'ZWN'))

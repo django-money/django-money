@@ -20,6 +20,7 @@ Fixed
 - Fixed model field validation. `#308`_ (`Stranger6667`_).
 - Fixed managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
 - Fixed ``F`` expressions support for ``in`` lookups. `#321`_ (`Stranger6667`_).
+- Fixed money comprehension on querysets. `#331`_ (`Stranger6667`_, `jaavii1988`_).
 
 Removed
 ~~~~~~~
@@ -403,6 +404,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#331: https://github.com/django-money/django-money/issues/331
 .. _#321: https://github.com/django-money/django-money/issues/321
 .. _#318: https://github.com/django-money/django-money/issues/318
 .. _#309: https://github.com/django-money/django-money/issues/309
@@ -478,6 +480,7 @@ Added
 .. _gonzalobf: https://github.com/gonzalobf
 .. _inureyes: https://github.com/inureyes
 .. _ivanchenkodmitry: https://github.com/ivanchenkodmitry
+.. _jaavii1988: https://github.com/jaavii1988
 .. _jack-cvr: https://github.com/jack-cvr
 .. _jakewins: https://github.com/jakewins
 .. _jplehmann: https://github.com/jplehmann
