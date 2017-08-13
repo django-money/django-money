@@ -73,20 +73,22 @@ def _convert_in_lookup(model, field_name, options):
     new_query = Q()
     for value in options:
         if isinstance(value, MONEY_CLASSES):
-            option = Q(**{
+            # amount__in=[Money(1, 'EUR'), Money(2, 'EUR')]
+            option = {
                 field.name: value.amount,
                 get_currency_field_name(field.name, field): value.currency
-            })
+            }
         elif isinstance(value, F):
             # amount__in=[Money(1, 'EUR'), F('another_money')]
             target_field = _get_field(model, value.name)
-            option = Q(**{
+            option = {
                 field.name: value,
                 get_currency_field_name(field.name, field): F(get_currency_field_name(value.name, target_field))
-            })
+            }
         else:
-            option = Q(**{field.name: value})
-        new_query |= option
+            # amount__in=[1, 2, 3]
+            option = {field.name: value}
+        new_query |= Q(**option)
     return new_query
 
 
