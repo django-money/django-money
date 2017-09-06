@@ -40,12 +40,6 @@ class MoneyLocalizeNode(template.Node):
         var_name = None
         use_l10n = True
 
-        if no_decimal:
-            return cls(money=parser.compile_filter(tokens[1]),
-                       var_name=var_name,
-                       use_l10n=use_l10n,
-                       decimal_places=0)
-
         # GET variable var_name
         if len(tokens) > 3:
             if tokens[-2] == 'as':
@@ -63,18 +57,31 @@ class MoneyLocalizeNode(template.Node):
             # remove the already used data
             tokens.pop(-1)
 
+        if len(tokens) < 2:
+            raise TemplateSyntaxError('Wrong number of input data to the tag.')
+
+        create_args = {
+            'var_name': var_name,
+            'use_l10n': use_l10n,
+        }
+
         # GET variable money
         if len(tokens) == 2:
-            return cls(money=parser.compile_filter(tokens[1]),
-                       var_name=var_name, use_l10n=use_l10n)
+            create_args.update({
+                'money': parser.compile_filter(tokens[1]),
+            })
 
         # GET variable amount and currency
-        if len(tokens) == 3:
-            return cls(amount=parser.compile_filter(tokens[1]),
-                       currency=parser.compile_filter(tokens[2]),
-                       var_name=var_name, use_l10n=use_l10n)
+        elif len(tokens) == 3:
+            create_args.update({
+                'amount': parser.compile_filter(tokens[1]),
+                'currency': parser.compile_filter(tokens[2]),
+            })
 
-        raise TemplateSyntaxError('Wrong number of input data to the tag.')
+        if no_decimal:
+            create_args['decimal_places'] = 0
+
+        return cls(**create_args)
 
     def render(self, context):
 
@@ -167,10 +174,11 @@ def money_localize_no_decimal(parser, token):
     """
     Usage::
 
-        {% money_localize_no_decimal <money_object> %}
+        {% money_localize_no_decimal <money_object> [as var_name] %}
     Example:
 
         {% money_localize_no_decimal money_object %}
+        {% money_localize_no_decimal money_object as NEW_MONEY_OBJECT %}
 
     Return::
 
