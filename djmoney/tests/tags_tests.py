@@ -128,3 +128,10 @@ class MoneyLocalizeTestCase(TestCase):
             '{% load djmoney %}{% money_localize_no_decimal money on %}',
             '2 zł',
             context={'money': Money(2.3, 'PLN')})
+
+    def testMoneyLocalizeNoDecimalAsVar(self):
+
+        self.assertTemplate(
+            '{% load djmoney %}{% money_localize_no_decimal money as NEW_M %}{{NEW_M}}',
+            '2 zł',
+            context={'money': Money(2.3, 'PLN')})

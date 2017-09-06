@@ -24,3 +24,4 @@ djmoney/tests/testproject
 *\.egg
 *\.egg-info
 .cache
+venv
