@@ -1,7 +1,7 @@
 # coding: utf-8
-import django.contrib.admin.utils as admin_utils
 import django.contrib.admin.helpers as admin_helpers
 import django.contrib.admin.templatetags.admin_list as admin_list
+import django.contrib.admin.utils as admin_utils
 from django import VERSION
 
 from ._compat import text_type
