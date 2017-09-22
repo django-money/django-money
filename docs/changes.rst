@@ -9,6 +9,7 @@ Changelog
 Changed
 ~~~~~~~
 - Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
+- Implement ``__html__`` method. If used in Django templates, an ``Money`` object's amount and currency are now separated with non-breaking space (``&nbsp;``) `#337`_ (`jonashaag`_)
 
 Deprecated
 ~~~~~~~~~~
@@ -405,6 +406,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#337: https://github.com/django-money/django-money/issues/337
 .. _#334: https://github.com/django-money/django-money/issues/334
 .. _#331: https://github.com/django-money/django-money/issues/331
 .. _#321: https://github.com/django-money/django-money/issues/321
@@ -486,6 +488,7 @@ Added
 .. _jaavii1988: https://github.com/jaavii1988
 .. _jack-cvr: https://github.com/jack-cvr
 .. _jakewins: https://github.com/jakewins
+.. _jonashaag: https://github.com/jonashaag
 .. _jplehmann: https://github.com/jplehmann
 .. _kjagiello: https://github.com/kjagiello
 .. _ivirabyan: https://github.com/ivirabyan
