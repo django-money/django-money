@@ -6,6 +6,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
 from django.utils import translation
 from django.utils.deconstruct import deconstructible
+from django.utils.html import avoid_wrapping, conditional_escape
+from django.utils.safestring import mark_safe
 
 from djmoney.settings import DECIMAL_PLACES
 from moneyed import Currency, Money as DefaultMoney
@@ -70,6 +72,9 @@ class Money(DefaultMoney):
 
     def __repr__(self):
         return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
+
+    def __html__(self):
+        return mark_safe(avoid_wrapping(conditional_escape(self.__unicode__())))
 
 
 def get_current_locale():
