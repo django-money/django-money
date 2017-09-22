@@ -21,6 +21,7 @@ Fixed
 - Fixed managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
 - Fixed ``F`` expressions support for ``in`` lookups. `#321`_ (`Stranger6667`_).
 - Fixed money comprehension on querysets. `#331`_ (`Stranger6667`_, `jaavii1988`_).
+- Fixed errors in Django Admin integration. `#334`_ (`Stranger6667`_, `adi-`_).
 
 Removed
 ~~~~~~~
@@ -404,6 +405,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#334: https://github.com/django-money/django-money/issues/334
 .. _#331: https://github.com/django-money/django-money/issues/331
 .. _#321: https://github.com/django-money/django-money/issues/321
 .. _#318: https://github.com/django-money/django-money/issues/318
@@ -463,6 +465,7 @@ Added
 .. _Stranger6667: https://github.com/Stranger6667
 .. _YAmikep: https://github.com/YAmikep
 .. _adambregenzer: https://github.com/adambregenzer
+.. _adi-: https://github.com/adi-
 .. _akumria: https://github.com/akumria
 .. _alexhayes: https://github.com/alexhayes
 .. _arthurk: https://github.com/arthurk
