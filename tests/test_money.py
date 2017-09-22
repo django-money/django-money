@@ -16,9 +16,11 @@ def test_repr():
     assert repr(Money('10.5', 'USD')) == '10 USD'
 
 
-def test_html():
+def test_html_safe():
     assert Money('10.5', 'EUR').__html__() == '10.50\xa0EUR'
 
+
+def test_html_unsafe():
     class UnsafeMoney(Money):
         def __unicode__(self):
             return '<script>'
