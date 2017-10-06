@@ -43,23 +43,21 @@ Via ``py-moneyed``, ``django-money`` gets:
 Installation
 ------------
 
-Django-money currently needs ``py-moneyed`` v0.7 (or later) to work.
-
-You can obtain the source code for ``django-money`` from here:
-
-::
-
-    https://github.com/django-money/django-money
-
-And the source for ``py-moneyed`` from here:
-
-::
-
-    https://github.com/limist/py-moneyed
-
 Using `pip`:
 
-    pip install py-moneyed django-money
+   pip install django-money
+
+This automatically installs ``py-moneyed`` v0.7 (or later).
+
+Add ``djmoney`` to your `INSTALLED_APPS`. This is required so that money field are displayed correctly in the admin.
+
+.. code:: python
+
+   INSTALLED_APPS = [
+      ...,
+      'djmoney',
+      ...
+   ]
 
 Model usage
 -----------
