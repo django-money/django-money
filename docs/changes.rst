@@ -29,6 +29,7 @@ Fixed
 - Fixed ``F`` expressions support for ``in`` lookups. `#321`_ (`Stranger6667`_).
 - Fixed money comprehension on querysets. `#331`_ (`Stranger6667`_, `jaavii1988`_).
 - Fixed errors in Django Admin integration. `#334`_ (`Stranger6667`_, `adi-`_).
+- Fixed respecting currency in filtration on related models. `#327`_ (`Stranger6667`_).
 
 Removed
 ~~~~~~~
@@ -415,6 +416,7 @@ Added
 .. _#337: https://github.com/django-money/django-money/issues/337
 .. _#334: https://github.com/django-money/django-money/issues/334
 .. _#331: https://github.com/django-money/django-money/issues/331
+.. _#327: https://github.com/django-money/django-money/issues/327
 .. _#321: https://github.com/django-money/django-money/issues/321
 .. _#318: https://github.com/django-money/django-money/issues/318
 .. _#309: https://github.com/django-money/django-money/issues/309

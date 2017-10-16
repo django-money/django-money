@@ -471,12 +471,21 @@ class TestExpressions:
         assert ModelWithVanillaMoneyField.objects.get(Q(money=F('integer') + 1)) == instance
 
 
-def test_find_models_related_to_money_models():
-    moneyModel = ModelWithVanillaMoneyField.objects.create(money=Money('100.0', 'ZWN'))
-    ModelRelatedToModelWithMoney.objects.create(moneyModel=moneyModel)
+class TestFindModelsRelatedToMoneyModels:
 
-    ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money('100.0', 'ZWN'))
-    ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money('1000.0', 'ZWN'))
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        moneyModel = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'ZWN'))
+        self.instance = ModelRelatedToModelWithMoney.objects.create(moneyModel=moneyModel)
+
+    def test_exact(self):
+        assert ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money(100, 'ZWN')) == self.instance
+
+    def test_lt(self):
+        assert ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money(1000, 'ZWN')) == self.instance
+
+    def test_different_currency(self):
+        assert not ModelRelatedToModelWithMoney.objects.filter(moneyModel__money=Money(100, 'EUR')).exists()
 
 
 def test_allow_expression_nodes_without_money():
