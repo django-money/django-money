@@ -92,7 +92,7 @@ class MoneyFieldProxy(object):
 
     def __init__(self, field):
         self.field = field
-        self.currency_field_name = get_currency_field_name(self.field.name)
+        self.currency_field_name = get_currency_field_name(self.field.name, self.field)
 
     def _money_from_obj(self, obj):
         amount = obj.__dict__[self.field.name]
@@ -141,7 +141,7 @@ class MoneyFieldProxy(object):
         # But we should also allow setting a field back to its original default
         # value!
         # https://github.com/django-money/django-money/issues/221
-        object_currency = obj.__dict__[self.currency_field_name]
+        object_currency = obj.__dict__.get(self.currency_field_name)
         if object_currency != value:
             # in other words, update the currency only if it wasn't
             # changed before.
@@ -170,7 +170,8 @@ class MoneyField(models.DecimalField):
                  max_digits=None, decimal_places=None,
                  default=None,
                  default_currency=DEFAULT_CURRENCY,
-                 currency_choices=CURRENCY_CHOICES, **kwargs):
+                 currency_choices=CURRENCY_CHOICES,
+                 currency_field_name=None, **kwargs):
         nullable = kwargs.get('null', False)
         default = self.setup_default(default, default_currency, nullable)
         if not default_currency:
@@ -178,6 +179,7 @@ class MoneyField(models.DecimalField):
 
         self.default_currency = default_currency
         self.currency_choices = currency_choices
+        self.currency_field_name = currency_field_name
 
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
         self.creation_counter += 1
@@ -255,7 +257,7 @@ class MoneyField(models.DecimalField):
             choices=self.currency_choices
         )
         currency_field.creation_counter = self.creation_counter - 1
-        currency_field_name = get_currency_field_name(name)
+        currency_field_name = get_currency_field_name(name, self)
         cls.add_to_class(currency_field_name, currency_field)
 
     def get_db_prep_save(self, value, connection):
@@ -294,6 +296,8 @@ class MoneyField(models.DecimalField):
             kwargs['default_currency'] = str(self.default_currency)
         if self.currency_choices != CURRENCY_CHOICES:
             kwargs['currency_choices'] = self.currency_choices
+        if self.currency_field_name:
+            kwargs['currency_field_name'] = self.currency_field_name
         return name, path, args, kwargs
 
 

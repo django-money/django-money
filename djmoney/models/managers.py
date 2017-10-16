@@ -74,20 +74,21 @@ def _convert_in_lookup(model, field_name, options):
     for value in options:
         if isinstance(value, MONEY_CLASSES):
             # amount__in=[Money(1, 'EUR'), Money(2, 'EUR')]
-            option = Q(**{
+            option = {
                 field.name: value.amount,
-                get_currency_field_name(field.name): value.currency
-            })
+                get_currency_field_name(field.name, field): value.currency
+            }
         elif isinstance(value, F):
             # amount__in=[Money(1, 'EUR'), F('another_money')]
-            option = Q(**{
+            target_field = _get_field(model, value.name)
+            option = {
                 field.name: value,
-                get_currency_field_name(field.name): F(get_currency_field_name(value.name))
-            })
+                get_currency_field_name(field.name, field): F(get_currency_field_name(value.name, target_field))
+            }
         else:
             # amount__in=[1, 2, 3]
-            option = Q(**{field.name: value})
-        new_query |= option
+            option = {field.name: value}
+        new_query |= Q(**option)
     return new_query
 
 
@@ -107,13 +108,11 @@ def _expand_arg(model, arg):
             _expand_arg(model, child)
         elif isinstance(child, (list, tuple)):
             name, value = child
+            field = _get_field(model, name)
             if isinstance(value, MONEY_CLASSES):
                 clean_name = _get_clean_name(name)
-                arg.children[i] = Q(
-                    child,
-                    (get_currency_field_name(clean_name), smart_unicode(value.currency))
-                )
-            field = _get_field(model, name)
+                currency_field_name = get_currency_field_name(clean_name, field)
+                arg.children[i] = Q(child, (currency_field_name, smart_unicode(value.currency)))
             if isinstance(field, MoneyField):
                 if isinstance(value, (BaseExpression, F)):
                     clean_name = _get_clean_name(name)
@@ -121,9 +120,10 @@ def _expand_arg(model, arg):
                         value = prepare_expression(value)
                     if not _is_money_field(model, value, name):
                         continue
+                    currency_field_name = get_currency_field_name(clean_name, field)
+                    target_field = _get_field(model, value.name)
                     arg.children[i] = Q(
-                        child,
-                        (get_currency_field_name(clean_name), F(get_currency_field_name(value.name)))
+                        child, (currency_field_name, F(get_currency_field_name(value.name, target_field)))
                     )
                 if is_in_lookup(name, value):
                     arg.children[i] = _convert_in_lookup(model, name, value)
@@ -147,12 +147,13 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     for name, value in list(kwargs.items()):
         if name in exclusions:
             continue
+        field = _get_field(model, name)
         if isinstance(value, MONEY_CLASSES):
             clean_name = _get_clean_name(name)
             kwargs[name] = value.amount
-            kwargs[get_currency_field_name(clean_name)] = smart_unicode(value.currency)
+            currency_field_name = get_currency_field_name(clean_name, field)
+            kwargs[currency_field_name] = smart_unicode(value.currency)
         else:
-            field = _get_field(model, name)
             if isinstance(field, MoneyField):
                 if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):
                     clean_name = _get_clean_name(name)
@@ -160,7 +161,9 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                         value = prepare_expression(value)
                     if not _is_money_field(model, value, name):
                         continue
-                    kwargs[get_currency_field_name(clean_name)] = F(get_currency_field_name(value.name))
+                    currency_field_name = get_currency_field_name(clean_name, field)
+                    target_field = _get_field(model, value.name)
+                    kwargs[currency_field_name] = F(get_currency_field_name(value.name, target_field))
                 if is_in_lookup(name, value):
                     args += (_convert_in_lookup(model, name, value), )
                     del kwargs[name]

@@ -6,6 +6,11 @@ Changelog
 `Unreleased`_
 -------------
 
+Added
+~~~~~
+
+- Ability to specify name for currency field. `#195`_ (`Stranger6667`_)
+
 Changed
 ~~~~~~~
 - Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
@@ -442,6 +447,7 @@ Added
 .. _#199: https://github.com/django-money/django-money/issues/199
 .. _#198: https://github.com/django-money/django-money/issues/198
 .. _#196: https://github.com/django-money/django-money/issues/196
+.. _#195: https://github.com/django-money/django-money/issues/195
 .. _#194: https://github.com/django-money/django-money/issues/194
 .. _#186: https://github.com/django-money/django-money/issues/186
 .. _#184: https://github.com/django-money/django-money/issues/184

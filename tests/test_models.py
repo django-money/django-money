@@ -40,6 +40,7 @@ from .testapp.models import (
     ModelWithDefaultAsString,
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
+    ModelWithSharedCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
     ModelWithVanillaMoneyField,
@@ -682,3 +683,45 @@ def test_properties_access():
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, 'USD'), bla=1)
     assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+
+
+def parametrize_with_q(**kwargs):
+    return pytest.mark.parametrize('args, kwargs', (
+        ((), kwargs),
+        ((Q(**kwargs),), {}),
+    ))
+
+
+class TestSharedCurrency:
+
+    @pytest.fixture
+    def instance(self):
+        return ModelWithSharedCurrency.objects.create(first=10, second=15, currency='USD')
+
+    def test_attributes(self, instance):
+        assert instance.first == Money(10, 'USD')
+        assert instance.second == Money(15, 'USD')
+        assert instance.currency == 'USD'
+
+    @parametrize_with_q(first=Money(10, 'USD'))
+    def test_filter_by_money_match(self, instance, args, kwargs):
+        assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    @parametrize_with_q(first=Money(10, 'EUR'))
+    def test_filter_by_money_no_match(self, instance, args, kwargs):
+        assert instance not in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    @parametrize_with_q(first=F('second'))
+    def test_f_query(self, args, kwargs):
+        instance = ModelWithSharedCurrency.objects.create(first=10, second=10, currency='USD')
+        assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    @parametrize_with_q(first__in=[Money(10, 'USD'), Money(100, 'USD')])
+    def test_in_lookup(self, instance, args, kwargs):
+        assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    def test_create_with_money(self):
+        value = Money(10, 'USD')
+        instance = ModelWithSharedCurrency.objects.create(first=value, second=value)
+        assert instance.first == value
+        assert instance.second == value
