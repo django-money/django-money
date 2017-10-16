@@ -1,6 +1,10 @@
 # coding: utf-8
 from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, MaxValueValidator, BaseValidator
+from django.core.validators import (
+    BaseValidator,
+    MaxValueValidator,
+    MinValueValidator,
+)
 
 from djmoney.money import Money
 
