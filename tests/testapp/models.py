@@ -168,5 +168,7 @@ class ValidatedMoneyModel(models.Model):
             MaxMoneyValidator({'EUR': 1000, 'USD': 500}),
             MinMoneyValidator(Money(500, 'NOK')),
             MaxMoneyValidator(Money(900, 'NOK')),
+            MinMoneyValidator(10),
+            MaxMoneyValidator(1500),
         ]
     )

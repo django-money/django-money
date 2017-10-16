@@ -1,4 +1,6 @@
 # coding: utf-8
+from decimal import Decimal
+
 from django.core.exceptions import ValidationError
 from django.core.validators import (
     BaseValidator,
@@ -16,6 +18,8 @@ class BaseMoneyValidator(BaseValidator):
             if cleaned.currency.code != self.limit_value.currency.code:
                 return
             return self.limit_value
+        elif isinstance(self.limit_value, (int, Decimal)):
+            return self.limit_value
         try:
             return Money(self.limit_value[cleaned.currency.code], cleaned.currency.code)
         except KeyError:
@@ -27,6 +31,8 @@ class BaseMoneyValidator(BaseValidator):
         limit_value = self.get_limit_value(cleaned)
         if not limit_value:
             return
+        if isinstance(limit_value, (int, Decimal)):
+            cleaned = cleaned.amount
         params = {'limit_value': limit_value, 'show_value': cleaned, 'value': value}
         if self.compare(cleaned, limit_value):
             raise ValidationError(self.message, code=self.code, params=params)

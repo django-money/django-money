@@ -10,6 +10,7 @@ Added
 ~~~~~
 
 - Ability to specify name for currency field. `#195`_ (`Stranger6667`_)
+- Validators for ``MoneyField``. `#308`_ (`Stranger6667`_)
 
 Changed
 ~~~~~~~
