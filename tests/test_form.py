@@ -21,6 +21,7 @@ from .testapp.forms import (
     MoneyModelFormWithValidation,
     NullableModelForm,
     OptionalMoneyForm,
+    ValidatedMoneyModelForm,
 )
 from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
 
@@ -132,7 +133,28 @@ def test_no_deprecation_warning():
     assert not warning
 
 
-def test_validation():
-    form = MoneyModelFormWithValidation(data={'balance_0': 0, 'balance_1': 'GBP'})
-    assert not form.is_valid()
-    assert form.errors == {'balance': ['Ensure this value is greater than or equal to 100.00 GBP.']}
+class TestValidation:
+
+    @pytest.mark.parametrize('value, error', (
+        (Money(50, 'EUR'), 'Ensure this value is greater than or equal to 100.00 EUR.'),
+        (Money(1500, 'EUR'), 'Ensure this value is less than or equal to 1,000.00 EUR.'),
+        (Money(40, 'USD'), 'Ensure this value is greater than or equal to $50.00.'),
+        (Money(600, 'USD'), 'Ensure this value is less than or equal to $500.00.'),
+        (Money(400, 'NOK'), 'Ensure this value is greater than or equal to 500.00 NOK.'),
+        (Money(950, 'NOK'), 'Ensure this value is less than or equal to 900.00 NOK.'),
+        (Money(5, 'SEK'), 'Ensure this value is greater than or equal to 10.'),
+        (Money(1600, 'SEK'), 'Ensure this value is less than or equal to 1500.'),
+    ))
+    def test_invalid(self, value, error):
+        form = ValidatedMoneyModelForm(data={'money_0': value.amount, 'money_1': value.currency})
+        assert not form.is_valid()
+        assert form.errors == {'money': [error]}
+
+    @pytest.mark.parametrize('value', (Money(150, 'EUR'), Money(200, 'USD'), Money(50, 'SEK'), Money(600, 'NOK')))
+    def test_valid(self, value):
+        assert ValidatedMoneyModelForm(data={'money_0': value.amount, 'money_1': value.currency}).is_valid()
+
+    def test_default_django_validator(self):
+        form = MoneyModelFormWithValidation(data={'balance_0': 0, 'balance_1': 'GBP'})
+        assert not form.is_valid()
+        assert form.errors == {'balance': ['Ensure this value is greater than or equal to 100.00 GBP.']}

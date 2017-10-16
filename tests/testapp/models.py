@@ -11,6 +11,7 @@ from django.db import models
 
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
+from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from moneyed import Money as OldMoney
 
@@ -157,3 +158,17 @@ class ModelWithValidation(models.Model):
 class ModelWithSharedCurrency(models.Model):
     first = MoneyField(max_digits=10, decimal_places=2, currency_field_name='currency')
     second = MoneyField(max_digits=10, decimal_places=2, currency_field_name='currency')
+
+
+class ValidatedMoneyModel(models.Model):
+    money = MoneyField(
+        max_digits=10, decimal_places=2,
+        validators=[
+            MinMoneyValidator({'EUR': 100, 'USD': 50}),
+            MaxMoneyValidator({'EUR': 1000, 'USD': 500}),
+            MinMoneyValidator(Money(500, 'NOK')),
+            MaxMoneyValidator(Money(900, 'NOK')),
+            MinMoneyValidator(10),
+            MaxMoneyValidator(1500),
+        ]
+    )

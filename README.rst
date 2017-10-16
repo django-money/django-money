@@ -86,17 +86,46 @@ Searching for models with money fields:
         BankAccount.objects.filter(balance__gt=Money(1, 'USD'))
         # Returns the "account" object
 
+
+Field validation
+----------------
+
+There are 3 different possibilities for field validation:
+
+* by numeric part of money despite on currency;
+* by single money amount;
+* by multiple money amounts.
+
+All of them could be used in a combination as is shown below:
+
 .. code:: python
 
-        from django.core.validators import MinValueValidator
         from django.db import models
         from djmoney.models.fields import MoneyField
         from djmoney.money import Money
+        from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 
 
         class BankAccount(models.Model):
-            balance = MoneyField(max_digits=10, decimal_places=2, validators=[MinValueValidator(Money(100, 'GBP'))])
+            balance = MoneyField(
+                max_digits=10,
+                decimal_places=2,
+                validators=[
+                    MinMoneyValidator(10),
+                    MaxMoneyValidator(1500),
+                    MinMoneyValidator(Money(500, 'NOK')),
+                    MaxMoneyValidator(Money(900, 'NOK')),
+                    MinMoneyValidator({'EUR': 100, 'USD': 50}),
+                    MaxMoneyValidator({'EUR': 1000, 'USD': 500}),
+                ]
+            )
 
+The ``balance`` field from the model above has the following validation:
+
+* All input values should be between 10 and 1500 despite on currency;
+* Norwegian Crowns amount (NOK) should be between 500 and 900;
+* Euros should be between 100 and 1000;
+* US Dollars should be between 50 and 500;
 
 Adding a new Currency
 ---------------------
