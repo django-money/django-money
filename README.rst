@@ -179,7 +179,7 @@ Additionally there is an ability to specify currency choices directly:
 .. code:: python
 
         CURRENCIES = ('USD', 'EUR')
-        CURRENCY_CHOICES = (('USD', 'USD $'), ('EUR', 'EUR €'))
+        CURRENCY_CHOICES = [('USD', 'USD $'), ('EUR', 'EUR €')]
 
 Important note on model managers
 --------------------------------
