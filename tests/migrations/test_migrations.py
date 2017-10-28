@@ -157,3 +157,14 @@ class TestMigrationFramework:
         assert isinstance(operations[1], migrations.RemoveField)
         assert operations[1].name == 'field_currency'
         self.assert_migrate()
+
+    def test_rename_field(self):
+        self.make_default_migration()
+        migration = self.make_migration(new_field='MoneyField(max_digits=10, decimal_places=2)')
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*0002_test.py*',
+            '*- Rename field field on model to new_field*',
+            '*- Rename field field_currency on model to new_field_currency*',
+        ])
+        self.assert_migrate()
