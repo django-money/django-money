@@ -241,7 +241,8 @@ class MoneyField(models.DecimalField):
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True
 
-        self.add_currency_field(cls, name)
+        if not hasattr(self, '_currency_field'):
+            self.add_currency_field(cls, name)
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
@@ -259,6 +260,7 @@ class MoneyField(models.DecimalField):
         currency_field.creation_counter = self.creation_counter - 1
         currency_field_name = get_currency_field_name(name, self)
         cls.add_to_class(currency_field_name, currency_field)
+        self._currency_field = currency_field
 
     def get_db_prep_save(self, value, connection):
         if isinstance(value, MONEY_CLASSES):
