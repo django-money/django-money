@@ -29,7 +29,7 @@ class TestMigrationFramework:
             DATABASES = {
                 'default': {
                     'ENGINE': 'django.db.backends.sqlite3',
-                    'NAME': ':memory:',
+                    'NAME': 'test.db',
                 }
             }
             INSTALLED_APPS = %s
@@ -65,25 +65,36 @@ class TestMigrationFramework:
                 %s''' % fields_definition)
         return self.run('from tests.migrations.helpers import makemigrations; makemigrations();')
 
-    def make_default_migration(self):
-        return self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
+    def make_default_migration(self, field='MoneyField(max_digits=10, decimal_places=2)'):
+        return self.make_migration(field=field)
 
     def run(self, content):
         return self.testdir.runpython_c(dedent('''
         import os
         os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
+        from django import setup
+        
+        setup()
         %s
         ''' % content))
+
+    def create_instance(self):
+        self.run('''
+        from money_app.models import Model
+
+        Model.objects.create(field=10)''')
 
     def migrate(self):
         return self.run('from tests.migrations.helpers import migrate; migrate();')
 
-    def assert_migrate(self):
+    def assert_migrate(self, output=None):
         """
         Runs migrations and checks if 2 migrations were applied.
         """
+        if output is None:
+            output = self.migration_output
         migration = self.migrate()
-        migration.stdout.fnmatch_lines(self.migration_output)
+        migration.stdout.fnmatch_lines(output)
 
     def test_create_initial(self):
         migration = self.make_default_migration()
@@ -160,11 +171,33 @@ class TestMigrationFramework:
 
     def test_rename_field(self):
         self.make_default_migration()
+        self.assert_migrate(['*Applying money_app.0001_test... OK*'])
+        self.create_instance()
         migration = self.make_migration(new_field='MoneyField(max_digits=10, decimal_places=2)')
         migration.stdout.fnmatch_lines([
             "*Migrations for 'money_app':*",
             '*0002_test.py*',
             '*- Rename field field on model to new_field*',
             '*- Rename field field_currency on model to new_field_currency*',
+        ])
+        self.assert_migrate(['*Applying money_app.0002_test... OK*'])
+
+    def test_migrate_to_moneyfield(self):
+        self.make_default_migration(field='models.DecimalField(max_digits=10, decimal_places=2)')
+        migration = self.make_migration(field='MoneyField(max_digits=10, decimal_places=2)')
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*0002_test.py*',
+            '*- Add field field_currency to model*',
+        ])
+        self.assert_migrate()
+
+    def test_migrate_from_moneyfield(self):
+        self.make_default_migration()
+        migration = self.make_migration(field='models.DecimalField(max_digits=10, decimal_places=2)')
+        migration.stdout.fnmatch_lines([
+            "*Migrations for 'money_app':*",
+            '*0002_test.py*',
+            '*- Remove field field_currency from model*',
         ])
         self.assert_migrate()

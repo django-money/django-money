@@ -4,10 +4,7 @@ This module contains various helpers for migrations testing.
 """
 import os
 
-from django import VERSION, setup
-
-
-setup()
+from django import VERSION
 
 
 MIGRATION_NAME = 'test'
