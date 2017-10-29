@@ -3,6 +3,14 @@
 Changelog
 =========
 
+`Unreleased`_
+-------------
+
+Fixed
+~~~~~
+
+- Fixed migrations on SQLite. `#139`_, `#338`_ (`Stranger6667`_)
+
 `0.12`_ - 2017-10-22
 --------------------
 
@@ -413,6 +421,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#338: https://github.com/django-money/django-money/issues/338
 .. _#337: https://github.com/django-money/django-money/issues/337
 .. _#334: https://github.com/django-money/django-money/issues/334
 .. _#331: https://github.com/django-money/django-money/issues/331
@@ -460,6 +469,7 @@ Added
 .. _#166: https://github.com/django-money/django-money/issues/166
 .. _#154: https://github.com/django-money/django-money/issues/154
 .. _#149: https://github.com/django-money/django-money/issues/149
+.. _#139: https://github.com/django-money/django-money/issues/139
 .. _#138: https://github.com/django-money/django-money/issues/138
 .. _#103: https://github.com/django-money/django-money/issues/103
 .. _#102: https://github.com/django-money/django-money/issues/102
