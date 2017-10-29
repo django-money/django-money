@@ -21,7 +21,7 @@ def makemigrations():
     if VERSION >= (1, 10):
         call_command('makemigrations', 'money_app', name=MIGRATION_NAME)
     else:
-        # In Django 1.8 & 1.9 first argument name clashes with command option.
+        # In Django 1.8 first argument name clashes with command option.
         Command().execute('money_app', name=MIGRATION_NAME, verbosity=1)
 
 
