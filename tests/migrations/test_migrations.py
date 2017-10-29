@@ -25,7 +25,7 @@ class TestMigrationFramework:
             {'ENGINE': 'django.db.backends.postgresql', 'NAME': 'djmoney', 'USER': 'postgres'},
         ],
     )
-    def setup(self, testdir, request):
+    def setup(self, testdir, request, db):
         """
         Creates application module, helpers and settings file with basic config.
         """
