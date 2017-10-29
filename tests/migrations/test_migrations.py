@@ -81,8 +81,9 @@ class TestMigrationFramework:
     def create_instance(self):
         self.run('''
         from money_app.models import Model
+        from djmoney.money import Money
 
-        Model.objects.create(field=10)''')
+        Model.objects.create(field=Money(10, 'USD'))''')
 
     def migrate(self):
         return self.run('from tests.migrations.helpers import migrate; migrate();')
@@ -181,6 +182,13 @@ class TestMigrationFramework:
             '*- Rename field field_currency on model to new_field_currency*',
         ])
         self.assert_migrate(['*Applying money_app.0002_test... OK*'])
+        result = self.run('''
+        from money_app.models import Model
+
+        instance = Model.objects.get()
+        print(instance.new_field)
+        ''')
+        result.stdout.fnmatch_lines(['US$10.00'])
 
     def test_migrate_to_moneyfield(self):
         self.make_default_migration(field='models.DecimalField(max_digits=10, decimal_places=2)')
