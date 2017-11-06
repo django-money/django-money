@@ -10,6 +10,7 @@ Contents
    :maxdepth: 2
 
    changes
+   contributing
 
 
 Indices and tables
