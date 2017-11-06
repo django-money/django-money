@@ -1,3 +1,3 @@
 .. _contributing:
 
-.. include:: ../../CONTRIBUTING.rst
+.. include:: ../CONTRIBUTING.rst
