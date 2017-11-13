@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import django
 from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
@@ -43,7 +44,10 @@ def _get_field(model, name):
             # to continue traversing relations.
             if counter < num_parts:
                 try:
-                    model = lookup_field.rel.to
+                    if django.VERSION < (1, 10):
+                        model = lookup_field.rel.to
+                    else:
+                        model = lookup_field.remote_field.model
                 except AttributeError:
                     # Not a related field. Bail out.
                     parts.pop()
