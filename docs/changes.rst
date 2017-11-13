@@ -10,6 +10,7 @@ Fixed
 ~~~~~
 
 - Fixed migrations on SQLite. `#139`_, `#338`_ (`Stranger6667`_)
+- Fixed ``Field.rel.to`` usage for Django 2.0. `#349`_ (`richardowen`_)
 
 `0.12`_ - 2017-10-22
 --------------------
