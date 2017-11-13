@@ -422,6 +422,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#349: https://github.com/django-money/django-money/pull/349
 .. _#338: https://github.com/django-money/django-money/issues/338
 .. _#337: https://github.com/django-money/django-money/issues/337
 .. _#334: https://github.com/django-money/django-money/issues/334
@@ -521,6 +522,7 @@ Added
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach
+.. _richardowen: https://github.com/richardowen
 .. _sjdines: https://github.com/sjdines
 .. _snbuchholz: https://github.com/snbuchholz
 .. _spookylukey: https://github.com/spookylukey
