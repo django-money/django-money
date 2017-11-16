@@ -13,12 +13,12 @@ fields = pytest.importorskip('rest_framework.fields')
 
 class TestMoneyField:
 
-    def get_serializer(self, model_class, instance=None, data=fields.empty):
+    def get_serializer(self, model_class, instance=None, data=fields.empty, fields_='__all__'):
 
         class Serializer(serializers.ModelSerializer):
             class Meta:
                 model = model_class
-                fields = '__all__'
+                fields = fields_
 
         return Serializer(instance=instance, data=data)
 
@@ -79,3 +79,8 @@ class TestMoneyField:
         serializer = self.get_serializer(NullMoneyFieldModel, data=body)
         serializer.is_valid()
         assert serializer.validated_data['field'] == expected
+
+    def test_serializer_with_fields(self):
+        serializer = self.get_serializer(ModelWithVanillaMoneyField, data={'money': '10.00'}, fields_=('money', ))
+        serializer.is_valid(True)
+        assert serializer.data == {'money': '10.00'}
