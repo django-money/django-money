@@ -13,7 +13,13 @@ class MoneyField(DecimalField):
     """
 
     def to_representation(self, obj):
-        return super(MoneyField, self).to_representation(obj.amount)
+        """
+        When ``field_currency`` is not in ``self.validated_data`` then ``obj`` is an instance of ``Decimal``, otherwise
+        it is ``Money``.
+        """
+        if isinstance(obj, MONEY_CLASSES):
+            obj = obj.amount
+        return super(MoneyField, self).to_representation(obj)
 
     def to_internal_value(self, data):
         if isinstance(data, MONEY_CLASSES):

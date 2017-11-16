@@ -11,6 +11,7 @@ Fixed
 
 - Fixed migrations on SQLite. `#139`_, `#338`_ (`Stranger6667`_)
 - Fixed ``Field.rel.to`` usage for Django 2.0. `#349`_ (`richardowen`_)
+- Fixed Django REST Framework behaviour for serializers without `*_currency` field in serializer's ``Meta.fields``. `#351`_ (`elcolie`_, `Stranger6667`_)
 
 `0.12`_ - 2017-10-22
 --------------------
@@ -422,6 +423,7 @@ Added
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 
+.. _#351: https://github.com/django-money/django-money/issues/351
 .. _#349: https://github.com/django-money/django-money/pull/349
 .. _#338: https://github.com/django-money/django-money/issues/338
 .. _#337: https://github.com/django-money/django-money/issues/337
@@ -499,6 +501,7 @@ Added
 .. _devlocal: https://github.com/devlocal
 .. _dnmellen: https://github.com/dnmellen
 .. _edwinlunando: https://github.com/edwinlunando
+.. _elcolie: https://github.com/elcolie
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
