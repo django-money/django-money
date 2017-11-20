@@ -3,8 +3,8 @@
 Changelog
 =========
 
-`Unreleased`_
--------------
+`0.12.1`_ - 2017-11-20
+----------------------
 
 Fixed
 ~~~~~
@@ -391,6 +391,7 @@ Added
 - Initial public release
 
 .. _Unreleased: https://github.com/django-money/django-money/compare/0.12...HEAD
+.. _0.12.1: https://github.com/django-money/django-money/compare/0.12...0.12.1
 .. _0.12: https://github.com/django-money/django-money/compare/0.11.4...0.12
 .. _0.11.4: https://github.com/django-money/django-money/compare/0.11.3...0.11.4
 .. _0.11.3: https://github.com/django-money/django-money/compare/0.11.2...0.11.3
@@ -422,6 +423,7 @@ Added
 .. _0.3.2: https://github.com/django-money/django-money/compare/0.3.1...0.3.2
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
+.. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
 .. _#351: https://github.com/django-money/django-money/issues/351
 .. _#349: https://github.com/django-money/django-money/pull/349
