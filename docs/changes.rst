@@ -3,6 +3,14 @@
 Changelog
 =========
 
+`Unreleased`_
+-------------
+
+Fixed
+~~~~~
+
+- Django master branch compatibility. `#361`_ (`Stranger6667`_)
+
 `0.12.1`_ - 2017-11-20
 ----------------------
 
@@ -425,6 +433,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#361: https://github.com/django-money/django-money/issues/361
 .. _#351: https://github.com/django-money/django-money/issues/351
 .. _#349: https://github.com/django-money/django-money/pull/349
 .. _#338: https://github.com/django-money/django-money/issues/338
