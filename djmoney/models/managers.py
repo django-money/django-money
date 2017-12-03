@@ -164,11 +164,11 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
 
 def _handle_currency_field(model, name, kwargs):
     name = _get_clean_name(model, name)
-    money_field_name = name[:-9]  # Remove '_currency'
-    money_field = _get_field(model, money_field_name)
-    if money_field.default is not None:
+    field = _get_field(model, name)
+    money_field = field.price_field
+    if money_field.default is not None and money_field.name not in kwargs:
         kwargs['defaults'] = kwargs.get('defaults', {})
-        kwargs['defaults'][money_field_name] = money_field.default.amount
+        kwargs['defaults'][money_field.name] = money_field.default.amount
 
 
 def _get_model(args, func):
