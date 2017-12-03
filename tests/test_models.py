@@ -278,24 +278,28 @@ class TestVanillaMoneyField:
 class TestGetOrCreate:
 
     @pytest.mark.parametrize(
-        'kwargs, currency',
+        'model, field_name, kwargs, currency',
         (
-            ({'money_currency': 'PLN'}, 'PLN'),
-            ({'money': Money(0, 'EUR')}, 'EUR'),
-            ({'money': OldMoney(0, 'EUR')}, 'EUR'),
+            (ModelWithVanillaMoneyField, 'money', {'money_currency': 'PLN'}, 'PLN'),
+            (ModelWithVanillaMoneyField, 'money', {'money': Money(0, 'EUR')}, 'EUR'),
+            (ModelWithVanillaMoneyField, 'money', {'money': OldMoney(0, 'EUR')}, 'EUR'),
+            (ModelWithSharedCurrency, 'first', {'first': 10, 'second': 15, 'currency': 'CZK'}, 'CZK')
         )
     )
-    def test_get_or_create_respects_currency(self, kwargs, currency):
-        instance, created = ModelWithVanillaMoneyField.objects.get_or_create(**kwargs)
-        assert str(instance.money.currency) == currency, 'currency should be taken into account in get_or_create'
+    def test_get_or_create_respects_currency(self, model, field_name, kwargs, currency):
+        instance, created = model.objects.get_or_create(**kwargs)
+        field = getattr(instance, field_name)
+        assert str(field.currency) == currency, 'currency should be taken into account in get_or_create'
 
     def test_get_or_create_respects_defaults(self):
-        instance = ModelWithUniqueIdAndCurrency.objects.create(money=Money(0, 'SEK'))
-        _, created = ModelWithUniqueIdAndCurrency.objects.get_or_create(
+        value = Money(10, 'SEK')
+        instance = ModelWithUniqueIdAndCurrency.objects.create(money=value)
+        instance, created = ModelWithUniqueIdAndCurrency.objects.get_or_create(
             id=instance.id,
             money_currency=instance.money_currency
         )
         assert not created
+        assert instance.money == value
 
     def test_defaults(self):
         money = Money(10, 'EUR')
@@ -303,14 +307,25 @@ class TestGetOrCreate:
         assert instance.money == money
 
     def test_currency_field_lookup(self):
-        ModelWithVanillaMoneyField.objects.create(money=Money(0, 'EUR'))
+        value = Money(10, 'EUR')
+        ModelWithVanillaMoneyField.objects.create(money=value)
         instance, created = ModelWithVanillaMoneyField.objects.get_or_create(money_currency__iexact='eur')
         assert not created
+        assert instance.money == value
 
-    def test_no_default_model(self):
-        NullMoneyFieldModel.objects.create(field=Money(100, 'USD'))
-        instance, created = NullMoneyFieldModel.objects.get_or_create(field=100, field_currency='USD')
+    @pytest.mark.parametrize('model, create_kwargs, get_kwargs', (
+        (NullMoneyFieldModel, {'field': Money(100, 'USD')}, {'field': 100, 'field_currency': 'USD'}),
+        (ModelWithSharedCurrency, {'first': 10, 'second': 15, 'currency': 'USD'}, {'first': 10, 'currency': 'USD'}),
+    ))
+    def test_no_default_model(self, model, create_kwargs, get_kwargs):
+        model.objects.create(**create_kwargs)
+        instance, created = model.objects.get_or_create(**get_kwargs)
         assert not created
+
+    def test_shared_currency(self):
+        instance, created = ModelWithSharedCurrency.objects.get_or_create(first=10, second=15, currency='USD')
+        assert instance.first == Money(10, 'USD')
+        assert instance.second == Money(15, 'USD')
 
 
 class TestFExpressions:
