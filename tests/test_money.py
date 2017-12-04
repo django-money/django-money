@@ -13,7 +13,7 @@ def test_float():
 
 
 def test_repr():
-    assert repr(Money('10.5', 'USD')) == '10 USD'
+    assert repr(Money('10.5', 'USD')) == '<Money: 10.5 USD>'
 
 
 def test_html_safe():
@@ -22,6 +22,7 @@ def test_html_safe():
 
 def test_html_unsafe():
     class UnsafeMoney(Money):
+
         def __unicode__(self):
             return '<script>'
 
