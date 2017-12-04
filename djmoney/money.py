@@ -1,6 +1,4 @@
 # coding: utf-8
-from decimal import ROUND_DOWN
-
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
@@ -69,9 +67,6 @@ class Money(DefaultMoney):
         if not isinstance(value, str):
             value = value.encode('utf8')
         return value
-
-    def __repr__(self):
-        return '%s %s' % (self.amount.to_integral_value(ROUND_DOWN), self.currency)
 
     def __html__(self):
         return mark_safe(avoid_wrapping(conditional_escape(self.__unicode__())))

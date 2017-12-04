@@ -12,6 +12,10 @@ Fixed
 - Django master branch compatibility. `#361`_ (`Stranger6667`_)
 - Fixed ``get_or_create`` for models with shared currency. `#364`_ (`Stranger6667`_)
 
+Changed
+~~~~~~~
+- Removed confusing rounding to integral value in ``Money.__repr__``. `#366`_ (`Stranger6667`_, `evenicoulddoit`_)
+
 `0.12.1`_ - 2017-11-20
 ----------------------
 
@@ -434,6 +438,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#366: https://github.com/django-money/django-money/issues/366
 .. _#364: https://github.com/django-money/django-money/issues/364
 .. _#361: https://github.com/django-money/django-money/issues/361
 .. _#351: https://github.com/django-money/django-money/issues/351
@@ -516,6 +521,7 @@ Added
 .. _edwinlunando: https://github.com/edwinlunando
 .. _elcolie: https://github.com/elcolie
 .. _eriktelepovsky: https://github.com/eriktelepovsky
+.. _evenicoulddoit: https://github.com/evenicoulddoit
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
 .. _gonzalobf: https://github.com/gonzalobf
