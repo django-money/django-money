@@ -3,6 +3,19 @@
 Changelog
 =========
 
+`0.12.2`_ - 2017-12-12
+----------------------
+
+Fixed
+~~~~~
+
+- Django master branch compatibility. `#361`_ (`Stranger6667`_)
+- Fixed ``get_or_create`` for models with shared currency. `#364`_ (`Stranger6667`_)
+
+Changed
+~~~~~~~
+- Removed confusing rounding to integral value in ``Money.__repr__``. `#366`_ (`Stranger6667`_, `evenicoulddoit`_)
+
 `0.12.1`_ - 2017-11-20
 ----------------------
 
@@ -390,7 +403,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.12...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.12.2..HEAD
+.. _0.12.2: https://github.com/django-money/django-money/compare/0.12.1..0.12.2
 .. _0.12.1: https://github.com/django-money/django-money/compare/0.12...0.12.1
 .. _0.12: https://github.com/django-money/django-money/compare/0.11.4...0.12
 .. _0.11.4: https://github.com/django-money/django-money/compare/0.11.3...0.11.4
@@ -425,6 +439,9 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#366: https://github.com/django-money/django-money/issues/366
+.. _#364: https://github.com/django-money/django-money/issues/364
+.. _#361: https://github.com/django-money/django-money/issues/361
 .. _#351: https://github.com/django-money/django-money/issues/351
 .. _#349: https://github.com/django-money/django-money/pull/349
 .. _#338: https://github.com/django-money/django-money/issues/338
@@ -505,6 +522,7 @@ Added
 .. _edwinlunando: https://github.com/edwinlunando
 .. _elcolie: https://github.com/elcolie
 .. _eriktelepovsky: https://github.com/eriktelepovsky
+.. _evenicoulddoit: https://github.com/evenicoulddoit
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
 .. _gonzalobf: https://github.com/gonzalobf
