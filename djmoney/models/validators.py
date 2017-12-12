@@ -29,7 +29,7 @@ class BaseMoneyValidator(BaseValidator):
     def __call__(self, value):
         cleaned = self.clean(value)
         limit_value = self.get_limit_value(cleaned)
-        if not limit_value:
+        if limit_value is None:
             return
         if isinstance(limit_value, (int, Decimal)):
             cleaned = cleaned.amount
