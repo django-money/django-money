@@ -172,3 +172,13 @@ class ValidatedMoneyModel(models.Model):
             MaxMoneyValidator(1500),
         ]
     )
+
+
+class PositiveValidatedMoneyModel(models.Model):
+    """Validated model with a field requiring a non-negative value."""
+    money = MoneyField(
+        max_digits=10, decimal_places=2,
+        validators=[
+            MinMoneyValidator(0),
+        ]
+    )

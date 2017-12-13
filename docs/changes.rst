@@ -3,6 +3,12 @@
 Changelog
 =========
 
+`Unreleased`_
+-------------
+
+- Fixed `BaseMoneyValidator` with falsy limit values. `#371`_ (`1337`_)
+
+
 `0.12.2`_ - 2017-12-12
 ----------------------
 
@@ -439,6 +445,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#371: https://github.com/django-money/django-money/issues/371
 .. _#366: https://github.com/django-money/django-money/issues/366
 .. _#364: https://github.com/django-money/django-money/issues/364
 .. _#361: https://github.com/django-money/django-money/issues/361
@@ -555,3 +562,4 @@ Added
 .. _yellow-sky: https://github.com/yellow-sky
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
+.. _1337: https://github.com/1337

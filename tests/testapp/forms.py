@@ -15,6 +15,7 @@ from .models import (
     ModelWithValidation,
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
+    PositiveValidatedMoneyModel,
     ValidatedMoneyModel,
 )
 
@@ -63,4 +64,11 @@ class ValidatedMoneyModelForm(forms.ModelForm):
 
     class Meta:
         model = ValidatedMoneyModel
+        fields = ('money', )
+
+
+class PositiveValidatedMoneyModelForm(forms.ModelForm):
+
+    class Meta:
+        model = PositiveValidatedMoneyModel
         fields = ('money', )
