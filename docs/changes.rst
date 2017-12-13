@@ -11,7 +11,6 @@ Fixed
 
 - Fixed `BaseMoneyValidator` with falsy limit values. `#371`_ (`1337`_)
 
-
 `0.12.2`_ - 2017-12-12
 ----------------------
 
