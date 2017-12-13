@@ -155,18 +155,19 @@ class TestValidation:
     def test_valid(self, value):
         assert ValidatedMoneyModelForm(data={'money_0': value.amount, 'money_1': value.currency}).is_valid()
 
-    @pytest.mark.parametrize('value, error', (
-        (Money(-0.01, 'EUR'), 'Ensure this value is greater than or equal to 0.'),
-        (Money(-1, 'USD'), 'Ensure this value is greater than or equal to 0.'),
-        (Money(-10, 'NOK'), 'Ensure this value is greater than or equal to 0.'),
-        (Money(-100, 'SEK'), 'Ensure this value is greater than or equal to 0.'),
+    @pytest.mark.parametrize('value', (
+        Money(-0.01, 'EUR'),
+        Money(-1, 'USD'),
+        Money(-10, 'NOK'),
+        Money(-100, 'SEK'),
     ))
-    def test_non_negative_validator(self, value, error):
+    def test_non_negative_validator(self, value):
         """Fails if Validator(0) silently allows negative values."""
         form = PositiveValidatedMoneyModelForm(
-            data={'money_0': value.amount, 'money_1': value.currency})
+            data={'money_0': value.amount, 'money_1': value.currency}
+        )
         assert not form.is_valid()
-        assert form.errors == {'money': [error]}
+        assert form.errors == {'money': ['Ensure this value is greater than or equal to 0.']}
 
     @pytest.mark.parametrize('value', (
         Money(0, 'PHP'),
@@ -181,7 +182,8 @@ class TestValidation:
         MinMoneyValidator(0) should also allow exactly 0.
         """
         form = PositiveValidatedMoneyModelForm(
-            data={'money_0': value.amount, 'money_1': value.currency})
+            data={'money_0': value.amount, 'money_1': value.currency}
+        )
         assert form.is_valid()
 
     def test_default_django_validator(self):
