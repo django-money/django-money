@@ -6,6 +6,9 @@ Changelog
 `Unreleased`_
 -------------
 
+Fixed
+~~~~~
+
 - Fixed `BaseMoneyValidator` with falsy limit values. `#371`_ (`1337`_)
 
 
