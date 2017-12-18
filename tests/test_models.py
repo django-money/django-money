@@ -577,12 +577,16 @@ class TestDifferentCurrencies:
     def test_ne_currency(self):
         assert Money(10, 'EUR') != Money(10, 'USD')
 
-    @pytest.mark.skipif(VERSION[:2] != (1, 8), reason='djmoney_rates supports only Django 1.8')
+    @pytest.mark.skipif(VERSION[:2] != (1, 11), reason='djmoney_rates supports only Django 1.8')
     def test_incompatibility(self, settings):
+        """
+        Django 1.11 is the only supported version, that will raise this exception during conversion.
+        Other versions will not even run.
+        """
         settings.AUTO_CONVERT_MONEY = True
         with pytest.raises(ImproperlyConfigured) as exc:
             Money(10, 'EUR') - Money(1, 'USD')
-        assert str(exc.value) == 'djmoney_rates doesn\'t support Django %d.%d' % VERSION[:2]
+        assert str(exc.value) == 'djmoney_rates supports only Django 1.8'
 
     @pytest.mark.skipif(VERSION[:2] != (1, 8), reason='djmoney_rates supports only Django 1.8')
     def test_djmoney_rates_not_installed(self, settings):
