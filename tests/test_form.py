@@ -109,7 +109,7 @@ def test_default_currency():
     """
     instance = NullMoneyFieldModel.objects.create()
     form = NullableModelForm(instance=instance)
-    if VERSION[:2] > (1, 10):
+    if VERSION[:2] >= (1, 11):
         expected = '<option value="USD" selected>US Dollar</option>'
     else:
         expected = '<option value="USD" selected="selected">US Dollar</option>'
