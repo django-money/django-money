@@ -6,11 +6,13 @@ Changelog
 `Unreleased`_
 -------------
 
+`0.12.3`_ - 2017-12-13
+----------------------
+
 Fixed
 ~~~~~
 
 - Fixed `BaseMoneyValidator` with falsy limit values. `#371`_ (`1337`_)
-
 
 `0.12.2`_ - 2017-12-12
 ----------------------
@@ -412,7 +414,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.12.2..HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.12.3..HEAD
+.. _0.12.3: https://github.com/django-money/django-money/compare/0.12.2..0.12.3
 .. _0.12.2: https://github.com/django-money/django-money/compare/0.12.1..0.12.2
 .. _0.12.1: https://github.com/django-money/django-money/compare/0.12...0.12.1
 .. _0.12: https://github.com/django-money/django-money/compare/0.11.4...0.12
