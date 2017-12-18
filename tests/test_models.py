@@ -581,7 +581,7 @@ class TestDifferentCurrencies:
     def test_incompatibility(self, settings):
         """
         Django 1.11 is the only supported version, that will raise this exception during conversion.
-        Other versions will not even run.
+        Newer versions will not even run.
         """
         settings.AUTO_CONVERT_MONEY = True
         with pytest.raises(ImproperlyConfigured) as exc:
