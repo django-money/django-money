@@ -414,9 +414,9 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.12.3..HEAD
-.. _0.12.3: https://github.com/django-money/django-money/compare/0.12.2..0.12.3
-.. _0.12.2: https://github.com/django-money/django-money/compare/0.12.1..0.12.2
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.12.3...HEAD
+.. _0.12.3: https://github.com/django-money/django-money/compare/0.12.2...0.12.3
+.. _0.12.2: https://github.com/django-money/django-money/compare/0.12.1...0.12.2
 .. _0.12.1: https://github.com/django-money/django-money/compare/0.12...0.12.1
 .. _0.12: https://github.com/django-money/django-money/compare/0.11.4...0.12
 .. _0.11.4: https://github.com/django-money/django-money/compare/0.11.3...0.11.4
