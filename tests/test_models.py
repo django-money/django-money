@@ -182,7 +182,7 @@ class TestVanillaMoneyField:
     def test_comparison_lookup(self, filters, expected_count):
         assert ModelWithTwoMoneyFields.objects.filter(filters).count() == expected_count
 
-    @pytest.mark.skipif(VERSION < (1, 9), reason='Only Django 1.9+ supports __date lookup')
+    @pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't support __date lookup")
     def test_date_lookup(self):
         DateTimeModel.objects.create(field=Money(1, 'USD'), created='2016-12-05')
         assert DateTimeModel.objects.filter(created__date='2016-12-01').count() == 0
@@ -458,7 +458,7 @@ class TestExpressions:
         assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(10, 'USD')
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(0, 'USD')
 
-    @pytest.mark.skipif(VERSION < (1, 9), reason='Only Django 1.9+ supports this')
+    @pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't supports this")
     def test_create_func(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Func(Value(-10), function='ABS'))
         instance.refresh_from_db()
@@ -577,14 +577,18 @@ class TestDifferentCurrencies:
     def test_ne_currency(self):
         assert Money(10, 'EUR') != Money(10, 'USD')
 
-    @pytest.mark.skipif(VERSION < (1, 9) or VERSION > (2, 0), reason='djmoney_rates supports only Django < 1.9')
+    @pytest.mark.skipif(VERSION[:2] != (1, 11), reason='djmoney_rates supports only Django 1.8')
     def test_incompatibility(self, settings):
+        """
+        Django 1.11 is the only supported version, that will raise this exception during conversion.
+        Newer versions will not even run.
+        """
         settings.AUTO_CONVERT_MONEY = True
         with pytest.raises(ImproperlyConfigured) as exc:
             Money(10, 'EUR') - Money(1, 'USD')
-        assert str(exc.value) == 'djmoney_rates doesn\'t support Django 1.9+'
+        assert str(exc.value) == 'djmoney_rates supports only Django 1.8'
 
-    @pytest.mark.skipif(VERSION[:2] >= (2, 0), reason='djmoney_rates supports only Django < 1.9')
+    @pytest.mark.skipif(VERSION[:2] != (1, 8), reason='djmoney_rates supports only Django 1.8')
     def test_djmoney_rates_not_installed(self, settings):
         settings.AUTO_CONVERT_MONEY = True
         settings.INSTALLED_APPS.remove('djmoney_rates')
@@ -608,7 +612,7 @@ def test_manager_instance_access(model_class):
         model_class().objects.all()
 
 
-@pytest.mark.skipif(VERSION >= (1, 10), reason='Django >= 1.10 dropped `get_field_by_name` method of `Options`.')
+@pytest.mark.skipif(VERSION[:2] != (1, 8), reason='Only Django 1.8 has `get_field_by_name` method of `Options`.')
 def test_get_field_by_name():
     assert BaseModel._meta.get_field_by_name('money')[0].__class__.__name__ == 'MoneyField'
     assert BaseModel._meta.get_field_by_name('money_currency')[0].__class__.__name__ == 'CurrencyField'

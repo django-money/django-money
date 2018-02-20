@@ -43,7 +43,7 @@ except ImportError:
 def setup_managers(sender):
     from .models.managers import money_manager
 
-    if VERSION >= (1, 10):
+    if VERSION >= (1, 11):
         for manager in filter(lambda m: m.name == 'objects', sender._meta.local_managers):
             money_manager(manager)
     else:
