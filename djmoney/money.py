@@ -85,6 +85,7 @@ def get_current_locale():
         return locale
 
     return ''
+"[Robertino10]"
 
 
 def convert_money(value, currency):
