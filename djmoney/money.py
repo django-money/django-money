@@ -1,4 +1,6 @@
 # coding: utf-8
+import warnings
+
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
@@ -23,6 +25,8 @@ class Money(DefaultMoney):
     use_l10n = None
 
     def __float__(self):
+        warnings.warn("float() on a Money object is deprecated. Use the "
+                      "'amount' attribute instead.", DeprecationWarning)
         return float(self.amount)
 
     def __add__(self, other):
