@@ -24,6 +24,14 @@ OPENEXCHANGERATES_RESPONSE = '''{
 }'''
 EXPECTED_RATES = json.loads(OPENEXCHANGERATES_RESPONSE, parse_float=Decimal)['rates']
 
+FIXER_IO_RESPONSE = '''{
+    "success":true,
+    "timestamp":1522788248,
+    "base":"EUR",
+    "date":"2018-04-03",
+    "rates":{"USD":1.227439,"NOK":9.624334,"SEK":10.300293}
+}'''
+
 
 @pytest.fixture()
 def rates_response():
