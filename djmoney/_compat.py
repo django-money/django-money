@@ -29,6 +29,13 @@ except NameError:
 
 
 try:
+    from urllib2 import urlopen
+    from urlparse import urlparse, parse_qsl, urlunparse
+except ImportError:
+    from urllib.request import urlopen
+    from urllib.parse import urlparse, parse_qsl, urlunparse
+
+try:
     from django.core.validators import DecimalValidator
 
     class MoneyValidator(DecimalValidator):

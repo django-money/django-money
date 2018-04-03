@@ -22,6 +22,11 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+            ],
+        },
     },
 ]
 
@@ -35,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'djmoney',
+    'djmoney.contrib.exchange',
     'reversion',
 
     'tests.testapp'
@@ -45,7 +51,7 @@ if VERSION < (2, 0):
 
 
 SITE_ID = 1
-ROOT_URLCONF = 'core.urls'
+# ROOT_URLCONF = 'core.urls'
 
 SECRET_KEY = 'foobar'
 

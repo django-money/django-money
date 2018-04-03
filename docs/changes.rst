@@ -6,6 +6,11 @@ Changelog
 `Unreleased`_
 -------------
 
+Added
+~~~~~
+
+- Currency exchange. (`Stranger6667`_)
+
 `0.12.3`_ - 2017-12-13
 ----------------------
 
