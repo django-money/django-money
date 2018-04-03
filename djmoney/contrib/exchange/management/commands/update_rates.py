@@ -16,6 +16,6 @@ class Command(BaseCommand):
             default=settings.EXCHANGE_BACKEND,
         )
 
-    def handle(self, *args, backend, **options):
-        backend = import_string(backend)()
+    def handle(self, *args, **options):
+        backend = import_string(options['backend'])()
         backend.update_rates()
