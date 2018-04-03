@@ -45,7 +45,6 @@ if VERSION < (2, 0):
 
 
 SITE_ID = 1
-ROOT_URLCONF = 'core.urls'
 
 SECRET_KEY = 'foobar'
 
