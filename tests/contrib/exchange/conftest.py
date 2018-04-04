@@ -14,11 +14,6 @@ from tests._compat import Mock, patch
 pytestmarks = pytest.mark.django_db
 
 
-@pytest.fixture()
-def backend():
-    return ExchangeBackend.objects.create(name='Test', base_currency='USD')
-
-
 OPEN_EXCHANGE_RATES_RESPONSE = '''{
     "disclaimer": "Usage subject to terms: https://openexchangerates.org/terms",
     "license": "https://openexchangerates.org/license",

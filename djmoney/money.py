@@ -1,6 +1,5 @@
 # coding: utf-8
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
 from django.utils import translation
 from django.utils.deconstruct import deconstructible
@@ -90,15 +89,10 @@ def get_current_locale():
 def convert_money(value, currency):
     """
     Converts other Money instances to the local currency.
-    If django-money-rates is installed we can automatically perform operations with different currencies.
     """
     if getattr(settings, 'AUTO_CONVERT_MONEY', False):
-        if 'djmoney_rates' in settings.INSTALLED_APPS:
-            try:
-                from djmoney_rates.utils import convert_money
+        from djmoney.contrib.exchange.models import get_rate
 
-                return convert_money(value.amount, value.currency, currency)
-            except ImportError:
-                raise ImproperlyConfigured('djmoney_rates supports only Django 1.8')
-        raise ImproperlyConfigured('You must install djmoney-rates to use AUTO_CONVERT_MONEY = True')
+        amount = value.amount * get_rate(value.currency, currency)
+        return Money(amount, currency)
     return value

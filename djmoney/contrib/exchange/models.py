@@ -24,6 +24,8 @@ def get_rate(source, target):
     Returns an exchange rate between source and target currencies.
     Converts exchange rate on the DB side if there is no backends with given base currency.
     """
+    if source == target:
+        return 1
     try:
         forward = models.Q(currency=target, backend__base_currency=source)
         reverse = models.Q(currency=source, backend__base_currency=target)
@@ -35,9 +37,3 @@ def get_rate(source, target):
         ).get(forward | reverse).rate
     except Rate.DoesNotExist:
         raise MissingRate('Rate %s -> %s does not exist' % (source, target))
-
-
-def convert(amount, source, target):
-    if source == target:
-        return amount
-    return amount * get_rate(source, target)
