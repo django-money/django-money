@@ -3,6 +3,10 @@ from decimal import Decimal
 
 import pytest
 
+from djmoney.contrib.exchange.backends import (
+    FixerBackend,
+    OpenExchangeRatesBackend,
+)
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 from tests._compat import Mock, patch
 
@@ -15,37 +19,42 @@ def backend():
     return ExchangeBackend.objects.create(name='Test', base_currency='USD')
 
 
-OPENEXCHANGERATES_RESPONSE = '''{
+OPEN_EXCHANGE_RATES_RESPONSE = '''{
     "disclaimer": "Usage subject to terms: https://openexchangerates.org/terms",
     "license": "https://openexchangerates.org/license",
     "timestamp": 1522749600,
     "base": "USD",
     "rates": {"EUR": 0.812511, "NOK": 7.847505, "SEK": 8.379037}
 }'''
-EXPECTED_RATES = json.loads(OPENEXCHANGERATES_RESPONSE, parse_float=Decimal)['rates']
+OPEN_EXCHANGE_RATES_EXPECTED = json.loads(OPEN_EXCHANGE_RATES_RESPONSE, parse_float=Decimal)['rates']
 
-FIXER_IO_RESPONSE = '''{
+FIXER_RESPONSE = '''{
     "success":true,
     "timestamp":1522788248,
     "base":"EUR",
     "date":"2018-04-03",
     "rates":{"USD":1.227439,"NOK":9.624334,"SEK":10.300293}
 }'''
+FIXER_EXPECTED = json.loads(FIXER_RESPONSE, parse_float=Decimal)['rates']
 
 
-@pytest.fixture()
-def rates_response():
-    response = Mock()
-    response.read.return_value = OPENEXCHANGERATES_RESPONSE
-    with patch('djmoney.contrib.exchange.backends.base.urlopen', return_value=response):
-        yield
-
-
-@pytest.mark.usefixtures('rates_response')
 class ExchangeTest:
+
+    @pytest.fixture(autouse=True, params=(
+        (OpenExchangeRatesBackend, OPEN_EXCHANGE_RATES_RESPONSE, OPEN_EXCHANGE_RATES_EXPECTED),
+        (FixerBackend, FIXER_RESPONSE, FIXER_EXPECTED)
+    ))
+    def setup(self, request):
+        klass, response_value, expected = request.param
+        self.backend = klass()
+        self.expected = expected
+        response = Mock()
+        response.read.return_value = response_value
+        with patch('djmoney.contrib.exchange.backends.base.urlopen', return_value=response):
+            yield
 
     def assert_rates(self):
         backend = ExchangeBackend.objects.get()
-        assert Rate.objects.count() == len(EXPECTED_RATES)
-        for currency, rate in EXPECTED_RATES.items():
+        assert Rate.objects.count() == len(self.expected)
+        for currency, rate in self.expected.items():
             assert Rate.objects.filter(currency=currency, value=rate, backend=backend)

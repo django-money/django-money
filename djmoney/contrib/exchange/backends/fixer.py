@@ -6,7 +6,7 @@ from djmoney import settings
 from .base import BaseExchangeBackend
 
 
-class FixerIOBackend(BaseExchangeBackend):
+class FixerBackend(BaseExchangeBackend):
     name = 'fixer.io'
 
     def __init__(self, base_url=settings.FIXER_URL, access_key=settings.FIXER_ACCESS_KEY,

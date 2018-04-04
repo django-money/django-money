@@ -24,6 +24,7 @@ class TestCommand(ExchangeTest):
         call_command('update_rates')
         self.assert_rates()
 
-    def test_custom_backend(self):
-        call_command('update_rates', backend=FixBackend.__module__ + '.' + FixBackend.__name__)
-        assert Rate.objects.filter(currency='EUR', value=1).exists()
+
+def test_custom_backend():
+    call_command('update_rates', backend=FixBackend.__module__ + '.' + FixBackend.__name__)
+    assert Rate.objects.filter(currency='EUR', value=1).exists()
