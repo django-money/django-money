@@ -1,5 +1,11 @@
+from django.core.exceptions import ImproperlyConfigured
+
 import pytest
 
+from djmoney.contrib.exchange.backends import (
+    FixerBackend,
+    OpenExchangeRatesBackend,
+)
 from djmoney.contrib.exchange.backends.base import BaseExchangeBackend
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 
@@ -9,7 +15,7 @@ from .conftest import ExchangeTest
 pytestmark = pytest.mark.django_db
 
 
-class TestOpenExchangeRates(ExchangeTest):
+class TestBackends(ExchangeTest):
 
     def test_get_rates(self):
         assert self.backend.get_rates() == self.expected
@@ -25,6 +31,12 @@ class TestOpenExchangeRates(ExchangeTest):
         self.backend.update_rates()
         backend.refresh_from_db()
         assert last_update < backend.last_update
+
+
+@pytest.mark.parametrize('backend', (FixerBackend, OpenExchangeRatesBackend))
+def test_missing_settings(backend):
+    with pytest.raises(ImproperlyConfigured):
+        backend(access_key=None)
 
 
 class FixedOneBackend(BaseExchangeBackend):

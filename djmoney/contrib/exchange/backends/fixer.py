@@ -1,3 +1,5 @@
+from django.core.exceptions import ImproperlyConfigured
+
 from djmoney import settings
 
 from .base import SimpleExchangeBackend
@@ -5,7 +7,12 @@ from .base import SimpleExchangeBackend
 
 class FixerBackend(SimpleExchangeBackend):
     name = 'fixer.io'
-    url = settings.FIXER_URL
+
+    def __init__(self, url=settings.FIXER_URL, access_key=settings.FIXER_ACCESS_KEY):
+        if access_key is None:
+            raise ImproperlyConfigured('settings.FIXER_ACCESS_KEY should be set to use FixerBackend')
+        self.url = url
+        self.access_key = access_key
 
     def get_params(self):
-        return {'access_key': settings.FIXER_ACCESS_KEY}
+        return {'access_key': self.access_key}
