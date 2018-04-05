@@ -9,11 +9,14 @@ class ExchangeBackend(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     base_currency = models.CharField(max_length=3, help_text=_('ISO 4217 currency code.'))
 
+    def clear_rates(self):
+        self.rates.all().delete()
+
 
 class Rate(models.Model):
     currency = models.CharField(max_length=3, help_text=_('ISO 4217 currency code.'))
     value = models.DecimalField(max_digits=20, decimal_places=6)
-    backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE)
+    backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name='rates')
 
     class Meta:
         unique_together = (('currency', 'backend'), )

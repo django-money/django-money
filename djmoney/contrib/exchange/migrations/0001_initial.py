@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('currency', models.CharField(help_text='ISO 4217 currency code.', max_length=3)),
                 ('value', models.DecimalField(decimal_places=6, max_digits=20)),
-                ('backend', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='exchange.ExchangeBackend')),
+                ('backend', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='exchange.ExchangeBackend', related_name='rates')),
             ],
         ),
         migrations.AlterUniqueTogether(
