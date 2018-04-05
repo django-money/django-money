@@ -12,9 +12,8 @@ pytestmark = pytest.mark.django_db
 
 
 class FixBackend(BaseExchangeBackend):
-    base_currency = 'USD'
 
-    def get_rates(self):
+    def get_rates(self, **params):
         return {'EUR': 1}
 
 
