@@ -12,7 +12,7 @@ from ..models import ExchangeBackend, Rate
 
 class BaseExchangeBackend(object):
     name = None
-    base_url = None
+    url = None
 
     def get_rates(self, **kwargs):
         """
@@ -24,7 +24,7 @@ class BaseExchangeBackend(object):
         """
         Updates base url with provided GET parameters.
         """
-        parts = list(urlparse(self.base_url))
+        parts = list(urlparse(self.url))
         query = dict(parse_qsl(parts[4]))
         query.update(params)
         parts[4] = urlencode(query)
