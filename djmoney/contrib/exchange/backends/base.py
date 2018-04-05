@@ -1,3 +1,6 @@
+import json
+from decimal import Decimal
+
 from django.db.transaction import atomic
 from django.utils.http import urlencode
 
@@ -27,6 +30,9 @@ class BaseExchangeBackend(object):
     def get_response(self, **params):
         response = urlopen(self.get_url(**params))
         return response.read()
+
+    def parse_json(self, response):
+        return json.loads(response, parse_float=Decimal)
 
     @atomic
     def update_rates(self):

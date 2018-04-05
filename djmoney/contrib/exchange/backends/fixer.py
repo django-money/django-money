@@ -1,6 +1,3 @@
-import json
-from decimal import Decimal
-
 from djmoney import settings
 
 from .base import BaseExchangeBackend
@@ -17,5 +14,4 @@ class FixerBackend(BaseExchangeBackend):
 
     def get_rates(self):
         response = self.get_response(base=self.base_currency, access_key=self.access_key)
-        data = json.loads(response, parse_float=Decimal)
-        return data['rates']
+        return self.parse_json(response)['rates']
