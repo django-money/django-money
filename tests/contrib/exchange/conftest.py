@@ -1,8 +1,6 @@
 import json
 from decimal import Decimal
 
-from django.utils.decorators import classproperty
-
 import pytest
 
 from djmoney.contrib.exchange.backends import (
@@ -58,21 +56,14 @@ class ExchangeTest:
             assert Rate.objects.filter(currency=currency, value=rate, backend=backend)
 
 
-class BaseTestBackend(BaseExchangeBackend):
-
-    @classproperty
-    def path(cls):
-        return cls.__module__ + '.' + cls.__name__
-
-
-class FixedOneBackend(BaseTestBackend):
+class FixedOneBackend(BaseExchangeBackend):
     name = 'first'
 
     def get_rates(self, **params):
         return {'EUR': 1}
 
 
-class FixedTwoBackend(BaseTestBackend):
+class FixedTwoBackend(BaseExchangeBackend):
     name = 'second'
 
     def get_rates(self, **params):

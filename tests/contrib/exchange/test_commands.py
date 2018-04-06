@@ -9,6 +9,8 @@ from .conftest import ExchangeTest, FixedOneBackend, FixedTwoBackend
 
 pytestmark = pytest.mark.django_db
 
+BACKEND_PATH = FixedOneBackend.__module__ + '.' + FixedOneBackend.__name__
+
 
 class TestCommand(ExchangeTest):
 
@@ -18,7 +20,7 @@ class TestCommand(ExchangeTest):
 
 
 def test_custom_backend():
-    call_command('update_rates', backend=FixedOneBackend.path)
+    call_command('update_rates', backend=BACKEND_PATH)
     assert Rate.objects.filter(currency='EUR', value=1).exists()
 
 
@@ -26,7 +28,7 @@ def test_custom_backend():
 class TestClearRates:
 
     def test_for_specific_backend(self):
-        call_command('clear_rates', backend=FixedOneBackend.path)
+        call_command('clear_rates', backend=BACKEND_PATH)
         assert not Rate.objects.filter(backend=FixedOneBackend.name).exists()
         assert Rate.objects.filter(backend=FixedTwoBackend.name).exists()
 
