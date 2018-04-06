@@ -363,11 +363,19 @@ Also, there are two management commands for updating rates and removing them:
 
 .. code:: bash
 
-    python manage.py update_rates
-    python manage.py clear_rates
+    $ python manage.py update_rates
+    $ python manage.py clear_rates
 
 Both of them accept ``-b/--backend`` option, that will update/clear data only for this backend.
 And ``clear_rates`` accepts ``-a/--all`` option, that will clear data for all backends.
+
+To convert one currency to another:
+
+.. code:: python
+
+    >>> from djmoney.money import Money, convert_money
+    >>> convert_money(Money(100, 'EUR'), 'USD')
+    <Money: 122.8184375038380800 USD>
 
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
