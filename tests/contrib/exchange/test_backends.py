@@ -6,10 +6,9 @@ from djmoney.contrib.exchange.backends import (
     FixerBackend,
     OpenExchangeRatesBackend,
 )
-from djmoney.contrib.exchange.backends.base import BaseExchangeBackend
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate, get_rate
 
-from .conftest import ExchangeTest
+from .conftest import ExchangeTest, FixedOneBackend, FixedTwoBackend
 
 
 pytestmark = pytest.mark.django_db
@@ -39,29 +38,12 @@ def test_missing_settings(backend):
         backend(access_key=None)
 
 
-class FixedOneBackend(BaseExchangeBackend):
-    name = 'first'
-
-    def get_rates(self, **params):
-        return {'EUR': 1}
-
-
-class FixedTwoBackend(BaseExchangeBackend):
-    name = 'second'
-
-    def get_rates(self, **params):
-        return {'EUR': 2}
-
-
+@pytest.mark.usefixtures('two_backends_data')
 def test_two_backends():
     """
     Two different backends should not interfere with each other.
     """
-    one = FixedOneBackend()
-    two = FixedTwoBackend()
-    one.update_rates()
-    two.update_rates()
-    for backend in (one, two):
+    for backend in (FixedOneBackend, FixedTwoBackend):
         assert Rate.objects.filter(backend__name=backend.name).count() == 1
-    assert get_rate('USD', 'EUR', backend=one.name) == 1
-    assert get_rate('USD', 'EUR', backend=two.name) == 2
+    assert get_rate('USD', 'EUR', backend=FixedOneBackend.name) == 1
+    assert get_rate('USD', 'EUR', backend=FixedTwoBackend.name) == 2

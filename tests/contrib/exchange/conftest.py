@@ -1,12 +1,15 @@
 import json
 from decimal import Decimal
 
+from django.utils.decorators import classproperty
+
 import pytest
 
 from djmoney.contrib.exchange.backends import (
     FixerBackend,
     OpenExchangeRatesBackend,
 )
+from djmoney.contrib.exchange.backends.base import BaseExchangeBackend
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 from tests._compat import Mock, patch
 
@@ -53,3 +56,30 @@ class ExchangeTest:
         assert Rate.objects.count() == len(self.expected)
         for currency, rate in self.expected.items():
             assert Rate.objects.filter(currency=currency, value=rate, backend=backend)
+
+
+class BaseTestBackend(BaseExchangeBackend):
+
+    @classproperty
+    def path(cls):
+        return cls.__module__ + '.' + cls.__name__
+
+
+class FixedOneBackend(BaseTestBackend):
+    name = 'first'
+
+    def get_rates(self, **params):
+        return {'EUR': 1}
+
+
+class FixedTwoBackend(BaseTestBackend):
+    name = 'second'
+
+    def get_rates(self, **params):
+        return {'EUR': 2}
+
+
+@pytest.fixture
+def two_backends_data():
+    FixedOneBackend().update_rates()
+    FixedTwoBackend().update_rates()

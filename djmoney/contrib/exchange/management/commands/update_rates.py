@@ -1,20 +1,10 @@
-from django.core.management.base import BaseCommand
 from django.utils.module_loading import import_string
 
-from djmoney import settings
+from ..base import BaseExchangeCommand
 
 
-class Command(BaseCommand):
-
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '-b', '--backend',
-            action='store',
-            dest='backend',
-            help='Importable string for custom exchange rates backend.',
-            required=False,
-            default=settings.EXCHANGE_BACKEND,
-        )
+class Command(BaseExchangeCommand):
+    help = 'Updates exchange rates.'
 
     def handle(self, *args, **options):
         backend = import_string(options['backend'])()

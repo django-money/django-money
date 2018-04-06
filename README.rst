@@ -359,6 +359,15 @@ There is a possibility to use multiple backends in the same time:
     >>> get_rate('USD', 'EUR', backend=FixerBackend.name)
 
 Regular operations with ``Money`` will use ``EXCHANGE_BACKEND`` backend to get the rates.
+Also, there are two management commands for updating rates and removing them:
+
+.. code:: bash
+
+    python manage.py update_rates
+    python manage.py clear_rates
+
+Both of them accept ``-b/--backend`` option, that will update/clear data only for this backend.
+And ``clear_rates`` accepts ``-a/--all`` option, that will clear data for all backends.
 
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
