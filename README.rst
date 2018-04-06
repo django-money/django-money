@@ -318,16 +318,19 @@ To work with exchange rates, add the following to your ``INSTALLED_APPS``.
     ]
 
 To create required relations run ``python manage.py migrate``. To fill these relations with data you need to choose a
-data source. Currently, 2 data sources are supported - ``https://openexchangerates.org/`` (default) and ``https://fixer.io/``.
-To choose another data source set ``EXCHANGE_BACKEND`` settings with importable string to the backend you need::
+data source. Currently, 2 data sources are supported - https://openexchangerates.org/ (default) and https://fixer.io/.
+To choose another data source set ``EXCHANGE_BACKEND`` settings with importable string to the backend you need:
+
+.. code:: python
 
     EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
 
 If you want to implement your own backend, you need to extend ``djmoney.contrib.exchange.backends.base.BaseExchangeBackend``.
 Two data sources mentioned above are not open, so you have to specify access keys in order to use them:
 
-  - OPEN_EXCHANGE_RATES_APP_ID for ``https://openexchangerates.org/``
-  - FIXER_ACCESS_KEY for ``https://fixer.io/``
+``OPEN_EXCHANGE_RATES_APP_ID`` for https://openexchangerates.org/
+
+``FIXER_ACCESS_KEY`` for https://fixer.io/
 
 Backends return rates for a base currency, by default it is USD, but could be changed via ``BASE_CURRENCY`` setting.
 Open Exchanger Rates & Fixer supports some extra stuff, like historical data or restricting currencies
