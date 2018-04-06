@@ -20,6 +20,9 @@ class Command(BaseExchangeCommand):
     def handle(self, *args, **options):
         if options['all']:
             Rate.objects.all().delete()
+            message = 'Successfully cleared all rates'
         else:
             backend = import_string(options['backend'])
             Rate.objects.filter(backend=backend.name).delete()
+            message = 'Successfully cleared rates for %s' % backend.name
+        self.success(message)

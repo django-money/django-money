@@ -18,3 +18,6 @@ class BaseExchangeCommand(BaseCommand):
             required=False,
             default=settings.EXCHANGE_BACKEND,
         )
+
+    def success(self, message):
+        self.stdout.write(self.style.SUCCESS(message))
