@@ -58,3 +58,12 @@ def setup_managers(sender):
             (_id, name, money_manager(manager))
             for _id, name, manager in sender._meta.concrete_managers if name == 'objects'
         ])
+
+
+def get_success_style(style):
+    """
+    Django 1.8 has no `SUCCESS` style, but `MIGRATE_SUCCESS` is the same.
+    """
+    if VERSION[:2] == (1, 8):
+        return style.MIGRATE_SUCCESS
+    return style.SUCCESS

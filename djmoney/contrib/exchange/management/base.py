@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from djmoney import settings
+from djmoney._compat import get_success_style
 
 
 class BaseExchangeCommand(BaseCommand):
@@ -20,4 +21,5 @@ class BaseExchangeCommand(BaseCommand):
         )
 
     def success(self, message):
-        self.stdout.write(self.style.SUCCESS(message))
+        style = get_success_style(self.style)
+        self.stdout.write(style(message))
