@@ -30,6 +30,15 @@ def get_default_backend_name():
     return import_string(EXCHANGE_BACKEND).name
 
 
+def get_one():
+    """
+    For SQLite it is required to cast value to NUMERIC type, otherwise integer division will be used.
+    """
+    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
+        return '1::NUMERIC'
+    return 1
+
+
 def get_rate(source, target, backend=None):
     """
     Returns an exchange rate between source and target currencies.
@@ -46,7 +55,7 @@ def get_rate(source, target, backend=None):
         return Rate.objects.annotate(
             rate=models.Case(
                 models.When(forward, then=models.F('value')),
-                models.When(reverse, then=models.Value('1::NUMERIC') / models.F('value')),
+                models.When(reverse, then=models.Value(get_one()) / models.F('value')),
             )
         ).get(forward | reverse, backend=backend).rate
     except Rate.DoesNotExist:
