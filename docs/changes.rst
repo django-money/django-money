@@ -22,7 +22,7 @@ Migration from django-money-rates
 The new application is a drop-in replacement for ``django-money-rates``.
 To migrate from ``django-money-rates``:
 
-- Replace ``djmoney_rates`` with ``djmoney.contrib.exchange``
+- In ``INSTALLED_APPS`` replace ``djmoney_rates`` with ``djmoney.contrib.exchange``
 - Set ``OPEN_EXCHANGE_RATES_APP_ID`` setting with your app id
 - Run ``python manage.py migrate``
 - Run ``python manage.py update_rates``
