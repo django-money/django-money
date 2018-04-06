@@ -1,5 +1,4 @@
 from django.db import models
-from django.utils.translation import ugettext_lazy as _
 
 from .exceptions import MissingRate
 
@@ -7,14 +6,14 @@ from .exceptions import MissingRate
 class ExchangeBackend(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
     last_update = models.DateTimeField(auto_now=True)
-    base_currency = models.CharField(max_length=3, help_text=_('ISO 4217 currency code.'))
+    base_currency = models.CharField(max_length=3)
 
     def clear_rates(self):
         self.rates.all().delete()
 
 
 class Rate(models.Model):
-    currency = models.CharField(max_length=3, help_text=_('ISO 4217 currency code.'))
+    currency = models.CharField(max_length=3)
     value = models.DecimalField(max_digits=20, decimal_places=6)
     backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name='rates')
 
