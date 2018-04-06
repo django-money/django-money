@@ -47,6 +47,7 @@ setup(
         'djmoney.templatetags',
         'djmoney.contrib',
         'djmoney.contrib.django_rest_framework',
+        'djmoney.contrib.exchange',
     ],
     install_requires=[
         'setuptools',
