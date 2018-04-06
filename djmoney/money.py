@@ -6,9 +6,11 @@ from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
 
-from djmoney.settings import DECIMAL_PLACES
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
+
+from .contrib.exchange.models import convert_money
+from .settings import DECIMAL_PLACES
 
 
 __all__ = ['Money', 'Currency']
@@ -27,13 +29,13 @@ class Money(DefaultMoney):
     def __add__(self, other):
         if isinstance(other, F):
             return other.__radd__(self)
-        other = convert_money(other, self.currency)
+        other = maybe_convert(other, self.currency)
         return super(Money, self).__add__(other)
 
     def __sub__(self, other):
         if isinstance(other, F):
             return other.__rsub__(self)
-        other = convert_money(other, self.currency)
+        other = maybe_convert(other, self.currency)
         return super(Money, self).__sub__(other)
 
     def __mul__(self, other):
@@ -86,13 +88,10 @@ def get_current_locale():
     return ''
 
 
-def convert_money(value, currency):
+def maybe_convert(value, currency):
     """
-    Converts other Money instances to the local currency.
+    Converts other Money instances to the local currency if `AUTO_CONVERT_MONEY` is set to True.
     """
     if getattr(settings, 'AUTO_CONVERT_MONEY', False):
-        from djmoney.contrib.exchange.models import get_rate
-
-        amount = value.amount * get_rate(value.currency, currency)
-        return Money(amount, currency)
+        return convert_money(value, currency)
     return value

@@ -1,7 +1,9 @@
+from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.module_loading import import_string
 
-from djmoney import settings
+from djmoney.settings import EXCHANGE_BACKEND
 
 from .exceptions import MissingRate
 
@@ -25,7 +27,7 @@ class Rate(models.Model):
 
 
 def get_default_backend_name():
-    return import_string(settings.EXCHANGE_BACKEND).name
+    return import_string(EXCHANGE_BACKEND).name
 
 
 def get_rate(source, target, backend=None):
@@ -49,3 +51,12 @@ def get_rate(source, target, backend=None):
         ).get(forward | reverse, backend=backend).rate
     except Rate.DoesNotExist:
         raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+
+
+def convert_money(value, currency):
+    if 'djmoney.contrib.exchange' not in settings.INSTALLED_APPS:
+        raise ImproperlyConfigured(
+            "You have to add 'djmoney.contrib.exchange' to INSTALLED_APPS in order to use currency exchange"
+        )
+    amount = value.amount * get_rate(value.currency, currency)
+    return value.__class__(amount, currency)
