@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 import pytest
 
-from djmoney.contrib.exchange.models import ExchangeBackend, Rate
+from djmoney.contrib.exchange.models import (
+    ExchangeBackend,
+    Rate,
+    get_default_backend_name,
+)
 from djmoney.money import Money
 from tests.testapp.models import InheritorModel, ModelWithDefaultAsInt
 
@@ -13,7 +17,7 @@ def m2m_object():
 
 @pytest.fixture()
 def backend():
-    return ExchangeBackend.objects.create(name='Test', base_currency='USD')
+    return ExchangeBackend.objects.create(name=get_default_backend_name(), base_currency='USD')
 
 
 @pytest.fixture()

@@ -7,7 +7,7 @@ from djmoney.contrib.exchange.backends import (
     OpenExchangeRatesBackend,
 )
 from djmoney.contrib.exchange.backends.base import BaseExchangeBackend
-from djmoney.contrib.exchange.models import ExchangeBackend, Rate
+from djmoney.contrib.exchange.models import ExchangeBackend, Rate, get_rate
 
 from .conftest import ExchangeTest
 
@@ -63,3 +63,5 @@ def test_two_backends():
     two.update_rates()
     for backend in (one, two):
         assert Rate.objects.filter(backend__name=backend.name).count() == 1
+    assert get_rate('USD', 'EUR', backend=one.name) == 1
+    assert get_rate('USD', 'EUR', backend=two.name) == 2

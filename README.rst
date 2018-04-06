@@ -347,6 +347,19 @@ Or, you could pass it directly to ``update_rates`` method:
     >>> backend = OpenExchangeRatesBackend(url='https://openexchangerates.org/api/historical/2017-01-01.json')
     >>> backend.update_rates(symbols='EUR,NOK,SEK,CZK')
 
+There is a possibility to use multiple backends in the same time:
+
+.. code:: python
+
+    >>> from djmoney.contrib.exchange.backends import FixerBackend, OpenExchangeRatesBackend
+    >>> from djmoney.contrib.exchange.models import get_rate
+    >>> OpenExchangeRatesBackend().update_rates()
+    >>> FixerBackend().update_rates()
+    >>> get_rate('USD', 'EUR', backend=OpenExchangeRatesBackend.name)
+    >>> get_rate('USD', 'EUR', backend=FixerBackend.name)
+
+Regular operations with ``Money`` will use ``EXCHANGE_BACKEND`` backend to get the rates.
+
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
 settings. Note that currency conversion is a lossy process, so automatic

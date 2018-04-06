@@ -1,4 +1,7 @@
 from django.db import models
+from django.utils.module_loading import import_string
+
+from djmoney import settings
 
 from .exceptions import MissingRate
 
@@ -21,11 +24,18 @@ class Rate(models.Model):
         unique_together = (('currency', 'backend'), )
 
 
-def get_rate(source, target):
+def get_default_backend_name():
+    return import_string(settings.EXCHANGE_BACKEND).name
+
+
+def get_rate(source, target, backend=None):
     """
     Returns an exchange rate between source and target currencies.
     Converts exchange rate on the DB side if there is no backends with given base currency.
+    Uses data from the default backend if the backend is not specified.
     """
+    if backend is None:
+        backend = get_default_backend_name()
     if source == target:
         return 1
     try:
@@ -36,6 +46,6 @@ def get_rate(source, target):
                 models.When(forward, then=models.F('value')),
                 models.When(reverse, then=models.Value('1::NUMERIC') / models.F('value')),
             )
-        ).get(forward | reverse).rate
+        ).get(forward | reverse, backend=backend).rate
     except Rate.DoesNotExist:
         raise MissingRate('Rate %s -> %s does not exist' % (source, target))
