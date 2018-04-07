@@ -3,6 +3,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Added
+~~~~~
+
+- Rounding support via ``round`` built-in function on Python 3. (`Stranger6667`_)
+
 `0.13.1`_ - 2018-04-07
 --------------------
 

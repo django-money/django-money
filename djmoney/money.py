@@ -1,5 +1,6 @@
 # coding: utf-8
 import warnings
+from decimal import Decimal
 
 from django.conf import settings
 from django.db.models import F
@@ -74,6 +75,10 @@ class Money(DefaultMoney):
 
     def __html__(self):
         return mark_safe(avoid_wrapping(conditional_escape(self.__unicode__())))
+
+    def __round__(self, n=0):
+        amount = self.amount.quantize(Decimal(10) ** -n)
+        return self.__class__(amount, self.currency)
 
 
 def get_current_locale():
