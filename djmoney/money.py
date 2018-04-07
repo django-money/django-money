@@ -11,7 +11,6 @@ from django.utils.safestring import mark_safe
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
 
-from .contrib.exchange.models import convert_money
 from .settings import DECIMAL_PLACES
 
 
@@ -97,5 +96,7 @@ def maybe_convert(value, currency):
     Converts other Money instances to the local currency if `AUTO_CONVERT_MONEY` is set to True.
     """
     if getattr(settings, 'AUTO_CONVERT_MONEY', False):
+        from .contrib.exchange.models import convert_money
+
         return convert_money(value, currency)
     return value

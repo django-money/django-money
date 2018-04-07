@@ -36,7 +36,7 @@ For more information, look at ``Working with Exchange Rates`` section in README.
 Fixed
 ~~~~~
 
-- Fixed `BaseMoneyValidator` with falsy limit values. `#371`_ (`1337`_)
+- Fixed ``BaseMoneyValidator`` with falsy limit values. `#371`_ (`1337`_)
 
 `0.12.2`_ - 2017-12-12
 ----------------------
@@ -59,7 +59,7 @@ Fixed
 
 - Fixed migrations on SQLite. `#139`_, `#338`_ (`Stranger6667`_)
 - Fixed ``Field.rel.to`` usage for Django 2.0. `#349`_ (`richardowen`_)
-- Fixed Django REST Framework behaviour for serializers without `*_currency` field in serializer's ``Meta.fields``. `#351`_ (`elcolie`_, `Stranger6667`_)
+- Fixed Django REST Framework behaviour for serializers without ``*_currency`` field in serializer's ``Meta.fields``. `#351`_ (`elcolie`_, `Stranger6667`_)
 
 `0.12`_ - 2017-10-22
 --------------------
@@ -189,7 +189,7 @@ Fixed
 `0.9.0`_ - 2016-07-31
 ---------------------
 
-NB! If you are using custom model managers **not** named `objects` and you expect them to still work, please read below.
+NB! If you are using custom model managers **not** named ``objects`` and you expect them to still work, please read below.
 
 Added
 ~~~~~
@@ -204,7 +204,7 @@ Changed
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
   be off by default. You must now add ``AUTO_CONVERT_MONEY = True`` in
   your ``settings.py`` if you want this feature. `#199`_ (`spookylukey`_)
-- Only make `objects` a MoneyManager instance automatically. `#194`_ and `#201`_ (`inureyes`_)
+- Only make ``objects`` a MoneyManager instance automatically. `#194`_ and `#201`_ (`inureyes`_)
 
 Fixed
 ~~~~~
@@ -439,7 +439,7 @@ Added
 - Initial public release
 
 .. _Unreleased: https://github.com/django-money/django-money/compare/0.13...HEAD
-.. _13.0: https://github.com/django-money/django-money/compare/0.12.3...13.0
+.. _0.13: https://github.com/django-money/django-money/compare/0.12.3..0.13
 .. _0.12.3: https://github.com/django-money/django-money/compare/0.12.2...0.12.3
 .. _0.12.2: https://github.com/django-money/django-money/compare/0.12.1...0.12.2
 .. _0.12.1: https://github.com/django-money/django-money/compare/0.12...0.12.1
@@ -541,7 +541,6 @@ Added
 .. _#86: https://github.com/django-money/django-money/issues/86
 .. _#80: https://github.com/django-money/django-money/issues/80
 
-.. _jonashaag: https://github.com/jonashaag
 .. _AlexRiina: https://github.com/AlexRiina
 .. _ChessSpider: https://github.com/ChessSpider
 .. _GheloAce: https://github.com/GheloAce
