@@ -47,7 +47,7 @@ def test_without_installed_exchange(testdir):
             'NAME': 'test.db',
         }
     }
-    INSTALLED_APPS = []
+    INSTALLED_APPS = ['djmoney']
     SECRET_KEY = 'foobar'
     ''')
     result = testdir.runpython_c(dedent('''
