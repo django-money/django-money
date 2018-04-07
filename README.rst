@@ -328,13 +328,15 @@ To choose another data source set ``EXCHANGE_BACKEND`` settings with importable 
 If you want to implement your own backend, you need to extend ``djmoney.contrib.exchange.backends.base.BaseExchangeBackend``.
 Two data sources mentioned above are not open, so you have to specify access keys in order to use them:
 
-``OPEN_EXCHANGE_RATES_APP_ID`` for https://openexchangerates.org/
+``OPEN_EXCHANGE_RATES_APP_ID`` - https://openexchangerates.org/
 
-``FIXER_ACCESS_KEY`` for https://fixer.io/
+``FIXER_ACCESS_KEY`` - https://fixer.io/
 
 Backends return rates for a base currency, by default it is USD, but could be changed via ``BASE_CURRENCY`` setting.
 Open Exchanger Rates & Fixer supports some extra stuff, like historical data or restricting currencies
-in responses to the certain list. In order to use these features you could change default URLs for these backends::
+in responses to the certain list. In order to use these features you could change default URLs for these backends:
+
+.. code:: python
 
     OPEN_EXCHANGE_RATES_URL = 'https://openexchangerates.org/api/historical/2017-01-01.json?symbols=EUR,NOK,SEK,CZK'
     FIXER_URL = 'http://data.fixer.io/api/2013-12-24?symbols=EUR,NOK,SEK,CZK'
@@ -364,7 +366,9 @@ Also, there are two management commands for updating rates and removing them:
 .. code:: bash
 
     $ python manage.py update_rates
+    Successfully updated rates from openexchangerates.org
     $ python manage.py clear_rates
+    Successfully cleared rates for openexchangerates.org
 
 Both of them accept ``-b/--backend`` option, that will update/clear data only for this backend.
 And ``clear_rates`` accepts ``-a/--all`` option, that will clear data for all backends.
