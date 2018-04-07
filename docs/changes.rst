@@ -6,6 +6,29 @@ Changelog
 `Unreleased`_
 -------------
 
+Added
+~~~~~
+
+- Currency exchange. (`Stranger6667`_)
+
+Removed
+~~~~~~~
+
+- Support for ``django-money-rates``. (`Stranger6667`_)
+
+Migration from django-money-rates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The new application is a drop-in replacement for ``django-money-rates``.
+To migrate from ``django-money-rates``:
+
+- In ``INSTALLED_APPS`` replace ``djmoney_rates`` with ``djmoney.contrib.exchange``
+- Set ``OPEN_EXCHANGE_RATES_APP_ID`` setting with your app id
+- Run ``python manage.py migrate``
+- Run ``python manage.py update_rates``
+
+For more information, look at ``Working with Exchange Rates`` section in README.
+
 `0.12.3`_ - 2017-12-13
 ----------------------
 

@@ -2,16 +2,17 @@
 import warnings
 
 from django.conf import settings
-from django.core.exceptions import ImproperlyConfigured
 from django.db.models import F
 from django.utils import translation
 from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
 
-from djmoney.settings import DECIMAL_PLACES
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
+
+from .contrib.exchange.models import convert_money
+from .settings import DECIMAL_PLACES
 
 
 __all__ = ['Money', 'Currency']
@@ -32,13 +33,13 @@ class Money(DefaultMoney):
     def __add__(self, other):
         if isinstance(other, F):
             return other.__radd__(self)
-        other = convert_money(other, self.currency)
+        other = maybe_convert(other, self.currency)
         return super(Money, self).__add__(other)
 
     def __sub__(self, other):
         if isinstance(other, F):
             return other.__rsub__(self)
-        other = convert_money(other, self.currency)
+        other = maybe_convert(other, self.currency)
         return super(Money, self).__sub__(other)
 
     def __mul__(self, other):
@@ -91,18 +92,10 @@ def get_current_locale():
     return ''
 
 
-def convert_money(value, currency):
+def maybe_convert(value, currency):
     """
-    Converts other Money instances to the local currency.
-    If django-money-rates is installed we can automatically perform operations with different currencies.
+    Converts other Money instances to the local currency if `AUTO_CONVERT_MONEY` is set to True.
     """
     if getattr(settings, 'AUTO_CONVERT_MONEY', False):
-        if 'djmoney_rates' in settings.INSTALLED_APPS:
-            try:
-                from djmoney_rates.utils import convert_money
-
-                return convert_money(value.amount, value.currency, currency)
-            except ImportError:
-                raise ImproperlyConfigured('djmoney_rates supports only Django 1.8')
-        raise ImproperlyConfigured('You must install djmoney-rates to use AUTO_CONVERT_MONEY = True')
+        return convert_money(value, currency)
     return value

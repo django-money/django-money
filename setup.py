@@ -47,6 +47,10 @@ setup(
         'djmoney.templatetags',
         'djmoney.contrib',
         'djmoney.contrib.django_rest_framework',
+        'djmoney.contrib.exchange',
+        'djmoney.contrib.exchange.backends',
+        'djmoney.contrib.exchange.management',
+        'djmoney.contrib.exchange.migrations',
     ],
     install_requires=[
         'setuptools',

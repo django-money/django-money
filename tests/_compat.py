@@ -11,6 +11,6 @@ if reversion.VERSION >= (2, 0):
 else:
     from reversion.revisions import get_deleted, create_revision, register
 try:
-    from mock import patch
+    from mock import patch, Mock
 except ImportError:
-    from unittest.mock import patch
+    from unittest.mock import patch, Mock

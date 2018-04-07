@@ -308,8 +308,78 @@ Testing the application in the current environment python:
 Working with Exchange Rates
 ---------------------------
 
-To work with exchange rates, check out this repo that builds off of
-django-money: https://github.com/evonove/django-money-rates
+To work with exchange rates, add the following to your ``INSTALLED_APPS``.
+
+.. code:: python
+
+    INSTALLED_APPS = [
+        ...,
+        'djmoney.contrib.exchange',
+    ]
+
+To create required relations run ``python manage.py migrate``. To fill these relations with data you need to choose a
+data source. Currently, 2 data sources are supported - https://openexchangerates.org/ (default) and https://fixer.io/.
+To choose another data source set ``EXCHANGE_BACKEND`` settings with importable string to the backend you need:
+
+.. code:: python
+
+    EXCHANGE_BACKEND = 'djmoney.contrib.exchange.backends.FixerBackend'
+
+If you want to implement your own backend, you need to extend ``djmoney.contrib.exchange.backends.base.BaseExchangeBackend``.
+Two data sources mentioned above are not open, so you have to specify access keys in order to use them:
+
+``OPEN_EXCHANGE_RATES_APP_ID`` - https://openexchangerates.org/
+
+``FIXER_ACCESS_KEY`` - https://fixer.io/
+
+Backends return rates for a base currency, by default it is USD, but could be changed via ``BASE_CURRENCY`` setting.
+Open Exchanger Rates & Fixer supports some extra stuff, like historical data or restricting currencies
+in responses to the certain list. In order to use these features you could change default URLs for these backends:
+
+.. code:: python
+
+    OPEN_EXCHANGE_RATES_URL = 'https://openexchangerates.org/api/historical/2017-01-01.json?symbols=EUR,NOK,SEK,CZK'
+    FIXER_URL = 'http://data.fixer.io/api/2013-12-24?symbols=EUR,NOK,SEK,CZK'
+
+Or, you could pass it directly to ``update_rates`` method:
+
+.. code:: python
+
+    >>> from djmoney.contrib.exchange.backends import OpenExchangeRatesBackend
+    >>> backend = OpenExchangeRatesBackend(url='https://openexchangerates.org/api/historical/2017-01-01.json')
+    >>> backend.update_rates(symbols='EUR,NOK,SEK,CZK')
+
+There is a possibility to use multiple backends in the same time:
+
+.. code:: python
+
+    >>> from djmoney.contrib.exchange.backends import FixerBackend, OpenExchangeRatesBackend
+    >>> from djmoney.contrib.exchange.models import get_rate
+    >>> OpenExchangeRatesBackend().update_rates()
+    >>> FixerBackend().update_rates()
+    >>> get_rate('USD', 'EUR', backend=OpenExchangeRatesBackend.name)
+    >>> get_rate('USD', 'EUR', backend=FixerBackend.name)
+
+Regular operations with ``Money`` will use ``EXCHANGE_BACKEND`` backend to get the rates.
+Also, there are two management commands for updating rates and removing them:
+
+.. code:: bash
+
+    $ python manage.py update_rates
+    Successfully updated rates from openexchangerates.org
+    $ python manage.py clear_rates
+    Successfully cleared rates for openexchangerates.org
+
+Both of them accept ``-b/--backend`` option, that will update/clear data only for this backend.
+And ``clear_rates`` accepts ``-a/--all`` option, that will clear data for all backends.
+
+To convert one currency to another:
+
+.. code:: python
+
+    >>> from djmoney.money import Money, convert_money
+    >>> convert_money(Money(100, 'EUR'), 'USD')
+    <Money: 122.8184375038380800 USD>
 
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
