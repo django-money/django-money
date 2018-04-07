@@ -3,18 +3,27 @@
 Changelog
 =========
 
+`0.13.1`_ - 2018-04-07
+--------------------
+
+Fixed
+~~~~~
+
+- Regression: Could not run w/o ``django.contrib.exchange`` `#388`_ (`Stranger6667`_)
+
+
 `0.13`_ - 2018-04-07
 --------------------
 
 Added
 ~~~~~
 
-- Currency exchange. (`Stranger6667`_)
+- Currency exchange `#385`_ (`Stranger6667`_)
 
 Removed
 ~~~~~~~
 
-- Support for ``django-money-rates``. (`Stranger6667`_)
+- Support for ``django-money-rates`` `#385`_ (`Stranger6667`_)
 - Deprecated ``Money.__float__`` which is implicitly called on some ``sum()`` operations `#347`_. (`jonashaag`_)
 
 Migration from django-money-rates
@@ -438,7 +447,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.13...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.1...HEAD
+.. _0.13.1: https://github.com/django-money/django-money/compare/0.13..0.13.1
 .. _0.13: https://github.com/django-money/django-money/compare/0.12.3..0.13
 .. _0.12.3: https://github.com/django-money/django-money/compare/0.12.2...0.12.3
 .. _0.12.2: https://github.com/django-money/django-money/compare/0.12.1...0.12.2
@@ -476,6 +486,8 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#388: https://github.com/django-money/django-money/issues/388
+.. _#385: https://github.com/django-money/django-money/issues/385
 .. _#347: https://github.com/django-money/django-money/issues/347
 .. _#371: https://github.com/django-money/django-money/issues/371
 .. _#366: https://github.com/django-money/django-money/issues/366
