@@ -10,7 +10,6 @@ Removed
 ~~~~~~~
 
 - Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (`Stranger6667`_)
-- Unused ``price_field`` argument from ``djmoney.models.fields.MoneyField``. (`Stranger6667`_)
 
 `0.13.1`_ - 2018-04-07
 --------------------

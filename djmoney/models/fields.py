@@ -151,10 +151,11 @@ class MoneyFieldProxy(object):
 class CurrencyField(models.CharField):
     description = 'A field which stores currency.'
 
-    def __init__(self, default=DEFAULT_CURRENCY, **kwargs):
+    def __init__(self, price_field=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
             default = default.code
         kwargs['max_length'] = 3
+        self.price_field = price_field
         super(CurrencyField, self).__init__(default=default, **kwargs)
 
     def contribute_to_class(self, cls, name):
@@ -251,7 +252,12 @@ class MoneyField(models.DecimalField):
         """
         Adds CurrencyField instance to a model class.
         """
-        currency_field = CurrencyField(default=self.default_currency, editable=False, choices=self.currency_choices)
+        currency_field = CurrencyField(
+            price_field=self,
+            default=self.default_currency,
+            editable=False,
+            choices=self.currency_choices
+        )
         currency_field.creation_counter = self.creation_counter - 1
         currency_field_name = get_currency_field_name(name, self)
         cls.add_to_class(currency_field_name, currency_field)
