@@ -18,8 +18,14 @@ class TestMigrationFramework:
         '*Applying money_app.0002_test... OK*',
     ]
 
-    @pytest.fixture(autouse=True)
-    def setup(self, testdir):
+    @pytest.fixture(
+        autouse=True,
+        params=[
+            {'ENGINE': 'django.db.backends.sqlite3', 'NAME': 'test.db'},
+            {'ENGINE': 'django.db.backends.postgresql', 'NAME': 'djmoney', 'USER': 'postgres'},
+        ],
+    )
+    def setup(self, testdir, request, db):
         """
         Creates application module, helpers and settings file with basic config.
         """
@@ -27,14 +33,11 @@ class TestMigrationFramework:
         self.project_root = testdir.mkpydir('money_app')
         testdir.makepyfile(app_settings='''
             DATABASES = {
-                'default': {
-                    'ENGINE': 'django.db.backends.sqlite3',
-                    'NAME': 'test.db',
-                }
+                'default': %s
             }
             INSTALLED_APPS = %s
             SECRET_KEY = 'foobar'
-            ''' % str(self.installed_apps))
+            ''' % (request.param, str(self.installed_apps)))
         self.project_root.join('migrations/__init__.py').ensure()
         testdir.syspathinsert()
 

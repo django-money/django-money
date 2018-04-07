@@ -47,3 +47,9 @@ matrix:
       env: TOX_ENV=django18-pypy
 after_success:
   - codecov
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database djmoney;' -U postgres
+addons:
+  postgresql: "9.6"
