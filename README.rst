@@ -379,7 +379,8 @@ To convert one currency to another:
 
 .. code:: python
 
-    >>> from djmoney.money import Money, convert_money
+    >>> from djmoney.money import Money
+    >>> from djmoney.contrib.exchange.models import convert_money
     >>> convert_money(Money(100, 'EUR'), 'USD')
     <Money: 122.8184375038380800 USD>
 
