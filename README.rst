@@ -386,7 +386,7 @@ To convert one currency to another:
 
 Exchange rates are integrated with Django Admin.
 
-To set up a periodic rates update you could use Celery task:
+To set up a periodic rates update you could use this Celery task config:
 
 .. code:: python
 
