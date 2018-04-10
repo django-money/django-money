@@ -386,6 +386,18 @@ To convert one currency to another:
 
 Exchange rates are integrated with Django Admin.
 
+To set up a periodic rates update you could use Celery task:
+
+.. code:: python
+
+    CELERYBEAT_SCHEDULE = {
+        'update_rates': {
+            'task': 'djmoney.contrib.exchange.tasks.update_rates',
+            'schedule': crontab(minute=0, hour=0),
+            'kwargs': {}  # For custom arguments
+        }
+    }
+
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
 settings. Note that currency conversion is a lossy process, so automatic
