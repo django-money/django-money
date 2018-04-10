@@ -13,6 +13,9 @@ class ExchangeBackend(models.Model):
     last_update = models.DateTimeField(auto_now=True)
     base_currency = models.CharField(max_length=3)
 
+    def __str__(self):
+        return self.name
+
     def clear_rates(self):
         self.rates.all().delete()
 

@@ -384,6 +384,8 @@ To convert one currency to another:
     >>> convert_money(Money(100, 'EUR'), 'USD')
     <Money: 122.8184375038380800 USD>
 
+Exchange rates are integrated with Django Admin.
+
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
 settings. Note that currency conversion is a lossy process, so automatic
