@@ -10,6 +10,7 @@ Added
 ~~~~~
 
 - Django Admin integration for exchange rates. `#392`_ (`Stranger6667`_)
+- Celery integration for exchange rates update. `#394`_ (`Stranger6667`_)
 
 `0.13.1`_ - 2018-04-07
 --------------------
@@ -494,6 +495,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#394: https://github.com/django-money/django-money/issues/394
 .. _#392: https://github.com/django-money/django-money/issues/392
 .. _#388: https://github.com/django-money/django-money/issues/388
 .. _#385: https://github.com/django-money/django-money/issues/385
