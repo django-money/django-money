@@ -28,6 +28,10 @@ def test_unknown_currency():
         get_rate('USD', 'EUR')
 
 
+def test_string_representation(backend):
+    assert str(backend) == backend.name
+
+
 def test_bad_configuration(settings):
     settings.INSTALLED_APPS.remove('djmoney.contrib.exchange')
     with pytest.raises(ImproperlyConfigured):
