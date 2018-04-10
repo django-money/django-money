@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+`0.13.2`_ - 2018-04-16
+----------------------
 
 Added
 ~~~~~
@@ -17,8 +17,9 @@ Fixed
 - Exchange rates. TypeError when decoding JSON on Python 3.3-3.5. `#399`_ (`kcyeu`_)
 - Managers patching for models with custom ``Meta.default_manager_name``. `#400`_ (`Stranger6667`_)
 
+
 `0.13.1`_ - 2018-04-07
---------------------
+----------------------
 
 Fixed
 ~~~~~
@@ -461,7 +462,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.1...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.2...HEAD
+.. _0.13.2: https://github.com/django-money/django-money/compare/0.13.1..0.13.2
 .. _0.13.1: https://github.com/django-money/django-money/compare/0.13..0.13.1
 .. _0.13: https://github.com/django-money/django-money/compare/0.12.3..0.13
 .. _0.12.3: https://github.com/django-money/django-money/compare/0.12.2...0.12.3
