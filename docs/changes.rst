@@ -11,6 +11,11 @@ Added
 
 - Django Admin integration for exchange rates. `#392`_ (`Stranger6667`_)
 
+Fixed
+~~~~~
+
+- Exchange rates. TypeError when decoding JSON on Python 3.3-3.5. `#399`_ (`kcyeu`_)
+
 `0.13.1`_ - 2018-04-07
 --------------------
 
@@ -494,6 +499,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#399: https://github.com/django-money/django-money/issues/399
 .. _#392: https://github.com/django-money/django-money/issues/392
 .. _#388: https://github.com/django-money/django-money/issues/388
 .. _#385: https://github.com/django-money/django-money/issues/385
@@ -593,6 +599,7 @@ Added
 .. _jakewins: https://github.com/jakewins
 .. _jonashaag: https://github.com/jonashaag
 .. _jplehmann: https://github.com/jplehmann
+.. _kcyeu: https://github.com/kcyeu
 .. _kjagiello: https://github.com/kjagiello
 .. _ivirabyan: https://github.com/ivirabyan
 .. _k8n: https://github.com/k8n
