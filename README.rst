@@ -25,7 +25,7 @@ http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.8, 1.10, 1.11, 2.0
+Django versions supported: 1.8, 1.11, 2.0
 
 Python versions supported: 2.7, 3.3, 3.4, 3.5, 3.6
 
@@ -422,10 +422,3 @@ Built-in serializer works in the following way:
         ('amount_currency', 'EUR'),
         ('amount', '10.000'),
     ])
-
-Known Issues
-------------
-Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.0 and is expected to be fixed in Django 1.10.2.
-::
-
-     https://github.com/django/django/pull/7217
