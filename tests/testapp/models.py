@@ -6,6 +6,7 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django import VERSION
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -189,5 +190,6 @@ class ModelWithCustomDefaultManager(models.Model):
 
     custom = models.Manager()
 
-    class Meta:
-        default_manager_name = 'custom'
+    if VERSION[:2] != (1, 8):
+        class Meta:
+            default_manager_name = 'custom'
