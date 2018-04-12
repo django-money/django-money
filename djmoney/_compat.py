@@ -57,7 +57,7 @@ def setup_managers(sender):
     else:
         sender.copy_managers([
             (_id, name, money_manager(manager))
-            for _id, name, manager in sender._meta.concrete_managers if name == sender._meta.default_manager_name
+            for _id, name, manager in sender._meta.concrete_managers if name == 'objects'
         ])
 
 
