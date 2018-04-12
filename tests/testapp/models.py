@@ -182,3 +182,12 @@ class PositiveValidatedMoneyModel(models.Model):
             MinMoneyValidator(0),
         ]
     )
+
+
+class ModelWithCustomDefaultManager(models.Model):
+    field = MoneyField(max_digits=10, decimal_places=2)
+
+    custom = models.Manager()
+
+    class Meta:
+        default_manager_name = 'custom'
