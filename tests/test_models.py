@@ -615,7 +615,7 @@ def test_clear_meta_cache(model, manager_name):
     See issue GH-318.
     """
     if model is ModelWithCustomDefaultManager and VERSION[:2] == (1, 8):
-        pytest.skip()
+        pytest.skip('The `default_manager_name` setting is not available in Django 1.8')
     model._meta._expire_cache()
     manager_class = getattr(model, manager_name).__class__
     assert manager_class.__module__ + '.' + manager_class.__name__ == 'djmoney.models.managers.MoneyManager'
