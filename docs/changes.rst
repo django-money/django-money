@@ -15,6 +15,7 @@ Fixed
 ~~~~~
 
 - Exchange rates. TypeError when decoding JSON on Python 3.3-3.5. `#399`_ (`kcyeu`_)
+- Managers patching for models with custom ``Meta.default_manager_name``. `#400`_ (`Stranger6667`_)
 
 `0.13.1`_ - 2018-04-07
 --------------------
@@ -499,6 +500,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#400: https://github.com/django-money/django-money/issues/400
 .. _#399: https://github.com/django-money/django-money/issues/399
 .. _#392: https://github.com/django-money/django-money/issues/392
 .. _#388: https://github.com/django-money/django-money/issues/388
