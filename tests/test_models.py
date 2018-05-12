@@ -30,6 +30,7 @@ from .testapp.models import (
     ModelIssue300,
     ModelRelatedToModelWithMoney,
     ModelWithChoicesMoneyField,
+    ModelWithCustomDefaultManager,
     ModelWithCustomManager,
     ModelWithDefaultAsDecimal,
     ModelWithDefaultAsFloat,
@@ -605,12 +606,18 @@ def test_migration_serialization():
     assert MigrationWriter.serialize(Money(100, 'GBP')) == (serialized, {'import djmoney.money'})
 
 
-def test_clear_meta_cache():
+@pytest.mark.parametrize('model, manager_name', (
+    (ModelWithVanillaMoneyField, 'objects'),
+    (ModelWithCustomDefaultManager, 'custom'),
+))
+def test_clear_meta_cache(model, manager_name):
     """
     See issue GH-318.
     """
-    ModelWithVanillaMoneyField._meta._expire_cache()
-    manager_class = ModelWithVanillaMoneyField.objects.__class__
+    if model is ModelWithCustomDefaultManager and VERSION[:2] == (1, 8):
+        pytest.skip('The `default_manager_name` setting is not available in Django 1.8')
+    model._meta._expire_cache()
+    manager_class = getattr(model, manager_name).__class__
     assert manager_class.__module__ + '.' + manager_class.__name__ == 'djmoney.models.managers.MoneyManager'
 
 
