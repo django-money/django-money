@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
+import os
+
 from textwrap import dedent
 
 from django.db import migrations
 
 import pytest
+import tests
 
 from djmoney.models.fields import CurrencyField, MoneyField
 
@@ -63,7 +66,11 @@ class TestMigrationFramework:
 
             class Model(models.Model):
                 %s''' % fields_definition)
-        return self.run('from tests.migrations.helpers import makemigrations; makemigrations();')
+        tests_path = os.path.dirname(os.path.dirname(tests.__file__))
+        return self.run(
+            "import sys; sys.path.append('{}');".format(tests_path) +
+            "from tests.migrations.helpers import migrate; migrate();"
+        )
 
     def make_default_migration(self, field='MoneyField(max_digits=10, decimal_places=2)'):
         return self.make_migration(field=field)
@@ -86,7 +93,11 @@ class TestMigrationFramework:
         Model.objects.create(field=Money(10, 'USD'))''')
 
     def migrate(self):
-        return self.run('from tests.migrations.helpers import migrate; migrate();')
+        tests_path = os.path.dirname(os.path.dirname(tests.__file__))
+        return self.run(
+            "import sys; sys.path.append('{}');".format(tests_path) +
+            "from tests.migrations.helpers import migrate; migrate();"
+        )
 
     def assert_migrate(self, output=None):
         """
