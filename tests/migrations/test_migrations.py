@@ -68,7 +68,7 @@ class TestMigrationFramework:
         tests_path = os.path.dirname(os.path.dirname(tests.__file__))
         return self.run(
             "import sys; sys.path.append('{}');".format(tests_path) +
-            "from tests.migrations.helpers import migrate; migrate();"
+            "from tests.migrations.helpers import makemigrations; makemigrations();"
         )
 
     def make_default_migration(self, field='MoneyField(max_digits=10, decimal_places=2)'):
