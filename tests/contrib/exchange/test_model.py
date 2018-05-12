@@ -24,7 +24,7 @@ def test_get_rate(backend, source, target, expected):
 
 
 def test_unknown_currency():
-    with pytest.raises(MissingRate, matches='Rate USD -> EUR does not exist'):
+    with pytest.raises(MissingRate, match='Rate USD \\-\\> EUR does not exist'):
         get_rate('USD', 'EUR')
 
 
