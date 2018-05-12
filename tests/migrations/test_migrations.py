@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
-
 from textwrap import dedent
 
 from django.db import migrations
 
 import pytest
-import tests
 
+import tests
 from djmoney.models.fields import CurrencyField, MoneyField
 
 from .helpers import get_operations
@@ -80,7 +79,7 @@ class TestMigrationFramework:
         import os
         os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
         from django import setup
-        
+
         setup()
         %s
         ''' % content))
