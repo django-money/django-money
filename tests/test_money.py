@@ -45,3 +45,11 @@ def test_default_truediv():
 def test_get_current_locale(locale, expected):
     with override(locale):
         assert get_current_locale() == expected
+
+
+@pytest.mark.skipif(
+    sys.version_info[0] == 2,
+    reason='round uses float on Python 2, which is a deprecated conversion for Money instances'
+)
+def test_round():
+    assert round(Money('1.69', 'USD'), 1) == Money('1.7', 'USD')

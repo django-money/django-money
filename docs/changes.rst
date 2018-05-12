@@ -3,6 +3,15 @@
 Changelog
 =========
 
+`0.13.3`_ - 2018-05-12
+----------
+
+Added
+~~~~~
+
+- Rounding support via ``round`` built-in function on Python 3. (`Stranger6667`_)
+
+
 `0.13.2`_ - 2018-04-16
 ----------------------
 
@@ -462,7 +471,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.2...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.3...HEAD
+.. _0.13.3: https://github.com/django-money/django-money/compare/0.13.2..0.13.3
 .. _0.13.2: https://github.com/django-money/django-money/compare/0.13.1..0.13.2
 .. _0.13.1: https://github.com/django-money/django-money/compare/0.13..0.13.1
 .. _0.13: https://github.com/django-money/django-money/compare/0.12.3..0.13
