@@ -29,6 +29,9 @@ class Money(DefaultMoney):
                       "'amount' attribute instead.", DeprecationWarning)
         return float(self.amount)
 
+    def __round__(self, ndigits):
+        return self.amount.__round__(ndigits)
+
     def __add__(self, other):
         if isinstance(other, F):
             return other.__radd__(self)

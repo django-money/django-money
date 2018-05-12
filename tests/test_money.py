@@ -12,6 +12,10 @@ def test_float():
     assert float(Money(10, 'USD')) == 10.0
 
 
+def test_round():
+    assert float(round(Money(1.234, 'USD'), 2)) == 1.23
+
+
 def test_repr():
     assert repr(Money('10.5', 'USD')) == '<Money: 10.5 USD>'
 

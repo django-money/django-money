@@ -29,3 +29,4 @@ docs/_build
 .coverage
 coverage.xml
 htmlcov
+*.sw[pon]
