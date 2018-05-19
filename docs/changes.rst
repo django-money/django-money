@@ -3,6 +3,16 @@
 Changelog
 =========
 
+
+`0.13.4`_ - 2018-05-19
+----------------------
+
+Fixed
+~~~~~
+
+- Packaging of ``djmoney.contrib.exchange.management.commands``. `#412`_ (`77cc33`_, `Stranger6667`_)
+
+
 `0.13.3`_ - 2018-05-12
 ----------
 
@@ -471,7 +481,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.3...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.4...HEAD
+.. _0.13.4: https://github.com/django-money/django-money/compare/0.13.3..0.13.4
 .. _0.13.3: https://github.com/django-money/django-money/compare/0.13.2..0.13.3
 .. _0.13.2: https://github.com/django-money/django-money/compare/0.13.1..0.13.2
 .. _0.13.1: https://github.com/django-money/django-money/compare/0.13..0.13.1
@@ -512,6 +523,8 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#412: https://github.com/django-money/django-money/issues/412
+.. _#410: https://github.com/django-money/django-money/issues/410
 .. _#400: https://github.com/django-money/django-money/issues/400
 .. _#399: https://github.com/django-money/django-money/issues/399
 .. _#392: https://github.com/django-money/django-money/issues/392
@@ -582,6 +595,7 @@ Added
 .. _#86: https://github.com/django-money/django-money/issues/86
 .. _#80: https://github.com/django-money/django-money/issues/80
 
+.. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina
 .. _ChessSpider: https://github.com/ChessSpider
 .. _GheloAce: https://github.com/GheloAce
