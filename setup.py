@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 import djmoney
@@ -50,18 +50,7 @@ setup(
     url='https://github.com/django-money/django-money',
     maintainer='Greg Reinbach',
     maintainer_email='greg@reinbach.com',
-    packages=[
-        'djmoney',
-        'djmoney.forms',
-        'djmoney.models',
-        'djmoney.templatetags',
-        'djmoney.contrib',
-        'djmoney.contrib.django_rest_framework',
-        'djmoney.contrib.exchange',
-        'djmoney.contrib.exchange.backends',
-        'djmoney.contrib.exchange.management',
-        'djmoney.contrib.exchange.migrations',
-    ],
+    packages=find_packages(include=['djmoney.*']),
     install_requires=[
         'setuptools',
         'Django>=1.8',
