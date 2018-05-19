@@ -50,7 +50,7 @@ setup(
     url='https://github.com/django-money/django-money',
     maintainer='Greg Reinbach',
     maintainer_email='greg@reinbach.com',
-    packages=find_packages(include=['djmoney.*']),
+    packages=find_packages(include=['djmoney', 'djmoney.*']),
     install_requires=[
         'setuptools',
         'Django>=1.8',

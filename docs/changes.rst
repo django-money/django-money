@@ -12,6 +12,15 @@ Removed
 - Support for Python 3.3 `#410`_ (`benjaoming`_)
 
 
+`0.13.5`_ - 2018-05-19
+----------------------
+
+Fixed
+~~~~~
+
+- Missing in dist, ``djmoney/__init__.py``. `#417`_ (`benjaoming`_)
+
+
 `0.13.4`_ - 2018-05-19
 ----------------------
 
@@ -489,7 +498,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.4...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.13.5...HEAD
+.. _0.13.5: https://github.com/django-money/django-money/compare/0.13.4..0.13.5
 .. _0.13.4: https://github.com/django-money/django-money/compare/0.13.3..0.13.4
 .. _0.13.3: https://github.com/django-money/django-money/compare/0.13.2..0.13.3
 .. _0.13.2: https://github.com/django-money/django-money/compare/0.13.1..0.13.2
