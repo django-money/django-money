@@ -10,6 +10,7 @@ Removed
 ~~~~~~~
 
 - Support for Python 3.3 `#410`_ (`benjaoming`_)
+- Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (`Stranger6667`_)
 
 
 `0.13.5`_ - 2018-05-19
