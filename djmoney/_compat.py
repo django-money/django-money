@@ -20,13 +20,8 @@ try:
     # Python 2
     reload_module = reload
 except NameError:
-    try:
-        # Python 3.4+
-        from importlib import reload as reload_module
-    except ImportError:
-        # Python 3.3
-        from imp import reload as reload_module
-
+    # Python 3.4+
+    from importlib import reload as reload_module
 
 try:
     from urllib2 import urlopen

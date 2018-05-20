@@ -26,7 +26,17 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-test_requirements = ['pytest>=3.1.0']
+test_requirements = [
+    'mock',
+    'pytest>=3.1.0',
+    'pytest-django',
+    'pytest-pythonpath',
+    'pytest-cov',
+]
+
+extras_requirements = {
+    'test': test_requirements,
+}
 
 
 if sys.version_info[0] == 2:
@@ -66,5 +76,6 @@ setup(
         'Framework :: Django',
     ],
     tests_require=test_requirements,
+    extras_require=extras_requirements,
     cmdclass={'test': PyTest},
 )
