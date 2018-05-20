@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 import djmoney
@@ -26,7 +26,17 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-test_requirements = ['pytest>=3.1.0']
+test_requirements = [
+    'mock',
+    'pytest>=3.1.0',
+    'pytest-django',
+    'pytest-pythonpath',
+    'pytest-cov',
+]
+
+extras_requirements = {
+    'test': test_requirements,
+}
 
 
 if sys.version_info[0] == 2:
@@ -40,18 +50,7 @@ setup(
     url='https://github.com/django-money/django-money',
     maintainer='Greg Reinbach',
     maintainer_email='greg@reinbach.com',
-    packages=[
-        'djmoney',
-        'djmoney.forms',
-        'djmoney.models',
-        'djmoney.templatetags',
-        'djmoney.contrib',
-        'djmoney.contrib.django_rest_framework',
-        'djmoney.contrib.exchange',
-        'djmoney.contrib.exchange.backends',
-        'djmoney.contrib.exchange.management',
-        'djmoney.contrib.exchange.migrations',
-    ],
+    packages=find_packages(include=['djmoney', 'djmoney.*']),
     install_requires=[
         'setuptools',
         'Django>=1.8',
@@ -77,5 +76,6 @@ setup(
         'Framework :: Django',
     ],
     tests_require=test_requirements,
+    extras_require=extras_requirements,
     cmdclass={'test': PyTest},
 )

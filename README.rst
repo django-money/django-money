@@ -25,9 +25,9 @@ http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
 
-Django versions supported: 1.8, 1.10, 1.11, 2.0
+Django versions supported: 1.8, 1.11, 2.0
 
-Python versions supported: 2.7, 3.3, 3.4, 3.5, 3.6
+Python versions supported: 2.7, 3.4, 3.5, 3.6
 
 PyPy versions supported: PyPy 2.6, PyPy3 2.4
 
@@ -379,9 +379,12 @@ To convert one currency to another:
 
 .. code:: python
 
-    >>> from djmoney.money import Money, convert_money
+    >>> from djmoney.money import Money
+    >>> from djmoney.contrib.exchange.models import convert_money
     >>> convert_money(Money(100, 'EUR'), 'USD')
     <Money: 122.8184375038380800 USD>
+
+Exchange rates are integrated with Django Admin.
 
 django-money can be configured to automatically use this app for currency
 conversions by settings ``AUTO_CONVERT_MONEY = True`` in your Django
@@ -419,10 +422,3 @@ Built-in serializer works in the following way:
         ('amount_currency', 'EUR'),
         ('amount', '10.000'),
     ])
-
-Known Issues
-------------
-Updates to a model form will not save in Django 1.10.1.  They will save in 1.10.0 and is expected to be fixed in Django 1.10.2.
-::
-
-     https://github.com/django/django/pull/7217

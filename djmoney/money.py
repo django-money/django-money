@@ -75,6 +75,10 @@ class Money(DefaultMoney):
     def __html__(self):
         return mark_safe(avoid_wrapping(conditional_escape(self.__unicode__())))
 
+    def __round__(self, n=None):
+        amount = round(self.amount, n)
+        return self.__class__(amount, self.currency)
+
 
 def get_current_locale():
     # get_language can return None starting from Django 1.8

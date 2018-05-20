@@ -42,6 +42,8 @@ class BaseExchangeBackend(object):
         return response.read()
 
     def parse_json(self, response):
+        if isinstance(response, bytes):
+            response = response.decode('utf-8')
         return json.loads(response, parse_float=Decimal)
 
     @atomic

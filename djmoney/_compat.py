@@ -20,13 +20,8 @@ try:
     # Python 2
     reload_module = reload
 except NameError:
-    try:
-        # Python 3.4+
-        from importlib import reload as reload_module
-    except ImportError:
-        # Python 3.3
-        from imp import reload as reload_module
-
+    # Python 3.4+
+    from importlib import reload as reload_module
 
 try:
     from urllib2 import urlopen
@@ -51,7 +46,8 @@ def setup_managers(sender):
     from .models.managers import money_manager
 
     if VERSION >= (1, 11):
-        for manager in filter(lambda m: m.name == 'objects', sender._meta.local_managers):
+        default_manager_name = sender._meta.default_manager_name or 'objects'
+        for manager in filter(lambda m: m.name == default_manager_name, sender._meta.local_managers):
             money_manager(manager)
     else:
         sender.copy_managers([
