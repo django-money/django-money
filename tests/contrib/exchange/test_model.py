@@ -7,7 +7,7 @@ import pytest
 
 from djmoney.contrib.exchange.exceptions import MissingRate
 from djmoney.contrib.exchange.models import Rate, convert_money, get_rate
-from djmoney.money import Money
+from djmoney.money import Currency, Money
 
 
 pytestmark = pytest.mark.django_db
@@ -17,6 +17,8 @@ pytestmark = pytest.mark.django_db
     ('USD', 'USD', 1),
     ('USD', 'EUR', 2),
     ('EUR', 'USD', Decimal('0.5')),
+    (Currency('USD'), 'USD', 1),
+    ('USD', Currency('USD'), 1),
 ))
 def test_get_rate(backend, source, target, expected):
     Rate.objects.create(currency='EUR', value=2, backend=backend)
