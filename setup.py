@@ -32,6 +32,7 @@ test_requirements = [
     'pytest-django',
     'pytest-pythonpath',
     'pytest-cov',
+    'django-reversion',
 ]
 
 extras_requirements = {

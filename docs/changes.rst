@@ -6,6 +6,11 @@ Changelog
 `0.14`_ - unreleased
 --------------------
 
+Fixed
+~~~~~
+
+- Same currency conversion getting MissingRate exception `#418`_ (`humrochagf`_)
+
 Removed
 ~~~~~~~
 
@@ -613,6 +618,7 @@ Added
 .. _#90: https://github.com/django-money/django-money/issues/90
 .. _#86: https://github.com/django-money/django-money/issues/86
 .. _#80: https://github.com/django-money/django-money/issues/80
+.. _#418: https://github.com/django-money/django-money/issues/418
 
 .. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina
@@ -670,3 +676,4 @@ Added
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
 .. _1337: https://github.com/1337
+.. _humrochagf: https://github.com/humrochagf

@@ -3,6 +3,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.module_loading import import_string
 
+from djmoney._compat import text_type
 from djmoney.settings import EXCHANGE_BACKEND
 
 from .exceptions import MissingRate
@@ -50,7 +51,7 @@ def get_rate(source, target, backend=None):
     """
     if backend is None:
         backend = get_default_backend_name()
-    if source == target:
+    if text_type(source) == text_type(target):
         return 1
     try:
         forward = models.Q(currency=target, backend__base_currency=source)
