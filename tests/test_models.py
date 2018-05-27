@@ -4,21 +4,22 @@ Created on May 7, 2011
 
 @author: jake
 """
+import datetime
 from copy import copy
-from decimal import Decimal
 
 from django import VERSION
-from django.core.exceptions import ImproperlyConfigured, ValidationError
+from django.core.exceptions import ValidationError
 from django.db import models
-from django.db.models import F, Q
+from django.db.migrations.writer import MigrationWriter
+from django.db.models import Case, F, Func, Q, Value, When
 from django.utils.six import PY2
+from django.utils.translation import override
 
 import pytest
 
-import moneyed
-from djmoney._compat import Case, Func, Value, When, get_fields
-from djmoney.models.fields import MoneyField, MoneyPatched, NotSupportedLookup
-from moneyed import Money
+from djmoney.models.fields import MoneyField, MoneyPatched
+from djmoney.money import Money
+from moneyed import Money as OldMoney
 
 from .testapp.models import (
     AbstractModel,
@@ -26,17 +27,21 @@ from .testapp.models import (
     DateTimeModel,
     InheritedModel,
     InheritorModel,
+    ModelIssue300,
     ModelRelatedToModelWithMoney,
     ModelWithChoicesMoneyField,
+    ModelWithCustomDefaultManager,
     ModelWithCustomManager,
     ModelWithDefaultAsDecimal,
     ModelWithDefaultAsFloat,
     ModelWithDefaultAsInt,
     ModelWithDefaultAsMoney,
+    ModelWithDefaultAsOldMoney,
     ModelWithDefaultAsString,
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
     ModelWithNullableCurrency,
+    ModelWithSharedCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
     ModelWithVanillaMoneyField,
@@ -44,10 +49,6 @@ from .testapp.models import (
     ProxyModel,
     SimpleModel,
 )
-
-
-if VERSION >= (1, 7):
-    from django.db.migrations.writer import MigrationWriter
 
 
 pytestmark = pytest.mark.django_db
@@ -59,9 +60,11 @@ class TestVanillaMoneyField:
         'model_class, kwargs, expected',
         (
             (ModelWithVanillaMoneyField, {'money': Money('100.0')}, Money('100.0')),
+            (ModelWithVanillaMoneyField, {'money': OldMoney('100.0')}, Money('100.0')),
             (BaseModel, {}, Money(0, 'USD')),
             (BaseModel, {'money': '111.2'}, Money('111.2', 'USD')),
             (BaseModel, {'money': Money('123', 'PLN')}, Money('123', 'PLN')),
+            (BaseModel, {'money': OldMoney('123', 'PLN')}, Money('123', 'PLN')),
             (BaseModel, {'money': ('123', 'PLN')}, Money('123', 'PLN')),
             (BaseModel, {'money': (123.0, 'PLN')}, Money('123', 'PLN')),
             (ModelWithDefaultAsMoney, {}, Money('0.01', 'RUB')),
@@ -79,12 +82,17 @@ class TestVanillaMoneyField:
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
 
+    def test_old_money_defaults(self):
+        instance = ModelWithDefaultAsOldMoney.objects.create()
+        assert instance.money == Money('.01', 'RUB')
+
     @pytest.mark.parametrize(
         'model_class, other_value',
         (
             (ModelWithVanillaMoneyField, Money('100.0')),
             (BaseModel, Money(0, 'USD')),
             (ModelWithDefaultAsMoney, Money('0.01', 'RUB')),
+            (ModelWithDefaultAsFloat, OldMoney('12.05', 'PLN')),
             (ModelWithDefaultAsFloat, Money('12.05', 'PLN')),
         )
     )
@@ -108,11 +116,6 @@ class TestVanillaMoneyField:
         instance4 = model_class.objects.get(id=pk)
         assert instance4.money == default_instance
 
-    def test_not_supported_lookup(self):
-        with pytest.raises(NotSupportedLookup) as exc:
-            ModelWithVanillaMoneyField.objects.filter(money__regex='\d+').count()
-        assert str(exc.value) == "Lookup 'regex' is not supported for MoneyField"
-
     @pytest.mark.parametrize(
         'value',
         (
@@ -125,17 +128,18 @@ class TestVanillaMoneyField:
         with pytest.raises(ValidationError):
             BaseModel.objects.create(money=value)
 
+    @pytest.mark.parametrize('Money', (Money, OldMoney))
     @pytest.mark.parametrize('field_name', ('money', 'second_money'))
-    def test_save_new_value(self, field_name):
+    def test_save_new_value(self, field_name, Money):
         ModelWithVanillaMoneyField.objects.create(**{field_name: Money('100.0')})
 
         # Try setting the value directly
         retrieved = ModelWithVanillaMoneyField.objects.get()
-        setattr(retrieved, field_name, Money(1, moneyed.DKK))
+        setattr(retrieved, field_name, Money(1, 'DKK'))
         retrieved.save()
         retrieved = ModelWithVanillaMoneyField.objects.get()
 
-        assert getattr(retrieved, field_name) == Money(1, moneyed.DKK)
+        assert getattr(retrieved, field_name) == Money(1, 'DKK')
 
     def test_rounding(self):
         money = Money('100.0623456781123219')
@@ -147,8 +151,9 @@ class TestVanillaMoneyField:
 
         assert retrieved.money == Money('100.06')
 
-    @pytest.fixture
-    def objects_setup(self):
+    @pytest.fixture(params=[Money, OldMoney])
+    def objects_setup(self, request):
+        Money = request.param
         ModelWithTwoMoneyFields.objects.bulk_create((
             ModelWithTwoMoneyFields(amount1=Money(1, 'USD'), amount2=Money(2, 'USD')),
             ModelWithTwoMoneyFields(amount1=Money(2, 'USD'), amount2=Money(0, 'USD')),
@@ -167,6 +172,7 @@ class TestVanillaMoneyField:
             (Q(id__in=(-1, -2)), 0),
             (Q(amount1=Money(1, 'USD')) | Q(amount2=Money(0, 'USD')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD')) | Q(amount2=Money(0, 'GHS')), 2),
+            (Q(amount1=OldMoney(1, 'USD')) | Q(amount1=OldMoney(4, 'USD')) | Q(amount2=OldMoney(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(5, 'USD')) | Q(amount2=Money(0, 'GHS')), 3),
             (Q(amount1=Money(1, 'USD')) | Q(amount1=Money(4, 'USD'), amount2=Money(0, 'GHS')), 2),
             (Q(amount1=Money(1, 'USD')) | Q(amount1__gt=Money(4, 'USD'), amount2=Money(0, 'GHS')), 1),
@@ -177,11 +183,35 @@ class TestVanillaMoneyField:
     def test_comparison_lookup(self, filters, expected_count):
         assert ModelWithTwoMoneyFields.objects.filter(filters).count() == expected_count
 
-    @pytest.mark.skipif(VERSION < (1, 9), reason='Only Django 1.9+ supports __date lookup')
+    @pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't support __date lookup")
     def test_date_lookup(self):
         DateTimeModel.objects.create(field=Money(1, 'USD'), created='2016-12-05')
         assert DateTimeModel.objects.filter(created__date='2016-12-01').count() == 0
         assert DateTimeModel.objects.filter(created__date='2016-12-05').count() == 1
+
+    @pytest.mark.parametrize('lookup, rhs, expected', (
+        ('startswith', 2, 1),
+        ('regex', '^[134]', 3),
+        ('iregex', '^[134]', 3),
+        ('istartswith', 2, 1),
+        ('contains', 5, 2),
+        ('lt', 5, 4),
+        ('endswith', 5, 2),
+        ('iendswith', 5, 2),
+        ('gte', 4, 3),
+        ('iexact', 3, 1),
+        ('exact', 3, 1),
+        ('isnull', True, 0),
+        ('range', (3, 5), 4),
+        ('lte', 2, 2),
+        ('gt', 3, 3),
+        ('icontains', 5, 2),
+        ('in', (1, 0), 1)
+    ))
+    @pytest.mark.usefixtures('objects_setup')
+    def test_all_lookups(self, lookup, rhs, expected):
+        kwargs = {'amount1__' + lookup: rhs}
+        assert ModelWithTwoMoneyFields.objects.filter(**kwargs).count() == expected
 
     def test_exact_match(self):
         money = Money('100.0')
@@ -190,6 +220,11 @@ class TestVanillaMoneyField:
         retrieved = ModelWithVanillaMoneyField.objects.get(money=money)
 
         assert instance.pk == retrieved.pk
+
+    def test_issue_300_regression(self):
+        date = datetime.datetime(year=2017, month=2, day=1)
+        ModelIssue300.objects.filter(money__created=date)
+        ModelIssue300.objects.filter(money__created__gt=date)
 
     def test_range_search(self):
         money = Money('3')
@@ -201,12 +236,19 @@ class TestVanillaMoneyField:
 
         assert ModelWithVanillaMoneyField.objects.filter(money__lt=money).count() == 0
 
+    def test_filter_chaining(self):
+        usd_instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'))
+        ModelWithVanillaMoneyField.objects.create(money=Money(100, 'EUR'))
+        query = ModelWithVanillaMoneyField.objects.filter().filter(money=Money(100, 'USD'))
+        assert usd_instance in query
+        assert query.count() == 1
+
     @pytest.mark.parametrize('model_class', (ModelWithVanillaMoneyField, ModelWithChoicesMoneyField))
     def test_currency_querying(self, model_class):
-        model_class.objects.create(money=Money('100.0', moneyed.ZWN))
+        model_class.objects.create(money=Money('100.0', 'ZWN'))
 
-        assert model_class.objects.filter(money__lt=Money('1000', moneyed.USD)).count() == 0
-        assert model_class.objects.filter(money__lt=Money('1000', moneyed.ZWN)).count() == 1
+        assert model_class.objects.filter(money__lt=Money('1000', 'USD')).count() == 0
+        assert model_class.objects.filter(money__lt=Money('1000', 'ZWN')).count() == 1
 
     @pytest.mark.usefixtures('objects_setup')
     def test_in_lookup(self):
@@ -215,6 +257,12 @@ class TestVanillaMoneyField:
             Q(amount1__lte=Money(2, 'USD')), amount1__in=(Money(1, 'USD'), Money(3, 'USD'))
         ).count() == 1
         assert ModelWithTwoMoneyFields.objects.exclude(amount1__in=(Money(1, 'USD'), Money(5, 'EUR'))).count() == 4
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(1, Money(5, 'EUR'))).count() == 2
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(1, 5)).count() == 3
+
+    @pytest.mark.usefixtures('objects_setup')
+    def test_in_lookup_f_expression(self):
+        assert ModelWithTwoMoneyFields.objects.filter(amount1__in=(Money(4, 'USD'), F('amount2'))).count() == 2
 
     def test_isnull_lookup(self):
         NullMoneyFieldModel.objects.create(field=None)
@@ -231,23 +279,28 @@ class TestVanillaMoneyField:
 class TestGetOrCreate:
 
     @pytest.mark.parametrize(
-        'kwargs, currency',
+        'model, field_name, kwargs, currency',
         (
-            ({'money_currency': 'PLN'}, 'PLN'),
-            ({'money': Money(0, 'EUR')}, 'EUR')
+            (ModelWithVanillaMoneyField, 'money', {'money_currency': 'PLN'}, 'PLN'),
+            (ModelWithVanillaMoneyField, 'money', {'money': Money(0, 'EUR')}, 'EUR'),
+            (ModelWithVanillaMoneyField, 'money', {'money': OldMoney(0, 'EUR')}, 'EUR'),
+            (ModelWithSharedCurrency, 'first', {'first': 10, 'second': 15, 'currency': 'CZK'}, 'CZK')
         )
     )
-    def test_get_or_create_respects_currency(self, kwargs, currency):
-        instance, created = ModelWithVanillaMoneyField.objects.get_or_create(**kwargs)
-        assert str(instance.money.currency) == currency, 'currency should be taken into account in get_or_create'
+    def test_get_or_create_respects_currency(self, model, field_name, kwargs, currency):
+        instance, created = model.objects.get_or_create(**kwargs)
+        field = getattr(instance, field_name)
+        assert str(field.currency) == currency, 'currency should be taken into account in get_or_create'
 
     def test_get_or_create_respects_defaults(self):
-        instance = ModelWithUniqueIdAndCurrency.objects.create(money=Money(0, 'SEK'))
-        _, created = ModelWithUniqueIdAndCurrency.objects.get_or_create(
+        value = Money(10, 'SEK')
+        instance = ModelWithUniqueIdAndCurrency.objects.create(money=value)
+        instance, created = ModelWithUniqueIdAndCurrency.objects.get_or_create(
             id=instance.id,
             money_currency=instance.money_currency
         )
         assert not created
+        assert instance.money == value
 
     def test_defaults(self):
         money = Money(10, 'EUR')
@@ -255,9 +308,25 @@ class TestGetOrCreate:
         assert instance.money == money
 
     def test_currency_field_lookup(self):
-        ModelWithVanillaMoneyField.objects.create(money=Money(0, 'EUR'))
+        value = Money(10, 'EUR')
+        ModelWithVanillaMoneyField.objects.create(money=value)
         instance, created = ModelWithVanillaMoneyField.objects.get_or_create(money_currency__iexact='eur')
         assert not created
+        assert instance.money == value
+
+    @pytest.mark.parametrize('model, create_kwargs, get_kwargs', (
+        (NullMoneyFieldModel, {'field': Money(100, 'USD')}, {'field': 100, 'field_currency': 'USD'}),
+        (ModelWithSharedCurrency, {'first': 10, 'second': 15, 'currency': 'USD'}, {'first': 10, 'currency': 'USD'}),
+    ))
+    def test_no_default_model(self, model, create_kwargs, get_kwargs):
+        model.objects.create(**create_kwargs)
+        instance, created = model.objects.get_or_create(**get_kwargs)
+        assert not created
+
+    def test_shared_currency(self):
+        instance, created = ModelWithSharedCurrency.objects.get_or_create(first=10, second=15, currency='USD')
+        assert instance.first == Money(10, 'USD')
+        assert instance.second == Money(15, 'USD')
 
 
 class TestNullableCurrency:
@@ -279,9 +348,16 @@ class TestFExpressions:
         'f_obj, expected',
         (
             (F('money') + Money(100, 'USD'), Money(200, 'USD')),
+            (F('money') + OldMoney(100, 'USD'), Money(200, 'USD')),
+            (Money(100, 'USD') + F('money'), Money(200, 'USD')),
             (F('money') - Money(100, 'USD'), Money(0, 'USD')),
+            (Money(100, 'USD') - F('money'), Money(0, 'USD')),
             (F('money') * 2, Money(200, 'USD')),
             (F('money') * F('integer'), Money(200, 'USD')),
+            (Money(50, 'USD') * F('integer'), Money(100, 'USD')),
+            (F('integer') * Money(50, 'USD'), Money(100, 'USD')),
+            (Money(50, 'USD') / F('integer'), Money(25, 'USD')),
+            (Money(51, 'USD') % F('integer'), Money(1, 'USD')),
             (F('money') / 2, Money(50, 'USD')),
             (F('money') % 98, Money(2, 'USD')),
             (F('money') / F('integer'), Money(50, 'USD')),
@@ -295,15 +371,22 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = f_obj
         instance.save()
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
 
     @parametrize_f_objects
     def test_f_update(self, f_obj, expected):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         ModelWithVanillaMoneyField.objects.update(money=f_obj)
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == expected
+
+    def test_default_update(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
+        second_money = Money(100, 'USD')
+        ModelWithVanillaMoneyField.objects.update(second_money=second_money)
+        instance.refresh_from_db()
+        assert instance.second_money == second_money
 
     @pytest.mark.parametrize(
         'create_kwargs, filter_value, in_result',
@@ -349,12 +432,11 @@ class TestFExpressions:
         instance = ModelWithVanillaMoneyField.objects.create(**create_kwargs)
         assert (instance in ModelWithVanillaMoneyField.objects.filter(**filter_value)) is in_result
 
-    @pytest.mark.skipif(VERSION < (1, 5), reason='Django < 1.5 does not support `update_fields` kwarg')
     def test_update_fields_save(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(100, 'USD'), integer=2)
         instance.money = F('money') + Money(100, 'USD')
         instance.save(update_fields=['money'])
-        instance = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
+        instance.refresh_from_db()
         assert instance.money == Money(200, 'USD')
 
     INVALID_EXPRESSIONS = [
@@ -364,13 +446,10 @@ class TestFExpressions:
         F('money') % F('money'),
         F('money') + F('integer'),
         F('money') + F('second_money'),
+        F('money') ** F('money'),
+        F('money') ** F('integer'),
+        F('money') ** 2,
     ]
-    if VERSION >= (1, 7):
-        INVALID_EXPRESSIONS.extend([
-            F('money') ** F('money'),
-            F('money') ** F('integer'),
-            F('money') ** 2,
-        ])
 
     @pytest.mark.parametrize('f_obj', INVALID_EXPRESSIONS)
     def test_invalid_expressions_access(self, f_obj):
@@ -379,7 +458,6 @@ class TestFExpressions:
             instance.money = f_obj
 
 
-@pytest.mark.skipif(VERSION < (1, 8), reason='Only Django 1.8+ supports query expressions')
 class TestExpressions:
 
     def test_conditional_update(self):
@@ -394,7 +472,7 @@ class TestExpressions:
         assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(10, 'USD')
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(0, 'USD')
 
-    @pytest.mark.skipif(VERSION < (1, 9), reason='Only Django 1.9+ supports this')
+    @pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't supports this")
     def test_create_func(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Func(Value(-10), function='ABS'))
         instance.refresh_from_db()
@@ -416,13 +494,18 @@ class TestExpressions:
         with pytest.raises(ValidationError):
             ModelWithVanillaMoneyField.objects.create(money=Value('string'))
 
+    def test_expressions_for_non_money_fields(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(1, 'USD'), integer=0)
+        assert ModelWithVanillaMoneyField.objects.get(money=F('integer') + 1) == instance
+        assert ModelWithVanillaMoneyField.objects.get(Q(money=F('integer') + 1)) == instance
+
 
 def test_find_models_related_to_money_models():
-    moneyModel = ModelWithVanillaMoneyField.objects.create(money=Money('100.0', moneyed.ZWN))
+    moneyModel = ModelWithVanillaMoneyField.objects.create(money=Money('100.0', 'ZWN'))
     ModelRelatedToModelWithMoney.objects.create(moneyModel=moneyModel)
 
-    ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money('100.0', moneyed.ZWN))
-    ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money('1000.0', moneyed.ZWN))
+    ModelRelatedToModelWithMoney.objects.get(moneyModel__money=Money('100.0', 'ZWN'))
+    ModelRelatedToModelWithMoney.objects.get(moneyModel__money__lt=Money('1000.0', 'ZWN'))
 
 
 def test_allow_expression_nodes_without_money():
@@ -445,8 +528,8 @@ class TestInheritance:
         assert model_class.objects.model == model_class
 
     def test_fields(self, model_class):
-        first_value = Money('100.0', moneyed.ZWN)
-        second_value = Money('200.0', moneyed.USD)
+        first_value = Money('100.0', 'ZWN')
+        second_value = Money('200.0', 'USD')
         instance = model_class.objects.create(money=first_value, second_field=second_value)
         assert instance.money == first_value
         assert instance.second_field == second_value
@@ -479,50 +562,28 @@ class TestDifferentCurrencies:
 
     def test_add_default(self):
         with pytest.raises(TypeError):
-            MoneyPatched(10, 'EUR') + Money(1, 'USD')
+            Money(10, 'EUR') + Money(1, 'USD')
 
     def test_sub_default(self):
         with pytest.raises(TypeError):
-            MoneyPatched(10, 'EUR') - Money(1, 'USD')
+            Money(10, 'EUR') - Money(1, 'USD')
 
-    @pytest.mark.usefixtures('patched_convert_money')
-    def test_add_with_auto_convert(self, settings):
-        settings.AUTO_CONVERT_MONEY = True
-        result = MoneyPatched(10, 'EUR') + Money(1, 'USD')
-        assert Decimal(str(round(result.amount, 2))) == Decimal('10.88')
-        assert result.currency == moneyed.EUR
+    @pytest.mark.usefixtures('autoconversion')
+    def test_add_with_auto_convert(self):
+        assert Money(10, 'EUR') + Money(1, 'USD') == Money('10.88', 'EUR')
 
-    @pytest.mark.usefixtures('patched_convert_money')
-    def test_sub_with_auto_convert(self, settings):
-        settings.AUTO_CONVERT_MONEY = True
-        result = MoneyPatched(10, 'EUR') - Money(1, 'USD')
-        assert Decimal(str(round(result.amount, 2))) == Decimal('9.23')
-        assert result.currency == moneyed.EUR
+    @pytest.mark.usefixtures('autoconversion')
+    def test_sub_with_auto_convert(self):
+        assert Money(10, 'EUR') - Money(1, 'USD') == Money('9.12', 'EUR')
 
     def test_eq(self):
-        assert MoneyPatched(1, 'EUR') == Money(1, 'EUR')
+        assert Money(1, 'EUR') == Money(1, 'EUR')
 
     def test_ne(self):
-        assert MoneyPatched(1, 'EUR') != Money(2, 'EUR')
+        assert Money(1, 'EUR') != Money(2, 'EUR')
 
     def test_ne_currency(self):
-        assert MoneyPatched(10, 'EUR') != Money(10, 'USD')
-
-    @pytest.mark.skipif(VERSION < (1, 9) or VERSION > (2, 0), reason='djmoney_rates supports only Django < 1.9')
-    def test_incompatibility(self, settings):
-        settings.AUTO_CONVERT_MONEY = True
-        with pytest.raises(ImproperlyConfigured) as exc:
-            MoneyPatched(10, 'EUR') - Money(1, 'USD')
-        assert str(exc.value) == 'djmoney_rates doesn\'t support Django 1.9+'
-
-    @pytest.mark.skipif(VERSION[:2] >= (2, 0), reason='djmoney_rates supports only Django < 1.9')
-    def test_djmoney_rates_not_installed(self, settings):
-        settings.AUTO_CONVERT_MONEY = True
-        settings.INSTALLED_APPS.remove('djmoney_rates')
-
-        with pytest.raises(ImproperlyConfigured) as exc:
-            MoneyPatched(10, 'EUR') - Money(1, 'USD')
-        assert str(exc.value) == 'You must install djmoney-rates to use AUTO_CONVERT_MONEY = True'
+        assert Money(10, 'EUR') != Money(10, 'USD')
 
 
 @pytest.mark.parametrize(
@@ -539,7 +600,7 @@ def test_manager_instance_access(model_class):
         model_class().objects.all()
 
 
-@pytest.mark.skipif(VERSION >= (1, 10), reason='Django >= 1.10 dropped `get_field_by_name` method of `Options`.')
+@pytest.mark.skipif(VERSION[:2] != (1, 8), reason='Only Django 1.8 has `get_field_by_name` method of `Options`.')
 def test_get_field_by_name():
     assert BaseModel._meta.get_field_by_name('money')[0].__class__.__name__ == 'MoneyField'
     assert BaseModel._meta.get_field_by_name('money_currency')[0].__class__.__name__ == 'CurrencyField'
@@ -551,17 +612,27 @@ def test_different_hashes():
     assert hash(money) != hash(money_currency)
 
 
-@pytest.mark.skipif(VERSION < (1, 7), reason='Django < 1.7 handles migrations differently')
 def test_migration_serialization():
-    imports = set(['import djmoney.models.fields'])
     if PY2:
-        serialized = 'djmoney.models.fields.MoneyPatched(100, b\'GBP\')'
+        serialized = 'djmoney.money.Money(100, b\'GBP\')'
     else:
-        serialized = 'djmoney.models.fields.MoneyPatched(100, \'GBP\')'
-    assert MigrationWriter.serialize(MoneyPatched(100, 'GBP')) == (serialized, imports)
+        serialized = 'djmoney.money.Money(100, \'GBP\')'
+    assert MigrationWriter.serialize(Money(100, 'GBP')) == (serialized, {'import djmoney.money'})
 
 
-no_system_checks_framework = pytest.mark.skipif(VERSION >= (1, 7), reason='Django 1.7+ has system checks framework')
+@pytest.mark.parametrize('model, manager_name', (
+    (ModelWithVanillaMoneyField, 'objects'),
+    (ModelWithCustomDefaultManager, 'custom'),
+))
+def test_clear_meta_cache(model, manager_name):
+    """
+    See issue GH-318.
+    """
+    if model is ModelWithCustomDefaultManager and VERSION[:2] == (1, 8):
+        pytest.skip('The `default_manager_name` setting is not available in Django 1.8')
+    model._meta._expire_cache()
+    manager_class = getattr(model, manager_name).__class__
+    assert manager_class.__module__ + '.' + manager_class.__name__ == 'djmoney.models.managers.MoneyManager'
 
 
 class TestFieldAttributes:
@@ -576,19 +647,10 @@ class TestFieldAttributes:
 
         return Model
 
-    @pytest.mark.parametrize('field_kwargs, message', (
-        no_system_checks_framework(
-            ({'max_digits': 10}, 'You have to provide a decimal_places attribute to Money fields.')
-        ),
-        no_system_checks_framework(
-            ({'decimal_places': 2}, 'You have to provide a max_digits attribute to Money fields.')
-        ),
-        ({'default': {}}, 'default value must be an instance of Money, is: {}'),
-    ))
-    def test_missing_attributes(self, field_kwargs, message):
+    def test_missing_attributes(self):
         with pytest.raises(ValueError) as exc:
-            self.create_class(**field_kwargs)
-        assert str(exc.value) == message
+            self.create_class(default={})
+        assert str(exc.value) == 'default value must be an instance of Money, is: {}'
 
     def test_default_currency(self):
         klass = self.create_class(default_currency=None, default=Money(10, 'EUR'), max_digits=10, decimal_places=2)
@@ -611,5 +673,68 @@ def test_hash_uniqueness():
     """
     All fields of any model should have unique hash.
     """
-    hashes = [hash(field) for field in get_fields(ModelWithVanillaMoneyField)]
+    hashes = [hash(field) for field in ModelWithVanillaMoneyField._meta.get_fields()]
     assert len(hashes) == len(set(hashes))
+
+
+def test_override_decorator():
+    """
+    When current locale is changed, Money instances should be represented correctly.
+    """
+    with override('cs'):
+        assert str(Money(10, 'CZK')) == 'Kč10.00'
+
+
+def test_deprecation():
+    with pytest.warns(None) as warnings:
+        MoneyPatched(1, 'USD')
+    assert str(warnings[0].message) == "'djmoney.models.fields.MoneyPatched' is deprecated. " \
+                                       "Use 'djmoney.money.Money' instead"
+
+
+def test_properties_access():
+    with pytest.raises(TypeError) as exc:
+        ModelWithVanillaMoneyField(money=Money(1, 'USD'), bla=1)
+    assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+
+
+def parametrize_with_q(**kwargs):
+    return pytest.mark.parametrize('args, kwargs', (
+        ((), kwargs),
+        ((Q(**kwargs),), {}),
+    ))
+
+
+class TestSharedCurrency:
+
+    @pytest.fixture
+    def instance(self):
+        return ModelWithSharedCurrency.objects.create(first=10, second=15, currency='USD')
+
+    def test_attributes(self, instance):
+        assert instance.first == Money(10, 'USD')
+        assert instance.second == Money(15, 'USD')
+        assert instance.currency == 'USD'
+
+    @parametrize_with_q(first=Money(10, 'USD'))
+    def test_filter_by_money_match(self, instance, args, kwargs):
+        assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    @parametrize_with_q(first=Money(10, 'EUR'))
+    def test_filter_by_money_no_match(self, instance, args, kwargs):
+        assert instance not in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    @parametrize_with_q(first=F('second'))
+    def test_f_query(self, args, kwargs):
+        instance = ModelWithSharedCurrency.objects.create(first=10, second=10, currency='USD')
+        assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    @parametrize_with_q(first__in=[Money(10, 'USD'), Money(100, 'USD')])
+    def test_in_lookup(self, instance, args, kwargs):
+        assert instance in ModelWithSharedCurrency.objects.filter(*args, **kwargs)
+
+    def test_create_with_money(self):
+        value = Money(10, 'USD')
+        instance = ModelWithSharedCurrency.objects.create(first=value, second=value)
+        assert instance.first == value
+        assert instance.second == value

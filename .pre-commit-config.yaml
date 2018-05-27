@@ -1,5 +1,6 @@
+repos:
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    sha: d740faeded968de3881405d7de09dc6d2e0d7b06
+    rev: v1.2.3
     hooks:
     -   id: trailing-whitespace
     -   id: flake8
@@ -10,8 +11,8 @@
     -   id: debug-statements
     -   id: end-of-file-fixer
     -   id: fix-encoding-pragma
-- repo: git://github.com/FalconSocial/pre-commit-python-sorter
-  sha: 1.0.1
+- repo: git://github.com/adambrenecki/pre-commit-python-sorter
+  rev: 1.0.5
   hooks:
   - id: python-import-sorter
     args:

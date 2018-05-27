@@ -22,6 +22,7 @@ __pycache__
 .idea
 .venv
 .cache
+.pytest_cache
 docs/_build
 
 # Coverage reports

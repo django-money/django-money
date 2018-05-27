@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import sys
 
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.test import test as TestCommand
 
 import djmoney
@@ -26,14 +26,22 @@ class PyTest(TestCommand):
         sys.exit(errno)
 
 
-test_requirements = ['pytest>=2.8.0,<3.0.0']
+test_requirements = [
+    'mock',
+    'pytest>=3.1.0',
+    'pytest-django',
+    'pytest-pythonpath',
+    'pytest-cov',
+    'django-reversion',
+]
+
+extras_requirements = {
+    'test': test_requirements,
+}
 
 
-if sys.version_info < (3, 3):
+if sys.version_info[0] == 2:
     test_requirements.append('mock')
-if sys.version_info[:2] == (3, 2):
-    test_requirements.append('coverage==3.7.1')
-
 
 setup(
     name='django-money',
@@ -43,18 +51,11 @@ setup(
     url='https://github.com/django-money/django-money',
     maintainer='Greg Reinbach',
     maintainer_email='greg@reinbach.com',
-    packages=[
-        'djmoney',
-        'djmoney.forms',
-        'djmoney.models',
-        'djmoney.templatetags',
-        'djmoney.contrib',
-        'djmoney.contrib.django_rest_framework',
-    ],
+    packages=find_packages(include=['djmoney', 'djmoney.*']),
     install_requires=[
         'setuptools',
-        'Django >= 1.4',
-        'py-moneyed > 0.4'
+        'Django>=1.8',
+        'py-moneyed>=0.7'
     ],
     platforms=['Any'],
     keywords=['django', 'py-money', 'money'],
@@ -65,17 +66,17 @@ setup(
         'Operating System :: OS Independent',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
         'Programming Language :: Python :: 3.3',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
+        'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Framework :: Django',
     ],
     tests_require=test_requirements,
+    extras_require=extras_requirements,
     cmdclass={'test': PyTest},
 )

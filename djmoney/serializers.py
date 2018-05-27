@@ -9,9 +9,8 @@ from django.core.serializers.python import (
 )
 from django.utils import six
 
-from moneyed import Money
+from djmoney.money import Money
 
-from ._compat import get_field_names
 from .models.fields import MoneyField
 from .utils import get_currency_field_name
 
@@ -40,7 +39,7 @@ def Deserializer(stream_or_string, **options):  # noqa
                     raise
             money_fields = {}
             fields = {}
-            field_names = get_field_names(Model)
+            field_names = {field.name for field in Model._meta.get_fields()}
             for (field_name, field_value) in six.iteritems(obj['fields']):
                 if ignore and field_name not in field_names:
                     # skip fields no longer on model

@@ -12,3 +12,6 @@ class MoneyConfig(AppConfig):
             register_money_field()
         except ImportError:
             pass
+        from djmoney.admin import setup_admin_integration
+
+        setup_admin_integration()

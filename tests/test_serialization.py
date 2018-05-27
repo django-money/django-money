@@ -1,27 +1,18 @@
 # -*- coding: utf-8 -*-
 import json
 
-from django import VERSION
 from django.core.management import call_command
 from django.core.serializers.base import DeserializationError
 
 import pytest
 
+from djmoney.money import Money
 from djmoney.serializers import Deserializer, Serializer
-from moneyed import Money
 
 from .testapp.models import ModelWithDefaultAsInt
 
 
 pytestmark = pytest.mark.django_db
-
-not_django14 = pytest.mark.skipif(VERSION[:3] < (1, 5), reason="Django 1.4 doesn't support ignorenonexistent option")
-
-
-if VERSION[:3] < (1, 8):
-    ignore = 'ignore'
-else:
-    ignore = 'ignorenonexistent'
 
 
 def test_m2m_fields_are_not_lost(concrete_instance, m2m_object):
@@ -44,7 +35,7 @@ def dumpdata(capsys):
 
 
 def loaddata(fixture_file, ignore_value=False):
-    call_command('loaddata', str(fixture_file), **{ignore: ignore_value})
+    call_command('loaddata', str(fixture_file), ignorenonexistent=ignore_value)
 
 
 def test_dumpdata(capsys, fixture_file):
@@ -57,19 +48,13 @@ def test_dumpdata(capsys, fixture_file):
     assert ModelWithDefaultAsInt.objects.get().money == money
 
 
-def test_load_invalid(capsys, fixture_file):
+def test_load_invalid(fixture_file):
     data = '[{"model": "testapp.unknown_model", "pk": 1, "fields": {"money_currency": "USD", "money": "1.00"}}]'
     fixture_file.write(data)
-    if VERSION[:2] == (1, 4):
-        # In Django 1.4 exceptions are in stderr
+    with pytest.raises(DeserializationError):
         loaddata(fixture_file)
-        assert "DeserializationError: Invalid model identifier: 'testapp.unknown_model'" in capsys.readouterr()[1]
-    else:
-        with pytest.raises(DeserializationError):
-            loaddata(fixture_file)
 
 
-@not_django14
 def test_load_invalid_ignore(fixture_file):
     data = '[{"model": "testapp.unknown_model", "pk": 1, "fields": {"money_currency": "USD", "money": "1.00"}}, ' \
            '{"model": "testapp.modelwithdefaultasint", "pk": 2, "fields": {"money_currency": "USD", "money": "1.00"}}]'
@@ -77,7 +62,6 @@ def test_load_invalid_ignore(fixture_file):
     loaddata(fixture_file, True)
 
 
-@not_django14
 def test_old_fields_skip(capsys, fixture_file):
     money = Money(10, 'EUR')
     instance = ModelWithDefaultAsInt.objects.create(money=money)

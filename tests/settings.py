@@ -4,8 +4,6 @@ from __future__ import unicode_literals
 import warnings
 from decimal import ROUND_HALF_EVEN
 
-from django import VERSION
-
 import moneyed
 from moneyed.localization import _FORMATTER, DEFAULT
 
@@ -22,6 +20,11 @@ TEMPLATES = [
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
         'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+            ],
+        },
     },
 ]
 
@@ -35,17 +38,13 @@ INSTALLED_APPS = [
     'django.contrib.sites',
 
     'djmoney',
+    'djmoney.contrib.exchange',
     'reversion',
 
     'tests.testapp'
 ]
-# Application will not start on Django 2.0
-if VERSION < (2, 0):
-    INSTALLED_APPS.append('djmoney_rates')
-
 
 SITE_ID = 1
-ROOT_URLCONF = 'core.urls'
 
 SECRET_KEY = 'foobar'
 
@@ -60,3 +59,6 @@ _FORMATTER.add_formatting_definition(
     negative_sign='-', trailing_negative_sign='',
     rounding_method=ROUND_HALF_EVEN
 )
+
+OPEN_EXCHANGE_RATES_APP_ID = 'test'
+FIXER_ACCESS_KEY = 'test'
