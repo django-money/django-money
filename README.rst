@@ -293,7 +293,7 @@ Install the required packages:
 
     cd ./django-money/
 
-    pip install -e .[tests] # installation with required packages for testing
+    pip install -e .[test] # installation with required packages for testing
 
 Recommended way to run the tests:
 
