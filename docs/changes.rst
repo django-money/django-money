@@ -6,6 +6,11 @@ Changelog
 `0.14`_ - unreleased
 --------------------
 
+Added
+~~~~~
+
+- Caching of exchange rates. `#398`_ (`Stranger6667`_)
+
 Fixed
 ~~~~~
 
@@ -551,6 +556,7 @@ Added
 .. _#410: https://github.com/django-money/django-money/issues/410
 .. _#400: https://github.com/django-money/django-money/issues/400
 .. _#399: https://github.com/django-money/django-money/issues/399
+.. _#398: https://github.com/django-money/django-money/issues/398
 .. _#392: https://github.com/django-money/django-money/issues/392
 .. _#388: https://github.com/django-money/django-money/issues/388
 .. _#385: https://github.com/django-money/django-money/issues/385
