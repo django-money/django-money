@@ -6,8 +6,9 @@ from django.core.exceptions import ImproperlyConfigured
 import pytest
 
 from djmoney.contrib.exchange.exceptions import MissingRate
-from djmoney.contrib.exchange.models import Rate, convert_money, get_rate
+from djmoney.contrib.exchange.models import _get_rate, convert_money, get_rate
 from djmoney.money import Currency, Money
+from tests._compat import patch
 
 
 pytestmark = pytest.mark.django_db
@@ -20,8 +21,8 @@ pytestmark = pytest.mark.django_db
     (Currency('USD'), 'USD', 1),
     ('USD', Currency('USD'), 1),
 ))
-def test_get_rate(backend, source, target, expected):
-    Rate.objects.create(currency='EUR', value=2, backend=backend)
+@pytest.mark.usefixtures('simple_rates')
+def test_get_rate(source, target, expected):
     assert get_rate(source, target) == expected
 
 
@@ -32,6 +33,15 @@ def test_unknown_currency():
 
 def test_string_representation(backend):
     assert str(backend) == backend.name
+
+
+@pytest.mark.usefixtures('simple_rates')
+def test_cache():
+    with patch('djmoney.contrib.exchange.models._get_rate', wraps=_get_rate) as original:
+        assert get_rate('USD', 'USD') == 1
+        assert original.call_count == 1
+        assert get_rate('USD', 'USD') == 1
+        assert original.call_count == 1
 
 
 def test_bad_configuration(settings):

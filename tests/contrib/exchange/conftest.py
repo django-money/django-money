@@ -1,6 +1,8 @@
 import json
 from decimal import Decimal
 
+from django.core.cache import cache
+
 import pytest
 
 from djmoney.contrib.exchange.backends import (
@@ -74,3 +76,14 @@ class FixedTwoBackend(BaseExchangeBackend):
 def two_backends_data():
     FixedOneBackend().update_rates()
     FixedTwoBackend().update_rates()
+
+
+@pytest.fixture
+def simple_rates(backend):
+    Rate.objects.create(currency='EUR', value=2, backend=backend)
+
+
+@pytest.fixture(autouse=True)
+def django_cache():
+    cache.clear()
+    yield
