@@ -81,7 +81,7 @@ class MoneyLocalizeNode(template.Node):
         money.use_l10n = self.use_l10n
 
         if self.var_name is None:
-            return money
+            return str(money)
 
         # as <var_name>
         context[self.var_name.token] = money
