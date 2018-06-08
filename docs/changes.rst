@@ -15,13 +15,13 @@ Fixed
 ~~~~~
 
 - Same currency conversion getting MissingRate exception `#418`_ (`humrochagf`_)
+- `TypeError` during templatetag usage inside a for loop on Django 2.0. `#402`_ (`f213`_)
 
 Removed
 ~~~~~~~
 
 - Support for Python 3.3 `#410`_ (`benjaoming`_)
 - Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (`Stranger6667`_)
-
 
 `0.13.5`_ - 2018-05-19
 ----------------------
@@ -554,6 +554,7 @@ Added
 
 .. _#412: https://github.com/django-money/django-money/issues/412
 .. _#410: https://github.com/django-money/django-money/issues/410
+.. _#402: https://github.com/django-money/django-money/issues/402
 .. _#400: https://github.com/django-money/django-money/issues/400
 .. _#399: https://github.com/django-money/django-money/issues/399
 .. _#398: https://github.com/django-money/django-money/issues/398
@@ -648,6 +649,7 @@ Added
 .. _elcolie: https://github.com/elcolie
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _evenicoulddoit: https://github.com/evenicoulddoit
+.. _f213: https://github.com/f213
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
 .. _gonzalobf: https://github.com/gonzalobf
