@@ -108,7 +108,14 @@ def assert_template(string, result, context=None):
             '{% load djmoney %}{% money_localize money on %}',
             '2,30 zł',
             {'money': Money(2.3, 'PLN')}
-        )
+        ),
+        (
+            # in django 2.0 we fail inside the for loop
+            '{% load djmoney %}{% for i in "xxx" %}{% money_localize money %} {% endfor %}',
+            '2,30 zł 2,30 zł 2,30 zł ',
+            {'money': Money(2.3, 'PLN'), 'test': 'test'}
+        ),
+
     )
 )
 def test_tag(string, result, context):
