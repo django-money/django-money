@@ -3,17 +3,13 @@
 Changelog
 =========
 
-`0.14`_ - unreleased
+`0.14`_ - 2018-06-09
 --------------------
 
 Added
 ~~~~~
 
 - Caching of exchange rates. `#398`_ (`Stranger6667`_)
-
-Changed
-~~~~~~~
-
 - Added support for nullable ``CurrencyField``. `#260`_ (`Stranger6667`_)
 
 Fixed
