@@ -11,6 +11,11 @@ Added
 
 - Caching of exchange rates. `#398`_ (`Stranger6667`_)
 
+Changed
+~~~~~~~
+
+- Added support for nullable ``CurrencyField``. `#260`_ (`Stranger6667`_)
+
 Fixed
 ~~~~~
 
@@ -504,6 +509,7 @@ Added
 - Allow django-money to be specified as read-only in a model. (`akumria`_)
 - South support: Declare default attribute values. (`pjdelport`_)
 
+
 `0.2`_ - 2012-04-10
 -------------------
 
@@ -587,6 +593,7 @@ Added
 .. _#268: https://github.com/django-money/django-money/issues/268
 .. _#265: https://github.com/django-money/django-money/issues/265
 .. _#262: https://github.com/django-money/django-money/issues/262
+.. _#260: https://github.com/django-money/django-money/issues/260
 .. _#258: https://github.com/django-money/django-money/issues/258
 .. _#257: https://github.com/django-money/django-money/pull/257
 .. _#251: https://github.com/django-money/django-money/pull/251

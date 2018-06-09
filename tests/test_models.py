@@ -40,6 +40,7 @@ from .testapp.models import (
     ModelWithDefaultAsString,
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
+    ModelWithNullableCurrency,
     ModelWithSharedCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
@@ -326,6 +327,25 @@ class TestGetOrCreate:
         instance, created = ModelWithSharedCurrency.objects.get_or_create(first=10, second=15, currency='USD')
         assert instance.first == Money(10, 'USD')
         assert instance.second == Money(15, 'USD')
+
+
+class TestNullableCurrency:
+
+    def test_create_nullable(self):
+        instance = ModelWithNullableCurrency.objects.create()
+        assert instance.money is None
+        assert instance.money_currency is None
+
+    def test_create_default(self):
+        money = Money(100, 'SEK')
+        instance = ModelWithNullableCurrency.objects.create(money=money)
+        assert instance.money == money
+
+    def test_fails_with_null_currency(self):
+        with pytest.raises(ValueError) as exc:
+            ModelWithNullableCurrency.objects.create(money=10)
+        assert str(exc.value) == 'Missing currency value'
+        assert not ModelWithNullableCurrency.objects.exists()
 
 
 class TestFExpressions:

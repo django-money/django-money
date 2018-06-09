@@ -25,6 +25,10 @@ class ModelWithVanillaMoneyField(models.Model):
     integer = models.IntegerField(default=0)
 
 
+class ModelWithNullableCurrency(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, null=True, default_currency=None)
+
+
 class ModelWithDefaultAsInt(models.Model):
     money = MoneyField(default=123, max_digits=10, decimal_places=2, default_currency='GHS')
 
