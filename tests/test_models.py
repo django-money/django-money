@@ -341,6 +341,12 @@ class TestNullableCurrency:
         instance = ModelWithNullableCurrency.objects.create(money=money)
         assert instance.money == money
 
+    def test_fails_with_null_currency(self):
+        with pytest.raises(ValueError) as exc:
+            ModelWithNullableCurrency.objects.create(money=10)
+        assert str(exc.value) == 'Missing currency value'
+        assert not ModelWithNullableCurrency.objects.exists()
+
 
 class TestFExpressions:
 
