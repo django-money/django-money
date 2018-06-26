@@ -347,6 +347,18 @@ class TestNullableCurrency:
         assert str(exc.value) == 'Missing currency value'
         assert not ModelWithNullableCurrency.objects.exists()
 
+    def test_query_not_null(self):
+        money = Money(100, 'EUR')
+        ModelWithNullableCurrency.objects.create(money=money)
+        instance = ModelWithNullableCurrency.objects.get()
+        assert instance.money == money
+
+    def test_query_null(self):
+        ModelWithNullableCurrency.objects.create()
+        instance = ModelWithNullableCurrency.objects.get()
+        assert instance.money is None
+        assert instance.money_currency is None
+
 
 class TestFExpressions:
 

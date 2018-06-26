@@ -3,6 +3,15 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixed
+~~~~~
+
+- Error was raised when trying to do a query with a ModelWithNullableCurrency
+
+
 `0.14`_ - 2018-06-09
 --------------------
 
