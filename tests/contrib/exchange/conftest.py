@@ -1,4 +1,5 @@
 import json
+from contextlib import contextmanager
 from decimal import Decimal
 
 from django.core.cache import cache
@@ -36,6 +37,14 @@ FIXER_RESPONSE = '''{
 FIXER_EXPECTED = json.loads(FIXER_RESPONSE, parse_float=Decimal)['rates']
 
 
+@contextmanager
+def mock_backend(value):
+    response = Mock()
+    response.read.return_value = value
+    with patch('djmoney.contrib.exchange.backends.base.urlopen', return_value=response):
+        yield
+
+
 class ExchangeTest:
 
     @pytest.fixture(autouse=True, params=(
@@ -46,9 +55,7 @@ class ExchangeTest:
         klass, response_value, expected = request.param
         self.backend = klass()
         self.expected = expected
-        response = Mock()
-        response.read.return_value = response_value
-        with patch('djmoney.contrib.exchange.backends.base.urlopen', return_value=response):
+        with mock_backend(response_value):
             yield
 
     def assert_rates(self):
@@ -81,6 +88,12 @@ def two_backends_data():
 @pytest.fixture
 def simple_rates(backend):
     Rate.objects.create(currency='EUR', value=2, backend=backend)
+
+
+@pytest.fixture
+def default_openexchange_rates():
+    with mock_backend(OPEN_EXCHANGE_RATES_RESPONSE):
+        OpenExchangeRatesBackend().update_rates()
 
 
 @pytest.fixture(autouse=True)

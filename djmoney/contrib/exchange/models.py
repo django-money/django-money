@@ -35,15 +35,6 @@ def get_default_backend_name():
     return import_string(EXCHANGE_BACKEND).name
 
 
-def get_one():
-    """
-    For SQLite it is required to cast value to NUMERIC type, otherwise integer division will be used.
-    """
-    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
-        return '1::NUMERIC'
-    return 1
-
-
 def get_rate(source, target, backend=None):
     """
     Returns an exchange rate between source and target currencies.
@@ -64,17 +55,20 @@ def get_rate(source, target, backend=None):
 def _get_rate(source, target, backend):
     if text_type(source) == text_type(target):
         return 1
-    try:
-        forward = models.Q(currency=target, backend__base_currency=source)
-        reverse = models.Q(currency=source, backend__base_currency=target)
-        return Rate.objects.annotate(
-            rate=models.Case(
-                models.When(forward, then=models.F('value')),
-                models.When(reverse, then=models.Value(get_one()) / models.F('value')),
-            )
-        ).get(forward | reverse, backend=backend).rate
-    except Rate.DoesNotExist:
+    rates = Rate.objects.filter(currency__in=(source, target), backend=backend)
+    if not rates:
         raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+    # Direct rate
+    if len(rates) == 1:
+        rate = rates[0]
+        if rate.currency == target:
+            return rate.value
+        return 1 / rate.value
+    # Indirect rate
+    first, second = rates
+    if first.currency == target:
+        first, second = second, first
+    return second.value / first.value
 
 
 def convert_money(value, currency):
