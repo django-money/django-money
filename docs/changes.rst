@@ -9,8 +9,7 @@ Unreleased
 Fixed
 ~~~~~
 
-- Error was raised when trying to do a query with a ModelWithNullableCurrency
-
+- Error was raised when trying to do a query with a `ModelWithNullableCurrency`. `#427`_ (`Woile`_)
 
 `0.14`_ - 2018-06-09
 --------------------
@@ -563,6 +562,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#427: https://github.com/django-money/django-money/pull/427
 .. _#412: https://github.com/django-money/django-money/issues/412
 .. _#410: https://github.com/django-money/django-money/issues/410
 .. _#402: https://github.com/django-money/django-money/issues/402
@@ -693,6 +693,7 @@ Added
 .. _toudi: https://github.com/toudi
 .. _tsouvarev: https://github.com/tsouvarev
 .. _yellow-sky: https://github.com/yellow-sky
+.. _Woile: https://github.com/Woile
 .. _w00kie: https://github.com/w00kie
 .. _willhcr: https://github.com/willhcr
 .. _1337: https://github.com/1337
