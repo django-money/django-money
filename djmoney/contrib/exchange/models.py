@@ -61,12 +61,12 @@ def _get_rate(source, target, backend):
     # Direct rate
     if len(rates) == 1:
         rate = rates[0]
-        if rate.currency == target:
+        if text_type(rate.currency) == text_type(target):
             return rate.value
         return 1 / rate.value
     # Indirect rate
     first, second = rates
-    if first.currency == target:
+    if text_type(first.currency) == text_type(target):
         first, second = second, first
     return second.value / first.value
 
