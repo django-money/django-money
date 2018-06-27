@@ -32,9 +32,21 @@ def test_get_rate(source, target, expected, django_assert_num_queries, queries):
     ('SEK', 'NOK', Decimal('0.9365640705489186883886537319')),
 ))
 @pytest.mark.usefixtures('default_openexchange_rates')
-def test_indirect_rate(source, target, expected, django_assert_num_queries):
+def test_rates_via_base(source, target, expected, django_assert_num_queries):
     with django_assert_num_queries(1):
         assert get_rate(source, target) == expected
+
+
+@pytest.mark.parametrize('source, target', (
+    ('NOK', 'ZAR'),
+    ('ZAR', 'NOK'),
+    ('USD', 'ZAR'),
+    ('ZAR', 'USD'),
+))
+@pytest.mark.usefixtures('default_openexchange_rates')
+def test_unknown_currency_with_partially_exiting_currencies(source, target):
+    with pytest.raises(MissingRate, match='Rate %s \\-\\> %s does not exist' % (source, target)):
+        get_rate(source, target)
 
 
 @pytest.mark.parametrize('source, target', (

@@ -53,20 +53,44 @@ def get_rate(source, target, backend=None):
 
 
 def _get_rate(source, target, backend):
-    if text_type(source) == text_type(target):
+    source, target = text_type(source), text_type(target)
+    if text_type(source) == target:
         return 1
-    rates = Rate.objects.filter(currency__in=(source, target), backend=backend)
+    rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related('backend')
     if not rates:
         raise MissingRate('Rate %s -> %s does not exist' % (source, target))
-    # Direct rate
     if len(rates) == 1:
-        rate = rates[0]
-        if text_type(rate.currency) == text_type(target):
-            return rate.value
+        return _try_to_get_rate_directly(source, target, rates[0])
+    return _get_rate_via_base(rates, target)
+
+
+def _try_to_get_rate_directly(source, target, rate):
+    """
+    Either target or source equals to base currency of existing rate.
+    """
+    # Converting from base currency to target
+    if rate.backend.base_currency == source and rate.currency == target:
+        return rate.value
+    # Converting from target currency to base
+    elif rate.backend.base_currency == target and rate.currency == source:
         return 1 / rate.value
-    # Indirect rate
+    # Case when target or source is not a base currency
+    raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+
+
+def _get_rate_via_base(rates, target):
+    """
+    Both target and source are not a base currency - actual rate could be calculated via their rates to base currency.
+    For example:
+
+    7.84 NOK = 1 USD = 8.37 SEK
+
+    7.84 NOK = 8.37 SEK
+
+    1 NOK = 8.37 / 7.84 SEK
+    """
     first, second = rates
-    if text_type(first.currency) == text_type(target):
+    if first.currency == target:
         first, second = second, first
     return second.value / first.value
 

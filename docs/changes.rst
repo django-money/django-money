@@ -9,7 +9,9 @@ Unreleased
 Added
 ~~~~~
 
-- Support for indirect rates conversion. `#425`_ (`Stranger6667`_, `77cc33`_)
+- Support for indirect rates conversion through maximum 1 extra step (when there is no direct conversion rate:
+  converting by means of a third currency for which both source and target currency have conversion
+  rates). `#425`_ (`Stranger6667`_, `77cc33`_)
 
 Fixed
 ~~~~~
