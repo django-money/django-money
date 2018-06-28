@@ -80,6 +80,9 @@ def _try_to_get_rate_directly(source, target, rate):
 
 def _get_rate_via_base(rates, target):
     """
+    :param: rates: A set/tuple of two base Rate instances
+    :param: target: A Rate instance that we want a conversion rate for via rates
+    
     Both target and source are not a base currency - actual rate could be calculated via their rates to base currency.
     For example:
 
@@ -90,6 +93,9 @@ def _get_rate_via_base(rates, target):
     1 NOK = 8.37 / 7.84 SEK
     """
     first, second = rates
+    # Instead of expecting an explicit order in the `rates` iterable, that will put the
+    # source currency in the first place, we decided to add an extra check here and swap
+    # items if they are ordered not as expected
     if first.currency == target:
         first, second = second, first
     return second.value / first.value
