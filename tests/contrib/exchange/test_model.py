@@ -14,21 +14,48 @@ from tests._compat import patch
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.parametrize('source, target, expected', (
-    ('USD', 'USD', 1),
-    ('USD', 'EUR', 2),
-    ('EUR', 'USD', Decimal('0.5')),
-    (Currency('USD'), 'USD', 1),
-    ('USD', Currency('USD'), 1),
+@pytest.mark.parametrize('source, target, expected, queries', (
+    ('USD', 'USD', 1, 0),
+    ('USD', 'EUR', 2, 1),
+    ('EUR', 'USD', Decimal('0.5'), 1),
+    (Currency('USD'), 'USD', 1, 0),
+    ('USD', Currency('USD'), 1, 0),
 ))
 @pytest.mark.usefixtures('simple_rates')
-def test_get_rate(source, target, expected):
-    assert get_rate(source, target) == expected
+def test_get_rate(source, target, expected, django_assert_num_queries, queries):
+    with django_assert_num_queries(queries):
+        assert get_rate(source, target) == expected
 
 
-def test_unknown_currency():
-    with pytest.raises(MissingRate, match='Rate USD \\-\\> EUR does not exist'):
-        get_rate('USD', 'EUR')
+@pytest.mark.parametrize('source, target, expected', (
+    ('NOK', 'SEK', Decimal('1.067732610555839085161462146')),
+    ('SEK', 'NOK', Decimal('0.9365640705489186883886537319')),
+))
+@pytest.mark.usefixtures('default_openexchange_rates')
+def test_rates_via_base(source, target, expected, django_assert_num_queries):
+    with django_assert_num_queries(1):
+        assert get_rate(source, target) == expected
+
+
+@pytest.mark.parametrize('source, target', (
+    ('NOK', 'ZAR'),
+    ('ZAR', 'NOK'),
+    ('USD', 'ZAR'),
+    ('ZAR', 'USD'),
+))
+@pytest.mark.usefixtures('default_openexchange_rates')
+def test_unknown_currency_with_partially_exiting_currencies(source, target):
+    with pytest.raises(MissingRate, match='Rate %s \\-\\> %s does not exist' % (source, target)):
+        get_rate(source, target)
+
+
+@pytest.mark.parametrize('source, target', (
+    ('USD', 'EUR'),
+    ('SEK', 'ZWL')
+))
+def test_unknown_currency(source, target):
+    with pytest.raises(MissingRate, match='Rate %s \\-\\> %s does not exist' % (source, target)):
+        get_rate(source, target)
 
 
 def test_string_representation(backend):

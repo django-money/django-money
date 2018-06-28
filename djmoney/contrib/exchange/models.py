@@ -35,15 +35,6 @@ def get_default_backend_name():
     return import_string(EXCHANGE_BACKEND).name
 
 
-def get_one():
-    """
-    For SQLite it is required to cast value to NUMERIC type, otherwise integer division will be used.
-    """
-    if settings.DATABASES['default']['ENGINE'] == 'django.db.backends.sqlite3':
-        return '1::NUMERIC'
-    return 1
-
-
 def get_rate(source, target, backend=None):
     """
     Returns an exchange rate between source and target currencies.
@@ -62,19 +53,52 @@ def get_rate(source, target, backend=None):
 
 
 def _get_rate(source, target, backend):
-    if text_type(source) == text_type(target):
+    source, target = text_type(source), text_type(target)
+    if text_type(source) == target:
         return 1
-    try:
-        forward = models.Q(currency=target, backend__base_currency=source)
-        reverse = models.Q(currency=source, backend__base_currency=target)
-        return Rate.objects.annotate(
-            rate=models.Case(
-                models.When(forward, then=models.F('value')),
-                models.When(reverse, then=models.Value(get_one()) / models.F('value')),
-            )
-        ).get(forward | reverse, backend=backend).rate
-    except Rate.DoesNotExist:
+    rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related('backend')
+    if not rates:
         raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+    if len(rates) == 1:
+        return _try_to_get_rate_directly(source, target, rates[0])
+    return _get_rate_via_base(rates, target)
+
+
+def _try_to_get_rate_directly(source, target, rate):
+    """
+    Either target or source equals to base currency of existing rate.
+    """
+    # Converting from base currency to target
+    if rate.backend.base_currency == source and rate.currency == target:
+        return rate.value
+    # Converting from target currency to base
+    elif rate.backend.base_currency == target and rate.currency == source:
+        return 1 / rate.value
+    # Case when target or source is not a base currency
+    raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+
+
+def _get_rate_via_base(rates, target):
+    """
+    :param: rates: A set/tuple of two base Rate instances
+    :param: target: A string instance of the currency to convert to
+
+    Both target and source are not a base currency - actual rate could be calculated via their rates to base currency.
+    For example:
+
+    7.84 NOK = 1 USD = 8.37 SEK
+
+    7.84 NOK = 8.37 SEK
+
+    1 NOK = 8.37 / 7.84 SEK
+    """
+    first, second = rates
+    # Instead of expecting an explicit order in the `rates` iterable, that will put the
+    # source currency in the first place, we decided to add an extra check here and swap
+    # items if they are ordered not as expected
+    if first.currency == target:
+        first, second = second, first
+    return second.value / first.value
 
 
 def convert_money(value, currency):

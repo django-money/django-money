@@ -6,6 +6,13 @@ Changelog
 Unreleased
 ----------
 
+Added
+~~~~~
+
+- Support for indirect rates conversion through maximum 1 extra step (when there is no direct conversion rate:
+  converting by means of a third currency for which both source and target currency have conversion
+  rates). `#425`_ (`Stranger6667`_, `77cc33`_)
+
 Fixed
 ~~~~~
 
@@ -563,6 +570,7 @@ Added
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
 .. _#427: https://github.com/django-money/django-money/pull/427
+.. _#425: https://github.com/django-money/django-money/issues/425
 .. _#412: https://github.com/django-money/django-money/issues/412
 .. _#410: https://github.com/django-money/django-money/issues/410
 .. _#402: https://github.com/django-money/django-money/issues/402
