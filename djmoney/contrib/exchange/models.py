@@ -81,7 +81,7 @@ def _try_to_get_rate_directly(source, target, rate):
 def _get_rate_via_base(rates, target):
     """
     :param: rates: A set/tuple of two base Rate instances
-    :param: target: A Rate instance that we want a conversion rate for via rates
+    :param: target: A string instance of the currency to convert to
     
     Both target and source are not a base currency - actual rate could be calculated via their rates to base currency.
     For example:
