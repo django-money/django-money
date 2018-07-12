@@ -74,6 +74,8 @@ Use as normal model fields:
 
         class BankAccount(models.Model):
             balance = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+            
+Note that max_digits=19 and decimal_places=4 is recommended in this stackoverflow [article]( https://stackoverflow.com/questions/224462/storing-money-in-a-decimal-column-what-precision-and-scale)
 
 Searching for models with money fields:
 
