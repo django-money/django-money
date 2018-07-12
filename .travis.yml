@@ -2,7 +2,7 @@ language: python
 python:
   - 3.6
 cache: pip
-install: travis_retry pip install tox\<3.1 codecov
+install: travis_retry pip install tox\>=3.1.2 codecov
 script: tox -e $TOX_ENV
 matrix:
   fast_finish: true
