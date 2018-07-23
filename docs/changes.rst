@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+`0.14.2`_ - 2018-07-23
+----------------------
 
 Fixed
 ~~~~
@@ -12,7 +12,7 @@ Fixed
 - Validation of ``djmoney.forms.fields.MoneyField`` when ``disabled=True`` is passed to it. `#439`_ (`stinovlas`_, `Stranger6667`_)
 
 `0.14.1`_ - 2018-07-17
---------------------
+----------------------
 
 Added
 ~~~~~
@@ -534,7 +534,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.14.1...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.14.2...HEAD
+.. _0.14.2: https://github.com/django-money/django-money/compare/0.14.2...0.14.1
 .. _0.14.1: https://github.com/django-money/django-money/compare/0.14.1...0.14
 .. _0.14: https://github.com/django-money/django-money/compare/0.14...0.13.5
 .. _0.13.5: https://github.com/django-money/django-money/compare/0.13.4...0.13.5
