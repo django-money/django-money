@@ -15,6 +15,7 @@ from djmoney.money import Money
 
 from .testapp.forms import (
     DefaultMoneyModelForm,
+    DisabledFieldForm,
     MoneyForm,
     MoneyFormMultipleCurrencies,
     MoneyModelForm,
@@ -190,3 +191,17 @@ class TestValidation:
         form = MoneyModelFormWithValidation(data={'balance_0': 0, 'balance_1': 'GBP'})
         assert not form.is_valid()
         assert form.errors == {'balance': ['Ensure this value is greater than or equal to 100.00 GBP.']}
+
+
+@pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't have `disabled` keyword in fields")
+class TestDisabledField:
+
+    def test_validation(self):
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money('42.00', 'USD'))
+        form = DisabledFieldForm(data={}, instance=instance)
+        assert not form.errors
+        assert form.is_valid()
+
+    def test_has_changed(self):
+        form = DisabledFieldForm(data={})
+        assert not form.has_changed()

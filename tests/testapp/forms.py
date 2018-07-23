@@ -6,7 +6,7 @@ Created on May 15, 2011
 """
 from __future__ import unicode_literals
 
-from django import forms
+from django import VERSION, forms
 
 from djmoney.forms import MoneyField
 
@@ -16,6 +16,7 @@ from .models import (
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
     PositiveValidatedMoneyModel,
+    SimpleModel,
     ValidatedMoneyModel,
 )
 
@@ -72,3 +73,12 @@ class PositiveValidatedMoneyModelForm(forms.ModelForm):
     class Meta:
         model = PositiveValidatedMoneyModel
         fields = ('money', )
+
+
+class DisabledFieldForm(forms.ModelForm):
+    if VERSION[:2] != (1, 8):
+        money = MoneyField(disabled=True)
+
+    class Meta:
+        fields = '__all__'
+        model = SimpleModel

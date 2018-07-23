@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.forms import ChoiceField, DecimalField, MultiValueField
 
 from djmoney.money import Money
+from djmoney.utils import MONEY_CLASSES
 
 from ..settings import CURRENCY_CHOICES
 from .widgets import MoneyWidget
@@ -51,7 +52,15 @@ class MoneyField(MultiValueField):
                 return Money(*data_list[:2])
         return None
 
+    def clean(self, value):
+        if isinstance(value, MONEY_CLASSES):
+            value = (value.amount, value.currency)
+        return super(MoneyField, self).clean(value)
+
     def has_changed(self, initial, data):  # noqa
+        # Django 1.8 has no 'disabled' attribute
+        if hasattr(self, 'disabled') and self.disabled:
+            return False
         if initial is None:
             initial = ['' for _ in range(0, len(data))]
         else:
