@@ -16,6 +16,7 @@ from .models import (
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
     PositiveValidatedMoneyModel,
+    SimpleModel,
     ValidatedMoneyModel,
 )
 
@@ -72,3 +73,11 @@ class PositiveValidatedMoneyModelForm(forms.ModelForm):
     class Meta:
         model = PositiveValidatedMoneyModel
         fields = ('money', )
+
+
+class DisabledFieldForm(forms.ModelForm):
+    money = MoneyField(disabled=True)
+
+    class Meta:
+        fields = '__all__'
+        model = SimpleModel
