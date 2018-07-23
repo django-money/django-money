@@ -58,7 +58,8 @@ class MoneyField(MultiValueField):
         return super(MoneyField, self).clean(value)
 
     def has_changed(self, initial, data):  # noqa
-        if self.disabled:
+        # Django 1.8 has no 'disabled' attribute
+        if hasattr(self, 'disabled') and self.disabled:
             return False
         if initial is None:
             initial = ['' for _ in range(0, len(data))]

@@ -193,7 +193,8 @@ class TestValidation:
         assert form.errors == {'balance': ['Ensure this value is greater than or equal to 100.00 GBP.']}
 
 
-class TestDisableField:
+@pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't have `disabled` keyword in fields")
+class TestDisabledField:
 
     def test_validation(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money('42.00', 'USD'))
