@@ -13,10 +13,22 @@ matrix:
       env: TOX_ENV=lint
     - python: 3.6
       env: TOX_ENV=no_rest_framework
+    - python: 3.7
+      dist: xenial
+      env: TOX_ENV=django_master-py37
     - python: 3.6
       env: TOX_ENV=django_master-py36
     - python: 3.5
       env: TOX_ENV=django_master-py35
+    - python: 3.7
+      dist: xenial
+      env: TOX_ENV=django21-py37
+    - python: 3.6
+      env: TOX_ENV=django21-py36
+    - python: 3.5
+      env: TOX_ENV=django21-py35
+    - python: pypy3
+      env: TOX_ENV=django21-pypy3
     - python: 3.6
       env: TOX_ENV=django20-py36
     - python: 3.5
