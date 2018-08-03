@@ -19,5 +19,7 @@ class MoneyWidget(MultiWidget):
 
     def decompress(self, value):
         if value is not None:
+            if isinstance(value, (list, tuple)):
+                return value
             return [value.amount, value.currency]
         return [None, self.default_currency]
