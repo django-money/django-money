@@ -3,11 +3,19 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixed
+~~~~~
+
+- ``djmoney.forms.widgets.MoneyWidget`` decompression on Django 2.1+. (`Stranger6667`_)
+
 `0.14.2`_ - 2018-07-23
 ----------------------
 
 Fixed
-~~~~
+~~~~~
 
 - Validation of ``djmoney.forms.fields.MoneyField`` when ``disabled=True`` is passed to it. `#439`_ (`stinovlas`_, `Stranger6667`_)
 
