@@ -3,13 +3,13 @@
 Changelog
 =========
 
-Unreleased
-----------
+`0.14.3`_ - 2018-08-14
+----------------------
 
 Fixed
 ~~~~~
 
-- ``djmoney.forms.widgets.MoneyWidget`` decompression on Django 2.1+. (`Stranger6667`_)
+- ``djmoney.forms.widgets.MoneyWidget`` decompression on Django 2.1+. `#443`_ (`Stranger6667`_)
 
 `0.14.2`_ - 2018-07-23
 ----------------------
@@ -542,7 +542,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.14.2...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.14.3...HEAD
+.. _0.14.3: https://github.com/django-money/django-money/compare/0.14.3...0.14.2
 .. _0.14.2: https://github.com/django-money/django-money/compare/0.14.2...0.14.1
 .. _0.14.1: https://github.com/django-money/django-money/compare/0.14.1...0.14
 .. _0.14: https://github.com/django-money/django-money/compare/0.14...0.13.5
@@ -588,6 +589,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#443: https://github.com/django-money/django-money/issues/443
 .. _#439: https://github.com/django-money/django-money/issues/439
 .. _#427: https://github.com/django-money/django-money/pull/427
 .. _#425: https://github.com/django-money/django-money/issues/425
