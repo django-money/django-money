@@ -5,7 +5,7 @@ from django import template
 from django.utils import translation
 from mock import Mock, patch
 
-from ..models.fields import MoneyPatched
+from djmoney.models.fields import MoneyPatched
 from moneyed import Money
 
 

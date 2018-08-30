@@ -3,9 +3,10 @@ from django import template
 from django.conf import settings
 from django.template import TemplateSyntaxError, VariableDoesNotExist
 from moneyed import Money
-from moneyed.localization import format_money
 
-from ..models.fields import MoneyPatched
+from ..money import Money
+from ..utils import MONEY_CLASSES
+
 
 register = template.Library()
 
@@ -13,14 +14,13 @@ register = template.Library()
 class MoneyLocalizeNode(template.Node):
 
     def __repr__(self):
-        return "<MoneyLocalizeNode %r>" % self.money
+        return '<MoneyLocalizeNode %d %s>' % (self.money.amount, self.money.currency)
 
     def __init__(self, money=None, amount=None, currency=None, use_l10n=None,
                  var_name=None, decimal_places=2):
 
         if money and (amount or currency):
-            raise Exception('You can define either "money" or the'
-                            ' "amount" and "currency".')
+            raise Exception('You can define either "money" or the "amount" and "currency".')
 
         self.money = money
         self.amount = amount
@@ -36,6 +36,7 @@ class MoneyLocalizeNode(template.Node):
     def handle_token(cls, parser, token, no_decimal=False):
 
         tokens = token.contents.split()
+
         # default value
         var_name = None
         use_l10n = True
@@ -101,17 +102,13 @@ class MoneyLocalizeNode(template.Node):
                 self.country_code = None
 
         if money is not None:
-            if isinstance(money, Money):
-                money = MoneyPatched._patch_to_current_class(money)
-            else:
-                raise TemplateSyntaxError('The variable "money" must be an '
-                                          'instance of Money.')
+            if not isinstance(money, MONEY_CLASSES):
+                raise TemplateSyntaxError('The variable "money" must be an instance of Money.')
 
         elif amount is not None and currency is not None:
-            money = MoneyPatched(float(amount), str(currency))
+            money = Money(Decimal(str(amount)), str(currency))
         else:
-            raise TemplateSyntaxError('You must define both variables: '
-                                      'amount and currency.')
+            raise TemplateSyntaxError('You must define both variables: amount and currency.')
 
         money.use_l10n = self.use_l10n
         money.decimal_places = self.decimal_places
@@ -119,7 +116,7 @@ class MoneyLocalizeNode(template.Node):
         money = self._str_override_currency_sign(money)
 
         if self.var_name is None:
-            return money
+            return str(money)
 
         # as <var_name>
         context[self.var_name.token] = money
@@ -163,7 +160,7 @@ def money_localize(parser, token):
 
     Return::
 
-        MoneyPatched object
+        Money object
 
     """
     return MoneyLocalizeNode.handle_token(parser, token)

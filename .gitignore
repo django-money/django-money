@@ -25,3 +25,8 @@ djmoney/tests/testproject
 *\.egg-info
 .cache
 venv
+
+# Coverage reports
+.coverage
+coverage.xml
+htmlcov

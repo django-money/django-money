@@ -1,91 +1,84 @@
-from functools import wraps
+# -*- coding: utf-8 -*-
+from django.db.models import Case, F, Q
+from django.db.models.constants import LOOKUP_SEP
+from django.db.models.expressions import BaseExpression
+from django.db.models.fields import FieldDoesNotExist
+from django.utils.six import wraps
 
-import django
-try:
-    from django.db.models.expressions import BaseExpression, F
-except ImportError:
-    # Django < 1.8
-    from django.db.models.expressions import ExpressionNode as BaseExpression, F
-from django.db.models.sql.query import Query
-from djmoney.models.fields import MoneyField
-from django.db.models.query_utils import Q
-from moneyed import Money
+from .._compat import smart_unicode
+from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
+from .fields import CurrencyField, MoneyField
 
 
-try:
-    from django.utils.encoding import smart_unicode
-except ImportError:
-    # Python 3
-    from django.utils.encoding import smart_text as smart_unicode
-
-from djmoney.utils import get_currency_field_name
-
-try:
-    from django.db.models.constants import LOOKUP_SEP
-except ImportError:
-    # Django < 1.5
-    LOOKUP_SEP = '__'
-
-from django.db.models.sql.constants import QUERY_TERMS
-
-
-def _get_clean_name(name):
-
+def _get_clean_name(model, name):
     # Get rid of __lt, __gt etc for the currency lookup
-    path = name.split(LOOKUP_SEP)
-    if path[-1] in QUERY_TERMS:
-        return LOOKUP_SEP.join(path[:-1])
-    else:
+    if LOOKUP_SEP not in name:
         return name
+    lookup_fields = name.split(LOOKUP_SEP)
+    field = _get_field(model, name)
+    return name.rsplit(LOOKUP_SEP, lookup_fields.index(field.name) + 1)[0]
 
 
 def _get_field(model, name):
-    if django.VERSION[0] >= 1 and django.VERSION[1] >= 8:
-        # Django 1.8+ - can use something like 
-        # expression.output_field.get_internal_field() == 'Money..'
-        raise NotImplementedError("Django 1.8+ support is not implemented.")
+    lookup_fields = name.split(LOOKUP_SEP)
+    prev_field = None
+    opts = model._meta
+    for field_name in lookup_fields:
+        if field_name == 'pk':
+            field_name = opts.pk.name
+        try:
+            field = opts.get_field(field_name)
+        except FieldDoesNotExist:
+            # Ignore valid query lookups.
+            if prev_field and prev_field.get_lookup(field_name):
+                continue
+        else:
+            prev_field = field
+            if hasattr(field, 'get_path_info'):
+                # This field is a relation, update opts to follow the relation
+                path_info = field.get_path_info()
+                opts = path_info[-1].to_opts
+    return prev_field
 
-    from django.db.models.fields import FieldDoesNotExist
 
-    # Create a fake query object so we can easily work out what field
-    # type we are dealing with
-    qs = Query(model)
-    opts = qs.get_meta()
-    alias = qs.get_initial_alias()
+def is_in_lookup(name, value):
+    return hasattr(value, '__iter__') & (name.split(LOOKUP_SEP)[-1] == 'in')
 
-    parts = name.split(LOOKUP_SEP)
 
-    # The following is borrowed from the innards of Query.add_filter - it strips out __gt, __exact et al.
-    num_parts = len(parts)
-    if num_parts > 1 and parts[-1] in qs.query_terms:
-        # Traverse the lookup query to distinguish related fields from
-        # lookup types.
-        lookup_model = model
-        for counter, field_name in enumerate(parts):
-            try:
-                lookup_field = lookup_model._meta.get_field(field_name)
-            except FieldDoesNotExist:
-                # Not a field. Bail out.
-                parts.pop()
-                break
-            # Unless we're at the end of the list of lookups, let's attempt
-            # to continue traversing relations.
-            if (counter + 1) < num_parts:
-                try:
-                    lookup_model = lookup_field.rel.to
-                except AttributeError:
-                    # Not a related field. Bail out.
-                    parts.pop()
-                    break
+def _convert_in_lookup(model, field_name, options):
+    """
+    ``in`` lookup can not be represented as keyword lookup.
+    It requires transformation to combination of ``Q`` objects.
 
-    if django.VERSION[0] >= 1 and django.VERSION[1] in (6, 7):
-        # Django 1.6-1.7
-        field = qs.setup_joins(parts, opts, alias)[0]
-    else:
-        # Django 1.4-1.5
-        field = qs.setup_joins(parts, opts, alias, False)[0]
+    Example:
 
-    return field
+        amount__in=[Money(10, 'EUR'), Money(5, 'USD)]
+
+        is equivalent to:
+
+        Q(amount=10, amount_currency='EUR') or Q(amount=5, amount_currency='USD')
+    """
+    field = _get_field(model, field_name)
+    new_query = Q()
+    for value in options:
+        if isinstance(value, MONEY_CLASSES):
+            # amount__in=[Money(1, 'EUR'), Money(2, 'EUR')]
+            option = {
+                field.name: value.amount,
+                get_currency_field_name(field.name, field): value.currency
+            }
+        elif isinstance(value, F):
+            # amount__in=[Money(1, 'EUR'), F('another_money')]
+            target_field = _get_field(model, value.name)
+            option = {
+                field.name: value,
+                get_currency_field_name(field.name, field): F(get_currency_field_name(value.name, target_field))
+            }
+        else:
+            # amount__in=[1, 2, 3]
+            option = {field.name: value}
+        new_query |= Q(**option)
+    return new_query
 
 
 def _expand_money_args(model, args):
@@ -94,79 +87,143 @@ def _expand_money_args(model, args):
     """
     for arg in args:
         if isinstance(arg, Q):
-            for i, child in enumerate(arg.children):
-                if isinstance(child, Q):
-                    _expand_money_args(model, [child])
-                elif isinstance(child, (list, tuple)):
-                    name, value = child
-                    if isinstance(value, Money):
-                        clean_name = _get_clean_name(name)
-                        arg.children[i] = Q(*[
-                            child,
-                            (get_currency_field_name(clean_name), smart_unicode(value.currency))
-                        ])
-                    if isinstance(value, BaseExpression):
-                        field = _get_field(model, name)
-                        if isinstance(field, MoneyField):
-                            clean_name = _get_clean_name(name)
-                            arg.children[i] = Q(*[
-                                child, 
-                                ('_'.join([clean_name, 'currency']), F(get_currency_field_name(value.name)))
-                            ])
+            _expand_arg(model, arg)
     return args
 
 
-def _expand_money_kwargs(model, kwargs):
+def _expand_arg(model, arg):
+    for i, child in enumerate(arg.children):
+        if isinstance(child, Q):
+            _expand_arg(model, child)
+        elif isinstance(child, (list, tuple)):
+            name, value = child
+            field = _get_field(model, name)
+            if isinstance(value, MONEY_CLASSES):
+                clean_name = _get_clean_name(model, name)
+                currency_field_name = get_currency_field_name(clean_name, field)
+                arg.children[i] = Q(child, (currency_field_name, smart_unicode(value.currency)))
+            if isinstance(field, MoneyField):
+                if isinstance(value, (BaseExpression, F)):
+                    clean_name = _get_clean_name(model, name)
+                    if not isinstance(value, F):
+                        value = prepare_expression(value)
+                    if not _is_money_field(model, value, name):
+                        continue
+                    currency_field_name = get_currency_field_name(clean_name, field)
+                    target_field = _get_field(model, value.name)
+                    arg.children[i] = Q(
+                        child, (currency_field_name, F(get_currency_field_name(value.name, target_field)))
+                    )
+                if is_in_lookup(name, value):
+                    arg.children[i] = _convert_in_lookup(model, name, value)
+
+
+def _is_money_field(model, rhs, lhs_name):
+    """
+    Checks if the target field from the expression is instance of MoneyField.
+    """
+    # If the right side is the same field, then no reason to check
+    if rhs.name == lhs_name:
+        return True
+    target_field = _get_field(model, rhs.name)
+    return isinstance(target_field, MoneyField)
+
+
+def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
     """
     Augments kwargs so that they contain _currency lookups.
     """
-    to_append = {}
-    for name, value in kwargs.items():
-        if isinstance(value, Money):
-            clean_name = _get_clean_name(name)
-            to_append[name] = value.amount
-            to_append[get_currency_field_name(clean_name)] = smart_unicode(
-                value.currency)
-        if isinstance(value, BaseExpression):
-            field = _get_field(model, name)
+    for name, value in list(kwargs.items()):
+        if name in exclusions:
+            continue
+        field = _get_field(model, name)
+        if isinstance(value, MONEY_CLASSES):
+            clean_name = _get_clean_name(model, name)
+            kwargs[name] = value.amount
+            currency_field_name = get_currency_field_name(clean_name, field)
+            kwargs[currency_field_name] = smart_unicode(value.currency)
+        else:
             if isinstance(field, MoneyField):
-                clean_name = _get_clean_name(name)
-                to_append['_'.join([clean_name, 'currency'])] = F(get_currency_field_name(value.name))
+                if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):
+                    clean_name = _get_clean_name(model, name)
+                    if not isinstance(value, F):
+                        value = prepare_expression(value)
+                    if not _is_money_field(model, value, name):
+                        continue
+                    currency_field_name = get_currency_field_name(clean_name, field)
+                    target_field = _get_field(model, value.name)
+                    kwargs[currency_field_name] = F(get_currency_field_name(value.name, target_field))
+                if is_in_lookup(name, value):
+                    args += (_convert_in_lookup(model, name, value), )
+                    del kwargs[name]
+            elif isinstance(field, CurrencyField) and 'defaults' in exclusions:
+                _handle_currency_field(model, name, kwargs)
 
-    kwargs.update(to_append)
-    return kwargs
+    return args, kwargs
 
 
-def understands_money(model, func):
+def _handle_currency_field(model, name, kwargs):
+    name = _get_clean_name(model, name)
+    field = _get_field(model, name)
+    money_field = field.price_field
+    if money_field.default is not None and money_field.name not in kwargs:
+        kwargs['defaults'] = kwargs.get('defaults', {})
+        kwargs['defaults'][money_field.name] = money_field.default.amount
+
+
+def _get_model(args, func):
+    """
+    Returns the model class for given function.
+    Note, that ``self`` is not available for proxy models.
+    """
+    if hasattr(func, '__self__'):
+        # Bound method
+        model = func.__self__.model
+    elif hasattr(func, '__wrapped__'):
+        # Proxy model
+        model = func.__wrapped__.__self__.model
+    else:
+        # Custom method on user-defined model manager.
+        model = args[0].model
+    return model
+
+
+def understands_money(func):
     """
     Used to wrap a queryset method with logic to expand
     a query from something like:
 
-    mymodel.objects.filter(money=Money(100,"USD"))
+    mymodel.objects.filter(money=Money(100, "USD"))
 
     To something equivalent to:
 
-    mymodel.objects.filter(money=Decimal("100.0), money_currency="USD")
+    mymodel.objects.filter(money=Decimal("100.0"), money_currency="USD")
     """
 
     @wraps(func)
     def wrapper(*args, **kwargs):
+        model = _get_model(args, func)
         args = _expand_money_args(model, args)
-        kwargs = kwargs.copy()
-        kwargs = _expand_money_kwargs(model, kwargs)
-        return func(*args, **kwargs)
+        exclusions = EXPAND_EXCLUSIONS.get(func.__name__, ())
+        args, kwargs = _expand_money_kwargs(model, args, kwargs, exclusions)
+        queryset = func(*args, **kwargs)
+        return add_money_comprehension_to_queryset(queryset)
 
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ['distinct', 'get', 'get_or_create', 'filter',
-                             'exclude']
+RELEVANT_QUERYSET_METHODS = ('distinct', 'get', 'get_or_create', 'filter', 'exclude', 'update')
+EXPAND_EXCLUSIONS = {
+    'get_or_create': ('defaults', )
+}
 
 
-def add_money_comprehension_to_queryset(model, qs):
-    # Decorate each relevant method with understand_money in the queryset given
+def add_money_comprehension_to_queryset(qs):
+    # Decorate each relevant method with understands_money in the queryset given
     for attr in RELEVANT_QUERYSET_METHODS:
-        setattr(qs, attr, understands_money(model, getattr(qs, attr)))
+        method = getattr(qs, attr, None)
+        if method is not None:
+            setattr(qs, attr, understands_money(method))
     return qs
 
 
@@ -193,17 +250,8 @@ def money_manager(manager):
     class MoneyManager(manager.__class__):
 
         def get_queryset(self, *args, **kwargs):
-            # If we are calling code that is pre-Django 1.6, need to
-            # spell it 'get_query_set'
-            s = super(MoneyManager, self)
-            method = getattr(s, 'get_queryset',
-                             getattr(s, 'get_query_set', None))
-            return add_money_comprehension_to_queryset(self.model, method(*args, **kwargs))
-
-        # If we are being called by code pre Django 1.6, need
-        # 'get_query_set'.
-        if django.VERSION < (1, 6):
-            get_query_set = get_queryset
+            queryset = super(MoneyManager, self).get_queryset(*args, **kwargs)
+            return add_money_comprehension_to_queryset(queryset)
 
     manager.__class__ = MoneyManager
     return manager
