@@ -1,9 +1,13 @@
-import importlib
-from django import template
-from django.conf import settings
-from django.template import TemplateSyntaxError, VariableDoesNotExist
-from moneyed import Money
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
 
+import importlib
+from decimal import Decimal
+
+from django import template
+from django.template import TemplateSyntaxError, VariableDoesNotExist
+
+from djmoney import settings
 from ..money import Money
 from ..utils import MONEY_CLASSES
 
@@ -50,11 +54,7 @@ class MoneyLocalizeNode(template.Node):
 
         # GET variable use_l10n
         if tokens[-1].lower() in ('on', 'off'):
-
-            if tokens[-1].lower() == 'on':
-                use_l10n = True
-            else:
-                use_l10n = False
+            use_l10n = tokens[-1].lower() == 'on'
             # remove the already used data
             tokens.pop(-1)
 
@@ -120,7 +120,6 @@ class MoneyLocalizeNode(template.Node):
 
         # as <var_name>
         context[self.var_name.token] = money
-
         return ''
 
     def _str_override_currency_sign(self, money):
