@@ -286,7 +286,7 @@ class MoneyField(models.DecimalField):
         return super(MoneyField, self).formfield(**defaults)
 
     def value_to_string(self, obj):
-        if VERSION == (1, 8):
+        if VERSION[:2] == (1, 8):
             value = self._get_val_from_obj(obj)
         else:
             value = self.value_from_object(obj)

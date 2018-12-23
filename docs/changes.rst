@@ -3,6 +3,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixed
+~~~~~
+
+- Invalid Django 1.8 version check in ``djmoney.models.fields.MoneyField.value_to_string``. (`Stranger6667`_)
+
 `0.14.3`_ - 2018-08-14
 ----------------------
 
