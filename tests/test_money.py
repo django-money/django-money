@@ -17,7 +17,7 @@ def test_repr():
 
 
 def test_html_safe():
-    assert Money('10.5', 'EUR').__html__() == u'10.50\xa0EUR'
+    assert Money('10.5', 'EUR').__html__() == u'10.50\xa0€'
 
 
 def test_html_unsafe():
