@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+import sys
 
 from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
@@ -55,5 +56,7 @@ def Deserializer(stream_or_string, **options):  # noqa
                 for field, value in money_fields.items():
                     setattr(inner_obj.object, field, value)
                 yield inner_obj
-    except GeneratorExit:
+    except (GeneratorExit, DeserializationError):
         raise
+    except Exception as exc:
+        six.reraise(DeserializationError, DeserializationError(exc), sys.exc_info()[2])

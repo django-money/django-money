@@ -73,3 +73,8 @@ def test_old_fields_skip(capsys, fixture_file):
     fixture_file.write(out)
     loaddata(fixture_file, True)
     assert ModelWithDefaultAsInt.objects.get().money == money
+
+
+def test_deserialization_error():
+    with pytest.raises(DeserializationError):
+        list(Deserializer("invalid JSON"))
