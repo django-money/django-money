@@ -6,6 +6,11 @@ Changelog
 Unreleased
 ----------
 
+Changed
+~~~~~~~
+
+- Re-raise arbitrary exceptions in JSON deserializer as `DeserializationError`. (`Stranger6667`_)
+
 Fixed
 ~~~~~
 
