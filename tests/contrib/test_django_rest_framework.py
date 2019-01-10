@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+from decimal import Decimal
+
 import pytest
 
 from djmoney.money import Money
@@ -73,6 +75,9 @@ class TestMoneyField:
             ({'field': '10', 'field_currency': 'EUR'}, Money(10, 'EUR')),
             ({'field': '12.20', 'field_currency': 'GBP'}, Money(12.20, 'GBP')),
             ({'field': '15.15', 'field_currency': 'USD'}, Money(15.15, 'USD')),
+            ({'field': None, 'field_currency': None}, None),
+            ({'field': '16', 'field_currency': None}, Decimal('16.00')),
+            ({'field': None, 'field_currency': 'USD'}, None),
         ),
     )
     def test_post_put_values(self, body, expected):

@@ -30,7 +30,7 @@ class MoneyField(DecimalField):
     def get_value(self, data):
         amount = super(MoneyField, self).get_value(data)
         currency = data.get(get_currency_field_name(self.field_name), None)
-        if currency:
+        if currency and amount is not None:
             return Money(amount, currency)
         return amount
 
