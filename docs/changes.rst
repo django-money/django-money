@@ -15,6 +15,7 @@ Fixed
 ~~~~~
 
 - Invalid Django 1.8 version check in ``djmoney.models.fields.MoneyField.value_to_string``. (`Stranger6667`_)
+- InvalidOperation in ``djmoney.contrib.django_rest_framework.fields.MoneyField.get_value`` when amount is None and currency is not None. `#458`_ (`carvincarl`_)
 
 `0.14.3`_ - 2018-08-14
 ----------------------
@@ -602,6 +603,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#458: https://github.com/django-money/django-money/issues/458
 .. _#443: https://github.com/django-money/django-money/issues/443
 .. _#439: https://github.com/django-money/django-money/issues/439
 .. _#427: https://github.com/django-money/django-money/pull/427
@@ -684,6 +686,7 @@ Added
 
 .. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina
+.. _carvincarl: https://github.com/carvincarl
 .. _ChessSpider: https://github.com/ChessSpider
 .. _GheloAce: https://github.com/GheloAce
 .. _Stranger6667: https://github.com/Stranger6667
