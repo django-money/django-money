@@ -3,8 +3,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+`0.14.4`_ - 2019-01-07
+----------------------
 
 Changed
 ~~~~~~~
@@ -556,7 +556,8 @@ Added
 
 - Initial public release
 
-.. _Unreleased: https://github.com/django-money/django-money/compare/0.14.3...HEAD
+.. _Unreleased: https://github.com/django-money/django-money/compare/0.14.4...HEAD
+.. _0.14.4: https://github.com/django-money/django-money/compare/0.14.4...0.14.3
 .. _0.14.3: https://github.com/django-money/django-money/compare/0.14.3...0.14.2
 .. _0.14.2: https://github.com/django-money/django-money/compare/0.14.2...0.14.1
 .. _0.14.1: https://github.com/django-money/django-money/compare/0.14.1...0.14
