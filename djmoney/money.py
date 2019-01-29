@@ -24,6 +24,10 @@ class Money(DefaultMoney):
     """
     use_l10n = None
 
+    def __init__(self, decimal_places=DECIMAL_PLACES, *args, **kwargs):
+        self.decimal_places = decimal_places
+        super(Money, self).__init__(*args, **kwargs)
+        
     def __float__(self):
         warnings.warn("float() on a Money object is deprecated. Use the "
                       "'amount' attribute instead.", DeprecationWarning)
@@ -58,7 +62,7 @@ class Money(DefaultMoney):
         return self.use_l10n
 
     def __unicode__(self):
-        kwargs = {'money': self, 'decimal_places': DECIMAL_PLACES}
+        kwargs = {'money': self, 'decimal_places': self.decimal_places}
         if self.is_localized:
             locale = get_current_locale()
             if locale:
