@@ -18,8 +18,6 @@ matrix:
       env: TOX_ENV=django_master-py37
     - python: 3.6
       env: TOX_ENV=django_master-py36
-    - python: 3.5
-      env: TOX_ENV=django_master-py35
     - python: 3.7
       dist: xenial
       env: TOX_ENV=django21-py37
