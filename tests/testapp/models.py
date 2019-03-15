@@ -20,8 +20,8 @@ from .._compat import register
 
 
 class ModelWithVanillaMoneyField(models.Model):
-    money = MoneyField(max_digits=10, decimal_places=2)
-    second_money = MoneyField(max_digits=10, decimal_places=2, default_currency='EUR')
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0)
+    second_money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='EUR')
     integer = models.IntegerField(default=0)
 
 
@@ -88,12 +88,12 @@ class ModelWithChoicesMoneyField(models.Model):
 
 
 class ModelWithNonMoneyField(models.Model):
-    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
     desc = models.CharField(max_length=10)
 
 
 class AbstractModel(models.Model):
-    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
     m2m_field = models.ManyToManyField(ModelWithDefaultAsInt)
 
     class Meta:
@@ -101,26 +101,26 @@ class AbstractModel(models.Model):
 
 
 class InheritorModel(AbstractModel):
-    second_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    second_field = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
 
 
 class RevisionedModel(models.Model):
-    amount = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    amount = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
 
 
 register(RevisionedModel)
 
 
 class BaseModel(models.Model):
-    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
 
 
 class InheritedModel(BaseModel):
-    second_field = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    second_field = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
 
 
 class SimpleModel(models.Model):
-    money = MoneyField(max_digits=10, decimal_places=2, default_currency='USD')
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency='USD')
 
 
 class NullMoneyFieldModel(models.Model):
