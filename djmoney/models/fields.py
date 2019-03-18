@@ -189,9 +189,6 @@ class MoneyField(models.DecimalField):
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
-        if default is None and not nullable:
-            # Backwards compatible fix for non-nullable fields
-            default = 0.0
         if isinstance(default, string_types):
             try:
                 # handle scenario where default is formatted like:
@@ -208,7 +205,7 @@ class MoneyField(models.DecimalField):
             default = Money(default, default_currency)
         elif isinstance(default, OldMoney):
             default.__class__ = Money
-        if not (nullable and default is None) and not isinstance(default, Money):
+        if default is not None and not isinstance(default, Money):
             raise ValueError('default value must be an instance of Money, is: %s' % default)
         return default
 
