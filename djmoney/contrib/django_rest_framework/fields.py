@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
+from rest_framework.compat import MinValueValidator, MaxValueValidator
 from rest_framework.fields import empty
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
+from djmoney.models.validators import MinMoneyValidator, MaxMoneyValidator
 from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES, get_currency_field_name
 
@@ -16,6 +18,15 @@ class MoneyField(DecimalField):
     def __init__(self, *args, **kwargs):
         self.default_currency = kwargs.pop('default_currency', None)
         super(MoneyField, self).__init__(*args, **kwargs)
+        # patches wrong validators for drf
+        validators = self.validators
+        print(type(validators))
+        for i in range(len(validators)):
+            if isinstance(validators[i], MinValueValidator):
+                validators[i] = MinMoneyValidator(self.min_value)
+            elif isinstance(validators[i], MaxValueValidator):
+                validators[i] = MaxMoneyValidator(self.max_value)
+        self.validators = validators
 
     def to_representation(self, obj):
         """
