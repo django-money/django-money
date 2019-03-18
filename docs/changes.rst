@@ -3,6 +3,15 @@
 Changelog
 =========
 
+`Unreleased`_
+----------------------
+
+Changed
+~~~~~~~
+
+- Remove implicit default value on non-nullable MoneyFields.
+  Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
+
 `0.14.4`_ - 2019-01-07
 ----------------------
 
@@ -684,6 +693,7 @@ Added
 .. _#86: https://github.com/django-money/django-money/issues/86
 .. _#80: https://github.com/django-money/django-money/issues/80
 .. _#418: https://github.com/django-money/django-money/issues/418
+.. _#411: https://github.com/django-money/django-money/issues/411
 
 .. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina
@@ -746,3 +756,4 @@ Added
 .. _willhcr: https://github.com/willhcr
 .. _1337: https://github.com/1337
 .. _humrochagf: https://github.com/humrochagf
+.. _washeck: https://github.com/washeck
