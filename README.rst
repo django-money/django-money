@@ -424,3 +424,13 @@ Built-in serializer works in the following way:
         ('amount_currency', 'EUR'),
         ('amount', '10.000'),
     ])
+
+Note that when specifying individual fields on your serializer, the amount and currency fields are treated separately.
+To achieve the same behaviour as above you would include both field names:
+
+.. code:: python
+
+    class Serializer(serializers.ModelSerializer):
+        class Meta:
+            model = Expenses
+            fields = ('id', 'amount', 'amount_currency')
