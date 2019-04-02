@@ -4,10 +4,6 @@ import sys
 
 from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
-from django.core.serializers.python import (
-    Deserializer as PythonDeserializer,
-    _get_model,
-)
 from django.utils import six
 
 from djmoney.money import Money
@@ -23,6 +19,11 @@ def Deserializer(stream_or_string, **options):  # noqa
     """
     Deserialize a stream or string of JSON data.
     """
+    from django.core.serializers.python import (
+        Deserializer as PythonDeserializer,
+        _get_model,
+    )
+
     ignore = options.pop('ignorenonexistent', False)
 
     if not isinstance(stream_or_string, (bytes, six.string_types)):
