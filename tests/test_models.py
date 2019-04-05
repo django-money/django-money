@@ -713,7 +713,10 @@ def test_deprecation():
 def test_properties_access():
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, 'USD'), bla=1)
-    assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+    if VERSION[:2] > (2, 1):
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
+    else:
+        assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
 
 
 def parametrize_with_q(**kwargs):
