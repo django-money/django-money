@@ -49,3 +49,8 @@ def test_get_current_locale(locale, expected):
 )
 def test_round():
     assert round(Money('1.69', 'USD'), 1) == Money('1.7', 'USD')
+
+
+def test_configurable_decimal_number():
+    # Override default configuration per instance
+    assert str(Money('10.543', 'USD', decimal_places=3)) == '$10.543'
