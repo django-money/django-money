@@ -13,7 +13,7 @@ Backwards incompatible changes
 
 - Remove implicit default value on non-nullable MoneyFields.
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
-
+- Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
 
 `0.14.4`_ - 2019-01-07
 ----------------------
