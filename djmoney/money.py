@@ -1,6 +1,4 @@
 # coding: utf-8
-import warnings
-
 from django.conf import settings
 from django.db.models import F
 from django.utils import translation
@@ -23,11 +21,6 @@ class Money(DefaultMoney):
     Extends functionality of Money with Django-related features.
     """
     use_l10n = None
-
-    def __float__(self):
-        warnings.warn("float() on a Money object is deprecated. Use the "
-                      "'amount' attribute instead.", DeprecationWarning)
-        return float(self.amount)
 
     def __add__(self, other):
         if isinstance(other, F):
