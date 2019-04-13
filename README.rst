@@ -377,6 +377,36 @@ Also, there are two management commands for updating rates and removing them:
 Both of them accept ``-b/--backend`` option, that will update/clear data only for this backend.
 And ``clear_rates`` accepts ``-a/--all`` option, that will clear data for all backends.
 
+To set up a periodic rates update you could use Celery task:
+
+.. code:: python
+
+    CELERYBEAT_SCHEDULE = {
+        'update_rates': {
+            'task': 'path.to.your.task',
+            'schedule': crontab(minute=0, hour=0),
+            'kwargs': {}  # For custom arguments
+        }
+    }
+
+Example task implementation:
+
+.. code:: python
+
+    from django.utils.module_loading import import_string
+
+    from celery import Celery
+    from djmoney import settings
+
+
+    app = Celery('tasks', broker='pyamqp://guest@localhost//')
+
+
+    @app.task
+    def update_rates(backend=settings.EXCHANGE_BACKEND, **kwargs):
+        backend = import_string(backend)()
+        backend.update_rates(**kwargs)
+
 To convert one currency to another:
 
 .. code:: python
