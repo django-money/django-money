@@ -15,6 +15,11 @@ Backwards incompatible changes
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
 - Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
 
+Added
+~~~~~
+
+- Add ``Money.decimal_places`` for per-instance configuration of decimal places in the string representation.
+
 `0.14.4`_ - 2019-01-07
 ----------------------
 
