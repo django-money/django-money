@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from rest_framework.fields import empty
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
@@ -11,6 +12,10 @@ class MoneyField(DecimalField):
     Treats ``Money`` objects as decimal values in representation and
     does decimal's validation during transformation to native value.
     """
+
+    def __init__(self, *args, **kwargs):
+        self.default_currency = kwargs.pop('default_currency', None)
+        super(MoneyField, self).__init__(*args, **kwargs)
 
     def to_representation(self, obj):
         """
@@ -29,8 +34,8 @@ class MoneyField(DecimalField):
 
     def get_value(self, data):
         amount = super(MoneyField, self).get_value(data)
-        currency = data.get(get_currency_field_name(self.field_name), None)
-        if currency and amount is not None:
+        currency = data.get(get_currency_field_name(self.field_name), self.default_currency)
+        if currency and amount is not None and not isinstance(amount, MONEY_CLASSES) and amount is not empty:
             return Money(amount, currency)
         return amount
 
