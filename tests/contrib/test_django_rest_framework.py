@@ -3,6 +3,8 @@ from decimal import Decimal
 
 import pytest
 
+import six
+from djmoney.contrib.django_rest_framework import MoneyField
 from djmoney.money import Money
 
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
@@ -15,8 +17,16 @@ fields = pytest.importorskip('rest_framework.fields')
 
 class TestMoneyField:
 
-    def get_serializer(self, model_class, instance=None, data=fields.empty, fields_='__all__'):
+    def get_serializer(self, model_class, field_name=None, instance=None, data=fields.empty, fields_='__all__', field_kwargs=None):
 
+        class MetaSerializer(serializers.SerializerMetaclass):
+
+            def __new__(cls, name, bases, attrs):
+                if field_name is not None and field_kwargs is not None:
+                    attrs[field_name] = MoneyField(max_digits=10, decimal_places=2, **field_kwargs)
+                return super(MetaSerializer, cls).__new__(cls, name, bases, attrs)
+
+        @six.add_metaclass(MetaSerializer)
         class Serializer(serializers.ModelSerializer):
             class Meta:
                 model = model_class
@@ -40,7 +50,8 @@ class TestMoneyField:
                     'money': '10.00',
                     'money_currency': 'USD',
                     'second_money': '0.00',
-                    'second_money_currency': 'EUR'}
+                    'second_money_currency': 'EUR',
+                }
             ),
         )
     )
@@ -51,15 +62,20 @@ class TestMoneyField:
         assert serializer.data == expected
 
     @pytest.mark.parametrize(
-        'model_class, field, value, expected', (
-            (NullMoneyFieldModel, 'field', None, None),
-            (NullMoneyFieldModel, 'field', Money(10, 'USD'), Money(10, 'USD')),
-            (ModelWithVanillaMoneyField, 'money', Money(10, 'USD'), Money(10, 'USD')),
-            (ModelWithVanillaMoneyField, 'money', 10, Money(10, 'XYZ')),
+        'model_class, field, field_kwargs, value, expected', (
+            (NullMoneyFieldModel, 'field', None, None, None),
+            (NullMoneyFieldModel, 'field', {'default_currency': 'EUR', 'allow_null': True}, None, None),
+            (NullMoneyFieldModel, 'field', None, Money(10, 'USD'), Money(10, 'USD')),
+            (NullMoneyFieldModel, 'field', {'default_currency': 'EUR'}, Money(10, 'USD'), Money(10, 'USD')),
+            (NullMoneyFieldModel, 'field', {'default_currency': 'EUR'}, 10, Money(10, 'EUR')),
+            (ModelWithVanillaMoneyField, 'money', None, Money(10, 'USD'), Money(10, 'USD')),
+            (ModelWithVanillaMoneyField, 'money', {'default_currency': 'EUR'}, Money(10, 'USD'), Money(10, 'USD')),
+            (ModelWithVanillaMoneyField, 'money', None, 10, Money(10, 'XYZ')),
+            (ModelWithVanillaMoneyField, 'money', {'default_currency': 'EUR'}, 10, Money(10, 'EUR')),
         )
     )
-    def test_to_internal_value(self, model_class, field, value, expected):
-        serializer = self.get_serializer(model_class, data={field: value})
+    def test_to_internal_value(self, model_class, field, field_kwargs, value, expected):
+        serializer = self.get_serializer(model_class, field_name=field, data={field: value}, field_kwargs=field_kwargs)
         assert serializer.is_valid()
         instance = serializer.save()
         assert getattr(instance, field) == expected
