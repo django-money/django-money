@@ -24,6 +24,7 @@ from moneyed import Money as OldMoney
 from .testapp.models import (
     AbstractModel,
     BaseModel,
+    CryptoModel,
     DateTimeModel,
     InheritedModel,
     InheritorModel,
@@ -73,6 +74,7 @@ class TestVanillaMoneyField:
             (ModelWithDefaultAsString, {}, Money('123', 'PLN')),
             (ModelWithDefaultAsInt, {}, Money('123', 'GHS')),
             (ModelWithDefaultAsDecimal, {}, Money('0.01', 'CHF')),
+            (CryptoModel, {"money": Money(10, "USDT")}, Money(10, "USDT"))
         )
     )
     def test_create_defaults(self, model_class, kwargs, expected):
