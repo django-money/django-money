@@ -17,7 +17,8 @@ fields = pytest.importorskip('rest_framework.fields')
 
 class TestMoneyField:
 
-    def get_serializer(self, model_class, field_name=None, instance=None, data=fields.empty, fields_='__all__', field_kwargs=None):
+    def get_serializer(self, model_class, field_name=None, instance=None, data=fields.empty, fields_='__all__',
+                       field_kwargs=None):
 
         class MetaSerializer(serializers.SerializerMetaclass):
 
@@ -87,17 +88,23 @@ class TestMoneyField:
         assert serializer.errors == {'money': [error_text]}
 
     @pytest.mark.parametrize(
-        'body, expected', (
-            ({'field': '10', 'field_currency': 'EUR'}, Money(10, 'EUR')),
-            ({'field': '12.20', 'field_currency': 'GBP'}, Money(12.20, 'GBP')),
-            ({'field': '15.15', 'field_currency': 'USD'}, Money(15.15, 'USD')),
-            ({'field': None, 'field_currency': None}, None),
-            ({'field': '16', 'field_currency': None}, Decimal('16.00')),
-            ({'field': None, 'field_currency': 'USD'}, None),
+        'body, field_kwargs, expected', (
+            ({'field': '10', 'field_currency': 'EUR'}, None, Money(10, 'EUR')),
+            ({'field': '10'}, {'default_currency': 'EUR'}, Money(10, 'EUR')),
+            ({'field': '12.20', 'field_currency': 'GBP'}, None, Money(12.20, 'GBP')),
+            ({'field': '15.15', 'field_currency': 'USD'}, None, Money(15.15, 'USD')),
+            ({'field': None, 'field_currency': None}, None, None),
+            ({'field': None, 'field_currency': None}, {'default_currency': 'EUR'}, None),
+            ({'field': '16', 'field_currency': None}, None, Decimal('16.00')),
+            ({'field': '16', 'field_currency': None}, {'default_currency': 'EUR'}, Decimal('16.00')),
+            ({'field': None, 'field_currency': 'USD'}, None, None),
+            ({'field': None, 'field_currency': 'USD'}, {'default_currency': 'EUR'}, None),
         ),
     )
-    def test_post_put_values(self, body, expected):
-        serializer = self.get_serializer(NullMoneyFieldModel, data=body)
+    def test_post_put_values(self, body, field_kwargs, expected):
+        if field_kwargs is not None:
+            field_kwargs['allow_null'] = True
+        serializer = self.get_serializer(NullMoneyFieldModel, data=body, field_name='field', field_kwargs=field_kwargs)
         serializer.is_valid()
         assert serializer.validated_data['field'] == expected
 
