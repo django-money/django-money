@@ -157,7 +157,7 @@ class CurrencyField(models.CharField):
     def __init__(self, price_field=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
             default = default.code
-        kwargs['max_length'] = 3
+        kwargs.setdefault("max_length", 3)
         self.price_field = price_field
         super(CurrencyField, self).__init__(default=default, **kwargs)
 
@@ -174,12 +174,14 @@ class MoneyField(models.DecimalField):
                  default=None,
                  default_currency=DEFAULT_CURRENCY,
                  currency_choices=CURRENCY_CHOICES,
+                 currency_max_length=3,
                  currency_field_name=None, **kwargs):
         nullable = kwargs.get('null', False)
         default = self.setup_default(default, default_currency, nullable)
         if not default_currency and default is not None:
             default_currency = default.currency
 
+        self.currency_max_length = currency_max_length
         self.default_currency = default_currency
         self.currency_choices = currency_choices
         self.currency_field_name = currency_field_name
@@ -254,6 +256,7 @@ class MoneyField(models.DecimalField):
         """
         currency_field = CurrencyField(
             price_field=self,
+            max_length=self.currency_max_length,
             default=self.default_currency, editable=False,
             choices=self.currency_choices, null=self.default_currency is None
         )

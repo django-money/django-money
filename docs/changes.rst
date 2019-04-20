@@ -19,6 +19,7 @@ Added
 ~~~~~
 
 - Add ``Money.decimal_places`` for per-instance configuration of decimal places in the string representation.
+- Support for customization of ``CurrencyField`` length. Some cryptocurrencies could have codes longer than three characters. `#480`_ (`Stranger6667`_, `MrFus10n`_)
 
 `0.14.4`_ - 2019-01-07
 ----------------------
@@ -621,6 +622,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#480: https://github.com/django-money/django-money/issues/480
 .. _#458: https://github.com/django-money/django-money/issues/458
 .. _#443: https://github.com/django-money/django-money/issues/443
 .. _#439: https://github.com/django-money/django-money/issues/439
@@ -746,6 +748,7 @@ Added
 .. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
 .. _mithrilstar: https://github.com/mithrilstar
+.. _MrFus10n: https://github.com/MrFus10n
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
 .. _pjdelport: https://github.com/pjdelport

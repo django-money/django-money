@@ -197,3 +197,7 @@ class ModelWithCustomDefaultManager(models.Model):
     if VERSION[:2] != (1, 8):
         class Meta:
             default_manager_name = 'custom'
+
+
+class CryptoModel(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, currency_max_length=4)
