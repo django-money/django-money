@@ -4,7 +4,6 @@ from decimal import Decimal
 import pytest
 
 import six
-from djmoney.contrib.django_rest_framework import MoneyField
 from djmoney.money import Money
 
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
@@ -23,6 +22,8 @@ class TestMoneyField:
         class MetaSerializer(serializers.SerializerMetaclass):
 
             def __new__(cls, name, bases, attrs):
+                from djmoney.contrib.django_rest_framework import MoneyField
+
                 if field_name is not None and field_kwargs is not None:
                     attrs[field_name] = MoneyField(max_digits=10, decimal_places=2, **field_kwargs)
                 return super(MetaSerializer, cls).__new__(cls, name, bases, attrs)
