@@ -10,6 +10,12 @@ from djmoney._compat import parse_qsl, urlopen, urlparse, urlunparse
 from ..models import ExchangeBackend, Rate
 
 
+try:
+    import certifi
+except ImportError:
+    raise ImportError("Please install dependency certifi - pip install certifi")
+
+
 class BaseExchangeBackend(object):
     name = None
     url = None
@@ -38,7 +44,7 @@ class BaseExchangeBackend(object):
 
     def get_response(self, **params):
         url = self.get_url(**params)
-        response = urlopen(url)
+        response = urlopen(url, cafile=certifi.where())
         return response.read()
 
     def parse_json(self, response):

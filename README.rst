@@ -321,6 +321,13 @@ To work with exchange rates, add the following to your ``INSTALLED_APPS``.
         'djmoney.contrib.exchange',
     ]
 
+Also, it is required to have ``certifi`` installed.
+It could be done via installing ``djmoney`` with ``exchange`` extra:
+
+.. code:: bash
+
+    $ pip install djmoney[exchange]
+
 To create required relations run ``python manage.py migrate``. To fill these relations with data you need to choose a
 data source. Currently, 2 data sources are supported - https://openexchangerates.org/ (default) and https://fixer.io/.
 To choose another data source set ``EXCHANGE_BACKEND`` settings with importable string to the backend you need:
