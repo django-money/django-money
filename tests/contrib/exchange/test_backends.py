@@ -1,3 +1,5 @@
+import sys
+
 from django.core.exceptions import ImproperlyConfigured
 
 import pytest
@@ -47,3 +49,20 @@ def test_two_backends():
         assert Rate.objects.filter(backend__name=backend.name).count() == 1
     assert get_rate('USD', 'EUR', backend=FixedOneBackend.name) == 1
     assert get_rate('USD', 'EUR', backend=FixedTwoBackend.name) == 2
+
+
+@pytest.fixture
+def no_certifi():
+    certifi = sys.modules["certifi"]
+    sys.modules["certifi"] = None
+    base = sys.modules.pop("djmoney.contrib.exchange.backends.base")
+    yield
+    sys.modules["certifi"] = certifi
+    # Return the old module to keep all existing mocks in other tests
+    sys.modules["djmoney.contrib.exchange.backends.base"] = base
+
+
+@pytest.mark.usefixtures("no_certifi")
+def test_certifi_not_installed():
+    with pytest.raises(ImportError, match="Please install dependency certifi - pip install certifi"):
+        __import__("djmoney.contrib.exchange.backends.base")

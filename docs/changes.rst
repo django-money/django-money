@@ -22,6 +22,12 @@ Added
 - Support for customization of ``CurrencyField`` length. Some cryptocurrencies could have codes longer than three characters. `#480`_ (`Stranger6667`_, `MrFus10n`_)
 - Add ``default_currency`` option for DRF field. `#475`_ (`butorov`_)
 
+Fixed
+~~~~~
+
+- Failing certificates checks when accessing 3rd party exchange rates backends.
+  Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
+
 `0.14.4`_ - 2019-01-07
 ----------------------
 
@@ -633,6 +639,7 @@ Added
 .. _#417: https://github.com/django-money/django-money/issues/417
 .. _#412: https://github.com/django-money/django-money/issues/412
 .. _#410: https://github.com/django-money/django-money/issues/410
+.. _#403: https://github.com/django-money/django-money/issues/403
 .. _#402: https://github.com/django-money/django-money/issues/402
 .. _#400: https://github.com/django-money/django-money/issues/400
 .. _#399: https://github.com/django-money/django-money/issues/399

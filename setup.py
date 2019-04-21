@@ -37,6 +37,7 @@ test_requirements = [
 
 extras_requirements = {
     'test': test_requirements,
+    'exchange': ['certifi'],
 }
 
 
