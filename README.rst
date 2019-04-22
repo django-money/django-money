@@ -77,6 +77,17 @@ Use as normal model fields:
             
 To comply with certain strict accounting or financial regulations, you may consider using ``max_digits=19`` and ``decimal_places=4``, see more in this `StackOverflow answer <https://stackoverflow.com/a/224866/405682>`__
 
+It is also possible to have a nullable ``MoneyField``:
+
+.. code:: python
+
+        class BankAccount(models.Model):
+            money = MoneyField(max_digits=10, decimal_places=2, null=True, default_currency=None)
+
+        account = BankAccount.objects.create()
+        assert account.money is None
+        assert account.money_currency is None
+
 Searching for models with money fields:
 
 .. code:: python
