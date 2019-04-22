@@ -14,6 +14,8 @@ Backwards incompatible changes
 - Remove implicit default value on non-nullable MoneyFields.
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
 - Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
+- Model-level ``validators`` behavior in REST Framework. ``MinMoneyValidator`` and ``MaxMoneyValidator`` are
+  not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#467`_ (`rapIsKal`_, `Stranger6667`_)
 
 Added
 ~~~~~
@@ -637,6 +639,7 @@ Added
 
 .. _#475: https://github.com/django-money/django-money/issues/475
 .. _#480: https://github.com/django-money/django-money/issues/480
+.. _#467: https://github.com/django-money/django-money/pull/467
 .. _#458: https://github.com/django-money/django-money/issues/458
 .. _#443: https://github.com/django-money/django-money/issues/443
 .. _#439: https://github.com/django-money/django-money/issues/439
@@ -771,6 +774,7 @@ Added
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach
+.. _rapIsKal: https://github.com/rapIsKal
 .. _richardowen: https://github.com/richardowen
 .. _sjdines: https://github.com/sjdines
 .. _snbuchholz: https://github.com/snbuchholz

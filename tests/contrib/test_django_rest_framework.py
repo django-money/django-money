@@ -6,7 +6,11 @@ import pytest
 import six
 from djmoney.money import Money
 
-from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
+from ..testapp.models import (
+    ModelWithVanillaMoneyField,
+    NullMoneyFieldModel,
+    ValidatedMoneyModel,
+)
 
 
 pytestmark = pytest.mark.django_db
@@ -113,3 +117,35 @@ class TestMoneyField:
         serializer = self.get_serializer(ModelWithVanillaMoneyField, data={'money': '10.00'}, fields_=('money', ))
         serializer.is_valid(True)
         assert serializer.data == {'money': '10.00'}
+
+    @pytest.mark.parametrize("value, error", (
+        (Money(50, 'EUR'), u'Ensure this value is greater than or equal to 100.00 €.'),
+        (Money(1500, 'EUR'), u'Ensure this value is less than or equal to 1,000.00 €.'),
+        (Money(40, 'USD'), 'Ensure this value is greater than or equal to $50.00.'),
+        (Money(600, 'USD'), 'Ensure this value is less than or equal to $500.00.'),
+        (Money(400, 'NOK'), 'Ensure this value is greater than or equal to 500.00 Nkr.'),
+        (Money(950, 'NOK'), 'Ensure this value is less than or equal to 900.00 Nkr.'),
+        (Money(5, 'SEK'), 'Ensure this value is greater than or equal to 10.'),
+        (Money(1600, 'SEK'), 'Ensure this value is less than or equal to 1500.'),
+    ))
+    def test_model_validators(self, value, error):
+        serializer = self.get_serializer(
+            ValidatedMoneyModel,
+            data={"money": value.amount, "money_currency": value.currency.code}
+        )
+        assert not serializer.is_valid()
+        assert serializer.errors["money"][0] == error
+
+    @pytest.mark.parametrize("value, error", (
+        (Money(50, "EUR"), "Ensure this value is greater than or equal to 100."),
+        (Money(1500, "EUR"), "Ensure this value is less than or equal to 1000."),
+    ))
+    def test_boundary_values(self, value, error):
+        serializer = self.get_serializer(
+            NullMoneyFieldModel,
+            data={"field": value.amount, "field_currency": value.currency.code},
+            field_name='field',
+            field_kwargs={"min_value": 100, "max_value": 1000}
+        )
+        assert not serializer.is_valid()
+        assert serializer.errors["field"][0] == error
