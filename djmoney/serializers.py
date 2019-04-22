@@ -19,6 +19,8 @@ def Deserializer(stream_or_string, **options):  # noqa
     """
     Deserialize a stream or string of JSON data.
     """
+    # Local imports to allow using modified versions of `_get_model`
+    # It could be patched in runtime via `unittest.mock.patch` for example
     from django.core.serializers.python import (
         Deserializer as PythonDeserializer,
         _get_model,

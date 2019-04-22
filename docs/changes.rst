@@ -28,6 +28,12 @@ Fixed
 - Failing certificates checks when accessing 3rd party exchange rates backends.
   Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
 
+Changed
+~~~~~~~
+
+- Allow using patched ``django.core.serializers.python._get_model`` in serializers, which could be helpful for
+  migrations. (`Formulka`_, `Stranger6667`_)
+
 `0.14.4`_ - 2019-01-07
 ----------------------
 
@@ -740,6 +746,7 @@ Added
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _evenicoulddoit: https://github.com/evenicoulddoit
 .. _f213: https://github.com/f213
+.. _Formulka: https://github.com/Formulka
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
 .. _gonzalobf: https://github.com/gonzalobf
