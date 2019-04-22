@@ -14,7 +14,7 @@ Backwards incompatible changes
 - Remove implicit default value on non-nullable MoneyFields.
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
 - Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
-- ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#467`_
+- ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#376`_
 
 Added
 ~~~~~
@@ -28,7 +28,7 @@ Fixed
 
 - Failing certificates checks when accessing 3rd party exchange rates backends.
   Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
-- Fixed model-level ``validators`` behavior in REST Framework. `#467`_ (`rapIsKal`_, `Stranger6667`_)
+- Fixed model-level ``validators`` behavior in REST Framework. `#376`_ (`rapIsKal`_, `Stranger6667`_)
 
 Changed
 ~~~~~~~
@@ -639,7 +639,6 @@ Added
 
 .. _#475: https://github.com/django-money/django-money/issues/475
 .. _#480: https://github.com/django-money/django-money/issues/480
-.. _#467: https://github.com/django-money/django-money/pull/467
 .. _#458: https://github.com/django-money/django-money/issues/458
 .. _#443: https://github.com/django-money/django-money/issues/443
 .. _#439: https://github.com/django-money/django-money/issues/439
@@ -656,6 +655,7 @@ Added
 .. _#392: https://github.com/django-money/django-money/issues/392
 .. _#388: https://github.com/django-money/django-money/issues/388
 .. _#385: https://github.com/django-money/django-money/issues/385
+.. _#376: https://github.com/django-money/django-money/issues/376
 .. _#347: https://github.com/django-money/django-money/issues/347
 .. _#371: https://github.com/django-money/django-money/issues/371
 .. _#366: https://github.com/django-money/django-money/issues/366
