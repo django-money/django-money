@@ -21,7 +21,7 @@ Added
 
 - Add ``Money.decimal_places`` for per-instance configuration of decimal places in the string representation.
 - Support for customization of ``CurrencyField`` length. Some cryptocurrencies could have codes longer than three characters. `#480`_ (`Stranger6667`_, `MrFus10n`_)
-- Add ``default_currency`` option for DRF field. `#475`_ (`butorov`_)
+- Add ``default_currency`` option for REST Framework field. `#475`_ (`butorov`_)
 
 Fixed
 ~~~~~
