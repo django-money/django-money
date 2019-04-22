@@ -326,7 +326,7 @@ It could be done via installing ``djmoney`` with ``exchange`` extra:
 
 .. code:: bash
 
-    $ pip install djmoney[exchange]
+    pip install "djmoney[exchange]"
 
 To create required relations run ``python manage.py migrate``. To fill these relations with data you need to choose a
 data source. Currently, 2 data sources are supported - https://openexchangerates.org/ (default) and https://fixer.io/.
