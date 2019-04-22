@@ -14,8 +14,7 @@ Backwards incompatible changes
 - Remove implicit default value on non-nullable MoneyFields.
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
 - Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
-- Model-level ``validators`` behavior in REST Framework. ``MinMoneyValidator`` and ``MaxMoneyValidator`` are
-  not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#467`_ (`rapIsKal`_, `Stranger6667`_)
+- ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#467`_
 
 Added
 ~~~~~
@@ -29,6 +28,7 @@ Fixed
 
 - Failing certificates checks when accessing 3rd party exchange rates backends.
   Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
+- Fixed model-level ``validators`` behavior in REST Framework. `#467`_ (`rapIsKal`_, `Stranger6667`_)
 
 Changed
 ~~~~~~~
