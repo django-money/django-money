@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
-from rest_framework.compat import MinValueValidator, MaxValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
+
 from rest_framework.fields import empty
 from rest_framework.serializers import DecimalField, ModelSerializer
 
 from djmoney.models.fields import MoneyField as ModelField
-from djmoney.models.validators import MinMoneyValidator, MaxMoneyValidator
+from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES, get_currency_field_name
 
@@ -18,15 +19,13 @@ class MoneyField(DecimalField):
     def __init__(self, *args, **kwargs):
         self.default_currency = kwargs.pop('default_currency', None)
         super(MoneyField, self).__init__(*args, **kwargs)
-        # patches wrong validators for drf
-        validators = self.validators
-        print(type(validators))
-        for i in range(len(validators)):
-            if isinstance(validators[i], MinValueValidator):
-                validators[i] = MinMoneyValidator(self.min_value)
-            elif isinstance(validators[i], MaxValueValidator):
-                validators[i] = MaxMoneyValidator(self.max_value)
-        self.validators = validators
+        # Rest Framework converts `min_value` / `max_value` to validators, that are not aware about `Money` class
+        # We need to adjust them
+        for idx, validator in enumerate(self.validators):
+            if isinstance(validator, MinValueValidator):
+                self.validators[idx] = MinMoneyValidator(self.min_value)
+            elif isinstance(validator, MaxValueValidator):
+                self.validators[idx] = MaxMoneyValidator(self.max_value)
 
     def to_representation(self, obj):
         """
