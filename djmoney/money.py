@@ -12,7 +12,7 @@ from moneyed.localization import _FORMATTER, format_money
 from .settings import DECIMAL_PLACES
 
 
-__all__ = ['Money', 'Currency']
+__all__ = ["Money", "Currency"]
 
 
 @deconstructible
@@ -20,6 +20,7 @@ class Money(DefaultMoney):
     """
     Extends functionality of Money with Django-related features.
     """
+
     use_l10n = None
 
     def __init__(self, *args, **kwargs):
@@ -55,18 +56,18 @@ class Money(DefaultMoney):
         return self.use_l10n
 
     def __unicode__(self):
-        kwargs = {'money': self, 'decimal_places': self.decimal_places}
+        kwargs = {"money": self, "decimal_places": self.decimal_places}
         if self.is_localized:
             locale = get_current_locale()
             if locale:
-                kwargs['locale'] = locale
+                kwargs["locale"] = locale
 
         return format_money(**kwargs)
 
     def __str__(self):
         value = self.__unicode__()
         if not isinstance(value, str):
-            value = value.encode('utf8')
+            value = value.encode("utf8")
         return value
 
     def __html__(self):
@@ -85,18 +86,18 @@ def get_current_locale():
     if locale.upper() in _FORMATTER.formatting_definitions:
         return locale
 
-    locale = ('%s_%s' % (locale, locale)).upper()
+    locale = ("%s_%s" % (locale, locale)).upper()
     if locale in _FORMATTER.formatting_definitions:
         return locale
 
-    return ''
+    return ""
 
 
 def maybe_convert(value, currency):
     """
     Converts other Money instances to the local currency if `AUTO_CONVERT_MONEY` is set to True.
     """
-    if getattr(settings, 'AUTO_CONVERT_MONEY', False):
+    if getattr(settings, "AUTO_CONVERT_MONEY", False):
         from .contrib.exchange.models import convert_money
 
         return convert_money(value, currency)

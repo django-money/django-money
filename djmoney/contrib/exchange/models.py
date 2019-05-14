@@ -25,10 +25,10 @@ class ExchangeBackend(models.Model):
 class Rate(models.Model):
     currency = models.CharField(max_length=3)
     value = models.DecimalField(max_digits=20, decimal_places=6)
-    backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name='rates')
+    backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name="rates")
 
     class Meta:
-        unique_together = (('currency', 'backend'), )
+        unique_together = (("currency", "backend"),)
 
 
 def get_default_backend_name():
@@ -43,7 +43,7 @@ def get_rate(source, target, backend=None):
     """
     if backend is None:
         backend = get_default_backend_name()
-    key = 'djmoney:get_rate:%s:%s:%s' % (source, target, backend)
+    key = "djmoney:get_rate:%s:%s:%s" % (source, target, backend)
     result = cache.get(key)
     if result is not None:
         return result
@@ -56,9 +56,9 @@ def _get_rate(source, target, backend):
     source, target = text_type(source), text_type(target)
     if text_type(source) == target:
         return 1
-    rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related('backend')
+    rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related("backend")
     if not rates:
-        raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+        raise MissingRate("Rate %s -> %s does not exist" % (source, target))
     if len(rates) == 1:
         return _try_to_get_rate_directly(source, target, rates[0])
     return _get_rate_via_base(rates, target)
@@ -75,7 +75,7 @@ def _try_to_get_rate_directly(source, target, rate):
     elif rate.backend.base_currency == target and rate.currency == source:
         return 1 / rate.value
     # Case when target or source is not a base currency
-    raise MissingRate('Rate %s -> %s does not exist' % (source, target))
+    raise MissingRate("Rate %s -> %s does not exist" % (source, target))
 
 
 def _get_rate_via_base(rates, target):
@@ -102,7 +102,7 @@ def _get_rate_via_base(rates, target):
 
 
 def convert_money(value, currency):
-    if 'djmoney.contrib.exchange' not in settings.INSTALLED_APPS:
+    if "djmoney.contrib.exchange" not in settings.INSTALLED_APPS:
         raise ImproperlyConfigured(
             "You have to add 'djmoney.contrib.exchange' to INSTALLED_APPS in order to use currency exchange"
         )

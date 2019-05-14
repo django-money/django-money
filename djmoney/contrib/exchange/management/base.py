@@ -12,10 +12,11 @@ class BaseExchangeCommand(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            '-b', '--backend',
-            action='store',
-            dest='backend',
-            help='Importable string for custom exchange rates backend.',
+            "-b",
+            "--backend",
+            action="store",
+            dest="backend",
+            help="Importable string for custom exchange rates backend.",
             required=False,
             default=settings.EXCHANGE_BACKEND,
         )

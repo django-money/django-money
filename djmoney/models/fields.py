@@ -16,17 +16,12 @@ from djmoney import forms
 from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
-from .._compat import (
-    MoneyValidator,
-    setup_managers,
-    smart_unicode,
-    string_types,
-)
+from .._compat import MoneyValidator, setup_managers, smart_unicode, string_types
 from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
-__all__ = ('MoneyField', )
+__all__ = ("MoneyField",)
 
 
 def get_value(obj, expr):
@@ -54,13 +49,13 @@ def validate_money_expression(obj, expr):
     lhs = get_value(obj, expr.lhs)
     rhs = get_value(obj, expr.rhs)
 
-    if (not isinstance(rhs, Money) and connector in ('+', '-')) or connector == '^':
-        raise ValidationError('Invalid F expression for MoneyField.', code='invalid')
+    if (not isinstance(rhs, Money) and connector in ("+", "-")) or connector == "^":
+        raise ValidationError("Invalid F expression for MoneyField.", code="invalid")
     if isinstance(lhs, Money) and isinstance(rhs, Money):
-        if connector in ('*', '/', '^', '%%'):
-            raise ValidationError('Invalid F expression for MoneyField.', code='invalid')
+        if connector in ("*", "/", "^", "%%"):
+            raise ValidationError("Invalid F expression for MoneyField.", code="invalid")
         if lhs.currency != rhs.currency:
-            raise ValidationError('You cannot use F() with different currencies.', code='invalid')
+            raise ValidationError("You cannot use F() with different currencies.", code="invalid")
 
 
 def validate_money_value(value):
@@ -71,11 +66,7 @@ def validate_money_value(value):
       - Pairs of numeric value and currency. Currency can't be None.
     """
     if isinstance(value, (list, tuple)) and (len(value) != 2 or value[1] is None):
-        raise ValidationError(
-            'Invalid value for MoneyField: %(value)s.',
-            code='invalid',
-            params={'value': value},
-        )
+        raise ValidationError("Invalid value for MoneyField: %(value)s.", code="invalid", params={"value": value})
 
 
 def get_currency(value):
@@ -89,7 +80,6 @@ def get_currency(value):
 
 
 class MoneyFieldProxy(object):
-
     def __init__(self, field):
         self.field = field
         self.currency_field_name = get_currency_field_name(self.field.name, self.field)
@@ -114,7 +104,7 @@ class MoneyFieldProxy(object):
     def __set__(self, obj, value):  # noqa
         if value is not None and self.field._currency_field.null and not isinstance(value, MONEY_CLASSES + (Decimal,)):
             # For nullable fields we need either both NULL amount and currency or both NOT NULL
-            raise ValueError('Missing currency value')
+            raise ValueError("Missing currency value")
         if isinstance(value, BaseExpression):
             if isinstance(value, Value):
                 value = self.prepare_value(obj, value.value)
@@ -152,7 +142,7 @@ class MoneyFieldProxy(object):
 
 
 class CurrencyField(models.CharField):
-    description = 'A field which stores currency.'
+    description = "A field which stores currency."
 
     def __init__(self, price_field=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
@@ -167,16 +157,22 @@ class CurrencyField(models.CharField):
 
 
 class MoneyField(models.DecimalField):
-    description = 'A field which stores both the currency and amount of money.'
+    description = "A field which stores both the currency and amount of money."
 
-    def __init__(self, verbose_name=None, name=None,
-                 max_digits=None, decimal_places=None,
-                 default=None,
-                 default_currency=DEFAULT_CURRENCY,
-                 currency_choices=CURRENCY_CHOICES,
-                 currency_max_length=3,
-                 currency_field_name=None, **kwargs):
-        nullable = kwargs.get('null', False)
+    def __init__(
+        self,
+        verbose_name=None,
+        name=None,
+        max_digits=None,
+        decimal_places=None,
+        default=None,
+        default_currency=DEFAULT_CURRENCY,
+        currency_choices=CURRENCY_CHOICES,
+        currency_max_length=3,
+        currency_field_name=None,
+        **kwargs
+    ):
+        nullable = kwargs.get("null", False)
         default = self.setup_default(default, default_currency, nullable)
         if not default_currency and default is not None:
             default_currency = default.currency
@@ -195,7 +191,7 @@ class MoneyField(models.DecimalField):
             try:
                 # handle scenario where default is formatted like:
                 # 'amount currency-code'
-                amount, currency = default.split(' ')
+                amount, currency = default.split(" ")
             except ValueError:
                 # value error would be risen if the default is
                 # without the currency part, i.e
@@ -208,7 +204,7 @@ class MoneyField(models.DecimalField):
         elif isinstance(default, OldMoney):
             default.__class__ = Money
         if default is not None and not isinstance(default, Money):
-            raise ValueError('default value must be an instance of Money, is: %s' % default)
+            raise ValueError("default value must be an instance of Money, is: %s" % default)
         return default
 
     def to_python(self, value):
@@ -236,14 +232,12 @@ class MoneyField(models.DecimalField):
             """
             Default ``DecimalValidator`` doesn't work with ``Money`` instances.
             """
-            return super(models.DecimalField, self).validators + [
-                MoneyValidator(self.max_digits, self.decimal_places)
-            ]
+            return super(models.DecimalField, self).validators + [MoneyValidator(self.max_digits, self.decimal_places)]
 
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True
 
-        if not hasattr(self, '_currency_field'):
+        if not hasattr(self, "_currency_field"):
             self.add_currency_field(cls, name)
 
         super(MoneyField, self).contribute_to_class(cls, name)
@@ -257,8 +251,10 @@ class MoneyField(models.DecimalField):
         currency_field = CurrencyField(
             price_field=self,
             max_length=self.currency_max_length,
-            default=self.default_currency, editable=False,
-            choices=self.currency_choices, null=self.default_currency is None
+            default=self.default_currency,
+            editable=False,
+            choices=self.currency_choices,
+            null=self.default_currency is None,
         )
         currency_field.creation_counter = self.creation_counter - 1
         currency_field_name = get_currency_field_name(name, self)
@@ -277,12 +273,12 @@ class MoneyField(models.DecimalField):
             return super(MoneyField, self).get_default()
 
     def formfield(self, **kwargs):
-        defaults = {'form_class': forms.MoneyField}
+        defaults = {"form_class": forms.MoneyField}
         defaults.update(kwargs)
-        defaults['currency_choices'] = self.currency_choices
-        defaults['default_currency'] = self.default_currency
+        defaults["currency_choices"] = self.currency_choices
+        defaults["default_currency"] = self.default_currency
         if self.default is not None:
-            defaults['default_amount'] = self.default.amount
+            defaults["default_amount"] = self.default.amount
         return super(MoneyField, self).formfield(**defaults)
 
     def value_to_string(self, obj):
@@ -296,15 +292,15 @@ class MoneyField(models.DecimalField):
         name, path, args, kwargs = super(MoneyField, self).deconstruct()
 
         if self.default is None:
-            del kwargs['default']
+            del kwargs["default"]
         else:
-            kwargs['default'] = self.default.amount
+            kwargs["default"] = self.default.amount
         if self.default_currency != DEFAULT_CURRENCY:
-            kwargs['default_currency'] = str(self.default_currency)
+            kwargs["default_currency"] = str(self.default_currency)
         if self.currency_choices != CURRENCY_CHOICES:
-            kwargs['currency_choices'] = self.currency_choices
+            kwargs["currency_choices"] = self.currency_choices
         if self.currency_field_name:
-            kwargs['currency_field_name'] = self.currency_field_name
+            kwargs["currency_field_name"] = self.currency_field_name
         return name, path, args, kwargs
 
 
@@ -313,9 +309,9 @@ def patch_managers(sender, **kwargs):
     Patches models managers.
     """
     if sender._meta.proxy_for_model:
-        has_money_field = hasattr(sender._meta.proxy_for_model._meta, 'has_money_field')
+        has_money_field = hasattr(sender._meta.proxy_for_model._meta, "has_money_field")
     else:
-        has_money_field = hasattr(sender._meta, 'has_money_field')
+        has_money_field = hasattr(sender._meta, "has_money_field")
 
     if has_money_field:
         setup_managers(sender)
@@ -325,10 +321,9 @@ class_prepared.connect(patch_managers)
 
 
 class MoneyPatched(Money):
-
     def __init__(self, *args, **kwargs):
         warn(
             "'djmoney.models.fields.MoneyPatched' is deprecated. Use 'djmoney.money.Money' instead",
-            PendingDeprecationWarning
+            PendingDeprecationWarning,
         )
         super(MoneyPatched, self).__init__(*args, **kwargs)

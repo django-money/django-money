@@ -14,9 +14,8 @@ register = template.Library()
 
 
 class MoneyLocalizeNode(template.Node):
-
     def __repr__(self):
-        return '<MoneyLocalizeNode %d %s>' % (self.money.amount, self.money.currency)
+        return "<MoneyLocalizeNode %d %s>" % (self.money.amount, self.money.currency)
 
     def __init__(self, money=None, amount=None, currency=None, use_l10n=None, var_name=None):
         if money and (amount or currency):
@@ -39,29 +38,31 @@ class MoneyLocalizeNode(template.Node):
 
         # GET variable var_name
         if len(tokens) > 3:
-            if tokens[-2] == 'as':
+            if tokens[-2] == "as":
                 var_name = parser.compile_filter(tokens[-1])
                 # remove the already used data
                 tokens = tokens[0:-2]
 
         # GET variable use_l10n
-        if tokens[-1].lower() in ('on', 'off'):
-            use_l10n = tokens[-1].lower() == 'on'
+        if tokens[-1].lower() in ("on", "off"):
+            use_l10n = tokens[-1].lower() == "on"
             # remove the already used data
             tokens.pop(-1)
 
         # GET variable money
         if len(tokens) == 2:
-            return cls(money=parser.compile_filter(tokens[1]),
-                       var_name=var_name, use_l10n=use_l10n)
+            return cls(money=parser.compile_filter(tokens[1]), var_name=var_name, use_l10n=use_l10n)
 
         # GET variable amount and currency
         if len(tokens) == 3:
-            return cls(amount=parser.compile_filter(tokens[1]),
-                       currency=parser.compile_filter(tokens[2]),
-                       var_name=var_name, use_l10n=use_l10n)
+            return cls(
+                amount=parser.compile_filter(tokens[1]),
+                currency=parser.compile_filter(tokens[2]),
+                var_name=var_name,
+                use_l10n=use_l10n,
+            )
 
-        raise TemplateSyntaxError('Wrong number of input data to the tag.')
+        raise TemplateSyntaxError("Wrong number of input data to the tag.")
 
     def render(self, context):
 
@@ -76,7 +77,7 @@ class MoneyLocalizeNode(template.Node):
         elif amount is not None and currency is not None:
             money = Money(Decimal(str(amount)), str(currency))
         else:
-            raise TemplateSyntaxError('You must define both variables: amount and currency.')
+            raise TemplateSyntaxError("You must define both variables: amount and currency.")
 
         money.use_l10n = self.use_l10n
 
@@ -85,7 +86,7 @@ class MoneyLocalizeNode(template.Node):
 
         # as <var_name>
         context[self.var_name.token] = money
-        return ''
+        return ""
 
 
 @register.tag

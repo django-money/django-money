@@ -4,13 +4,19 @@ from django.forms import MultiWidget, Select, TextInput
 from ..settings import CURRENCY_CHOICES
 
 
-__all__ = ('MoneyWidget',)
+__all__ = ("MoneyWidget",)
 
 
 class MoneyWidget(MultiWidget):
-
-    def __init__(self, choices=CURRENCY_CHOICES, amount_widget=TextInput, currency_widget=None, default_currency=None,
-                 *args, **kwargs):
+    def __init__(
+        self,
+        choices=CURRENCY_CHOICES,
+        amount_widget=TextInput,
+        currency_widget=None,
+        default_currency=None,
+        *args,
+        **kwargs
+    ):
         self.default_currency = default_currency
         if not currency_widget:
             currency_widget = Select(choices=choices)

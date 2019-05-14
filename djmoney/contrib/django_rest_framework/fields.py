@@ -17,7 +17,7 @@ class MoneyField(DecimalField):
     """
 
     def __init__(self, *args, **kwargs):
-        self.default_currency = kwargs.pop('default_currency', None)
+        self.default_currency = kwargs.pop("default_currency", None)
         super(MoneyField, self).__init__(*args, **kwargs)
         # Rest Framework converts `min_value` / `max_value` to validators, that are not aware about `Money` class
         # We need to adjust them

@@ -34,9 +34,9 @@ try:
     from django.core.validators import DecimalValidator
 
     class MoneyValidator(DecimalValidator):
-
         def __call__(self, value):
             return super(MoneyValidator, self).__call__(value.amount)
+
 
 except ImportError:
     MoneyValidator = None
@@ -46,14 +46,17 @@ def setup_managers(sender):
     from .models.managers import money_manager
 
     if VERSION >= (1, 11):
-        default_manager_name = sender._meta.default_manager_name or 'objects'
+        default_manager_name = sender._meta.default_manager_name or "objects"
         for manager in filter(lambda m: m.name == default_manager_name, sender._meta.local_managers):
             money_manager(manager)
     else:
-        sender.copy_managers([
-            (_id, name, money_manager(manager))
-            for _id, name, manager in sender._meta.concrete_managers if name == 'objects'
-        ])
+        sender.copy_managers(
+            [
+                (_id, name, money_manager(manager))
+                for _id, name, manager in sender._meta.concrete_managers
+                if name == "objects"
+            ]
+        )
 
 
 def get_success_style(style):

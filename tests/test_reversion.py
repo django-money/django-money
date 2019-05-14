@@ -9,7 +9,7 @@ from .testapp.models import RevisionedModel
 
 @pytest.mark.django_db
 def test_that_can_safely_restore_deleted_object():
-    amount = Money(100, 'GHS')
+    amount = Money(100, "GHS")
     with create_revision():
         instance = RevisionedModel.objects.create(amount=amount)
     instance.delete()
