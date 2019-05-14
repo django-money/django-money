@@ -11,16 +11,30 @@ from ..settings import CURRENCY_CHOICES
 from .widgets import MoneyWidget
 
 
-__all__ = ('MoneyField',)
+__all__ = ("MoneyField",)
 
 
 class MoneyField(MultiValueField):
-
-    def __init__(self, currency_widget=None, currency_choices=CURRENCY_CHOICES, max_value=None, min_value=None,
-                 max_digits=None, decimal_places=None, default_amount=None, default_currency=None, *args, **kwargs):
+    def __init__(
+        self,
+        currency_widget=None,
+        currency_choices=CURRENCY_CHOICES,
+        max_value=None,
+        min_value=None,
+        max_digits=None,
+        decimal_places=None,
+        default_amount=None,
+        default_currency=None,
+        *args,
+        **kwargs
+    ):
 
         amount_field = DecimalField(
-            *args, max_value=max_value, min_value=min_value, max_digits=max_digits, decimal_places=decimal_places,
+            *args,
+            max_value=max_value,
+            min_value=min_value,
+            max_digits=max_digits,
+            decimal_places=decimal_places,
             **kwargs
         )
         currency_field = ChoiceField(choices=currency_choices)
@@ -34,7 +48,7 @@ class MoneyField(MultiValueField):
             self.widget = MoneyWidget(
                 amount_widget=amount_field.widget,
                 currency_widget=currency_field.widget,
-                default_currency=default_currency
+                default_currency=default_currency,
             )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
@@ -59,10 +73,10 @@ class MoneyField(MultiValueField):
 
     def has_changed(self, initial, data):  # noqa
         # Django 1.8 has no 'disabled' attribute
-        if hasattr(self, 'disabled') and self.disabled:
+        if hasattr(self, "disabled") and self.disabled:
             return False
         if initial is None:
-            initial = ['' for _ in range(0, len(data))]
+            initial = ["" for _ in range(0, len(data))]
         else:
             if not isinstance(initial, list):
                 initial = self.widget.decompress(initial)

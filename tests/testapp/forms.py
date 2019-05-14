@@ -22,57 +22,51 @@ from .models import (
 
 
 class MoneyForm(forms.Form):
-    money = MoneyField(currency_choices=[('SEK', 'Swedish Krona')], max_value=1000, min_value=2)
+    money = MoneyField(currency_choices=[("SEK", "Swedish Krona")], max_value=1000, min_value=2)
 
 
 class MoneyFormMultipleCurrencies(forms.Form):
-    money = MoneyField(currency_choices=[('SEK', 'Swedish Krona'), ('EUR', 'Euro')], max_value=1000, min_value=2)
+    money = MoneyField(currency_choices=[("SEK", "Swedish Krona"), ("EUR", "Euro")], max_value=1000, min_value=2)
 
 
 class OptionalMoneyForm(forms.Form):
-    money = MoneyField(required=False, currency_choices=[('SEK', 'Swedish Krona')])
+    money = MoneyField(required=False, currency_choices=[("SEK", "Swedish Krona")])
 
 
 class MoneyModelForm(forms.ModelForm):
-
     class Meta:
         model = ModelWithVanillaMoneyField
-        fields = ('money',)
+        fields = ("money",)
 
 
 class NullableModelForm(forms.ModelForm):
-
     class Meta:
         model = NullMoneyFieldModel
-        fields = ('field', )
+        fields = ("field",)
 
 
 class DefaultMoneyModelForm(forms.ModelForm):
-
     class Meta:
         model = ModelWithDefaultAsString
-        fields = ('money', )
+        fields = ("money",)
 
 
 class MoneyModelFormWithValidation(forms.ModelForm):
-
     class Meta:
         model = ModelWithValidation
-        fields = ('balance', )
+        fields = ("balance",)
 
 
 class ValidatedMoneyModelForm(forms.ModelForm):
-
     class Meta:
         model = ValidatedMoneyModel
-        fields = ('money', )
+        fields = ("money",)
 
 
 class PositiveValidatedMoneyModelForm(forms.ModelForm):
-
     class Meta:
         model = PositiveValidatedMoneyModel
-        fields = ('money', )
+        fields = ("money",)
 
 
 class DisabledFieldForm(forms.ModelForm):
@@ -80,5 +74,5 @@ class DisabledFieldForm(forms.ModelForm):
         money = MoneyField(disabled=True)
 
     class Meta:
-        fields = '__all__'
+        fields = "__all__"
         model = SimpleModel

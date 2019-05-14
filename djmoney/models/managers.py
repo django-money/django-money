@@ -24,7 +24,7 @@ def _get_field(model, name):
     prev_field = None
     opts = model._meta
     for field_name in lookup_fields:
-        if field_name == 'pk':
+        if field_name == "pk":
             field_name = opts.pk.name
         try:
             field = opts.get_field(field_name)
@@ -34,7 +34,7 @@ def _get_field(model, name):
                 continue
         else:
             prev_field = field
-            if hasattr(field, 'get_path_info'):
+            if hasattr(field, "get_path_info"):
                 # This field is a relation, update opts to follow the relation
                 path_info = field.get_path_info()
                 opts = path_info[-1].to_opts
@@ -42,7 +42,7 @@ def _get_field(model, name):
 
 
 def is_in_lookup(name, value):
-    return hasattr(value, '__iter__') & (name.split(LOOKUP_SEP)[-1] == 'in')
+    return hasattr(value, "__iter__") & (name.split(LOOKUP_SEP)[-1] == "in")
 
 
 def _convert_in_lookup(model, field_name, options):
@@ -63,16 +63,13 @@ def _convert_in_lookup(model, field_name, options):
     for value in options:
         if isinstance(value, MONEY_CLASSES):
             # amount__in=[Money(1, 'EUR'), Money(2, 'EUR')]
-            option = {
-                field.name: value.amount,
-                get_currency_field_name(field.name, field): value.currency
-            }
+            option = {field.name: value.amount, get_currency_field_name(field.name, field): value.currency}
         elif isinstance(value, F):
             # amount__in=[Money(1, 'EUR'), F('another_money')]
             target_field = _get_field(model, value.name)
             option = {
                 field.name: value,
-                get_currency_field_name(field.name, field): F(get_currency_field_name(value.name, target_field))
+                get_currency_field_name(field.name, field): F(get_currency_field_name(value.name, target_field)),
             }
         else:
             # amount__in=[1, 2, 3]
@@ -154,9 +151,9 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
                     target_field = _get_field(model, value.name)
                     kwargs[currency_field_name] = F(get_currency_field_name(value.name, target_field))
                 if is_in_lookup(name, value):
-                    args += (_convert_in_lookup(model, name, value), )
+                    args += (_convert_in_lookup(model, name, value),)
                     del kwargs[name]
-            elif isinstance(field, CurrencyField) and 'defaults' in exclusions:
+            elif isinstance(field, CurrencyField) and "defaults" in exclusions:
                 _handle_currency_field(model, name, kwargs)
 
     return args, kwargs
@@ -167,8 +164,8 @@ def _handle_currency_field(model, name, kwargs):
     field = _get_field(model, name)
     money_field = field.price_field
     if money_field.default is not None and money_field.name not in kwargs:
-        kwargs['defaults'] = kwargs.get('defaults', {})
-        kwargs['defaults'][money_field.name] = money_field.default.amount
+        kwargs["defaults"] = kwargs.get("defaults", {})
+        kwargs["defaults"][money_field.name] = money_field.default.amount
 
 
 def _get_model(args, func):
@@ -176,10 +173,10 @@ def _get_model(args, func):
     Returns the model class for given function.
     Note, that ``self`` is not available for proxy models.
     """
-    if hasattr(func, '__self__'):
+    if hasattr(func, "__self__"):
         # Bound method
         model = func.__self__.model
-    elif hasattr(func, '__wrapped__'):
+    elif hasattr(func, "__wrapped__"):
         # Proxy model
         model = func.__wrapped__.__self__.model
     else:
@@ -212,10 +209,8 @@ def understands_money(func):
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ('distinct', 'get', 'get_or_create', 'filter', 'exclude', 'update')
-EXPAND_EXCLUSIONS = {
-    'get_or_create': ('defaults', )
-}
+RELEVANT_QUERYSET_METHODS = ("distinct", "get", "get_or_create", "filter", "exclude", "update")
+EXPAND_EXCLUSIONS = {"get_or_create": ("defaults",)}
 
 
 def add_money_comprehension_to_queryset(qs):
@@ -248,7 +243,6 @@ def money_manager(manager):
     #   the passed in manager instance). This fails for reasons that
     #   are tricky to get to the bottom of - Manager does funny things.
     class MoneyManager(manager.__class__):
-
         def get_queryset(self, *args, **kwargs):
             queryset = super(MoneyManager, self).get_queryset(*args, **kwargs)
             return add_money_comprehension_to_queryset(queryset)

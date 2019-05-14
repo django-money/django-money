@@ -5,7 +5,7 @@ from .models import InheritedModel
 
 
 class InheritedModelAdmin(admin.ModelAdmin):
-    readonly_fields = ('second_field',)
+    readonly_fields = ("second_field",)
 
 
 admin.site.register(InheritedModel, InheritedModelAdmin)

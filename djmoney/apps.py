@@ -3,7 +3,7 @@ from django.apps import AppConfig
 
 
 class MoneyConfig(AppConfig):
-    name = 'djmoney'
+    name = "djmoney"
 
     def ready(self):
         try:

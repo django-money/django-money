@@ -49,7 +49,7 @@ class BaseExchangeBackend(object):
 
     def parse_json(self, response):
         if isinstance(response, bytes):
-            response = response.decode('utf-8')
+            response = response.decode("utf-8")
         return json.loads(response, parse_float=Decimal)
 
     @atomic
@@ -57,14 +57,16 @@ class BaseExchangeBackend(object):
         """
         Updates rates for the given backend.
         """
-        backend, _ = ExchangeBackend.objects.update_or_create(name=self.name, defaults={'base_currency': base_currency})
+        backend, _ = ExchangeBackend.objects.update_or_create(name=self.name, defaults={"base_currency": base_currency})
         backend.clear_rates()
         params = self.get_params()
         params.update(base_currency=base_currency, **kwargs)
-        Rate.objects.bulk_create([
-            Rate(currency=currency, value=value, backend=backend)
-            for currency, value in self.get_rates(**params).items()
-        ])
+        Rate.objects.bulk_create(
+            [
+                Rate(currency=currency, value=value, backend=backend)
+                for currency, value in self.get_rates(**params).items()
+            ]
+        )
 
 
 class SimpleExchangeBackend(BaseExchangeBackend):
@@ -75,4 +77,4 @@ class SimpleExchangeBackend(BaseExchangeBackend):
 
     def get_rates(self, **params):
         response = self.get_response(**params)
-        return self.parse_json(response)['rates']
+        return self.parse_json(response)["rates"]

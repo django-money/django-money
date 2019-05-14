@@ -29,4 +29,4 @@ def setup_admin_integration():
             return original_display_for_field(value, field, empty)
 
     for mod in MODULES_TO_PATCH:
-        setattr(mod, 'display_for_field', display_for_field)
+        setattr(mod, "display_for_field", display_for_field)
