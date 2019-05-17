@@ -147,7 +147,7 @@ class LinkedCurrencyMoneyFieldProxy(MoneyFieldProxy):
     """
 
     def __init__(self, field, currency_field_name=None):
-        super().__init__(field)
+        super(LinkedCurrencyMoneyFieldProxy, self).__init__(field)
         self.currency_field_name = currency_field_name or get_currency_field_name(
             self.field.name, self.field
         )
@@ -155,7 +155,8 @@ class LinkedCurrencyMoneyFieldProxy(MoneyFieldProxy):
     def _money_from_obj(self, obj):
         amount = obj.__dict__[self.field.name]
         if "__" in self.currency_field_name:
-            *related_attrs, currency_attr = self.currency_field_name.split("__")
+            attrs = self.currency_field_name.split("__")
+            related_attrs, currency_attr = attrs[:-1], attrs[-1]
             for related_attr in related_attrs:
                 obj = getattr(obj, related_attr)
             currency = getattr(obj, currency_attr)
@@ -361,10 +362,10 @@ class LinkedCurrencyMoneyField(MoneyField):
         default=None,
         default_currency=DEFAULT_CURRENCY,
         currency_choices=CURRENCY_CHOICES,
-        **kwargs,
+        **kwargs
     ):
         self._currency_field = currency_field
-        super().__init__(
+        super(LinkedCurrencyMoneyField, self).__init__(
             verbose_name=verbose_name,
             name=name,
             max_digits=max_digits,
@@ -372,7 +373,7 @@ class LinkedCurrencyMoneyField(MoneyField):
             default=default,
             default_currency=default_currency,
             currency_choices=currency_choices,
-            **kwargs,
+            **kwargs
         )
         self._currency_field_name = currency_field_name
 
@@ -383,7 +384,7 @@ class LinkedCurrencyMoneyField(MoneyField):
             if b != object:
                 setattr(b, "add_currency_field", noop_add_currency_field)
 
-        super().contribute_to_class(cls, name)
+        super(LinkedCurrencyMoneyField, self).contribute_to_class(cls, name)
         setattr(cls, self.name, LinkedCurrencyMoneyFieldProxy(self, self._currency_field_name))
 
 
