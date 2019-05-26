@@ -190,3 +190,7 @@ class ModelWithCustomDefaultManager(models.Model):
 
 class CryptoModel(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2, currency_max_length=4)
+
+
+class PreciseModel(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=4)

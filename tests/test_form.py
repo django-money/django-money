@@ -10,6 +10,7 @@ from django import VERSION
 
 import pytest
 
+from djmoney import settings
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 
@@ -23,6 +24,8 @@ from .testapp.forms import (
     NullableModelForm,
     OptionalMoneyForm,
     PositiveValidatedMoneyModelForm,
+    PreciseForm,
+    PreciseModelForm,
     ValidatedMoneyModelForm,
 )
 from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
@@ -188,3 +191,10 @@ class TestDisabledField:
     def test_has_changed(self):
         form = DisabledFieldForm(data={})
         assert not form.has_changed()
+
+
+@pytest.mark.parametrize("model_class", (PreciseForm, PreciseModelForm))
+def test_decimal_places_model_form(model_class):
+    """Forms should use DECIMAL_PLACES setting value."""
+    expected = str(10 ** -settings.DECIMAL_PLACES)
+    assert model_class().fields["money"].widget.widgets[0].attrs["step"] == expected

@@ -15,6 +15,7 @@ Backwards incompatible changes
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
 - Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
 - ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#376`_
+- In model and non-model forms ``forms.MoneyField`` uses ``CURRENCY_DECIMAL_PLACES`` as the default value for ``decimal_places``.`#434`_ (`Stranger6667`_, `andytwoods`_)
 
 Added
 ~~~~~
@@ -645,6 +646,7 @@ Added
 .. _#458: https://github.com/django-money/django-money/issues/458
 .. _#443: https://github.com/django-money/django-money/issues/443
 .. _#439: https://github.com/django-money/django-money/issues/439
+.. _#434: https://github.com/django-money/django-money/issues/434
 .. _#427: https://github.com/django-money/django-money/pull/427
 .. _#425: https://github.com/django-money/django-money/issues/425
 .. _#417: https://github.com/django-money/django-money/issues/417
@@ -738,6 +740,7 @@ Added
 .. _adi-: https://github.com/adi-
 .. _akumria: https://github.com/akumria
 .. _alexhayes: https://github.com/alexhayes
+.. _andytwoods: https://github.com/andytwoods
 .. _arthurk: https://github.com/arthurk
 .. _benjaoming: https://github.com/benjaoming
 .. _briankung: https://github.com/briankung
