@@ -16,6 +16,7 @@ from .models import (
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
     PositiveValidatedMoneyModel,
+    PreciseModel,
     SimpleModel,
     ValidatedMoneyModel,
 )
@@ -76,3 +77,16 @@ class DisabledFieldForm(forms.ModelForm):
     class Meta:
         fields = "__all__"
         model = SimpleModel
+
+
+class PreciseModelForm(forms.ModelForm):
+    class Meta:
+        fields = "__all__"
+        model = PreciseModel
+
+
+class PreciseForm(forms.Form):
+    money = MoneyField()
+
+    class Meta:
+        fields = "__all__"

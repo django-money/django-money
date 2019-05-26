@@ -7,7 +7,7 @@ from django.forms import ChoiceField, DecimalField, MultiValueField
 from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES
 
-from ..settings import CURRENCY_CHOICES
+from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES
 from .widgets import MoneyWidget
 
 
@@ -22,7 +22,7 @@ class MoneyField(MultiValueField):
         max_value=None,
         min_value=None,
         max_digits=None,
-        decimal_places=None,
+        decimal_places=DECIMAL_PLACES,
         default_amount=None,
         default_currency=None,
         *args,

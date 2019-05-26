@@ -17,7 +17,7 @@ from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
 from .._compat import MoneyValidator, setup_managers, smart_unicode, string_types
-from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
@@ -273,7 +273,7 @@ class MoneyField(models.DecimalField):
             return super(MoneyField, self).get_default()
 
     def formfield(self, **kwargs):
-        defaults = {"form_class": forms.MoneyField}
+        defaults = {"form_class": forms.MoneyField, "decimal_places": DECIMAL_PLACES}
         defaults.update(kwargs)
         defaults["currency_choices"] = self.currency_choices
         defaults["default_currency"] = self.default_currency
