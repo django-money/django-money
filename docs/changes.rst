@@ -29,12 +29,14 @@ Fixed
 - Failing certificates checks when accessing 3rd party exchange rates backends.
   Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
 - Fixed model-level ``validators`` behavior in REST Framework. `#376`_ (`rapIsKal`_, `Stranger6667`_)
+- Setting keyword argument ``default_currency=None`` for ``MoneyField`` did not revert to ``settings.DEFAULT_CURRENCY`` and set ``str(None)`` as database value for currency. `#490`_  (`benjaoming`_)
 
 Changed
 ~~~~~~~
 
 - Allow using patched ``django.core.serializers.python._get_model`` in serializers, which could be helpful for
   migrations. (`Formulka`_, `Stranger6667`_)
+
 
 `0.14.4`_ - 2019-01-07
 ----------------------
@@ -637,6 +639,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#490: https://github.com/django-money/django-money/issues/490
 .. _#475: https://github.com/django-money/django-money/issues/475
 .. _#480: https://github.com/django-money/django-money/issues/480
 .. _#458: https://github.com/django-money/django-money/issues/458
