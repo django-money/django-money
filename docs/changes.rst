@@ -3,7 +3,7 @@
 Changelog
 =========
 
-`0.15.dev`_ - unreleased
+`0.15`_ - 2019-05-30
 ------------------------
 
 .. warning:: This release contains backwards incompatibility, please read the release notes below.
@@ -592,7 +592,8 @@ Added
 
 - Initial public release
 
-.. _0.15.dev: https://github.com/django-money/django-money/compare/0.14.4...HEAD
+.. _1.0.dev: https://github.com/django-money/django-money/compare/0.15...HEAD
+.. _0.15: https://github.com/django-money/django-money/compare/0.15...0.14.4
 .. _0.14.4: https://github.com/django-money/django-money/compare/0.14.4...0.14.3
 .. _0.14.3: https://github.com/django-money/django-money/compare/0.14.3...0.14.2
 .. _0.14.2: https://github.com/django-money/django-money/compare/0.14.2...0.14.1
