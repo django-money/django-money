@@ -10,6 +10,7 @@ Removed
 ~~~~~~~
 
 - Support for Django 1.8 & 2.0 (`Stranger6667`_)
+- Support for Python 3.4 (`Stranger6667`_)
 
 `0.15`_ - 2019-05-30
 --------------------
