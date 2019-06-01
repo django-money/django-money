@@ -2,7 +2,6 @@
 from __future__ import unicode_literals
 
 import django.contrib.admin.utils as admin_utils
-from django import VERSION
 
 import pytest
 
@@ -13,15 +12,6 @@ from .testapp.models import ModelWithVanillaMoneyField
 
 MONEY_FIELD = ModelWithVanillaMoneyField._meta.get_field("money")
 INTEGER_FIELD = ModelWithVanillaMoneyField._meta.get_field("integer")
-
-
-def get_args(value, field):
-    """
-    Constructs arguments for `display_for_field`.
-    """
-    if VERSION[:2] == (1, 8):
-        return value, field
-    return value, field, ""
 
 
 @pytest.mark.parametrize(
@@ -38,8 +28,8 @@ def test_display_for_field(settings, value, expected):
     settings.USE_L10N = True
     # This locale has no definitions in py-moneyed, so it will work for localized money representation.
     settings.LANGUAGE_CODE = "cs"
-    assert admin_utils.display_for_field(*get_args(value, MONEY_FIELD)) == expected
+    assert admin_utils.display_for_field(value, MONEY_FIELD, "") == expected
 
 
 def test_default_display():
-    assert admin_utils.display_for_field(*get_args(10, INTEGER_FIELD)) == "10"
+    assert admin_utils.display_for_field(10, INTEGER_FIELD, "") == "10"

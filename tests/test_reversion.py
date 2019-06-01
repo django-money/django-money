@@ -2,8 +2,9 @@
 import pytest
 
 from djmoney.money import Money
+from reversion.models import Version
+from reversion.revisions import create_revision
 
-from ._compat import create_revision, get_deleted
 from .testapp.models import RevisionedModel
 
 
@@ -13,7 +14,7 @@ def test_that_can_safely_restore_deleted_object():
     with create_revision():
         instance = RevisionedModel.objects.create(amount=amount)
     instance.delete()
-    version = get_deleted(RevisionedModel)[0]
+    version = Version.objects.get_deleted(RevisionedModel)[0]
     version.revision.revert()
     instance = RevisionedModel.objects.get(pk=1)
     assert instance.amount == amount

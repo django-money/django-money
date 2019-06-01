@@ -6,7 +6,6 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
-from django import VERSION
 from django.core.validators import MinValueValidator
 from django.db import models
 
@@ -15,8 +14,7 @@ from djmoney.models.managers import money_manager, understands_money
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from moneyed import Money as OldMoney
-
-from .._compat import register
+from reversion.revisions import register
 
 
 class ModelWithVanillaMoneyField(models.Model):
@@ -182,10 +180,8 @@ class ModelWithCustomDefaultManager(models.Model):
 
     custom = models.Manager()
 
-    if VERSION[:2] != (1, 8):
-
-        class Meta:
-            default_manager_name = "custom"
+    class Meta:
+        default_manager_name = "custom"
 
 
 class CryptoModel(models.Model):

@@ -3,8 +3,16 @@
 Changelog
 =========
 
+`1.0`_ - TBA
+------------
+
+Removed
+~~~~~~~
+
+- Support for Django 1.8 (`Stranger6667`_)
+
 `0.15`_ - 2019-05-30
-------------------------
+--------------------
 
 .. warning:: This release contains backwards incompatibility, please read the release notes below.
 

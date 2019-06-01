@@ -55,7 +55,7 @@ setup(
     packages=find_packages(include=['djmoney', 'djmoney.*']),
     install_requires=[
         'setuptools',
-        'Django>=1.8',
+        'Django>=1.11',
         'py-moneyed>=0.8'
     ],
     platforms=['Any'],
