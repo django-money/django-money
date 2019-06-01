@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 
+from django.utils import six
+
 import pytest
 
-import six
 from djmoney.money import Money
 
 from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel, ValidatedMoneyModel

@@ -179,7 +179,6 @@ class TestVanillaMoneyField:
     def test_comparison_lookup(self, filters, expected_count):
         assert ModelWithTwoMoneyFields.objects.filter(filters).count() == expected_count
 
-    @pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't support __date lookup")
     def test_date_lookup(self):
         DateTimeModel.objects.create(field=Money(1, "USD"), created="2016-12-05")
         assert DateTimeModel.objects.filter(created__date="2016-12-01").count() == 0
@@ -470,7 +469,6 @@ class TestExpressions:
         assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(10, "USD")
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(0, "USD")
 
-    @pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't supports this")
     def test_create_func(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Func(Value(-10), function="ABS"))
         instance.refresh_from_db()
@@ -586,12 +584,6 @@ def test_manager_instance_access(model_class):
         model_class().objects.all()
 
 
-@pytest.mark.skipif(VERSION[:2] != (1, 8), reason="Only Django 1.8 has `get_field_by_name` method of `Options`.")
-def test_get_field_by_name():
-    assert BaseModel._meta.get_field_by_name("money")[0].__class__.__name__ == "MoneyField"
-    assert BaseModel._meta.get_field_by_name("money_currency")[0].__class__.__name__ == "CurrencyField"
-
-
 def test_different_hashes():
     money = BaseModel._meta.get_field("money")
     money_currency = BaseModel._meta.get_field("money_currency")
@@ -613,8 +605,6 @@ def test_clear_meta_cache(model, manager_name):
     """
     See issue GH-318.
     """
-    if model is ModelWithCustomDefaultManager and VERSION[:2] == (1, 8):
-        pytest.skip("The `default_manager_name` setting is not available in Django 1.8")
     model._meta._expire_cache()
     manager_class = getattr(model, manager_name).__class__
     assert manager_class.__module__ + "." + manager_class.__name__ == "djmoney.models.managers.MoneyManager"

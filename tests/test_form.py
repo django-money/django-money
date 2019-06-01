@@ -6,8 +6,6 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
-from django import VERSION
-
 import pytest
 
 from djmoney import settings
@@ -108,11 +106,7 @@ def test_default_currency():
     """
     instance = NullMoneyFieldModel.objects.create()
     form = NullableModelForm(instance=instance)
-    if VERSION[:2] >= (1, 11):
-        expected = '<option value="USD" selected>US Dollar</option>'
-    else:
-        expected = '<option value="USD" selected="selected">US Dollar</option>'
-    assert expected in form.as_p()
+    assert '<option value="USD" selected>US Dollar</option>' in form.as_p()
 
 
 def test_fields_default_amount_becomes_forms_initial():
@@ -180,7 +174,6 @@ class TestValidation:
         assert form.errors == {"balance": [u"Ensure this value is greater than or equal to GB£100.00."]}
 
 
-@pytest.mark.skipif(VERSION[:2] == (1, 8), reason="Django 1.8 doesn't have `disabled` keyword in fields")
 class TestDisabledField:
     def test_validation(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money("42.00", "USD"))
