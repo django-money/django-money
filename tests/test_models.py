@@ -17,7 +17,7 @@ from django.utils.translation import override
 
 import pytest
 
-from djmoney.models.fields import MoneyField, MoneyPatched
+from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from moneyed import Money as OldMoney
 
@@ -655,15 +655,6 @@ def test_override_decorator():
     """
     with override("cs"):
         assert str(Money(10, "CZK")) == "10.00 Kč"
-
-
-def test_deprecation():
-    with pytest.warns(None) as warnings:
-        MoneyPatched(1, "USD")
-    assert (
-        str(warnings[0].message) == "'djmoney.models.fields.MoneyPatched' is deprecated. "
-        "Use 'djmoney.money.Money' instead"
-    )
 
 
 def test_properties_access():
