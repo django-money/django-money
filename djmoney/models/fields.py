@@ -2,7 +2,6 @@
 from __future__ import division
 
 from decimal import Decimal
-from warnings import warn
 
 from django.core.exceptions import ValidationError
 from django.core.validators import DecimalValidator
@@ -318,12 +317,3 @@ def patch_managers(sender, **kwargs):
 
 
 class_prepared.connect(patch_managers)
-
-
-class MoneyPatched(Money):
-    def __init__(self, *args, **kwargs):
-        warn(
-            "'djmoney.models.fields.MoneyPatched' is deprecated. Use 'djmoney.money.Money' instead",
-            PendingDeprecationWarning,
-        )
-        super(MoneyPatched, self).__init__(*args, **kwargs)
