@@ -174,6 +174,7 @@ class MoneyField(models.DecimalField):
         currency_choices=CURRENCY_CHOICES,
         currency_max_length=3,
         currency_field_name=None,
+        money_descriptor_class=MoneyFieldProxy,
         **kwargs
     ):
         nullable = kwargs.get("null", False)
@@ -185,6 +186,7 @@ class MoneyField(models.DecimalField):
         self.default_currency = default_currency
         self.currency_choices = currency_choices
         self.currency_field_name = currency_field_name
+        self.money_descriptor_class = money_descriptor_class
 
         super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
         self.creation_counter += 1
@@ -244,7 +246,7 @@ class MoneyField(models.DecimalField):
 
         super(MoneyField, self).contribute_to_class(cls, name)
 
-        setattr(cls, self.name, MoneyFieldProxy(self))
+        setattr(cls, self.name, self.money_descriptor_class(self))
 
     def add_currency_field(self, cls, name):
         """
