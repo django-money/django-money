@@ -3,8 +3,16 @@
 Changelog
 =========
 
+Unreleased
+~~~~~~~~~~
+
+Added
+~~~~~
+
+- Support for money descriptor customization. (`Stranger6667`_)
+
 `0.15`_ - 2019-05-30
-------------------------
+--------------------
 
 .. warning:: This release contains backwards incompatibility, please read the release notes below.
 
