@@ -6,6 +6,11 @@ Changelog
 `0.15.1`_ - 2019-06-22
 ----------------------
 
+Added
+~~~~~
+
+- Support for money descriptor customization. (`Stranger6667`_)
+
 Fixed
 ~~~~~
 
