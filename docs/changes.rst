@@ -6,6 +6,11 @@ Changelog
 `1.0`_ - TBA
 ------------
 
+Added
+~~~~~
+
+- Support for money descriptor customization. (`Stranger6667`_)
+
 Removed
 ~~~~~~~
 
