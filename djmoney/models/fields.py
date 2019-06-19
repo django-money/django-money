@@ -93,7 +93,7 @@ class MoneyFieldProxy(object):
         currency = obj.__dict__[self.currency_field_name]
         if amount is None:
             return None
-        return Money(amount=amount, currency=currency)
+        return Money(amount=amount, currency=currency, decimal_places=self.field.decimal_places)
 
     def __get__(self, obj, type=None):
         if obj is None:
