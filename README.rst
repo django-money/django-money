@@ -482,3 +482,24 @@ To achieve the same behaviour as above you would include both field names:
         class Meta:
             model = Expenses
             fields = ('id', 'amount', 'amount_currency')
+
+Customization
+-------------
+
+If there is a need to customize the process deconstructing ``Money`` instances onto Django Fields and the other way around,
+then it is possible to use a custom descriptor like this one:
+
+.. code:: python
+
+    class MyMoneyDescriptor:
+
+        def __get__(self, obj, type=None):
+            amount = obj.__dict__[self.field.name]
+            return Money(amount, "EUR")
+
+It will always use ``EUR`` for all ``Money`` instances when ``obj.money`` is called. Then it should be passed to ``MoneyField``:
+
+.. code:: python
+
+    class Expenses(models.Model):
+        amount = MoneyField(max_digits=10, decimal_places=2, money_descriptor_class=MyMoneyDescriptor)
