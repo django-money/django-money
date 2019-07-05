@@ -9,6 +9,7 @@ from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
+from django.forms import DecimalField, NumberInput
 from django.utils.functional import cached_property
 
 from djmoney import forms
@@ -20,7 +21,7 @@ from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
-__all__ = ("MoneyField",)
+__all__ = ("CurrencyField", "LinkedCurrencyMoneyField", "MoneyField")
 
 
 class MoneyValidator(DecimalValidator):
@@ -143,6 +144,42 @@ class MoneyFieldProxy(object):
             # in other words, update the currency only if it wasn't
             # changed before.
             setattr(obj, self.currency_field_name, value)
+
+
+class LinkedCurrencyMoneyFieldProxy(MoneyFieldProxy):
+    """
+    Overridden to support fetching currency across relationships.
+    """
+
+    def __init__(self, field, currency_field_name=None):
+        super().__init__(field)
+        self.currency_field_name = currency_field_name or get_currency_field_name(
+            self.field.name, self.field
+        )
+
+    def _money_from_obj(self, obj):
+        amount = obj.__dict__[self.field.name]
+        if "__" in self.currency_field_name:
+            *related_attrs, currency_attr = self.currency_field_name.split("__")
+            for related_attr in related_attrs:
+                obj = getattr(obj, related_attr)
+            currency = getattr(obj, currency_attr)
+        else:
+            currency = obj.__dict__[self.currency_field_name]
+        if amount is None:
+            return None
+        return Money(amount=amount, currency=currency)
+
+    def __set__(self, obj, value):  # noqa
+        if isinstance(value, BaseExpression):
+            if isinstance(value, Value):
+                value = self.prepare_value(obj, value.value)
+            elif not isinstance(value, Func):
+                validate_money_expression(obj, value)
+                prepare_expression(value)
+        else:
+            value = self.prepare_value(obj, value)
+        obj.__dict__[self.field.name] = value
 
 
 class CurrencyField(models.CharField):
@@ -303,6 +340,65 @@ class MoneyField(models.DecimalField):
         if self.currency_field_name:
             kwargs["currency_field_name"] = self.currency_field_name
         return name, path, args, kwargs
+
+
+def noop_add_currency_field(*args, **kwargs):
+    pass
+
+
+class LinkedCurrencyMoneyWidget(NumberInput):
+    def render(self, *args, **kwargs):
+        if isinstance(kwargs.get("value"), Money):
+            kwargs["value"] = str(kwargs["value"].amount)
+        return super().render(*args, **kwargs)
+
+
+class LinkedCurrencyMoneyField(MoneyField):
+    """
+    Customized MoneyField to not automatically add a currency field to the
+    underlying database model class.
+    """
+
+    def __init__(
+        self,
+        currency_field=None,
+        currency_field_name=None,
+        verbose_name=None,
+        name=None,
+        max_digits=None,
+        decimal_places=None,
+        default=None,
+        default_currency=DEFAULT_CURRENCY,
+        currency_choices=CURRENCY_CHOICES,
+        **kwargs,
+    ):
+        self._currency_field = currency_field
+        super().__init__(
+            verbose_name=verbose_name,
+            name=name,
+            max_digits=max_digits,
+            decimal_places=decimal_places,
+            default=default,
+            default_currency=default_currency,
+            currency_choices=currency_choices,
+            **kwargs,
+        )
+        self._currency_field_name = currency_field_name
+        self._step = 1.0 / (10 ** decimal_places) if decimal_places else 1
+
+    def contribute_to_class(self, cls, name):
+        # This nonsense is necessary to prevent django from automatically adding
+        # a currency field during migrations.
+        for b in self.__class__.__mro__:
+            if b != object:
+                setattr(b, "add_currency_field", noop_add_currency_field)
+
+        super().contribute_to_class(cls, name)
+        setattr(cls, self.name, LinkedCurrencyMoneyFieldProxy(self, self._currency_field_name))
+
+    def formfield(self, **kwargs):
+        defaults = {"form_class": DecimalField, "widget": LinkedCurrencyMoneyWidget(attrs={'step': self._step})}
+        return super(MoneyField, self).formfield(**defaults)
 
 
 def patch_managers(sender, **kwargs):

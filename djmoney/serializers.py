@@ -8,7 +8,7 @@ from django.utils import six
 
 from djmoney.money import Money
 
-from .models.fields import MoneyField
+from .models.fields import MoneyField, LinkedCurrencyMoneyField
 from .utils import get_currency_field_name
 
 
@@ -46,7 +46,10 @@ def Deserializer(stream_or_string, **options):  # noqa
                     # skip fields no longer on model
                     continue
                 field = Model._meta.get_field(field_name)
-                if isinstance(field, MoneyField) and field_value is not None:
+                if isinstance(field, LinkedCurrencyMoneyField) and field_value is not None:
+                    currency_field_name = get_currency_field_name(field_name, field=field)
+                    money_fields[field_name] = Money(field_value, get_currency_from_obj(Model, obj, currency_field_name))
+                elif isinstance(field, MoneyField) and field_value is not None:
                     money_fields[field_name] = Money(field_value, obj["fields"][get_currency_field_name(field_name)])
                 else:
                     fields[field_name] = field_value
@@ -60,3 +63,22 @@ def Deserializer(stream_or_string, **options):  # noqa
         raise
     except Exception as exc:
         six.reraise(DeserializationError, DeserializationError(exc), sys.exc_info()[2])
+
+
+def get_currency_from_obj(Model, obj, currency_field_name):
+    if "__" in currency_field_name:
+        data = obj["fields"]
+        RelatedModel = None
+        *related_attrs, currency_attr = currency_field_name.split("__")
+        for related_attr in related_attrs:
+            if RelatedModel:
+                data = RelatedModel.objects.values_list(f"{related_attr}_id", flat=True).get(pk=foreign_key_id)
+                foreign_key_id = data
+            else:
+                foreign_key_id = data[related_attr]
+            RelatedModel = getattr(RelatedModel or Model, related_attr).field.target_field.model
+        # TODO: this may cause DoesNotExist errors if the fixture hasn't loaded related models yet.
+        currency = RelatedModel.objects.values_list(currency_attr, flat=True).get(pk=foreign_key_id)
+    else:
+        currency = obj.__dict__[currency_field_name]
+    return currency

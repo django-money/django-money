@@ -12,6 +12,9 @@ MONEY_CLASSES = (Money, OldMoney)
 def get_currency_field_name(name, field=None):
     if field and getattr(field, "currency_field_name", None):
         return field.currency_field_name
+    # For LinkedCurrencyMoneyField
+    if field and getattr(field, "_currency_field_name", None):
+        return field._currency_field_name
     return "%s_currency" % name
 
 
