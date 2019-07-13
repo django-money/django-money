@@ -2,16 +2,16 @@ from djmoney.money import Money
 from graphene.types import Scalar
 from graphql.language import ast
 
-from ..settings import DECIMAL_PLACES
+from ..settings import DECIMAL_PLACES, BASE_CURRENCY
 
 
 class MoneyField(Scalar):
     @staticmethod
     def serialize(money):
-        if money is None:
-            return None
+        if money is None or money == 0:
+            money = Money(amount=0, currency=BASE_CURRENCY)
 
-        elif isinstance(money, Money):
+        if isinstance(money, Money):
             return f"{money.amount:.{DECIMAL_PLACES}f} {money.currency}"
 
         raise NotImplementedError
