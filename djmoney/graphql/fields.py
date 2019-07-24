@@ -23,6 +23,9 @@ class MoneyField(Scalar):
 
     @staticmethod
     def parse_value(value):
+        if isinstance(value, Money):
+            return value
+
         amount, currency = value.split(" ")
         return Money(amount=float(amount), currency=currency)
 
