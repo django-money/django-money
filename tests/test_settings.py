@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 import djmoney.settings
-from djmoney._compat import reload_module
+from importlib import reload as reload_module
 from djmoney.models.fields import MoneyField
 
 

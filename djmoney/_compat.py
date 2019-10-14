@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
 # flake8: noqa
 
-
-try:
-    string_types = (basestring,)
-    text_type = unicode
-except NameError:
-    string_types = (str, bytes)
-    text_type = str
-
-try:
-    # Python 2
-    reload_module = reload
-except NameError:
-    # Python 3.4+
-    from importlib import reload as reload_module
+# Formerly Python 2.7 diverted, so stored here
+string_types = (str, bytes)
+text_type = str
 
 try:
     from urllib2 import urlopen
