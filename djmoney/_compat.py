@@ -3,12 +3,6 @@
 
 
 try:
-    from django.utils.encoding import smart_unicode
-except ImportError:
-    # Python 3
-    from django.utils.encoding import smart_text as smart_unicode
-
-try:
     string_types = (basestring,)
     text_type = unicode
 except NameError:
