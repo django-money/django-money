@@ -11,6 +11,8 @@ repos:
     -   id: debug-statements
     -   id: end-of-file-fixer
     -   id: fix-encoding-pragma
+        args:
+        - --remove
 - repo: git://github.com/adambrenecki/pre-commit-python-sorter
   rev: 1.0.5
   hooks:

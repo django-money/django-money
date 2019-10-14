@@ -1,4 +1,3 @@
-# coding: utf-8
 import sys
 
 from django.utils.translation import override

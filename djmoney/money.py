@@ -1,4 +1,3 @@
-# coding: utf-8
 from django.conf import settings
 from django.db.models import F
 from django.utils import translation

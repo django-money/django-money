@@ -1,4 +1,3 @@
-# coding: utf-8
 """
 This module contains various helpers for migrations testing.
 """
@@ -15,7 +14,7 @@ def makemigrations():
     # We should answer yes for all migrations questioner questions
     questioner.input = lambda x: "y"
 
-    os.system("find . -name \*.pyc -delete")
+    os.system("find . -name \\*.pyc -delete")
     call_command("makemigrations", "money_app", name=MIGRATION_NAME)
 
 

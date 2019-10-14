@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 # flake8: noqa
 
 # Formerly Python 2.7 diverted, so stored here
 string_types = (str, bytes)
 text_type = str
+from urllib.parse import parse_qsl, urlparse, urlunparse
 from urllib.request import urlopen
-from urllib.parse import urlparse, parse_qsl, urlunparse
 
 
 def setup_managers(sender):
