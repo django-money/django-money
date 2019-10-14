@@ -8,13 +8,14 @@ from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
+from django.utils.encoding import smart_text
 from django.utils.functional import cached_property
 
 from djmoney import forms
 from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
-from .._compat import setup_managers, smart_unicode, string_types
+from .._compat import setup_managers, string_types
 from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
@@ -77,7 +78,7 @@ def get_currency(value):
     Extracts currency from value.
     """
     if isinstance(value, MONEY_CLASSES):
-        return smart_unicode(value.currency)
+        return smart_text(value.currency)
     elif isinstance(value, (list, tuple)):
         return value[1]
 
