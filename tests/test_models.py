@@ -12,7 +12,6 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.db.migrations.writer import MigrationWriter
 from django.db.models import Case, F, Func, Q, Value, When
-from django.utils.six import PY2
 from django.utils.translation import override
 
 import pytest
@@ -591,10 +590,7 @@ def test_different_hashes():
 
 
 def test_migration_serialization():
-    if PY2:
-        serialized = "djmoney.money.Money(100, b'GBP')"
-    else:
-        serialized = "djmoney.money.Money(100, 'GBP')"
+    serialized = "djmoney.money.Money(100, 'GBP')"
     assert MigrationWriter.serialize(Money(100, "GBP")) == (serialized, {"import djmoney.money"})
 
 

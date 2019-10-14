@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
+from functools import wraps
+
 from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
 from django.db.models.fields import FieldDoesNotExist
-from django.utils.six import wraps
 
 from .._compat import smart_unicode
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression

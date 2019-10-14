@@ -30,17 +30,15 @@ matrix:
       env: TOX_ENV=django21-py37
     - python: 3.6
       env: TOX_ENV=django21-py36
+    - python: 3.6
+      env: TOX_ENV=django111-py36
     - python: 3.5
       env: TOX_ENV=django21-py35
     - python: pypy3
       env: TOX_ENV=django21-pypy3
-    - python: 3.6
-      env: TOX_ENV=django111-py36
     - python: 3.5
       env: TOX_ENV=django111-py35
-    - python: 2.7
-      env: TOX_ENV=django111-py27
-    - python: pypy2.7-5.8.0
-      env: TOX_ENV=django111-pypy
+    - python: 3.5
+      env: TOX_ENV=django22-py35
 after_success:
   - codecov
