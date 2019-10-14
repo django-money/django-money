@@ -10,13 +10,21 @@ Added
 ~~~~~
 
 - Support for money descriptor customization. (`Stranger6667`_)
+- Django 3.0 support
 
 Removed
 ~~~~~~~
 
 - Support for Django 1.8 & 2.0. (`Stranger6667`_)
+- Support for Python 2.7. `#515`_ (`benjaoming`_)
 - Support for Python 3.4. (`Stranger6667`_)
 - ``MoneyPatched``, use ``djmoney.money.Money`` instead. (`Stranger6667`_)
+
+Fixed
+~~~~~
+
+- Restored linting in CI tests (`benjaoming`_)
+
 
 `0.15`_ - 2019-05-30
 --------------------
@@ -656,6 +664,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#515: https://github.com/django-money/django-money/issues/515
 .. _#490: https://github.com/django-money/django-money/issues/490
 .. _#475: https://github.com/django-money/django-money/issues/475
 .. _#480: https://github.com/django-money/django-money/issues/480
