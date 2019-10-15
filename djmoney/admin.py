@@ -2,7 +2,6 @@ import django.contrib.admin.helpers as admin_helpers
 import django.contrib.admin.templatetags.admin_list as admin_list
 import django.contrib.admin.utils as admin_utils
 
-from ._compat import text_type
 from .models.fields import MoneyField
 
 
@@ -14,7 +13,7 @@ def setup_admin_integration():
 
     def display_for_field(value, field, empty):
         if isinstance(field, MoneyField):
-            return text_type(value)
+            return str(value)
         return original_display_for_field(value, field, empty)
 
     for mod in MODULES_TO_PATCH:

@@ -1,10 +1,12 @@
 # flake8: noqa
+"""
+This module isolates code that has to do with compatibility issues between
+different supported versions of Python or other dependencies.
 
-# Formerly Python 2.7 diverted, so stored here
-string_types = (str, bytes)
-text_type = str
-from urllib.parse import parse_qsl, urlparse, urlunparse
-from urllib.request import urlopen
+This is quite important to keep the codebase clean.
+
+Please do not catch ImportError exceptions other places than here :)
+"""
 
 
 def setup_managers(sender):

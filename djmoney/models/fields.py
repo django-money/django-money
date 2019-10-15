@@ -13,7 +13,7 @@ from djmoney import forms
 from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
-from .._compat import setup_managers, string_types
+from .._compat import setup_managers
 from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
@@ -191,7 +191,7 @@ class MoneyField(models.DecimalField):
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
-        if isinstance(default, string_types):
+        if isinstance(default, (str, bytes)):
             try:
                 # handle scenario where default is formatted like:
                 # 'amount currency-code'

@@ -4,7 +4,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.module_loading import import_string
 
-from djmoney._compat import text_type
 from djmoney.settings import EXCHANGE_BACKEND, RATES_CACHE_TIMEOUT
 
 from .exceptions import MissingRate
@@ -53,8 +52,8 @@ def get_rate(source, target, backend=None):
 
 
 def _get_rate(source, target, backend):
-    source, target = text_type(source), text_type(target)
-    if text_type(source) == target:
+    source, target = str(source), str(target)
+    if str(source) == target:
         return 1
     rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related("backend")
     if not rates:
