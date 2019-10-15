@@ -1,11 +1,11 @@
-# -*- coding: utf-8 -*-
+from functools import wraps
+
 from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
 from django.db.models.fields import FieldDoesNotExist
-from django.utils.six import wraps
+from django.utils.encoding import smart_text
 
-from .._compat import smart_unicode
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 from .fields import CurrencyField, MoneyField
 
@@ -98,7 +98,7 @@ def _expand_arg(model, arg):
             if isinstance(value, MONEY_CLASSES):
                 clean_name = _get_clean_name(model, name)
                 currency_field_name = get_currency_field_name(clean_name, field)
-                arg.children[i] = Q(child, (currency_field_name, smart_unicode(value.currency)))
+                arg.children[i] = Q(child, (currency_field_name, smart_text(value.currency)))
             if isinstance(field, MoneyField):
                 if isinstance(value, (BaseExpression, F)):
                     clean_name = _get_clean_name(model, name)
@@ -138,7 +138,7 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
             clean_name = _get_clean_name(model, name)
             kwargs[name] = value.amount
             currency_field_name = get_currency_field_name(clean_name, field)
-            kwargs[currency_field_name] = smart_unicode(value.currency)
+            kwargs[currency_field_name] = smart_text(value.currency)
         else:
             if isinstance(field, MoneyField):
                 if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):

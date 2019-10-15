@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 from rest_framework.fields import empty

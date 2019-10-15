@@ -74,7 +74,7 @@ Use as normal model fields:
 
         class BankAccount(models.Model):
             balance = MoneyField(max_digits=14, decimal_places=2, default_currency='USD')
-            
+
 To comply with certain strict accounting or financial regulations, you may consider using ``max_digits=19`` and ``decimal_places=4``, see more in this `StackOverflow answer <https://stackoverflow.com/a/224866/405682>`__
 
 It is also possible to have a nullable ``MoneyField``:

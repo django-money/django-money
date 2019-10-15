@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
@@ -9,13 +6,14 @@ from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
+from django.utils.encoding import smart_text
 from django.utils.functional import cached_property
 
 from djmoney import forms
 from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
-from .._compat import setup_managers, smart_unicode, string_types
+from .._compat import setup_managers
 from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
@@ -78,7 +76,7 @@ def get_currency(value):
     Extracts currency from value.
     """
     if isinstance(value, MONEY_CLASSES):
-        return smart_unicode(value.currency)
+        return smart_text(value.currency)
     elif isinstance(value, (list, tuple)):
         return value[1]
 
@@ -193,7 +191,7 @@ class MoneyField(models.DecimalField):
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
-        if isinstance(default, string_types):
+        if isinstance(default, (str, bytes)):
             try:
                 # handle scenario where default is formatted like:
                 # 'amount currency-code'

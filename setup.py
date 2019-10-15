@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import sys
 
 from setuptools import find_packages, setup
@@ -58,6 +57,7 @@ setup(
         'Django>=1.11',
         'py-moneyed>=0.8'
     ],
+    python_requires='>=3.5',
     platforms=['Any'],
     keywords=['django', 'py-money', 'money'],
     classifiers=[
@@ -66,8 +66,6 @@ setup(
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',

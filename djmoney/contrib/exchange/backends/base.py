@@ -1,11 +1,12 @@
 import json
 from decimal import Decimal
+from urllib.parse import parse_qsl, urlparse, urlunparse
+from urllib.request import urlopen
 
 from django.db.transaction import atomic
 from django.utils.http import urlencode
 
 from djmoney import settings
-from djmoney._compat import parse_qsl, urlopen, urlparse, urlunparse
 
 from ..models import ExchangeBackend, Rate
 

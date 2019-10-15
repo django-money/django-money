@@ -1,33 +1,12 @@
-# -*- coding: utf-8 -*-
 # flake8: noqa
+"""
+This module isolates code that has to do with compatibility issues between
+different supported versions of Python or other dependencies.
 
+This is quite important to keep the codebase clean.
 
-try:
-    from django.utils.encoding import smart_unicode
-except ImportError:
-    # Python 3
-    from django.utils.encoding import smart_text as smart_unicode
-
-try:
-    string_types = (basestring,)
-    text_type = unicode
-except NameError:
-    string_types = (str, bytes)
-    text_type = str
-
-try:
-    # Python 2
-    reload_module = reload
-except NameError:
-    # Python 3.4+
-    from importlib import reload as reload_module
-
-try:
-    from urllib2 import urlopen
-    from urlparse import urlparse, parse_qsl, urlunparse
-except ImportError:
-    from urllib.request import urlopen
-    from urllib.parse import urlparse, parse_qsl, urlunparse
+Please do not catch ImportError exceptions other places than here :)
+"""
 
 
 def setup_managers(sender):
