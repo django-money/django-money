@@ -3,8 +3,22 @@
 Changelog
 =========
 
+`0.15.1`_ - 2019-06-22
+----------------------
+
+Added
+~~~~~
+
+- Support for money descriptor customization. (`Stranger6667`_)
+
+Fixed
+~~~~~
+
+- Respect field ``decimal_places`` when instantiating ``Money`` object from field db values. `#501`_ (`astutejoe`_)
+
+
 `0.15`_ - 2019-05-30
-------------------------
+--------------------
 
 .. warning:: This release contains backwards incompatibility, please read the release notes below.
 
@@ -592,7 +606,8 @@ Added
 
 - Initial public release
 
-.. _1.0.dev: https://github.com/django-money/django-money/compare/0.15...HEAD
+.. _1.0.dev: https://github.com/django-money/django-money/compare/0.15.1...HEAD
+.. _0.15.1: https://github.com/django-money/django-money/compare/0.15.1...0.15
 .. _0.15: https://github.com/django-money/django-money/compare/0.15...0.14.4
 .. _0.14.4: https://github.com/django-money/django-money/compare/0.14.4...0.14.3
 .. _0.14.3: https://github.com/django-money/django-money/compare/0.14.3...0.14.2
@@ -743,6 +758,7 @@ Added
 .. _alexhayes: https://github.com/alexhayes
 .. _andytwoods: https://github.com/andytwoods
 .. _arthurk: https://github.com/arthurk
+.. _astutejoe: https://github.com/astutejoe
 .. _benjaoming: https://github.com/benjaoming
 .. _briankung: https://github.com/briankung
 .. _browniebroke: https://github.com/browniebroke
