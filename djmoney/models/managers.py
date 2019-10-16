@@ -206,7 +206,7 @@ def understands_money(func):
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ("distinct", "get", "get_or_create", "filter", "exclude", "update")
+RELEVANT_QUERYSET_METHODS = ("distinct", "get", "get_or_create", "filter", "exclude", "update", "order_by")
 EXPAND_EXCLUSIONS = {"get_or_create": ("defaults",)}
 
 
