@@ -697,3 +697,14 @@ class TestSharedCurrency:
         instance = ModelWithSharedCurrency.objects.create(first=value, second=value)
         assert instance.first == value
         assert instance.second == value
+
+def test_order_by():
+    def extract_data(instance):
+        return instance.money, instance.integer
+
+    instance1 = ModelWithVanillaMoneyField.objects.create(money=Money(10, 'AUD'), integer=2)
+    instance2 = ModelWithVanillaMoneyField.objects.create(money=Money(10, 'AUD'), integer=1)
+    instance3 = ModelWithVanillaMoneyField.objects.create(money=Money(10, 'USD'), integer=3)
+
+    qs = ModelWithVanillaMoneyField.objects.order_by('integer').filter(money=Money(10, 'AUD'))
+    assert list(map(extract_data, qs)) == [(Money(10, 'AUD'), 1), (Money(10, 'AUD'), 2)]

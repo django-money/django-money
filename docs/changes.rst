@@ -10,6 +10,7 @@ Added
 ~~~~~
 
 - Support for money descriptor customization. (`Stranger6667`_)
+- Fix `order_by()` not returning money-compatible queryset `#519`_
 - Django 3.0 support
 
 Removed
