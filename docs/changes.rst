@@ -10,7 +10,7 @@ Added
 ~~~~~
 
 - Support for money descriptor customization. (`Stranger6667`_)
-- Fix `order_by()` not returning money-compatible queryset `#519`_
+- Fix `order_by()` not returning money-compatible queryset `#519`_ (`lieryan`_)
 - Django 3.0 support
 
 Removed
@@ -760,6 +760,7 @@ Added
 .. _#80: https://github.com/django-money/django-money/issues/80
 .. _#418: https://github.com/django-money/django-money/issues/418
 .. _#411: https://github.com/django-money/django-money/issues/411
+.. _#519: https://github.com/django-money/django-money/issues/519
 
 .. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina
@@ -804,6 +805,7 @@ Added
 .. _ivirabyan: https://github.com/ivirabyan
 .. _k8n: https://github.com/k8n
 .. _lmdsp: https://github.com/lmdsp
+.. _lieryan: https://github.com/lieryan
 .. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
 .. _mithrilstar: https://github.com/mithrilstar
