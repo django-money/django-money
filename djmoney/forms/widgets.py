@@ -20,7 +20,7 @@ class MoneyWidget(MultiWidget):
         if not currency_widget:
             currency_widget = Select(choices=choices)
         widgets = (amount_widget, currency_widget)
-        super(MoneyWidget, self).__init__(widgets, *args, **kwargs)
+        super().__init__(widgets, *args, **kwargs)
 
     def decompress(self, value):
         if value is not None:

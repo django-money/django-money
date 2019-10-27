@@ -241,7 +241,7 @@ def money_manager(manager):
     #   are tricky to get to the bottom of - Manager does funny things.
     class MoneyManager(manager.__class__):
         def get_queryset(self, *args, **kwargs):
-            queryset = super(MoneyManager, self).get_queryset(*args, **kwargs)
+            queryset = super().get_queryset(*args, **kwargs)
             return add_money_comprehension_to_queryset(queryset)
 
     manager.__class__ = MoneyManager

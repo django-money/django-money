@@ -17,7 +17,7 @@ except ImportError:
     raise ImportError("Please install dependency certifi - pip install certifi")
 
 
-class BaseExchangeBackend(object):
+class BaseExchangeBackend:
     name = None
     url = None
 

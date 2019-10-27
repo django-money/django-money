@@ -1,5 +1,6 @@
 from decimal import Decimal
 from textwrap import dedent
+from unittest.mock import patch
 
 from django.core.exceptions import ImproperlyConfigured
 
@@ -8,7 +9,6 @@ import pytest
 from djmoney.contrib.exchange.exceptions import MissingRate
 from djmoney.contrib.exchange.models import _get_rate, convert_money, get_rate
 from djmoney.money import Currency, Money
-from tests._compat import patch
 
 
 pytestmark = pytest.mark.django_db

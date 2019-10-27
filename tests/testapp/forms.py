@@ -3,8 +3,6 @@ Created on May 15, 2011
 
 @author: jake
 """
-from __future__ import unicode_literals
-
 from django import forms
 
 from djmoney.forms import MoneyField

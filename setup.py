@@ -26,7 +26,6 @@ class PyTest(TestCommand):
 
 
 test_requirements = [
-    'mock',
     'pytest>=3.1.0',
     'pytest-django',
     'pytest-pythonpath',
@@ -39,9 +38,6 @@ extras_requirements = {
     'exchange': ['certifi'],
 }
 
-
-if sys.version_info[0] == 2:
-    test_requirements.append('mock')
 
 setup(
     name='django-money',

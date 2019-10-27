@@ -17,7 +17,7 @@ class MoneyField(DecimalField):
 
     def __init__(self, *args, **kwargs):
         self.default_currency = kwargs.pop("default_currency", None)
-        super(MoneyField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # Rest Framework converts `min_value` / `max_value` to validators, that are not aware about `Money` class
         # We need to adjust them
         for idx, validator in enumerate(self.validators):
@@ -33,16 +33,16 @@ class MoneyField(DecimalField):
         """
         if isinstance(obj, MONEY_CLASSES):
             obj = obj.amount
-        return super(MoneyField, self).to_representation(obj)
+        return super().to_representation(obj)
 
     def to_internal_value(self, data):
         if isinstance(data, MONEY_CLASSES):
-            amount = super(MoneyField, self).to_internal_value(data.amount)
+            amount = super().to_internal_value(data.amount)
             return Money(amount, data.currency)
-        return super(MoneyField, self).to_internal_value(data)
+        return super().to_internal_value(data)
 
     def get_value(self, data):
-        amount = super(MoneyField, self).get_value(data)
+        amount = super().get_value(data)
         currency = data.get(get_currency_field_name(self.field_name), self.default_currency)
         if currency and amount is not None and not isinstance(amount, MONEY_CLASSES) and amount is not empty:
             return Money(amount, currency)
