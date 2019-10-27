@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 from django.core.management import call_command
 from django.core.serializers.base import DeserializationError
@@ -8,7 +9,6 @@ import pytest
 from djmoney.money import Money
 from djmoney.serializers import Deserializer, Serializer
 
-from ._compat import patch
 from .testapp.models import ModelWithDefaultAsInt
 
 

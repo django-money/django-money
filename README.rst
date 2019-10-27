@@ -27,9 +27,9 @@ This version adds tests, and comes with several critical bugfixes.
 
 Django versions supported: 1.11, 2.1, 2.2
 
-Python versions supported: 2.7, 3.5, 3.6, 3.7
+Python versions supported: 3.5, 3.6, 3.7
 
-PyPy versions supported: PyPy 2.6, PyPy3 2.4
+PyPy versions supported: PyPy3 2.4
 
 If you need support for older versions of Django and Python you can use the latest version in 0.11.x branch.
 

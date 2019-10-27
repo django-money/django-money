@@ -43,7 +43,7 @@ class MoneyField(MultiValueField):
         )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
-        super(MoneyField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
         # set the initial value to the default currency so that the
         # default currency appears as the selected menu item
@@ -60,7 +60,7 @@ class MoneyField(MultiValueField):
     def clean(self, value):
         if isinstance(value, MONEY_CLASSES):
             value = (value.amount, value.currency)
-        return super(MoneyField, self).clean(value)
+        return super().clean(value)
 
     def has_changed(self, initial, data):  # noqa
         if self.disabled:
