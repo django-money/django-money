@@ -93,10 +93,3 @@ class PreciseForm(forms.Form):
 
     class Meta:
         fields = "__all__"
-
-
-class PreciseModelForm(forms.ModelForm):
-    class Meta:
-        fields = "__all__"
-        model = PreciseModel
-
