@@ -9,6 +9,7 @@ from djmoney.forms import MoneyField
 
 from .models import (
     ModelWithDefaultAsString,
+    ModelWithDefaultPrecision,
     ModelWithValidation,
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
@@ -49,6 +50,12 @@ class DefaultMoneyModelForm(forms.ModelForm):
         fields = ("money",)
 
 
+class DefaultPrecisionModelForm(forms.ModelForm):
+    class Meta:
+        model = ModelWithDefaultPrecision
+        fields = ("money",)
+
+
 class MoneyModelFormWithValidation(forms.ModelForm):
     class Meta:
         model = ModelWithValidation
@@ -86,3 +93,10 @@ class PreciseForm(forms.Form):
 
     class Meta:
         fields = "__all__"
+
+
+class PreciseModelForm(forms.ModelForm):
+    class Meta:
+        fields = "__all__"
+        model = PreciseModel
+
