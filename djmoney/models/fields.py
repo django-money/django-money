@@ -6,7 +6,7 @@ from django.db import models
 from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
-from django.utils.encoding import smart_text
+from django.utils.encoding import smart_str
 from django.utils.functional import cached_property
 
 from djmoney import forms
@@ -76,7 +76,7 @@ def get_currency(value):
     Extracts currency from value.
     """
     if isinstance(value, MONEY_CLASSES):
-        return smart_text(value.currency)
+        return smart_str(value.currency)
     elif isinstance(value, (list, tuple)):
         return value[1]
 
