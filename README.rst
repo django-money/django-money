@@ -1,4 +1,4 @@
-Django-money
+django-money
 ============
 
 .. image:: https://travis-ci.org/django-money/django-money.svg?branch=master
@@ -20,25 +20,18 @@ Django-money
 A little Django app that uses ``py-moneyed`` to add support for Money
 fields in your models and forms.
 
-Fork of the Django support that was in
-http://code.google.com/p/python-money/
+* Django versions supported: 1.11, 2.1, 2.2, 3.0
+* Python versions supported: 3.5, 3.6, 3.7
+* PyPy versions supported: PyPy3
 
-This version adds tests, and comes with several critical bugfixes.
+If you need support for older versions of Django and Python, please refer to older releases mentioned in `the release notes <https://django-money.readthedocs.io/en/latest/changes.html>`__.
 
-Django versions supported: 1.11, 2.1, 2.2
+Through the dependency ``py-moneyed``, ``django-money`` gets:
 
-Python versions supported: 3.5, 3.6, 3.7
-
-PyPy versions supported: PyPy3 2.4
-
-If you need support for older versions of Django and Python you can use the latest version in 0.11.x branch.
-
-Via ``py-moneyed``, ``django-money`` gets:
-
--  Support for proper Money value handling (using the standard Money
-   design pattern)
--  A currency class and definitions for all currencies in circulation
--  Formatting of most currencies with correct currency sign
+* Support for proper Money value handling (using the standard Money
+  design pattern)
+* A currency class and definitions for all currencies in circulation
+* Formatting of most currencies with correct currency sign
 
 Installation
 ------------
@@ -503,3 +496,12 @@ It will always use ``EUR`` for all ``Money`` instances when ``obj.money`` is cal
 
     class Expenses(models.Model):
         amount = MoneyField(max_digits=10, decimal_places=2, money_descriptor_class=MyMoneyDescriptor)
+
+
+Background
+----------
+
+This project is a fork of the Django support that was in
+http://code.google.com/p/python-money/
+
+This version adds tests, and comes with several critical bugfixes.
