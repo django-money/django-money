@@ -10,7 +10,7 @@ Added
 ~~~~~
 
 - Support for money descriptor customization. (`Stranger6667`_)
-- Fix `order_by()` not returning money-compatible queryset `#519`_ (`lieryan`_)
+- Fix ``order_by()`` not returning money-compatible queryset `#519`_ (`lieryan`_)
 - Django 3.0 support
 
 Removed
@@ -626,7 +626,7 @@ Added
 
 - Initial public release
 
-.. _1.0.dev: https://github.com/django-money/django-money/compare/0.15.1...HEAD
+.. _1.0: https://github.com/django-money/django-money/compare/0.15.1...HEAD
 .. _0.15.1: https://github.com/django-money/django-money/compare/0.15.1...0.15
 .. _0.15: https://github.com/django-money/django-money/compare/0.15...0.14.4
 .. _0.14.4: https://github.com/django-money/django-money/compare/0.14.4...0.14.3
