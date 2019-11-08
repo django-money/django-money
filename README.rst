@@ -501,7 +501,7 @@ It will always use ``EUR`` for all ``Money`` instances when ``obj.money`` is cal
 Background
 ----------
 
-This project is a ork of the Django support that was in
+This project is a fork of the Django support that was in
 http://code.google.com/p/python-money/
 
 This version adds tests, and comes with several critical bugfixes.
