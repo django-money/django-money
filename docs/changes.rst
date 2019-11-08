@@ -21,6 +21,11 @@ Removed
 - Support for Python 3.4. (`Stranger6667`_)
 - ``MoneyPatched``, use ``djmoney.money.Money`` instead. (`Stranger6667`_)
 
+Fixed
+~~~~~
+
+- Support instances with ``decimal_places=0`` `#509`_ (`fara`_)
+
 
 `0.15.1`_ - 2019-06-22
 ----------------------
@@ -672,6 +677,7 @@ Added
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
 .. _#515: https://github.com/django-money/django-money/issues/515
+.. _#509: https://github.com/django-money/django-money/issues/509
 .. _#490: https://github.com/django-money/django-money/issues/490
 .. _#475: https://github.com/django-money/django-money/issues/475
 .. _#480: https://github.com/django-money/django-money/issues/480
@@ -831,3 +837,4 @@ Added
 .. _1337: https://github.com/1337
 .. _humrochagf: https://github.com/humrochagf
 .. _washeck: https://github.com/washeck
+.. _fara: https://github.com/fara
