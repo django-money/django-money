@@ -3,6 +3,15 @@
 Changelog
 =========
 
+`1.1.dev`_ - (unreleased)
+-------------------------
+
+Fixed
+~~~~~
+
+- Fix ``default_currency=None`` not making ``CurrencyField`` nullable in SQL migrations `#530`_ (`jrocketfingers`_)
+
+
 `1.0`_ - 2019-11-08
 -------------------
 
