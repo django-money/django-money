@@ -3,6 +3,14 @@
 Changelog
 =========
 
+`1.1`_ - 2019-12-16
+
+Added
+~~~~~
+
+- Support for money QuerySet.bulk_update(). (`satels`_)
+
+
 `1.0`_ - 2019-11-08
 -------------------
 
@@ -626,7 +634,8 @@ Added
 
 - Initial public release
 
-.. _1.0: https://github.com/django-money/django-money/compare/0.15.1...HEAD
+.. _1.1: https://github.com/django-money/django-money/compare/1.0...HEAD
+.. _1.0: https://github.com/django-money/django-money/compare/0.15.1...1.0
 .. _0.15.1: https://github.com/django-money/django-money/compare/0.15.1...0.15
 .. _0.15: https://github.com/django-money/django-money/compare/0.15...0.14.4
 .. _0.14.4: https://github.com/django-money/django-money/compare/0.14.4...0.14.3
@@ -823,6 +832,7 @@ Added
 .. _rach: https://github.com/rach
 .. _rapIsKal: https://github.com/rapIsKal
 .. _richardowen: https://github.com/richardowen
+.. _satels: https://github.com/satels
 .. _sjdines: https://github.com/sjdines
 .. _snbuchholz: https://github.com/snbuchholz
 .. _spookylukey: https://github.com/spookylukey
