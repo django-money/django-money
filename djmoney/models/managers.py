@@ -4,6 +4,7 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
+from django.db.models.functions import Cast
 from django.utils.encoding import smart_str
 
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
@@ -141,7 +142,7 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
             kwargs[currency_field_name] = smart_str(value.currency)
         else:
             if isinstance(field, MoneyField):
-                if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):
+                if isinstance(value, (BaseExpression, F)) and not isinstance(value, (Case, Cast)):
                     clean_name = _get_clean_name(model, name)
                     if not isinstance(value, F):
                         value = prepare_expression(value)
