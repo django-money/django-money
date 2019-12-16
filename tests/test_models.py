@@ -456,7 +456,6 @@ class TestFExpressions:
 
 
 class TestExpressions:
-
     def test_bulk_update(self):
         assert ModelWithVanillaMoneyField.objects.filter(integer=0).count() == 0
         assert ModelWithVanillaMoneyField.objects.filter(integer=1).count() == 0
