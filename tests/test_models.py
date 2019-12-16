@@ -457,6 +457,9 @@ class TestFExpressions:
 
 class TestExpressions:
     def test_bulk_update(self):
+        if VERSION[:2] < (2, 2):
+            pytest.skip("skipping tests for Django < 2.2")
+
         assert ModelWithVanillaMoneyField.objects.filter(integer=0).count() == 0
         assert ModelWithVanillaMoneyField.objects.filter(integer=1).count() == 0
         ModelWithVanillaMoneyField.objects.create(money=Money(1, "USD"), integer=0)
