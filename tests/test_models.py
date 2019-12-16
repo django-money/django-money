@@ -466,16 +466,13 @@ class TestExpressions:
         second_instance = ModelWithVanillaMoneyField.objects.get(integer=1)
         assert first_instance.money == Money(1, "USD")
         assert second_instance.money == Money(2, "USD")
-        first_instance.money = Money(3, 'RUB')
-        second_instance.money = Money(4, 'UAH')
-        second_instance.second_money = Money(5, 'BYN')
-        ModelWithVanillaMoneyField.objects.bulk_update([
-            first_instance,
-            second_instance,
-        ], ('money', 'second_money'))
-        ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(3, 'RUB')
-        ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(4, 'UAH')
-        ModelWithVanillaMoneyField.objects.get(integer=1).second_money == Money(5, 'BYN')
+        first_instance.money = Money(3, "RUB")
+        second_instance.money = Money(4, "UAH")
+        second_instance.second_money = Money(5, "BYN")
+        ModelWithVanillaMoneyField.objects.bulk_update([first_instance, second_instance], ("money", "second_money"))
+        ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(3, "RUB")
+        ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(4, "UAH")
+        ModelWithVanillaMoneyField.objects.get(integer=1).second_money == Money(5, "BYN")
 
     def test_date_lookup(self):
         DateTimeModel.objects.create(field=Money(1, "USD"), created="2016-12-05")
