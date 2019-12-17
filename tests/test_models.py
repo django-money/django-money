@@ -456,10 +456,9 @@ class TestFExpressions:
 
 
 class TestExpressions:
-    def test_bulk_update(self):
-        if VERSION[:2] < (2, 2):
-            pytest.skip("skipping tests for Django < 2.2")
 
+    @pytest.mark.skipif(VERSION[:2] < (2, 2), "skipping tests for Django < 2.2")
+    def test_bulk_update(self):
         assert ModelWithVanillaMoneyField.objects.filter(integer=0).count() == 0
         assert ModelWithVanillaMoneyField.objects.filter(integer=1).count() == 0
         ModelWithVanillaMoneyField.objects.create(money=Money(1, "USD"), integer=0)
@@ -472,9 +471,9 @@ class TestExpressions:
         second_instance.money = Money(4, "UAH")
         second_instance.second_money = Money(5, "BYN")
         ModelWithVanillaMoneyField.objects.bulk_update([first_instance, second_instance], ("money", "second_money"))
-        ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(3, "RUB")
-        ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(4, "UAH")
-        ModelWithVanillaMoneyField.objects.get(integer=1).second_money == Money(5, "BYN")
+        assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(3, "RUB")
+        assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(4, "UAH")
+        assert ModelWithVanillaMoneyField.objects.get(integer=1).second_money == Money(5, "BYN")
 
     def test_date_lookup(self):
         DateTimeModel.objects.create(field=Money(1, "USD"), created="2016-12-05")
