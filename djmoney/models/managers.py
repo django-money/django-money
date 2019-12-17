@@ -1,9 +1,9 @@
 from functools import wraps
 
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
-from django.db.models.fields import FieldDoesNotExist
 from django.utils.encoding import smart_str
 
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
