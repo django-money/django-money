@@ -475,11 +475,6 @@ class TestExpressions:
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(4, "UAH")
         assert ModelWithVanillaMoneyField.objects.get(integer=1).second_money == Money(5, "BYN")
 
-    def test_date_lookup(self):
-        DateTimeModel.objects.create(field=Money(1, "USD"), created="2016-12-05")
-        assert DateTimeModel.objects.filter(created__date="2016-12-01").count() == 0
-        assert DateTimeModel.objects.filter(created__date="2016-12-05").count() == 1
-
     def test_conditional_update(self):
         ModelWithVanillaMoneyField.objects.bulk_create(
             (
