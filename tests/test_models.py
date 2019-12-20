@@ -456,7 +456,6 @@ class TestFExpressions:
 
 
 class TestExpressions:
-
     @pytest.mark.skipif(VERSION[:2] < (2, 2), "skipping tests for Django < 2.2")
     def test_bulk_update(self):
         assert ModelWithVanillaMoneyField.objects.filter(integer=0).count() == 0
