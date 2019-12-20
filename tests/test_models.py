@@ -469,7 +469,9 @@ class TestExpressions:
         first_inst.money = Money(3, "RUB")
         second_inst.money = Money(4, "UAH")
         second_inst.second_money = Money(5, "BYN")
-        ModelWithVanillaMoneyField.objects.bulk_update([first_inst, second_inst], ("money", "money_currency", "second_money", "second_money_currency"))
+        ModelWithVanillaMoneyField.objects.bulk_update(
+            [first_inst, second_inst], ("money", "money_currency", "second_money", "second_money_currency")
+        )
         assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(3, "RUB")
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(4, "UAH")
         assert ModelWithVanillaMoneyField.objects.get(integer=1).second_money == Money(5, "BYN")
