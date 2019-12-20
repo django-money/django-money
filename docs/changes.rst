@@ -8,7 +8,7 @@ Changelog
 Added
 ~~~~~
 
-- Support for money QuerySet.bulk_update(). (`satels`_)
+- Support for ``Money`` type in ``QuerySet.bulk_update()``. (`satels`_)
 
 
 `1.0`_ - 2019-11-08
