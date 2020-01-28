@@ -390,7 +390,7 @@ class LinkedCurrencyMoneyField(MoneyField):
         # This nonsense is necessary to prevent django from automatically adding
         # a currency field during migrations.
         for b in self.__class__.__mro__:
-            if b != object:
+            if issubclass(b, LinkedCurrencyMoneyField):
                 setattr(b, "add_currency_field", noop_add_currency_field)
 
         super().contribute_to_class(cls, name)
