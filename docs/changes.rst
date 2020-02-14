@@ -5,6 +5,11 @@ Changelog
 
 `1.1`_ - TBA
 
+Fixed
+~~~~~
+
+- Optimize money operations on monies with the same currencies. (`horpto`)
+
 Added
 ~~~~~
 
