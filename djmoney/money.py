@@ -90,7 +90,7 @@ def maybe_convert(value, currency):
     """
     Converts other Money instances to the local currency if `AUTO_CONVERT_MONEY` is set to True.
     """
-    if getattr(settings, "AUTO_CONVERT_MONEY", False):
+    if getattr(settings, "AUTO_CONVERT_MONEY", False) and value.currency != currency:
         from .contrib.exchange.models import convert_money
 
         return convert_money(value, currency)
