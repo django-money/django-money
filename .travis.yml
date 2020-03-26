@@ -21,6 +21,12 @@ matrix:
       env: TOX_ENV=django_master-py36
     - python: 3.7
       dist: xenial
+      env: TOX_ENV=django30-py37
+    - python: 3.6
+      dist: xenial
+      env: TOX_ENV=django30-py36
+    - python: 3.7
+      dist: xenial
       env: TOX_ENV=django22-py37
     - python: 3.6
       dist: xenial
