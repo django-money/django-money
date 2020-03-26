@@ -148,9 +148,7 @@ class LinkedCurrencyMoneyFieldProxy(MoneyFieldProxy):
 
     def __init__(self, field, currency_field_name=None):
         super(LinkedCurrencyMoneyFieldProxy, self).__init__(field)
-        self.currency_field_name = currency_field_name or get_currency_field_name(
-            self.field.name, self.field
-        )
+        self.currency_field_name = currency_field_name or get_currency_field_name(self.field.name, self.field)
 
     def _money_from_obj(self, obj):
         amount = obj.__dict__[self.field.name]
