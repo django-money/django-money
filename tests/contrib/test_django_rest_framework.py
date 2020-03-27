@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 from decimal import Decimal
 
-from django.utils import six
-
 import pytest
 
 from djmoney.money import Money
@@ -27,8 +25,7 @@ class TestMoneyField:
                     attrs[field_name] = MoneyField(max_digits=10, decimal_places=2, **field_kwargs)
                 return super(MetaSerializer, cls).__new__(cls, name, bases, attrs)
 
-        @six.add_metaclass(MetaSerializer)
-        class Serializer(serializers.ModelSerializer):
+        class Serializer(serializers.ModelSerializer, metaclass=MetaSerializer):
             class Meta:
                 model = model_class
                 fields = fields_

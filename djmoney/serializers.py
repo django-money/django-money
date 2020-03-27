@@ -4,12 +4,11 @@ import sys
 
 from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
-from django.utils import six
 
 from djmoney.money import Money
 
 from .models.fields import MoneyField, LinkedCurrencyMoneyField
-from .utils import get_currency_field_name
+from .utils import get_currency_field_name, reraise
 
 
 Serializer = JSONSerializer
@@ -25,7 +24,7 @@ def Deserializer(stream_or_string, **options):  # noqa
 
     ignore = options.pop("ignorenonexistent", False)
 
-    if not isinstance(stream_or_string, (bytes, six.string_types)):
+    if not isinstance(stream_or_string, (bytes, str)):
         stream_or_string = stream_or_string.read()
     if isinstance(stream_or_string, bytes):
         stream_or_string = stream_or_string.decode("utf-8")
@@ -41,7 +40,7 @@ def Deserializer(stream_or_string, **options):  # noqa
             money_fields = {}
             fields = {}
             field_names = {field.name for field in Model._meta.get_fields()}
-            for (field_name, field_value) in six.iteritems(obj["fields"]):
+            for (field_name, field_value) in obj["fields"].items():
                 if ignore and field_name not in field_names:
                     # skip fields no longer on model
                     continue
@@ -62,7 +61,7 @@ def Deserializer(stream_or_string, **options):  # noqa
     except (GeneratorExit, DeserializationError):
         raise
     except Exception as exc:
-        six.reraise(DeserializationError, DeserializationError(exc), sys.exc_info()[2])
+        reraise(DeserializationError, DeserializationError(exc), sys.exc_info()[2])
 
 
 def get_currency_from_obj(Model, obj, currency_field_name):
