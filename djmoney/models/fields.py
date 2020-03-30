@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import division
-
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
@@ -10,13 +7,14 @@ from django.db.models import F, Field, Func, Value
 from django.db.models.expressions import BaseExpression
 from django.db.models.signals import class_prepared
 from django.forms import DecimalField, NumberInput
+from django.utils.encoding import smart_str
 from django.utils.functional import cached_property
 
 from djmoney import forms
 from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
-from .._compat import setup_managers, smart_unicode, string_types
+from .._compat import setup_managers
 from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
@@ -26,7 +24,7 @@ __all__ = ("CurrencyField", "LinkedCurrencyMoneyField", "MoneyField")
 
 class MoneyValidator(DecimalValidator):
     def __call__(self, value):
-        return super(MoneyValidator, self).__call__(value.amount)
+        return super().__call__(value.amount)
 
 
 def get_value(obj, expr):
@@ -79,12 +77,12 @@ def get_currency(value):
     Extracts currency from value.
     """
     if isinstance(value, MONEY_CLASSES):
-        return smart_unicode(value.currency)
+        return smart_str(value.currency)
     elif isinstance(value, (list, tuple)):
         return value[1]
 
 
-class MoneyFieldProxy(object):
+class MoneyFieldProxy:
     def __init__(self, field):
         self.field = field
         self.currency_field_name = get_currency_field_name(self.field.name, self.field)
@@ -190,11 +188,11 @@ class CurrencyField(models.CharField):
             default = default.code
         kwargs.setdefault("max_length", 3)
         self.price_field = price_field
-        super(CurrencyField, self).__init__(default=default, **kwargs)
+        super().__init__(default=default, **kwargs)
 
     def contribute_to_class(self, cls, name):
         if name not in [f.name for f in cls._meta.fields]:
-            super(CurrencyField, self).contribute_to_class(cls, name)
+            super().contribute_to_class(cls, name)
 
 
 class MoneyField(models.DecimalField):
@@ -205,7 +203,7 @@ class MoneyField(models.DecimalField):
         verbose_name=None,
         name=None,
         max_digits=None,
-        decimal_places=None,
+        decimal_places=DECIMAL_PLACES,
         default=None,
         default_currency=DEFAULT_CURRENCY,
         currency_choices=CURRENCY_CHOICES,
@@ -225,12 +223,12 @@ class MoneyField(models.DecimalField):
         self.currency_field_name = currency_field_name
         self.money_descriptor_class = money_descriptor_class
 
-        super(MoneyField, self).__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
+        super().__init__(verbose_name, name, max_digits, decimal_places, default=default, **kwargs)
         self.creation_counter += 1
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
-        if isinstance(default, string_types):
+        if isinstance(default, (str, bytes)):
             try:
                 # handle scenario where default is formatted like:
                 # 'amount currency-code'
@@ -257,7 +255,7 @@ class MoneyField(models.DecimalField):
             value = value[0]
         if isinstance(value, float):
             value = str(value)
-        return super(MoneyField, self).to_python(value)
+        return super().to_python(value)
 
     def clean(self, value, model_instance):
         """
@@ -281,7 +279,7 @@ class MoneyField(models.DecimalField):
         if not hasattr(self, "_currency_field"):
             self.add_currency_field(cls, name)
 
-        super(MoneyField, self).contribute_to_class(cls, name)
+        super().contribute_to_class(cls, name)
 
         setattr(cls, self.name, self.money_descriptor_class(self))
 
@@ -305,29 +303,29 @@ class MoneyField(models.DecimalField):
     def get_db_prep_save(self, value, connection):
         if isinstance(value, MONEY_CLASSES):
             value = value.amount
-        return super(MoneyField, self).get_db_prep_save(value, connection)
+        return super().get_db_prep_save(value, connection)
 
     def get_default(self):
         if isinstance(self.default, Money):
             return self.default
         else:
-            return super(MoneyField, self).get_default()
+            return super().get_default()
 
     def formfield(self, **kwargs):
-        defaults = {"form_class": forms.MoneyField, "decimal_places": DECIMAL_PLACES}
+        defaults = {"form_class": forms.MoneyField, "decimal_places": self.decimal_places}
         defaults.update(kwargs)
         defaults["currency_choices"] = self.currency_choices
         defaults["default_currency"] = self.default_currency
         if self.default is not None:
             defaults["default_amount"] = self.default.amount
-        return super(MoneyField, self).formfield(**defaults)
+        return super().formfield(**defaults)
 
     def value_to_string(self, obj):
         value = self.value_from_object(obj)
         return self.get_prep_value(value)
 
     def deconstruct(self):
-        name, path, args, kwargs = super(MoneyField, self).deconstruct()
+        name, path, args, kwargs = super().deconstruct()
 
         if self.default is None:
             del kwargs["default"]

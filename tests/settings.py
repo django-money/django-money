@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import warnings
 from decimal import ROUND_HALF_EVEN
 

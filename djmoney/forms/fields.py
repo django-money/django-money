@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.core.exceptions import ValidationError
 from django.forms import ChoiceField, DecimalField, MultiValueField
 
@@ -39,20 +36,14 @@ class MoneyField(MultiValueField):
         )
         currency_field = ChoiceField(choices=currency_choices)
 
-        # TODO: No idea what currency_widget is supposed to do since it doesn't
-        # even receive currency choices as input. Somehow it's supposed to be
-        # instantiated from outside. Hard to tell.
-        if currency_widget:
-            self.widget = currency_widget
-        else:
-            self.widget = MoneyWidget(
-                amount_widget=amount_field.widget,
-                currency_widget=currency_field.widget,
-                default_currency=default_currency,
-            )
+        self.widget = MoneyWidget(
+            amount_widget=amount_field.widget,
+            currency_widget=currency_widget or currency_field.widget,
+            default_currency=default_currency,
+        )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
-        super(MoneyField, self).__init__(fields, *args, **kwargs)
+        super().__init__(fields, *args, **kwargs)
 
         # set the initial value to the default currency so that the
         # default currency appears as the selected menu item
@@ -69,7 +60,7 @@ class MoneyField(MultiValueField):
     def clean(self, value):
         if isinstance(value, MONEY_CLASSES):
             value = (value.amount, value.currency)
-        return super(MoneyField, self).clean(value)
+        return super().clean(value)
 
     def has_changed(self, initial, data):  # noqa
         if self.disabled:

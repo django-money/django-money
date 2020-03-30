@@ -1,6 +1,3 @@
-# coding: utf-8
-import sys
-
 from django.utils.translation import override
 
 import pytest
@@ -18,7 +15,7 @@ def test_html_safe():
 
 def test_html_unsafe():
     class UnsafeMoney(Money):
-        def __unicode__(self):
+        def __str__(self):
             return "<script>"
 
     assert UnsafeMoney().__html__() == "&lt;script&gt;"

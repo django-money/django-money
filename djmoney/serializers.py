@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import json
 import sys
 
@@ -8,7 +7,7 @@ from django.core.serializers.json import Serializer as JSONSerializer
 from djmoney.money import Money
 
 from .models.fields import MoneyField, LinkedCurrencyMoneyField
-from .utils import get_currency_field_name, reraise
+from .utils import get_currency_field_name
 
 
 Serializer = JSONSerializer
@@ -61,7 +60,7 @@ def Deserializer(stream_or_string, **options):  # noqa
     except (GeneratorExit, DeserializationError):
         raise
     except Exception as exc:
-        reraise(DeserializationError, DeserializationError(exc), sys.exc_info()[2])
+        raise DeserializationError.with_traceback(DeserializationError(exc), sys.exc_info()[2])
 
 
 def get_currency_from_obj(Model, obj, currency_field_name):

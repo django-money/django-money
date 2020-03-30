@@ -1,4 +1,3 @@
-# coding: utf-8
 from django.conf import settings
 from django.db.models import F
 from django.utils import translation
@@ -25,29 +24,29 @@ class Money(DefaultMoney):
 
     def __init__(self, *args, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
-        super(Money, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __add__(self, other):
         if isinstance(other, F):
             return other.__radd__(self)
         other = maybe_convert(other, self.currency)
-        return super(Money, self).__add__(other)
+        return super().__add__(other)
 
     def __sub__(self, other):
         if isinstance(other, F):
             return other.__rsub__(self)
         other = maybe_convert(other, self.currency)
-        return super(Money, self).__sub__(other)
+        return super().__sub__(other)
 
     def __mul__(self, other):
         if isinstance(other, F):
             return other.__rmul__(self)
-        return super(Money, self).__mul__(other)
+        return super().__mul__(other)
 
     def __truediv__(self, other):
         if isinstance(other, F):
             return other.__rtruediv__(self)
-        return super(Money, self).__truediv__(other)
+        return super().__truediv__(other)
 
     @property
     def is_localized(self):
@@ -55,7 +54,7 @@ class Money(DefaultMoney):
             return settings.USE_L10N
         return self.use_l10n
 
-    def __unicode__(self):
+    def __str__(self):
         kwargs = {"money": self, "decimal_places": self.decimal_places}
         if self.is_localized:
             locale = get_current_locale()
@@ -64,14 +63,8 @@ class Money(DefaultMoney):
 
         return format_money(**kwargs)
 
-    def __str__(self):
-        value = self.__unicode__()
-        if not isinstance(value, str):
-            value = value.encode("utf8")
-        return value
-
     def __html__(self):
-        return mark_safe(avoid_wrapping(conditional_escape(self.__unicode__())))
+        return mark_safe(avoid_wrapping(conditional_escape(str(self))))
 
     def __round__(self, n=None):
         amount = round(self.amount, n)
@@ -97,7 +90,7 @@ def maybe_convert(value, currency):
     """
     Converts other Money instances to the local currency if `AUTO_CONVERT_MONEY` is set to True.
     """
-    if getattr(settings, "AUTO_CONVERT_MONEY", False):
+    if getattr(settings, "AUTO_CONVERT_MONEY", False) and value.currency != currency:
         from .contrib.exchange.models import convert_money
 
         return convert_money(value, currency)

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import pytest
 
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate, get_default_backend_name
