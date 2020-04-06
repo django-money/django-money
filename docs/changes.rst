@@ -218,7 +218,7 @@ Removed
 - Deprecated ``Money.__float__`` which is implicitly called on some ``sum()`` operations `#347`_. (`jonashaag`_)
 
 Migration from django-money-rates
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The new application is a drop-in replacement for ``django-money-rates``.
 To migrate from ``django-money-rates``:
@@ -413,7 +413,7 @@ Fixed
 - Fixed ``get_or_create`` crash, when ``defaults`` is passed. `#213`_ (`Stranger6667`_, `spookylukey`_)
 
 Note about automatic model manager patches
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In 0.8, Django-money automatically patches every model managers with
 ``MoneyManager``. This causes migration problems if two or more managers are
@@ -695,6 +695,7 @@ Added
 .. _#534: https://github.com/django-money/django-money/issues/534
 .. _#515: https://github.com/django-money/django-money/issues/515
 .. _#509: https://github.com/django-money/django-money/issues/509
+.. _#501: https://github.com/django-money/django-money/issues/501
 .. _#490: https://github.com/django-money/django-money/issues/490
 .. _#475: https://github.com/django-money/django-money/issues/475
 .. _#480: https://github.com/django-money/django-money/issues/480
