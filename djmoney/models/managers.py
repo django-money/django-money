@@ -1,12 +1,12 @@
-# -*- coding: utf-8 -*-
 from functools import wraps
 
+from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
-from django.db.models.fields import FieldDoesNotExist
+from django.db.models.functions import Cast
+from django.utils.encoding import smart_str
 
-from .._compat import smart_unicode
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 from .fields import CurrencyField, MoneyField
 
@@ -99,7 +99,7 @@ def _expand_arg(model, arg):
             if isinstance(value, MONEY_CLASSES):
                 clean_name = _get_clean_name(model, name)
                 currency_field_name = get_currency_field_name(clean_name, field)
-                arg.children[i] = Q(child, (currency_field_name, smart_unicode(value.currency)))
+                arg.children[i] = Q(child, (currency_field_name, smart_str(value.currency)))
             if isinstance(field, MoneyField):
                 if isinstance(value, (BaseExpression, F)):
                     clean_name = _get_clean_name(model, name)
@@ -139,10 +139,10 @@ def _expand_money_kwargs(model, args=(), kwargs=None, exclusions=()):
             clean_name = _get_clean_name(model, name)
             kwargs[name] = value.amount
             currency_field_name = get_currency_field_name(clean_name, field)
-            kwargs[currency_field_name] = smart_unicode(value.currency)
+            kwargs[currency_field_name] = smart_str(value.currency)
         else:
             if isinstance(field, MoneyField):
-                if isinstance(value, (BaseExpression, F)) and not isinstance(value, Case):
+                if isinstance(value, (BaseExpression, F)) and not isinstance(value, (Case, Cast)):
                     clean_name = _get_clean_name(model, name)
                     if not isinstance(value, F):
                         value = prepare_expression(value)
@@ -207,7 +207,7 @@ def understands_money(func):
     return wrapper
 
 
-RELEVANT_QUERYSET_METHODS = ("distinct", "get", "get_or_create", "filter", "exclude", "update")
+RELEVANT_QUERYSET_METHODS = ("distinct", "get", "get_or_create", "filter", "exclude", "update", "order_by")
 EXPAND_EXCLUSIONS = {"get_or_create": ("defaults",)}
 
 
@@ -242,7 +242,7 @@ def money_manager(manager):
     #   are tricky to get to the bottom of - Manager does funny things.
     class MoneyManager(manager.__class__):
         def get_queryset(self, *args, **kwargs):
-            queryset = super(MoneyManager, self).get_queryset(*args, **kwargs)
+            queryset = super().get_queryset(*args, **kwargs)
             return add_money_comprehension_to_queryset(queryset)
 
     manager.__class__ = MoneyManager

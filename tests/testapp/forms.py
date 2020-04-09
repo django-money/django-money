@@ -1,17 +1,15 @@
-# -*- coding: utf-8 -*-
 """
 Created on May 15, 2011
 
 @author: jake
 """
-from __future__ import unicode_literals
-
 from django import forms
 
 from djmoney.forms import MoneyField
 
 from .models import (
     ModelWithDefaultAsString,
+    ModelWithDefaultPrecision,
     ModelWithValidation,
     ModelWithVanillaMoneyField,
     NullMoneyFieldModel,
@@ -49,6 +47,12 @@ class NullableModelForm(forms.ModelForm):
 class DefaultMoneyModelForm(forms.ModelForm):
     class Meta:
         model = ModelWithDefaultAsString
+        fields = ("money",)
+
+
+class DefaultPrecisionModelForm(forms.ModelForm):
+    class Meta:
+        model = ModelWithDefaultPrecision
         fields = ("money",)
 
 

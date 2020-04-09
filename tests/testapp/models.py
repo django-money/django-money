@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 Created on May 7, 2011
 
@@ -190,3 +189,7 @@ class CryptoModel(models.Model):
 
 class PreciseModel(models.Model):
     money = MoneyField(max_digits=10, decimal_places=4)
+
+
+class ModelWithDefaultPrecision(models.Model):
+    money = MoneyField(max_digits=10)

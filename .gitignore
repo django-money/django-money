@@ -5,6 +5,8 @@
 *.egg-info
 
 *.~
+*.wpr  # WingIDE
+*.wpu  # WingIDE
 .installed.cfg
 bin
 develop-eggs

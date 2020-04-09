@@ -1,6 +1,7 @@
 import json
 from contextlib import contextmanager
 from decimal import Decimal
+from unittest.mock import Mock, patch
 
 from django.core.cache import cache
 
@@ -9,7 +10,6 @@ import pytest
 from djmoney.contrib.exchange.backends import FixerBackend, OpenExchangeRatesBackend
 from djmoney.contrib.exchange.backends.base import BaseExchangeBackend
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
-from tests._compat import Mock, patch
 
 
 pytestmarks = pytest.mark.django_db
