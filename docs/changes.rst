@@ -3,6 +3,15 @@
 Changelog
 =========
 
+`1.2`_ - TBA
+------------
+
+Fixed
+~~~~~
+
+- Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `522` (`wearebasti`)
+
+
 `1.1`_ - 2020-04-06
 -------------------
 
