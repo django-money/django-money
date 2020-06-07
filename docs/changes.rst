@@ -3,6 +3,14 @@
 Changelog
 =========
 
+`Unreleased`_
+-------------
+
+Added
+~~~~~
+- Possibility to set localized string output to length of `decimal_places_display` `#521`_ (`wearebasti`)
+
+
 `1.1`_ - 2020-04-06
 -------------------
 

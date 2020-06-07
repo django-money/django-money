@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
 
-from .settings import DECIMAL_PLACES
+from .settings import DECIMAL_PLACES, DECIMAL_PLACES_DISPLAY
 
 
 __all__ = ["Money", "Currency"]
@@ -24,7 +24,17 @@ class Money(DefaultMoney):
 
     def __init__(self, *args, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
+        self._decimal_places_display = kwargs.pop("decimal_places_display", None)
         super().__init__(*args, **kwargs)
+
+    @property
+    def decimal_places_display(self):
+        if self._decimal_places_display is None:
+            self._decimal_places_display = DECIMAL_PLACES_DISPLAY.get(
+                self.currency.code, self.decimal_places
+            )
+
+        return self._decimal_places_display
 
     def __add__(self, other):
         if isinstance(other, F):
@@ -55,7 +65,7 @@ class Money(DefaultMoney):
         return self.use_l10n
 
     def __str__(self):
-        kwargs = {"money": self, "decimal_places": self.decimal_places}
+        kwargs = {"money": self, "decimal_places": self.decimal_places_display}
         if self.is_localized:
             locale = get_current_locale()
             if locale:
