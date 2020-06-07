@@ -56,7 +56,4 @@ def test_localize_decimal_places_overwrite():
 
 
 def test_localize_decimal_places_both():
-    assert (
-        str(Money("10.543125", "USD", decimal_places=5, decimal_places_display=1))
-        == "$10.5"
-    )
+    assert str(Money("10.543125", "USD", decimal_places=5, decimal_places_display=1)) == "$10.5"

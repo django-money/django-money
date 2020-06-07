@@ -30,9 +30,7 @@ class Money(DefaultMoney):
     @property
     def decimal_places_display(self):
         if self._decimal_places_display is None:
-            self._decimal_places_display = DECIMAL_PLACES_DISPLAY.get(
-                self.currency.code, self.decimal_places
-            )
+            self._decimal_places_display = DECIMAL_PLACES_DISPLAY.get(self.currency.code, self.decimal_places)
 
         return self._decimal_places_display
 
