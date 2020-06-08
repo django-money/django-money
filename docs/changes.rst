@@ -8,7 +8,7 @@ Changelog
 
 Added
 ~~~~~
-- Possibility to set localized string output to length of `decimal_places_display` `#521`_ (`wearebasti`)
+- Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency `#521`_ (`wearebasti`)
 
 
 `1.1`_ - 2020-04-06
