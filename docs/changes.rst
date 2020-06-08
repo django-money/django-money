@@ -9,7 +9,7 @@ Changelog
 Fixed
 ~~~~~
 
-- Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `522` (`wearebasti`)
+- Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `#522`_ (`wearebasti`_)
 
 
 `1.1`_ - 2020-04-06
