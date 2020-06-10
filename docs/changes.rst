@@ -3,6 +3,15 @@
 Changelog
 =========
 
+`1.2`_ - TBA
+------------
+
+Fixed
+~~~~~
+
+- Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `#522`_ (`wearebasti`_)
+
+
 `1.1`_ - 2020-04-06
 -------------------
 
@@ -786,6 +795,7 @@ Added
 .. _#418: https://github.com/django-money/django-money/issues/418
 .. _#411: https://github.com/django-money/django-money/issues/411
 .. _#519: https://github.com/django-money/django-money/issues/519
+.. _#522: https://github.com/django-money/django-money/issues/522
 
 .. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina
@@ -859,3 +869,4 @@ Added
 .. _humrochagf: https://github.com/humrochagf
 .. _washeck: https://github.com/washeck
 .. _fara: https://github.com/fara
+.. _wearebasti: https://github.com/wearebasti
