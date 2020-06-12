@@ -57,3 +57,45 @@ def test_localize_decimal_places_overwrite():
 
 def test_localize_decimal_places_both():
     assert str(Money("10.543125", "USD", decimal_places=5, decimal_places_display=1)) == "$10.5"
+
+
+def test_add_decimal_places():
+    one = Money("1.0000", "USD", decimal_places=4)
+    two = Money("2.000000005", "USD", decimal_places=10)
+
+    result = one + two
+    assert result.decimal_places == 10
+
+
+def test_add_decimal_places_zero():
+    two = Money("2.005", "USD", decimal_places=3)
+
+    result = two + 0
+    assert result.decimal_places == 3
+
+
+def test_mul_decimal_places():
+    """ Test __mul__ and __rmul__ """
+    two = Money("1.0000", "USD", decimal_places=4)
+
+    result = 2 * two
+    assert result.decimal_places == 4
+
+    result = two * 2
+    assert result.decimal_places == 4
+
+
+def test_fix_decimal_places():
+    one = Money(1, "USD", decimal_places=7)
+    assert one._fix_decimal_places(Money(2, "USD", decimal_places=3)) == 7
+    assert one._fix_decimal_places(Money(2, "USD", decimal_places=30)) == 30
+
+
+def test_fix_decimal_places_none():
+    one = Money(1, "USD", decimal_places=7)
+    assert one._fix_decimal_places(None) == 7
+
+
+def test_fix_decimal_places_multiple():
+    one = Money(1, "USD", decimal_places=7)
+    assert one._fix_decimal_places(None, Money(3, "USD", decimal_places=8)) == 8

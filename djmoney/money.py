@@ -34,27 +34,40 @@ class Money(DefaultMoney):
 
         return self._decimal_places_display
 
+    def _fix_decimal_places(self, *args):
+        """ Make sure to user 'biggest' number of decimal places of all given money instances """
+        candidates = (getattr(candidate, "decimal_places", 0) for candidate in args)
+        return max([self.decimal_places, *candidates])
+
     def __add__(self, other):
         if isinstance(other, F):
             return other.__radd__(self)
         other = maybe_convert(other, self.currency)
-        return super().__add__(other)
+        result = super().__add__(other)
+        result.decimal_places = self._fix_decimal_places(other)
+        return result
 
     def __sub__(self, other):
         if isinstance(other, F):
             return other.__rsub__(self)
         other = maybe_convert(other, self.currency)
-        return super().__sub__(other)
+        result = super().__sub__(other)
+        result.decimal_places = self._fix_decimal_places(other)
+        return result
 
     def __mul__(self, other):
         if isinstance(other, F):
             return other.__rmul__(self)
-        return super().__mul__(other)
+        result = super().__mul__(other)
+        result.decimal_places = self._fix_decimal_places(other)
+        return result
 
     def __truediv__(self, other):
         if isinstance(other, F):
             return other.__rtruediv__(self)
-        return super().__truediv__(other)
+        result = super().__truediv__(other)
+        result.decimal_places = self._fix_decimal_places(other)
+        return result
 
     @property
     def is_localized(self):
@@ -77,6 +90,14 @@ class Money(DefaultMoney):
     def __round__(self, n=None):
         amount = round(self.amount, n)
         return self.__class__(amount, self.currency)
+
+    # DefaultMoney sets those synonym functions
+    # we overwrite the 'targets' so the wrong synonyms are called
+    # Example: we overwrite __add__; __radd__ calls __add__ on DefaultMoney...
+    __radd__ = __add__
+    __rsub__ = __sub__
+    __rmul__ = __mul__
+    __rtruediv__ = __truediv__
 
 
 def get_current_locale():
