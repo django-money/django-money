@@ -34,6 +34,11 @@ class Money(DefaultMoney):
 
         return self._decimal_places_display
 
+    @decimal_places_display.setter
+    def decimal_places_display(self, value):
+        """ Set number of digits being displayed in string output - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
+        self._decimal_places_display = value
+
     def _fix_decimal_places(self, *args):
         """ Make sure to user 'biggest' number of decimal places of all given money instances """
         candidates = (getattr(candidate, "decimal_places", 0) for candidate in args)

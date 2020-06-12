@@ -99,3 +99,12 @@ def test_fix_decimal_places_none():
 def test_fix_decimal_places_multiple():
     one = Money(1, "USD", decimal_places=7)
     assert one._fix_decimal_places(None, Money(3, "USD", decimal_places=8)) == 8
+
+
+def test_decimal_places_display_overwrite():
+    number = Money("1.23456789", "USD")
+    assert str(number) == "$1.23"
+    number.decimal_places_display = 5
+    assert str(number) == "$1.23457"
+    number.decimal_places_display = None
+    assert str(number) == "$1.23"
