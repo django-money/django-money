@@ -36,7 +36,7 @@ class Money(DefaultMoney):
 
     @decimal_places_display.setter
     def decimal_places_display(self, value):
-        """ Set number of digits being displayed in string output - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
+        """ Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
         self._decimal_places_display = value
 
     def _fix_decimal_places(self, *args):
