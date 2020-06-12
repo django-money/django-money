@@ -22,15 +22,15 @@ class Money(DefaultMoney):
 
     use_l10n = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, decimal_places_display=None, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
-        self._decimal_places_display = kwargs.pop("decimal_places_display", None)
+        self._decimal_places_display = decimal_places_display
         super().__init__(*args, **kwargs)
 
     @property
     def decimal_places_display(self):
         if self._decimal_places_display is None:
-            self._decimal_places_display = DECIMAL_PLACES_DISPLAY.get(self.currency.code, self.decimal_places)
+            return DECIMAL_PLACES_DISPLAY.get(self.currency.code, self.decimal_places)
 
         return self._decimal_places_display
 
