@@ -70,7 +70,7 @@ class TestMigrationFramework:
             + "from tests.migrations.helpers import makemigrations; makemigrations();"
         )
 
-    def make_default_migration(self, field="MoneyField(max_digits=10, decimal_places=2)"):
+    def make_default_migration(self, field="MoneyField(max_digits=10, decimal_places=2, null=True)"):
         return self.make_migration(field=field)
 
     def run(self, content):
@@ -152,7 +152,7 @@ class TestMigrationFramework:
 
     def test_alter_field(self):
         self.make_default_migration()
-        migration = self.make_migration(field="MoneyField(max_digits=15, decimal_places=2)")
+        migration = self.make_migration(field="MoneyField(max_digits=15, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
             ["*Migrations for 'money_app':*", "*0002_test.py*", "*- Alter field field on model*"]
         )
@@ -188,7 +188,7 @@ class TestMigrationFramework:
         self.make_default_migration()
         self.assert_migrate(["*Applying money_app.0001_test... OK*"])
         self.create_instance()
-        migration = self.make_migration(new_field="MoneyField(max_digits=10, decimal_places=2)")
+        migration = self.make_migration(new_field="MoneyField(max_digits=10, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
             [
                 "*Migrations for 'money_app':*",
@@ -209,8 +209,8 @@ class TestMigrationFramework:
         result.stdout.fnmatch_lines(["US$10.00"])
 
     def test_migrate_to_moneyfield(self):
-        self.make_default_migration(field="models.DecimalField(max_digits=10, decimal_places=2)")
-        migration = self.make_migration(field="MoneyField(max_digits=10, decimal_places=2)")
+        self.make_default_migration(field="models.DecimalField(max_digits=10, decimal_places=2, null=True)")
+        migration = self.make_migration(field="MoneyField(max_digits=10, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
             ["*Migrations for 'money_app':*", "*0002_test.py*", "*- Add field field_currency to model*"]
         )
@@ -218,7 +218,7 @@ class TestMigrationFramework:
 
     def test_migrate_from_moneyfield(self):
         self.make_default_migration()
-        migration = self.make_migration(field="models.DecimalField(max_digits=10, decimal_places=2)")
+        migration = self.make_migration(field="models.DecimalField(max_digits=10, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
             ["*Migrations for 'money_app':*", "*0002_test.py*", "*- Remove field field_currency from model*"]
         )

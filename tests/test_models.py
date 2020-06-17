@@ -17,6 +17,7 @@ import pytest
 
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
+from mixer.backend.django import mixer
 from moneyed import Money as OldMoney
 
 from .testapp.models import (
@@ -746,3 +747,9 @@ def test_distinct_through_wrapper():
     queryset = ProxyModelWrapper.objects.distinct()
 
     assert queryset.count() == 3
+
+
+def test_mixer_blend():
+    instance = mixer.blend(ModelWithTwoMoneyFields)
+    assert isinstance(instance.amount1, Money)
+    assert isinstance(instance.amount2, Money)
