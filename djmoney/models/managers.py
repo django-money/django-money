@@ -1,7 +1,7 @@
 from functools import wraps
 
 from django.core.exceptions import FieldDoesNotExist
-from django.db.models import Case, F, Q
+from django.db.models import NOT_PROVIDED, Case, F, Q
 from django.db.models.constants import LOOKUP_SEP
 from django.db.models.expressions import BaseExpression
 from django.db.models.functions import Cast
@@ -164,7 +164,7 @@ def _handle_currency_field(model, name, kwargs):
     name = _get_clean_name(model, name)
     field = _get_field(model, name)
     money_field = field.price_field
-    if money_field.default is not None and money_field.name not in kwargs:
+    if money_field.default is not NOT_PROVIDED and money_field.name not in kwargs:
         kwargs["defaults"] = kwargs.get("defaults", {})
         kwargs["defaults"][money_field.name] = money_field.default.amount
 
