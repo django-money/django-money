@@ -1,8 +1,8 @@
 import pytest
-
-from djmoney.money import Money
 from reversion.models import Version
 from reversion.revisions import create_revision
+
+from djmoney.money import Money
 
 from .testapp.models import RevisionedModel
 
