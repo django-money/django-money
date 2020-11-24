@@ -1,3 +1,5 @@
+import codecs
+import os
 import sys
 
 from setuptools import find_packages, setup
@@ -39,14 +41,22 @@ extras_requirements = {
 }
 
 
+def read(fname):
+    file_path = os.path.join(os.path.dirname(__file__), fname)
+    return codecs.open(file_path, encoding="utf-8").read()
+
+
 setup(
     name='django-money',
     version=djmoney.__version__,
     description='Adds support for using money and currency fields in django models and forms. '
                 'Uses py-moneyed as the money implementation.',
+    long_description=read("README.rst"),
+    long_description_content_type="text/x-rst",
     url='https://github.com/django-money/django-money',
     maintainer='Greg Reinbach',
     maintainer_email='greg@reinbach.com',
+    license="BSD",
     packages=find_packages(include=['djmoney', 'djmoney.*']),
     install_requires=[
         'setuptools',
