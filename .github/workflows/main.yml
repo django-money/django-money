@@ -41,7 +41,15 @@ jobs:
       matrix:
         include:
           - python: pypy3
+            tox_env: django111-pypy3
+          - python: pypy3
             tox_env: django21-pypy3
+          - python: pypy3
+            tox_env: django22-pypy3
+          - python: pypy3
+            tox_env: django30-pypy3
+          - python: pypy3
+            tox_env: django31-pypy3
           - python: 3.5
             tox_env: django111-py35
           - python: 3.5
