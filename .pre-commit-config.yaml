@@ -26,3 +26,11 @@ repos:
     hooks:
     -   id: flake8
         exclude: ^docs
+
+-   repo: https://github.com/myint/rstcheck
+    rev: master
+    hooks:
+      - id: rstcheck
+        additional_dependencies:
+          - sphinx==3.1.2
+        args: [--ignore-directives=code]
