@@ -10,6 +10,7 @@ Fixed
 ~~~~~
 
 - Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `#522`_ (`wearebasti`_)
+- ``DeprecationWarning`` related to the usage of ``cafile`` in ``urlopen``. `#553`_ (`Stranger6667`_)
 
 Added
 ~~~~~
@@ -705,6 +706,7 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#553: https://github.com/django-money/django-money/issues/553
 .. _#541: https://github.com/django-money/django-money/issues/541
 .. _#534: https://github.com/django-money/django-money/issues/534
 .. _#515: https://github.com/django-money/django-money/issues/515
