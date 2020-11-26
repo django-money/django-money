@@ -1,4 +1,5 @@
 import json
+import ssl
 from decimal import Decimal
 from urllib.parse import parse_qsl, urlparse, urlunparse
 from urllib.request import urlopen
@@ -45,7 +46,8 @@ class BaseExchangeBackend:
 
     def get_response(self, **params):
         url = self.get_url(**params)
-        response = urlopen(url, cafile=certifi.where())
+        context = ssl.create_default_context(cafile=certifi.where())
+        response = urlopen(url, context=context)
         return response.read()
 
     def parse_json(self, response):
