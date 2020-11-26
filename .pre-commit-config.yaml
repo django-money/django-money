@@ -1,11 +1,8 @@
 repos:
 -   repo: git://github.com/pre-commit/pre-commit-hooks
-    rev: v1.2.3
+    rev: v3.3.0
     hooks:
     -   id: trailing-whitespace
-    -   id: flake8
-        args:
-        - --exclude=djmoney/*/migrations/*
     -   id: check-yaml
     -   id: check-added-large-files
     -   id: debug-statements
@@ -13,9 +10,19 @@ repos:
     -   id: fix-encoding-pragma
         args:
         - --remove
-- repo: git://github.com/adambrenecki/pre-commit-python-sorter
-  rev: 1.0.5
-  hooks:
-  - id: python-import-sorter
-    args:
-    - --silent-overwrite
+
+-   repo: https://github.com/asottile/seed-isort-config
+    rev: v2.2.0
+    hooks:
+      - id: seed-isort-config
+
+-   repo: https://github.com/pre-commit/mirrors-isort
+    rev: v5.6.4
+    hooks:
+      -   id: isort
+
+-   repo: https://gitlab.com/pycqa/flake8
+    rev: 3.8.4
+    hooks:
+    -   id: flake8
+        exclude: ^docs
