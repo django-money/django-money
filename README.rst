@@ -1,8 +1,8 @@
 django-money
 ============
 
-.. image:: https://travis-ci.org/django-money/django-money.svg?branch=master
-   :target: https://travis-ci.org/django-money/django-money
+.. image:: https://github.com/django-money/django-money/workflows/CI/badge.svg
+   :target: https://github.com/django-money/django-money/actions
    :alt: Build Status
 
 .. image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=master
