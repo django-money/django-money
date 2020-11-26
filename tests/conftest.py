@@ -29,25 +29,3 @@ def concrete_instance(m2m_object):
 
 
 pytest_plugins = "pytester"
-
-
-@pytest.fixture
-def coveragerc(request, testdir):
-    """
-    Generates .coveragerc to be used to combine test results from different subprocesses.
-    """
-    data_file = "%s/.coverage.%s" % (request.config.rootdir, request.node.name)
-    return testdir.makefile(
-        ".ini",
-        coveragerc="""
-    [run]
-    branch = true
-    data_file = %s
-
-    [report]
-    show_missing = true
-    precision = 2
-    exclude_lines = raise NotImplementedError
-    """
-        % data_file,
-    )
