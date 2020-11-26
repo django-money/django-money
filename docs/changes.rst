@@ -1,8 +1,8 @@
 Changelog
 =========
 
-`1.2`_ - TBA
-------------
+`1.2`_ - 2020-11-26
+-------------------
 
 **Fixed**
 
@@ -609,7 +609,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _1.2: https://github.com/django-money/django-money/compare/1.1...HEAD
+.. _1.2: https://github.com/django-money/django-money/compare/1.1...1.2
 .. _1.1: https://github.com/django-money/django-money/compare/1.0...1.1
 .. _1.0: https://github.com/django-money/django-money/compare/0.15.1...1.0
 .. _0.15.1: https://github.com/django-money/django-money/compare/0.15.1...0.15
