@@ -118,6 +118,21 @@ class NullMoneyFieldModel(models.Model):
     field = MoneyField(max_digits=10, decimal_places=2, null=True, default_currency="USD", blank=True)
 
 
+class ModelManager(models.Manager):
+    pass
+
+
+class NotNullMoneyFieldModel(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2)
+
+    objects = money_manager(ModelManager())
+
+
+class ProxyModelWrapper(NotNullMoneyFieldModel):
+    class Meta:
+        proxy = True
+
+
 class ProxyModel(SimpleModel):
     class Meta:
         proxy = True

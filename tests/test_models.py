@@ -44,8 +44,10 @@ from .testapp.models import (
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
     ModelWithVanillaMoneyField,
+    NotNullMoneyFieldModel,
     NullMoneyFieldModel,
     ProxyModel,
+    ProxyModelWrapper,
     SimpleModel,
 )
 
@@ -729,3 +731,13 @@ def test_order_by():
 
     qs = ModelWithVanillaMoneyField.objects.order_by("integer").filter(money=Money(10, "AUD"))
     assert list(map(extract_data, qs)) == [(Money(10, "AUD"), 1), (Money(10, "AUD"), 2)]
+
+
+def test_distinct_through_wrapper():
+    NotNullMoneyFieldModel.objects.create(money=10, money_currency="USD")
+    NotNullMoneyFieldModel.objects.create(money=100, money_currency="USD")
+    NotNullMoneyFieldModel.objects.create(money=10, money_currency="EUR")
+
+    queryset = ProxyModelWrapper.objects.distinct()
+
+    assert queryset.count() == 3
