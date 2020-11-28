@@ -290,7 +290,7 @@ class MoneyField(models.DecimalField):
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
 
-        if self.default is NOT_PROVIDED:
+        if self.default in [None, NOT_PROVIDED]:
             pass
         else:
             kwargs["default"] = self.default.amount
