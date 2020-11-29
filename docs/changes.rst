@@ -4,6 +4,9 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+`1.2.1`_ - 2020-11-29
+---------------------
+
 **Fixed**
 
 - Aggregation through a proxy model. `#583`_ (`tned73`_)
@@ -616,7 +619,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2.1...HEAD
+.. _1.2.1: https://github.com/django-money/django-money/compare/1.2...1.2.1
 .. _1.2: https://github.com/django-money/django-money/compare/1.1...1.2
 .. _1.1: https://github.com/django-money/django-money/compare/1.0...1.1
 .. _1.0: https://github.com/django-money/django-money/compare/0.15.1...1.0
