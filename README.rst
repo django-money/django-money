@@ -42,7 +42,7 @@ Using `pip`:
 
    $ pip install django-money
 
-This automatically installs ``py-moneyed`` v0.7 (or later).
+This automatically installs ``py-moneyed`` v0.8 (or later).
 
 Add ``djmoney`` to your ``INSTALLED_APPS``. This is required so that money field are displayed correctly in the admin.
 
