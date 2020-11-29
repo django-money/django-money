@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`Unreleased`_ - TBD
+-------------------
+
+**Fixed**
+
+- Aggregation through a proxy model. `#583`_ (`tned73`_)
+
 `1.2`_ - 2020-11-26
 -------------------
 
@@ -609,6 +616,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
+.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2...HEAD
 .. _1.2: https://github.com/django-money/django-money/compare/1.1...1.2
 .. _1.1: https://github.com/django-money/django-money/compare/1.0...1.1
 .. _1.0: https://github.com/django-money/django-money/compare/0.15.1...1.0
@@ -661,6 +669,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#583: https://github.com/django-money/django-money/issues/583
 .. _#553: https://github.com/django-money/django-money/issues/553
 .. _#541: https://github.com/django-money/django-money/issues/541
 .. _#534: https://github.com/django-money/django-money/issues/534
@@ -820,6 +829,7 @@ wrapping with ``money_manager``.
 .. _spookylukey: https://github.com/spookylukey
 .. _stinovlas: https://github.com/stinovlas
 .. _synotna: https://github.com/synotna
+.. _tned73: https://github.com/tned73
 .. _toudi: https://github.com/toudi
 .. _tsouvarev: https://github.com/tsouvarev
 .. _yellow-sky: https://github.com/yellow-sky
