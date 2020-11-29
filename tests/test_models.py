@@ -8,7 +8,7 @@ from copy import copy
 
 from django import VERSION
 from django.core.exceptions import ValidationError
-from django.db import models
+from django.db import IntegrityError, models
 from django.db.migrations.writer import MigrationWriter
 from django.db.models import Case, F, Func, Q, Value, When
 from django.utils.translation import override
@@ -347,6 +347,11 @@ class TestNullableCurrency:
             ModelWithNullableCurrency.objects.create(money=10)
         assert str(exc.value) == "Missing currency value"
         assert not ModelWithNullableCurrency.objects.exists()
+
+    def test_fails_with_nullable_but_no_default(self):
+        with pytest.raises(IntegrityError) as exc:
+            ModelWithTwoMoneyFields.objects.create()
+        assert str(exc.value) == "NOT NULL constraint failed: testapp_modelwithtwomoneyfields.amount1"
 
     def test_query_not_null(self):
         money = Money(100, "EUR")
