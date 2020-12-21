@@ -27,6 +27,7 @@ def test_default_mul():
 
 def test_default_truediv():
     assert Money(10, "USD") / 2 == Money(5, "USD")
+    assert Money(10, "USD") / Money(2, "USD") == 5
 
 
 def test_reverse_truediv_fails():
