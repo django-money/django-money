@@ -58,7 +58,8 @@ class Money(DefaultMoney):
         if isinstance(other, F):
             return other.__rtruediv__(self)
         result = super().__truediv__(other)
-        result.decimal_places = self._fix_decimal_places(other)
+        if isinstance(result, self.__class__):
+            result.decimal_places = self._fix_decimal_places(other)
         return result
 
     def __rtruediv__(self, other):
