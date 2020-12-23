@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import sys
+import six
 
 from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
@@ -8,7 +9,6 @@ from django.core.serializers.python import (
     Deserializer as PythonDeserializer,
     _get_model,
 )
-from django.utils import six
 
 from djmoney.money import Money
 
