@@ -4,6 +4,9 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+`1.2.2`_ - 2020-12-29
+---------------------
+
 **Fixed**
 
 - Confusing "number-over-money" division behavior by backporting changes from ``py-moneyed``. `#586`_ (`wearebasti`_)
@@ -624,7 +627,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2.1...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2.2...HEAD
+.. _1.2.2: https://github.com/django-money/django-money/compare/1.2.1...1.2.2
 .. _1.2.1: https://github.com/django-money/django-money/compare/1.2...1.2.1
 .. _1.2: https://github.com/django-money/django-money/compare/1.1...1.2
 .. _1.1: https://github.com/django-money/django-money/compare/1.0...1.1
