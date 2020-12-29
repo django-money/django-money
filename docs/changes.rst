@@ -7,6 +7,7 @@ Changelog
 **Fixed**
 
 - Confusing "number-over-money" division behavior by backporting changes from ``py-moneyed``. `#586`_ (`wearebasti`_)
+- ``AttributeError`` when a ``Money`` instance is divided by ``Money``. `#585`_ (`niklasb`_)
 
 `1.2.1`_ - 2020-11-29
 ---------------------
@@ -678,6 +679,7 @@ wrapping with ``money_manager``.
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
 .. _#586: https://github.com/django-money/django-money/issues/586
+.. _#585: https://github.com/django-money/django-money/pull/585
 .. _#583: https://github.com/django-money/django-money/issues/583
 .. _#553: https://github.com/django-money/django-money/issues/553
 .. _#541: https://github.com/django-money/django-money/issues/541
@@ -827,6 +829,7 @@ wrapping with ``money_manager``.
 .. _MrFus10n: https://github.com/MrFus10n
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
+.. _niklasb: https://github.com/niklasb
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach
