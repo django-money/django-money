@@ -596,9 +596,14 @@ class TestDifferentCurrencies:
         assert Money(10, "EUR") != Money(10, "USD")
 
 
-@pytest.mark.parametrize(
-    "model_class", (AbstractModel, ModelWithNonMoneyField, InheritorModel, InheritedModel, ProxyModel)
-)
+INSTANCE_ACCESS_MODELS = [ModelWithNonMoneyField, InheritorModel, InheritedModel, ProxyModel]
+
+if VERSION[:2] < (3, 2):
+    # Django 3.2 and later does not support AbstractModel instancing
+    INSTANCE_ACCESS_MODELS.append(AbstractModel)
+
+
+@pytest.mark.parametrize("model_class", INSTANCE_ACCESS_MODELS)
 def test_manager_instance_access(model_class):
     with pytest.raises(AttributeError):
         model_class().objects.all()
