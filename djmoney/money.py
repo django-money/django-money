@@ -8,7 +8,7 @@ from django.utils.safestring import mark_safe
 from moneyed import Currency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
 
-from .settings import DECIMAL_PLACES
+from .settings import DECIMAL_PLACES, DECIMAL_PLACES_DISPLAY
 
 
 __all__ = ["Money", "Currency"]
@@ -22,9 +22,22 @@ class Money(DefaultMoney):
 
     use_l10n = None
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, decimal_places_display=None, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
+        self._decimal_places_display = decimal_places_display
         super().__init__(*args, **kwargs)
+
+    @property
+    def decimal_places_display(self):
+        if self._decimal_places_display is None:
+            return DECIMAL_PLACES_DISPLAY.get(self.currency.code, self.decimal_places)
+
+        return self._decimal_places_display
+
+    @decimal_places_display.setter
+    def decimal_places_display(self, value):
+        """ Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
+        self._decimal_places_display = value
 
     def _fix_decimal_places(self, *args):
         """ Make sure to user 'biggest' number of decimal places of all given money instances """
@@ -74,7 +87,7 @@ class Money(DefaultMoney):
         return self.use_l10n
 
     def __str__(self):
-        kwargs = {"money": self, "decimal_places": self.decimal_places}
+        kwargs = {"money": self, "decimal_places": self.decimal_places_display}
         if self.is_localized:
             locale = get_current_locale()
             if locale:

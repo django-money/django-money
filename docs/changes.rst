@@ -4,6 +4,11 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+**Added**
+
+- Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency `#521`_ (`wearebasti`_)
+
+
 `1.2.2`_ - 2020-12-29
 ---------------------
 
@@ -780,7 +785,9 @@ wrapping with ``money_manager``.
 .. _#418: https://github.com/django-money/django-money/issues/418
 .. _#411: https://github.com/django-money/django-money/issues/411
 .. _#519: https://github.com/django-money/django-money/issues/519
+.. _#521: https://github.com/django-money/django-money/issues/521
 .. _#522: https://github.com/django-money/django-money/issues/522
+
 
 .. _77cc33: https://github.com/77cc33
 .. _AlexRiina: https://github.com/AlexRiina

@@ -46,8 +46,23 @@ def test_round():
 
 
 def test_configurable_decimal_number():
-    # Override default configuration per instance
-    assert str(Money("10.543", "USD", decimal_places=3)) == "$10.543"
+    # Override default configuration per instance, keeps human readable output to default
+    mny = Money("10.543", "USD", decimal_places=3)
+    assert str(mny) == "$10.54"
+    assert mny.decimal_places == 3
+
+
+def test_localize_decimal_places_default():
+    # use default decimal display places from settings
+    assert str(Money("10.543125", "USD")) == "$10.54"
+
+
+def test_localize_decimal_places_overwrite():
+    assert str(Money("10.543125", "USD", decimal_places_display=4)) == "$10.5431"
+
+
+def test_localize_decimal_places_both():
+    assert str(Money("10.543125", "USD", decimal_places=5, decimal_places_display=1)) == "$10.5"
 
 
 def test_add_decimal_places():
@@ -90,3 +105,12 @@ def test_fix_decimal_places_none():
 def test_fix_decimal_places_multiple():
     one = Money(1, "USD", decimal_places=7)
     assert one._fix_decimal_places(None, Money(3, "USD", decimal_places=8)) == 8
+
+
+def test_decimal_places_display_overwrite():
+    number = Money("1.23456789", "USD")
+    assert str(number) == "$1.23"
+    number.decimal_places_display = 5
+    assert str(number) == "$1.23457"
+    number.decimal_places_display = None
+    assert str(number) == "$1.23"
