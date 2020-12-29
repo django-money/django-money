@@ -1,0 +1,135 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  pre-commit:
+    name: Generic pre-commit checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - run: pip install pre-commit
+      - run: pre-commit run --all-files
+  docs:
+    name: docs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - run: pip install tox
+
+      - name: Run docs tox job
+        run: tox -e docs
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: 3.7
+
+      - run: pip install tox
+
+      - name: Run lint tox job
+        run: tox -e lint
+
+  tests:
+    strategy:
+      matrix:
+        include:
+          - python: pypy3
+            tox_env: django111-pypy3
+          - python: pypy3
+            tox_env: django21-pypy3
+          - python: pypy3
+            tox_env: django22-pypy3
+          - python: pypy3
+            tox_env: django30-pypy3
+          - python: pypy3
+            tox_env: django31-pypy3
+          - python: 3.5
+            tox_env: django111-py35
+          - python: 3.5
+            tox_env: django21-py35
+          - python: 3.5
+            tox_env: django22-py35
+          - python: 3.6
+            tox_env: django111-py36
+          - python: 3.6
+            tox_env: django21-py36
+          - python: 3.6
+            tox_env: django22-py36
+          - python: 3.6
+            tox_env: django30-py36
+          - python: 3.6
+            tox_env: django31-py36
+          - python: 3.6
+            tox_env: django_master-py36
+          - python: 3.6
+            tox_env: no_rest_framework
+          - python: 3.7
+            tox_env: django21-py37
+          - python: 3.7
+            tox_env: django22-py37
+          - python: 3.7
+            tox_env: django30-py37
+          - python: 3.7
+            tox_env: django31-py37
+          - python: 3.7
+            tox_env: django_master-py37
+          - python: 3.8
+            tox_env: django22-py38
+          - python: 3.8
+            tox_env: django30-py38
+          - python: 3.8
+            tox_env: django31-py38
+          - python: 3.8
+            tox_env: django_master-py38
+          - python: 3.9
+            tox_env: django22-py39
+          - python: 3.9
+            tox_env: django30-py39
+          - python: 3.9
+            tox_env: django31-py39
+          - python: 3.9
+            tox_env: django_master-py39
+    name: ${{ matrix.tox_env }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python }}
+
+      - run: pip install tox coverage
+
+      - name: Run ${{ matrix.tox_env }} tox job
+        run: tox -e ${{ matrix.tox_env }}
+
+      - run: coverage xml -i
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v1.0.15
+        with:
+          file: ./coverage.xml
+          name: codecov-py${{ matrix.python }}

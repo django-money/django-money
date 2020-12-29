@@ -27,6 +27,12 @@ def test_default_mul():
 
 def test_default_truediv():
     assert Money(10, "USD") / 2 == Money(5, "USD")
+    assert Money(10, "USD") / Money(2, "USD") == 5
+
+
+def test_reverse_truediv_fails():
+    with pytest.raises(TypeError):
+        10 / Money(5, "USD")
 
 
 @pytest.mark.parametrize("locale, expected", (("pl", "PL_PL"), ("pl_PL", "pl_PL")))

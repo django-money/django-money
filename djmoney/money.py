@@ -71,8 +71,14 @@ class Money(DefaultMoney):
         if isinstance(other, F):
             return other.__rtruediv__(self)
         result = super().__truediv__(other)
-        result.decimal_places = self._fix_decimal_places(other)
+        if isinstance(result, self.__class__):
+            result.decimal_places = self._fix_decimal_places(other)
         return result
+
+    def __rtruediv__(self, other):
+        # Backported from py-moneyd, non released bug-fix
+        # https://github.com/py-moneyed/py-moneyed/blob/c518745dd9d7902781409daec1a05699799474dd/moneyed/classes.py#L217-L218
+        raise TypeError("Cannot divide non-Money by a Money instance.")
 
     @property
     def is_localized(self):
@@ -102,7 +108,6 @@ class Money(DefaultMoney):
     __radd__ = __add__
     __rsub__ = __sub__
     __rmul__ = __mul__
-    __rtruediv__ = __truediv__
 
 
 def get_current_locale():

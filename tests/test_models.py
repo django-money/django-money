@@ -44,8 +44,10 @@ from .testapp.models import (
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
     ModelWithVanillaMoneyField,
+    NotNullMoneyFieldModel,
     NullMoneyFieldModel,
     ProxyModel,
+    ProxyModelWrapper,
     SimpleModel,
 )
 
@@ -594,9 +596,14 @@ class TestDifferentCurrencies:
         assert Money(10, "EUR") != Money(10, "USD")
 
 
-@pytest.mark.parametrize(
-    "model_class", (AbstractModel, ModelWithNonMoneyField, InheritorModel, InheritedModel, ProxyModel)
-)
+INSTANCE_ACCESS_MODELS = [ModelWithNonMoneyField, InheritorModel, InheritedModel, ProxyModel]
+
+if VERSION[:2] < (3, 2):
+    # Django 3.2 and later does not support AbstractModel instancing
+    INSTANCE_ACCESS_MODELS.append(AbstractModel)
+
+
+@pytest.mark.parametrize("model_class", INSTANCE_ACCESS_MODELS)
 def test_manager_instance_access(model_class):
     with pytest.raises(AttributeError):
         model_class().objects.all()
@@ -729,3 +736,13 @@ def test_order_by():
 
     qs = ModelWithVanillaMoneyField.objects.order_by("integer").filter(money=Money(10, "AUD"))
     assert list(map(extract_data, qs)) == [(Money(10, "AUD"), 1), (Money(10, "AUD"), 2)]
+
+
+def test_distinct_through_wrapper():
+    NotNullMoneyFieldModel.objects.create(money=10, money_currency="USD")
+    NotNullMoneyFieldModel.objects.create(money=100, money_currency="USD")
+    NotNullMoneyFieldModel.objects.create(money=10, money_currency="EUR")
+
+    queryset = ProxyModelWrapper.objects.distinct()
+
+    assert queryset.count() == 3

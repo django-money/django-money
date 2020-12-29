@@ -11,7 +11,6 @@ from djmoney.models.fields import CurrencyField, MoneyField
 from .helpers import get_operations
 
 
-@pytest.mark.usefixtures("coveragerc")
 class TestMigrationFramework:
     installed_apps = ["djmoney", "money_app"]
     migration_output = ["*Applying money_app.0001_test... OK*", "*Applying money_app.0002_test... OK*"]

@@ -1,69 +1,79 @@
-.. _changes:
-
 Changelog
 =========
 
-`1.2`_ - TBA
-------------
+`Unreleased`_ - TBD
+-------------------
 
-Added
-~~~~~
+**Added**
 
 - Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency `#521`_ (`wearebasti`_)
 
-Fixed
-~~~~~
+
+`1.2.2`_ - 2020-12-29
+---------------------
+
+**Fixed**
+
+- Confusing "number-over-money" division behavior by backporting changes from ``py-moneyed``. `#586`_ (`wearebasti`_)
+- ``AttributeError`` when a ``Money`` instance is divided by ``Money``. `#585`_ (`niklasb`_)
+
+`1.2.1`_ - 2020-11-29
+---------------------
+
+**Fixed**
+
+- Aggregation through a proxy model. `#583`_ (`tned73`_)
+
+`1.2`_ - 2020-11-26
+-------------------
+
+**Fixed**
 
 - Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `#522`_ (`wearebasti`_)
+- ``DeprecationWarning`` related to the usage of ``cafile`` in ``urlopen``. `#553`_ (`Stranger6667`_)
 
+**Added**
+
+- Django 3.1 support
 
 `1.1`_ - 2020-04-06
 -------------------
 
-Fixed
-~~~~~
+**Fixed**
 
-- Optimize money operations on MoneyField instances with the same currencies. `#541`_ (`horpto`)
+- Optimize money operations on MoneyField instances with the same currencies. `#541`_ (`horpto`_)
 
-Added
-~~~~~
+**Added**
 
 - Support for ``Money`` type in ``QuerySet.bulk_update()`` `#534`_ (`satels`_)
-
 
 `1.0`_ - 2019-11-08
 -------------------
 
-Added
-~~~~~
+**Added**
 
 - Support for money descriptor customization. (`Stranger6667`_)
 - Fix ``order_by()`` not returning money-compatible queryset `#519`_ (`lieryan`_)
 - Django 3.0 support
 
-Removed
-~~~~~~~
+**Removed**
 
 - Support for Django 1.8 & 2.0. (`Stranger6667`_)
 - Support for Python 2.7. `#515`_ (`benjaoming`_)
 - Support for Python 3.4. (`Stranger6667`_)
 - ``MoneyPatched``, use ``djmoney.money.Money`` instead. (`Stranger6667`_)
 
-Fixed
-~~~~~
+**Fixed**
 
 - Support instances with ``decimal_places=0`` `#509`_ (`fara`_)
-
 
 `0.15.1`_ - 2019-06-22
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Respect field ``decimal_places`` when instantiating ``Money`` object from field db values. `#501`_ (`astutejoe`_)
 - Restored linting in CI tests (`benjaoming`_)
-
 
 `0.15`_ - 2019-05-30
 --------------------
@@ -77,40 +87,34 @@ Backwards incompatible changes
   Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
 - Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
 - ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#376`_
-- In model and non-model forms ``forms.MoneyField`` uses ``CURRENCY_DECIMAL_PLACES`` as the default value for ``decimal_places``.`#434`_ (`Stranger6667`_, `andytwoods`_)
+- In model and non-model forms ``forms.MoneyField`` uses ``CURRENCY_DECIMAL_PLACES`` as the default value for ``decimal_places``. `#434`_ (`Stranger6667`_, `andytwoods`_)
 
-Added
-~~~~~
+**Added**
 
 - Add ``Money.decimal_places`` for per-instance configuration of decimal places in the string representation.
 - Support for customization of ``CurrencyField`` length. Some cryptocurrencies could have codes longer than three characters. `#480`_ (`Stranger6667`_, `MrFus10n`_)
 - Add ``default_currency`` option for REST Framework field. `#475`_ (`butorov`_)
 
-Fixed
-~~~~~
+**Fixed**
 
 - Failing certificates checks when accessing 3rd party exchange rates backends.
   Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
 - Fixed model-level ``validators`` behavior in REST Framework. `#376`_ (`rapIsKal`_, `Stranger6667`_)
 - Setting keyword argument ``default_currency=None`` for ``MoneyField`` did not revert to ``settings.DEFAULT_CURRENCY`` and set ``str(None)`` as database value for currency. `#490`_  (`benjaoming`_)
 
-Changed
-~~~~~~~
+**Changed**
 
 - Allow using patched ``django.core.serializers.python._get_model`` in serializers, which could be helpful for
   migrations. (`Formulka`_, `Stranger6667`_)
 
-
 `0.14.4`_ - 2019-01-07
 ----------------------
 
-Changed
-~~~~~~~
+**Changed**
 
 - Re-raise arbitrary exceptions in JSON deserializer as `DeserializationError`. (`Stranger6667`_)
 
-Fixed
-~~~~~
+**Fixed**
 
 - Invalid Django 1.8 version check in ``djmoney.models.fields.MoneyField.value_to_string``. (`Stranger6667`_)
 - InvalidOperation in ``djmoney.contrib.django_rest_framework.fields.MoneyField.get_value`` when amount is None and currency is not None. `#458`_ (`carvincarl`_)
@@ -118,51 +122,44 @@ Fixed
 `0.14.3`_ - 2018-08-14
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - ``djmoney.forms.widgets.MoneyWidget`` decompression on Django 2.1+. `#443`_ (`Stranger6667`_)
 
 `0.14.2`_ - 2018-07-23
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Validation of ``djmoney.forms.fields.MoneyField`` when ``disabled=True`` is passed to it. `#439`_ (`stinovlas`_, `Stranger6667`_)
 
 `0.14.1`_ - 2018-07-17
 ----------------------
 
-Added
-~~~~~
+**Added**
 
 - Support for indirect rates conversion through maximum 1 extra step (when there is no direct conversion rate:
   converting by means of a third currency for which both source and target currency have conversion
   rates). `#425`_ (`Stranger6667`_, `77cc33`_)
 
-Fixed
-~~~~~
+**Fixed**
 
 - Error was raised when trying to do a query with a `ModelWithNullableCurrency`. `#427`_ (`Woile`_)
 
 `0.14`_ - 2018-06-09
 --------------------
 
-Added
-~~~~~
+**Added**
 
 - Caching of exchange rates. `#398`_ (`Stranger6667`_)
 - Added support for nullable ``CurrencyField``. `#260`_ (`Stranger6667`_)
 
-Fixed
-~~~~~
+**Fixed**
 
 - Same currency conversion getting MissingRate exception `#418`_ (`humrochagf`_)
 - `TypeError` during templatetag usage inside a for loop on Django 2.0. `#402`_ (`f213`_)
 
-Removed
-~~~~~~~
+**Removed**
 
 - Support for Python 3.3 `#410`_ (`benjaoming`_)
 - Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (`Stranger6667`_)
@@ -170,64 +167,51 @@ Removed
 `0.13.5`_ - 2018-05-19
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Missing in dist, ``djmoney/__init__.py``. `#417`_ (`benjaoming`_)
-
 
 `0.13.4`_ - 2018-05-19
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Packaging of ``djmoney.contrib.exchange.management.commands``. `#412`_ (`77cc33`_, `Stranger6667`_)
-
 
 `0.13.3`_ - 2018-05-12
 ----------------------
 
-Added
-~~~~~
+**Added**
 
 - Rounding support via ``round`` built-in function on Python 3. (`Stranger6667`_)
-
 
 `0.13.2`_ - 2018-04-16
 ----------------------
 
-Added
-~~~~~
+**Added**
 
 - Django Admin integration for exchange rates. `#392`_ (`Stranger6667`_)
 
-Fixed
-~~~~~
+**Fixed**
 
 - Exchange rates. TypeError when decoding JSON on Python 3.3-3.5. `#399`_ (`kcyeu`_)
 - Managers patching for models with custom ``Meta.default_manager_name``. `#400`_ (`Stranger6667`_)
 
-
 `0.13.1`_ - 2018-04-07
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Regression: Could not run w/o ``django.contrib.exchange`` `#388`_ (`Stranger6667`_)
-
 
 `0.13`_ - 2018-04-07
 --------------------
 
-Added
-~~~~~
+**Added**
 
 - Currency exchange `#385`_ (`Stranger6667`_)
 
-Removed
-~~~~~~~
+**Removed**
 
 - Support for ``django-money-rates`` `#385`_ (`Stranger6667`_)
 - Deprecated ``Money.__float__`` which is implicitly called on some ``sum()`` operations `#347`_. (`jonashaag`_)
@@ -248,29 +232,26 @@ For more information, look at ``Working with Exchange Rates`` section in README.
 `0.12.3`_ - 2017-12-13
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Fixed ``BaseMoneyValidator`` with falsy limit values. `#371`_ (`1337`_)
 
 `0.12.2`_ - 2017-12-12
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Django master branch compatibility. `#361`_ (`Stranger6667`_)
 - Fixed ``get_or_create`` for models with shared currency. `#364`_ (`Stranger6667`_)
 
-Changed
-~~~~~~~
+**Changed**
+
 - Removed confusing rounding to integral value in ``Money.__repr__``. `#366`_ (`Stranger6667`_, `evenicoulddoit`_)
 
 `0.12.1`_ - 2017-11-20
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
 
 - Fixed migrations on SQLite. `#139`_, `#338`_ (`Stranger6667`_)
 - Fixed ``Field.rel.to`` usage for Django 2.0. `#349`_ (`richardowen`_)
@@ -279,23 +260,21 @@ Fixed
 `0.12`_ - 2017-10-22
 --------------------
 
-Added
-~~~~~
+**Added**
 
 - Ability to specify name for currency field. `#195`_ (`Stranger6667`_)
 - Validators for ``MoneyField``. `#308`_ (`Stranger6667`_)
 
-Changed
-~~~~~~~
+**Changed**
+
 - Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
 - Implement ``__html__`` method. If used in Django templates, an ``Money`` object's amount and currency are now separated with non-breaking space (``&nbsp;``) `#337`_ (`jonashaag`_)
 
-Deprecated
-~~~~~~~~~~
+**Deprecated**
+
 - ``djmoney.models.fields.MoneyPatched`` and ``moneyed.Money`` are deprecated. Use ``djmoney.money.Money`` instead.
 
-Fixed
-~~~~~
+**Fixed**
 
 - Fixed model field validation. `#308`_ (`Stranger6667`_).
 - Fixed managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
@@ -303,53 +282,53 @@ Fixed
 - Fixed money comprehension on querysets. `#331`_ (`Stranger6667`_, `jaavii1988`_).
 - Fixed errors in Django Admin integration. `#334`_ (`Stranger6667`_, `adi-`_).
 
-Removed
-~~~~~~~
+**Removed**
+
 - Dropped support for Python 2.6 and 3.2. (`Stranger6667`_)
 - Dropped support for Django 1.4, 1.5, 1.6, 1.7 and 1.9. (`Stranger6667`_)
 
 `0.11.4`_ - 2017-06-26
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed money parameters processing in update queries. `#309`_ (`Stranger6667`_)
 
 `0.11.3`_ - 2017-06-19
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6 `#304`_ (`Stranger6667`_)
 
 `0.11.2`_ - 2017-05-31
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed field lookup regression. `#300`_ (`lmdsp`_, `Stranger6667`_)
 
 `0.11.1`_ - 2017-05-26
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed access to models properties. `#297`_ (`mithrilstar`_, `Stranger6667`_)
 
-Removed
-~~~~~~~
+**Removed**
+
 - Dropped support for Python 2.6. (`Stranger6667`_)
 - Dropped support for Django < 1.8. (`Stranger6667`_)
 
 `0.11`_ - 2017-05-19
 --------------------
 
-Added
-~~~~~
+**Added**
+
 - An ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. `#268`_ (`Stranger6667`_, `lobziik`_)
 - Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. `#272`_ (`Stranger6667`_)
 - Fixed various displaying errors in Django Admin . `#232`_, `#220`_, `#196`_, `#102`_, `#90`_ (`Stranger6667`_,
@@ -362,12 +341,12 @@ Fixed
 `0.10.2`_ - 2017-02-18
 ----------------------
 
-Added
-~~~~~
+**Added**
+
 - Added ability to configure decimal places output. `#154`_, `#251`_ (`ivanchenkodmitry`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. `#257`_ (`kjagiello`_)
 - Fixed handling of currency fields lookups in ``get_or_create`` method. `#258`_ (`Stranger6667`_)
 - Fixed ``PendingDeprecationWarning`` during form initialization. `#262`_ (`Stranger6667`_, `spookylukey`_)
@@ -376,19 +355,19 @@ Fixed
 `0.10.1`_ - 2016-12-26
 ----------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed default value for ``djmoney.forms.fields.MoneyField``. `#249`_ (`tsouvarev`_)
 
 `0.10`_ - 2016-12-19
 --------------------
 
-Changed
-~~~~~~~
+**Changed**
+
 - Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
 - Fixed: Not possible to revert MoneyField currency back to default `#221`_ (`benjaoming`_)
 - Fixed invalid ``creation_counter`` handling. `#235`_ (`msgre`_ and `Stranger6667`_)
@@ -397,8 +376,8 @@ Fixed
 `0.9.1`_ - 2016-08-01
 ---------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed packaging.
 
 `0.9.0`_ - 2016-07-31
@@ -406,23 +385,23 @@ Fixed
 
 NB! If you are using custom model managers **not** named ``objects`` and you expect them to still work, please read below.
 
-Added
-~~~~~
+**Added**
+
 - Support for ``Value`` and ``Func`` expressions in queries. (`Stranger6667`_)
 - Support for ``in`` lookup. (`Stranger6667`_)
 - Django REST Framework support. `#179`_ (`Stranger6667`_)
 - Django 1.10 support. `#198`_ (`Stranger6667`_)
 - Improved South support. (`Stranger6667`_)
 
-Changed
-~~~~~~~
+**Changed**
+
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
   be off by default. You must now add ``AUTO_CONVERT_MONEY = True`` in
   your ``settings.py`` if you want this feature. `#199`_ (`spookylukey`_)
 - Only make ``objects`` a MoneyManager instance automatically. `#194`_ and `#201`_ (`inureyes`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed default currency value for nullable fields in forms. `#138`_ (`Stranger6667`_)
 - Fixed ``_has_changed`` deprecation warnings. `#206`_ (`Stranger6667`_)
 - Fixed ``get_or_create`` crash, when ``defaults`` is passed. `#213`_ (`Stranger6667`_, `spookylukey`_)
@@ -456,8 +435,8 @@ wrapping with ``money_manager``.
 `0.8`_ - 2016-04-23
 -------------------
 
-Added
-~~~~~
+**Added**
+
 - Support for serialization of ``MoneyPatched`` instances in migrations. (`AlexRiina`_)
 - Improved django-money-rates support. `#173`_ (`Stranger6667`_)
 - Extended ``F`` expressions support. (`Stranger6667`_)
@@ -469,12 +448,12 @@ Added
 - Django master support. (`Stranger6667`_)
 - Python 3.2 compatibility. (`Stranger6667`_)
 
-Changed
-~~~~~~~
+**Changed**
+
 - Refactored test suite (`Stranger6667`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed fields caching. `#186`_ (`Stranger6667`_)
 - Fixed m2m fields data loss on Django < 1.8. `#184`_ (`Stranger6667`_)
 - Fixed managers access via instances. `#86`_ (`Stranger6667`_)
@@ -486,13 +465,13 @@ Fixed
 `0.7.6`_ - 2016-01-08
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - Added correct paths for py.test discovery. (`benjaoming`_)
 - Mention Django 1.9 in tox.ini. (`benjaoming`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fix for ``get_or_create`` / ``create`` manager methods not respecting currency code. (`toudi`_)
 - Fix unit tests. (`toudi`_)
 - Fix for using ``MoneyField`` with ``F`` expressions when using Django >= 1.8. (`toudi`_)
@@ -500,20 +479,20 @@ Fixed
 `0.7.5`_ - 2015-12-22
 ---------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fallback to ``_meta.fields`` if ``_meta.get_fields`` raises ``AttributeError`` `#149`_ (`browniebroke`_)
 - pip instructions updated. (`GheloAce`_)
 
 `0.7.4`_ - 2015-11-02
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - Support for Django 1.9 (`kjagiello`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed loaddata. (`jack-cvr`_)
 - Python 2.6 fixes. (`jack-cvr`_)
 - Fixed currency choices ordering. (`synotna`_)
@@ -521,56 +500,56 @@ Fixed
 `0.7.3`_ - 2015-10-16
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - Sum different currencies. (`dnmellen`_)
 - ``__eq__`` method. (`benjaoming`_)
 - Comparison of different currencies. (`benjaoming`_)
 - Default currency. (`benjaoming`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fix using Choices for setting currency choices. (`benjaoming`_)
 - Fix tests for Python 2.6. (`plumdog`_)
 
 `0.7.2`_ - 2015-09-01
 ---------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Better checks on ``None`` values. (`tsouvarev`_, `sjdines`_)
 - Consistency with South declarations and calling ``str`` function. (`sjdines`_)
 
 `0.7.1`_ - 2015-08-11
 ---------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fix bug in printing ``MoneyField``. (`YAmikep`_)
 - Added fallback value for current locale getter. (`sjdines`_)
 
 `0.7.0`_ - 2015-06-14
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - Django 1.8 compatibility. (`willhcr`_)
 
 `0.6.0`_ - 2015-05-23
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - Python 3 trove classifier. (`dekkers`_)
 
-Changed
-~~~~~~~
+**Changed**
+
 - Tox cleanup. (`edwinlunando`_)
 - Improved ``README``. (`glarrain`_)
 - Added/Cleaned up tests. (`spookylukey`_, `AlexRiina`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Append ``_currency`` to non-money ExpressionFields. `#101`_ (`alexhayes`_, `AlexRiina`_, `briankung`_)
 - Data truncated for column. `#103`_ (`alexhayes`_)
 - Fixed ``has_changed`` not working. `#95`_ (`spookylukey`_)
@@ -579,12 +558,12 @@ Fixed
 `0.5.0`_ - 2014-12-15
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - Django 1.7 compatibility. (`w00kie`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Added ``choices=`` to instantiation of currency widget. (`davidstockwell`_)
 - Nullable ``MoneyField`` should act as ``default=None``. (`jakewins`_)
 - Fixed bug where a non-required ``MoneyField`` threw an exception. (`spookylukey`_)
@@ -596,8 +575,8 @@ Fixed
 `0.4.0.0`_ - 2013-11-26
 -----------------------
 
-Added
-~~~~~
+**Added**
+
 - Python 3 compatibility.
 - tox tests.
 - Format localization.
@@ -612,12 +591,12 @@ Added
 `0.3.3`_ - 2013-02-17
 ---------------------
 
-Added
-~~~~~
+**Added**
+
 - South support via implementing the ``south_triple_field`` method. (`mattions`_)
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed issues with money widget not passing attrs up to django's render method, caused id attribute to not be set in html for widgets. (`adambregenzer`_)
 - Fixed issue of default currency not being passed on to widget. (`snbuchholz`_)
 - Return the right default for South. (`mattions`_)
@@ -626,8 +605,8 @@ Fixed
 `0.3.2`_ - 2012-11-30
 ---------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fixed issues with ``display_for_field`` not detecting fields correctly. (`adambregenzer`_)
 - Added South ignore rule to avoid duplicate currency field when using the frozen ORM. (`rach`_)
 - Disallow override of objects manager if not setting it up with an instance. (`rach`_)
@@ -635,26 +614,28 @@ Fixed
 `0.3.1`_ - 2012-10-11
 ---------------------
 
-Fixed
-~~~~~
+**Fixed**
+
 - Fix ``AttributeError`` when Model inherit a manager. (`rach`_)
 - Correctly serialize the field. (`akumria`_)
 
 `0.3`_ - 2012-09-30
 -------------------
 
-Added
-~~~~~
+**Added**
+
 - Allow django-money to be specified as read-only in a model. (`akumria`_)
 - South support: Declare default attribute values. (`pjdelport`_)
-
 
 `0.2`_ - 2012-04-10
 -------------------
 
 - Initial public release
 
-.. _1.2: https://github.com/django-money/django-money/compare/1.1...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2.2...HEAD
+.. _1.2.2: https://github.com/django-money/django-money/compare/1.2.1...1.2.2
+.. _1.2.1: https://github.com/django-money/django-money/compare/1.2...1.2.1
+.. _1.2: https://github.com/django-money/django-money/compare/1.1...1.2
 .. _1.1: https://github.com/django-money/django-money/compare/1.0...1.1
 .. _1.0: https://github.com/django-money/django-money/compare/0.15.1...1.0
 .. _0.15.1: https://github.com/django-money/django-money/compare/0.15.1...0.15
@@ -706,6 +687,10 @@ Added
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#586: https://github.com/django-money/django-money/issues/586
+.. _#585: https://github.com/django-money/django-money/pull/585
+.. _#583: https://github.com/django-money/django-money/issues/583
+.. _#553: https://github.com/django-money/django-money/issues/553
 .. _#541: https://github.com/django-money/django-money/issues/541
 .. _#534: https://github.com/django-money/django-money/issues/534
 .. _#515: https://github.com/django-money/django-money/issues/515
@@ -855,6 +840,7 @@ Added
 .. _MrFus10n: https://github.com/MrFus10n
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
+.. _niklasb: https://github.com/niklasb
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach
@@ -866,6 +852,7 @@ Added
 .. _spookylukey: https://github.com/spookylukey
 .. _stinovlas: https://github.com/stinovlas
 .. _synotna: https://github.com/synotna
+.. _tned73: https://github.com/tned73
 .. _toudi: https://github.com/toudi
 .. _tsouvarev: https://github.com/tsouvarev
 .. _yellow-sky: https://github.com/yellow-sky
