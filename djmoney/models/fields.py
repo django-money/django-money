@@ -274,12 +274,18 @@ class MoneyField(models.DecimalField):
         else:
             return super().get_default()
 
+    @property
+    def _has_default(self):
+        # Whether the field has an explicitly provided non-empty default.
+        # `None` was used by django-money before, and we need to check it because it can come from historical migrations
+        return self.default not in (None, NOT_PROVIDED)
+
     def formfield(self, **kwargs):
         defaults = {"form_class": forms.MoneyField, "decimal_places": self.decimal_places}
         defaults.update(kwargs)
         defaults["currency_choices"] = self.currency_choices
         defaults["default_currency"] = self.default_currency
-        if self.default is not None and self.default is not NOT_PROVIDED:
+        if self._has_default:
             defaults["default_amount"] = self.default.amount
         return super().formfield(**defaults)
 
@@ -290,9 +296,7 @@ class MoneyField(models.DecimalField):
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
 
-        if self.default in [None, NOT_PROVIDED]:
-            pass
-        else:
+        if self._has_default:
             kwargs["default"] = self.default.amount
         if self.default_currency is not None and self.default_currency != DEFAULT_CURRENCY:
             kwargs["default_currency"] = str(self.default_currency)
