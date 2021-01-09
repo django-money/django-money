@@ -8,6 +8,10 @@ Changelog
 
 - Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency `#521`_ (`wearebasti`_)
 
+**Changed**
+
+- Set the default value for ``models.fields.MoneyField`` to ``NOT_PROVIDED``.
+
 **Fixed**
 
 - Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class.
