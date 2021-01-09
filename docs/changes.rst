@@ -8,6 +8,9 @@ Changelog
 
 - Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency `#521`_ (`wearebasti`_)
 
+**Fixed**
+
+- Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class.
 
 `1.2.2`_ - 2020-12-29
 ---------------------
