@@ -106,7 +106,6 @@ class Money(DefaultMoney):
     # we overwrite the 'targets' so the wrong synonyms are called
     # Example: we overwrite __add__; __radd__ calls __add__ on DefaultMoney...
     __radd__ = __add__
-    __rsub__ = __sub__
     __rmul__ = __mul__
 
 
