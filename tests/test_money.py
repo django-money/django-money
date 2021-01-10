@@ -2,7 +2,7 @@ from django.utils.translation import override
 
 import pytest
 
-from djmoney.money import Money, get_current_locale
+from djmoney.money import DefaultMoney, Money, get_current_locale
 
 
 def test_repr():
@@ -114,3 +114,12 @@ def test_decimal_places_display_overwrite():
     assert str(number) == "$1.23457"
     number.decimal_places_display = None
     assert str(number) == "$1.23"
+
+
+def test_sub_negative():
+    # See GH-593
+    total = DefaultMoney(0, "EUR")
+    bills = (Money(8, "EUR"), Money(25, "EUR"))
+    for bill in bills:
+        total -= bill
+    assert total == Money(-33, "EUR")

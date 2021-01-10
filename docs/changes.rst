@@ -15,6 +15,7 @@ Changelog
 **Fixed**
 
 - Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class.
+- Subtracting ``Money`` from ``moneyed.Money``. Regression, introduced in ``1.2``. `#593`_
 
 `1.2.2`_ - 2020-12-29
 ---------------------
@@ -694,6 +695,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#593: https://github.com/django-money/django-money/issues/593
 .. _#586: https://github.com/django-money/django-money/issues/586
 .. _#585: https://github.com/django-money/django-money/pull/585
 .. _#583: https://github.com/django-money/django-money/issues/583
