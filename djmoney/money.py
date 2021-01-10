@@ -39,17 +39,27 @@ class Money(DefaultMoney):
         """ Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
         self._decimal_places_display = value
 
-    def _fix_decimal_places(self, *args):
-        """ Make sure to user 'biggest' number of decimal places of all given money instances """
-        candidates = (getattr(candidate, "decimal_places", 0) for candidate in args)
-        return max([self.decimal_places, *candidates])
+    def _copy_attributes(self, source, target):
+        """Copy attributes to the new `Money` instance.
+
+        This class stores extra bits of information about string formatting that the parent class doesn't have.
+        The problem is that the parent class creates new instances of `Money` without in some of its methods and
+        it does so without knowing about `django-money`-level attributes.
+        For this reason, when this class uses some methods of the parent class that have this behavior, the resulting
+        instances lose those attribute values.
+
+        When it comes to what number of decimal places to choose, we take the maximum number.
+        """
+        for attribute_name in ("decimal_places", "decimal_places_display"):
+            value = max([getattr(candidate, attribute_name, 0) for candidate in (self, source)])
+            setattr(target, attribute_name, value)
 
     def __add__(self, other):
         if isinstance(other, F):
             return other.__radd__(self)
         other = maybe_convert(other, self.currency)
         result = super().__add__(other)
-        result.decimal_places = self._fix_decimal_places(other)
+        self._copy_attributes(other, result)
         return result
 
     def __sub__(self, other):
@@ -57,14 +67,14 @@ class Money(DefaultMoney):
             return other.__rsub__(self)
         other = maybe_convert(other, self.currency)
         result = super().__sub__(other)
-        result.decimal_places = self._fix_decimal_places(other)
+        self._copy_attributes(other, result)
         return result
 
     def __mul__(self, other):
         if isinstance(other, F):
             return other.__rmul__(self)
         result = super().__mul__(other)
-        result.decimal_places = self._fix_decimal_places(other)
+        self._copy_attributes(other, result)
         return result
 
     def __truediv__(self, other):
@@ -72,11 +82,11 @@ class Money(DefaultMoney):
             return other.__rtruediv__(self)
         result = super().__truediv__(other)
         if isinstance(result, self.__class__):
-            result.decimal_places = self._fix_decimal_places(other)
+            self._copy_attributes(other, result)
         return result
 
     def __rtruediv__(self, other):
-        # Backported from py-moneyd, non released bug-fix
+        # Backported from py-moneyed, non released bug-fix
         # https://github.com/py-moneyed/py-moneyed/blob/c518745dd9d7902781409daec1a05699799474dd/moneyed/classes.py#L217-L218
         raise TypeError("Cannot divide non-Money by a Money instance.")
 
@@ -100,7 +110,34 @@ class Money(DefaultMoney):
 
     def __round__(self, n=None):
         amount = round(self.amount, n)
-        return self.__class__(amount, self.currency)
+        new = self.__class__(amount, self.currency)
+        self._copy_attributes(self, new)
+        return new
+
+    def round(self, ndigits=0):
+        new = super().round(ndigits)
+        self._copy_attributes(self, new)
+        return new
+
+    def __pos__(self):
+        new = super().__pos__()
+        self._copy_attributes(self, new)
+        return new
+
+    def __neg__(self):
+        new = super().__neg__()
+        self._copy_attributes(self, new)
+        return new
+
+    def __abs__(self):
+        new = super().__abs__()
+        self._copy_attributes(self, new)
+        return new
+
+    def __rmod__(self, other):
+        new = super().__rmod__(other)
+        self._copy_attributes(self, new)
+        return new
 
     # DefaultMoney sets those synonym functions
     # we overwrite the 'targets' so the wrong synonyms are called

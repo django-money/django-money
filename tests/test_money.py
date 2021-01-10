@@ -80,31 +80,31 @@ def test_add_decimal_places_zero():
     assert result.decimal_places == 3
 
 
-def test_mul_decimal_places():
-    """ Test __mul__ and __rmul__ """
-    two = Money("1.0000", "USD", decimal_places=4)
-
-    result = 2 * two
-    assert result.decimal_places == 4
-
-    result = two * 2
-    assert result.decimal_places == 4
-
-
-def test_fix_decimal_places():
-    one = Money(1, "USD", decimal_places=7)
-    assert one._fix_decimal_places(Money(2, "USD", decimal_places=3)) == 7
-    assert one._fix_decimal_places(Money(2, "USD", decimal_places=30)) == 30
-
-
-def test_fix_decimal_places_none():
-    one = Money(1, "USD", decimal_places=7)
-    assert one._fix_decimal_places(None) == 7
-
-
-def test_fix_decimal_places_multiple():
-    one = Money(1, "USD", decimal_places=7)
-    assert one._fix_decimal_places(None, Money(3, "USD", decimal_places=8)) == 8
+@pytest.mark.parametrize("decimal_places", (1, 4))
+@pytest.mark.parametrize(
+    "operation",
+    (
+        lambda a, d: a * 2,
+        lambda a, d: 2 * a,
+        lambda a, d: a / 5,
+        lambda a, d: a - Money("2", "USD", decimal_places=d, decimal_places_display=d),
+        lambda a, d: Money("2", "USD", decimal_places=d, decimal_places_display=d) - a,
+        lambda a, d: a + Money("2", "USD", decimal_places=d, decimal_places_display=d),
+        lambda a, d: Money("2", "USD", decimal_places=d, decimal_places_display=d) + a,
+        lambda a, d: -a,
+        lambda a, d: +a,
+        lambda a, d: abs(a),
+        lambda a, d: 5 % a,
+        lambda a, d: round(a),
+        lambda a, d: a.round(),
+    ),
+)
+def test_keep_decimal_places(operation, decimal_places):
+    # Arithmetic operations should keep the `decimal_places` value
+    amount = Money("1.0000", "USD", decimal_places=decimal_places, decimal_places_display=decimal_places)
+    new = operation(amount, decimal_places)
+    assert new.decimal_places == decimal_places
+    assert new.decimal_places_display == decimal_places
 
 
 def test_decimal_places_display_overwrite():
