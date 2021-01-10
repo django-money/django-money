@@ -4,19 +4,22 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+`1.3`_ - 2021-01-10
+-------------------
+
 **Added**
 
-- Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency `#521`_ (`wearebasti`_)
+- Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency. `#521`_ (`wearebasti`_)
 
 **Changed**
 
-- Set the default value for ``models.fields.MoneyField`` to ``NOT_PROVIDED``.
+- Set the default value for ``models.fields.MoneyField`` to ``NOT_PROVIDED``. (`tned73`_)
 
 **Fixed**
 
-- Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class.
-- Subtracting ``Money`` from ``moneyed.Money``. Regression, introduced in ``1.2``. `#593`_
-- Missing the right ``Money.decimal_places`` and ``Money.decimal_places_display`` values after some arithmetic operations. `#595`_
+- Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class. (`Stranger6667`_)
+- Subtracting ``Money`` from ``moneyed.Money``. Regression, introduced in ``1.2``. `#593`_ (`Stranger6667`_)
+- Missing the right ``Money.decimal_places`` and ``Money.decimal_places_display`` values after some arithmetic operations. `#595`_ (`Stranger6667`_)
 
 `1.2.2`_ - 2020-12-29
 ---------------------
@@ -641,7 +644,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/1.2.2...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/1.3...HEAD
+.. _1.3: https://github.com/django-money/django-money/compare/1.2.2...1.3
 .. _1.2.2: https://github.com/django-money/django-money/compare/1.2.1...1.2.2
 .. _1.2.1: https://github.com/django-money/django-money/compare/1.2...1.2.1
 .. _1.2: https://github.com/django-money/django-money/compare/1.1...1.2
