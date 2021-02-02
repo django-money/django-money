@@ -35,7 +35,7 @@ def get_value(obj, expr):
     else:
         expr = expr.value
     if isinstance(expr, OldMoney):
-        expr.__class__ = Money
+        expr = Money(expr.amount, expr.currency)
     return expr
 
 
@@ -206,7 +206,7 @@ class MoneyField(models.DecimalField):
         elif isinstance(default, (float, Decimal, int)):
             default = Money(default, default_currency)
         elif isinstance(default, OldMoney):
-            default.__class__ = Money
+            default = Money(default.amount, default.currency)
         if default is not None and default is not NOT_PROVIDED and not isinstance(default, Money):
             raise ValueError("default value must be an instance of Money, is: %s" % default)
         return default
