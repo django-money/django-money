@@ -31,7 +31,6 @@ test_requirements = [
     "pytest-django",
     "pytest-pythonpath",
     "pytest-cov",
-    "django-reversion",
     "mixer",
 ]
 

@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "djmoney",
     "djmoney.contrib.exchange",
-    "reversion",
     "tests.testapp",
 ]
 

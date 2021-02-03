@@ -5,16 +5,22 @@ Created on May 7, 2011
 """
 from decimal import Decimal
 
+from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-
-from reversion.revisions import register
 
 from djmoney.models.fields import MoneyField
 from djmoney.models.managers import money_manager, understands_money
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from moneyed import Money as OldMoney
+
+
+# Import reversion if configured
+if "reversion" in settings.INSTALLED_APPS:
+    from reversion.revisions import register
+else:
+    register = lambda _: None  # noqa
 
 
 class ModelWithVanillaMoneyField(models.Model):
