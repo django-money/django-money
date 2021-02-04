@@ -83,6 +83,31 @@ class TestVanillaMoneyField:
         retrieved = model_class.objects.get(pk=instance.pk)
         assert retrieved.money == expected
 
+    def test_old_money_not_mutated_default(self):
+        # See GH-603
+        money = OldMoney(1, "EUR")
+
+        # When `moneyed.Money` is passed as a default value to a model
+        class Model(models.Model):
+            price = MoneyField(default=money, max_digits=10, decimal_places=2)
+
+            class Meta:
+                abstract = True
+
+        # Its class should remain the same
+        assert type(money) is OldMoney
+
+    def test_old_money_not_mutated_f_object(self):
+        # See GH-603
+        money = OldMoney(1, "EUR")
+
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money(5, "EUR"), integer=2)
+        # When `moneyed.Money` is a part of an F-expression
+        instance.money = F("money") + money
+
+        # Its class should remain the same
+        assert type(money) is OldMoney
+
     def test_old_money_defaults(self):
         instance = ModelWithDefaultAsOldMoney.objects.create()
         assert instance.money == Money(".01", "RUB")
