@@ -4,6 +4,10 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+**Fixed**
+
+- Do not mutate the input ``moneyed.Money`` class to ``djmoney.money.Money`` in ``MoneyField.default`` and F-expressions. `#603`_ (`moser`_)
+
 `1.3`_ - 2021-01-10
 -------------------
 
@@ -700,6 +704,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#603: https://github.com/django-money/django-money/issues/603
 .. _#595: https://github.com/django-money/django-money/issues/595
 .. _#593: https://github.com/django-money/django-money/issues/593
 .. _#586: https://github.com/django-money/django-money/issues/586
@@ -852,6 +857,7 @@ wrapping with ``money_manager``.
 .. _lobziik: https://github.com/lobziik
 .. _mattions: https://github.com/mattions
 .. _mithrilstar: https://github.com/mithrilstar
+.. _moser: https://github.com/moser
 .. _MrFus10n: https://github.com/MrFus10n
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
