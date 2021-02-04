@@ -4,6 +4,9 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+`1.3.1`_ - 2021-02-04
+---------------------
+
 **Fixed**
 
 - Do not mutate the input ``moneyed.Money`` class to ``djmoney.money.Money`` in ``MoneyField.default`` and F-expressions. `#603`_ (`moser`_)
@@ -648,7 +651,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/1.3...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/1.3.1...HEAD
+.. _1.3.1: https://github.com/django-money/django-money/compare/1.3...1.3.1
 .. _1.3: https://github.com/django-money/django-money/compare/1.2.2...1.3
 .. _1.2.2: https://github.com/django-money/django-money/compare/1.2.1...1.2.2
 .. _1.2.1: https://github.com/django-money/django-money/compare/1.2...1.2.1
