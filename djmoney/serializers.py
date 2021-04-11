@@ -5,10 +5,8 @@ from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
 
 from djmoney.money import Money
-
 from .models.fields import MoneyField
 from .utils import get_currency_field_name
-
 
 Serializer = JSONSerializer
 
@@ -45,7 +43,9 @@ def Deserializer(stream_or_string, **options):  # noqa
                     continue
                 field = Model._meta.get_field(field_name)
                 if isinstance(field, MoneyField) and field_value is not None:
-                    money_fields[field_name] = Money(field_value, obj["fields"][get_currency_field_name(field_name)])
+                    money_fields[field_name] = Money(
+                        field_value, obj["fields"][get_currency_field_name(field_name, field)]
+                    )
                 else:
                     fields[field_name] = field_value
             obj["fields"] = fields
