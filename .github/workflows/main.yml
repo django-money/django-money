@@ -81,8 +81,6 @@ jobs:
           - python: 3.6
             tox_env: django31-py36
           - python: 3.6
-            tox_env: django_master-py36
-          - python: 3.6
             tox_env: no_rest_framework
           - python: 3.7
             tox_env: django21-py37
@@ -92,8 +90,6 @@ jobs:
             tox_env: django30-py37
           - python: 3.7
             tox_env: django31-py37
-          - python: 3.7
-            tox_env: django_master-py37
           - python: 3.8
             tox_env: django22-py38
           - python: 3.8

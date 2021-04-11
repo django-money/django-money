@@ -9,7 +9,7 @@ import pytest
 from djmoney.money import Money
 from djmoney.serializers import Deserializer, Serializer
 
-from .testapp.models import ModelWithDefaultAsInt
+from .testapp.models import ModelWithDefaultAsInt, ModelWithSharedCurrency
 
 
 pytestmark = pytest.mark.django_db
@@ -95,3 +95,16 @@ def test_patched_get_model(fixture_file):
     with patch("django.core.serializers.python._get_model", _get_model):
         loaddata(fixture_file)
     assert ModelWithDefaultAsInt.objects.get().money == Money(1, "USD")
+
+
+def test_serialize_currency_field(fixture_file):
+    data = """[
+    {
+        "model": "testapp.modelwithsharedcurrency",
+        "pk": 1,
+        "fields": {"first": "1.00", "second": "2.00", "currency": "USD"}
+    }
+]"""
+    fixture_file.write(data)
+    loaddata(fixture_file)
+    assert ModelWithSharedCurrency.objects.get().first == Money(1, "USD")
