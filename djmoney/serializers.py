@@ -5,8 +5,10 @@ from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
 
 from djmoney.money import Money
+
 from .models.fields import MoneyField
 from .utils import get_currency_field_name
+
 
 Serializer = JSONSerializer
 

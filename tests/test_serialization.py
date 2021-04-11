@@ -1,13 +1,16 @@
 import json
 from unittest.mock import patch
 
-import pytest
 from django.core.management import call_command
 from django.core.serializers.base import DeserializationError
 
+import pytest
+
 from djmoney.money import Money
 from djmoney.serializers import Deserializer, Serializer
+
 from .testapp.models import ModelWithDefaultAsInt, ModelWithSharedCurrency
+
 
 pytestmark = pytest.mark.django_db
 
@@ -92,6 +95,7 @@ def test_patched_get_model(fixture_file):
     with patch("django.core.serializers.python._get_model", _get_model):
         loaddata(fixture_file)
     assert ModelWithDefaultAsInt.objects.get().money == Money(1, "USD")
+
 
 def test_serialize_currency_field(fixture_file):
     data = """[
