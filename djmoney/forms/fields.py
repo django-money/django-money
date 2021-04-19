@@ -32,7 +32,7 @@ class MoneyField(MultiValueField):
             min_value=min_value,
             max_digits=max_digits,
             decimal_places=decimal_places,
-            **kwargs
+            **kwargs,
         )
         currency_field = ChoiceField(choices=currency_choices)
 
