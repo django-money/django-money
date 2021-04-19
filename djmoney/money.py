@@ -154,7 +154,7 @@ def get_current_locale():
     if locale.upper() in _FORMATTER.formatting_definitions:
         return locale
 
-    locale = ("%s_%s" % (locale, locale)).upper()
+    locale = ("{}_{}".format(locale, locale)).upper()
     if locale in _FORMATTER.formatting_definitions:
         return locale
 

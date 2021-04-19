@@ -17,6 +17,7 @@ jobs:
 
       - run: pip install pre-commit
       - run: pre-commit run --all-files
+
   docs:
     name: docs
     runs-on: ubuntu-latest
@@ -33,22 +34,6 @@ jobs:
 
       - name: Run docs tox job
         run: tox -e docs
-  lint:
-    name: lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          fetch-depth: 1
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: 3.7
-
-      - run: pip install tox
-
-      - name: Run lint tox job
-        run: tox -e lint
 
   tests:
     strategy:
