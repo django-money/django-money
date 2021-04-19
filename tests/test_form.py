@@ -131,8 +131,8 @@ class TestValidation:
     @pytest.mark.parametrize(
         "value, error",
         (
-            (Money(50, "EUR"), u"Ensure this value is greater than or equal to 100.00 €."),
-            (Money(1500, "EUR"), u"Ensure this value is less than or equal to 1,000.00 €."),
+            (Money(50, "EUR"), "Ensure this value is greater than or equal to 100.00 €."),
+            (Money(1500, "EUR"), "Ensure this value is less than or equal to 1,000.00 €."),
             (Money(40, "USD"), "Ensure this value is greater than or equal to $50.00."),
             (Money(600, "USD"), "Ensure this value is less than or equal to $500.00."),
             (Money(400, "NOK"), "Ensure this value is greater than or equal to 500.00 Nkr."),
@@ -171,7 +171,7 @@ class TestValidation:
     def test_default_django_validator(self):
         form = MoneyModelFormWithValidation(data={"balance_0": 0, "balance_1": "GBP"})
         assert not form.is_valid()
-        assert form.errors == {"balance": [u"Ensure this value is greater than or equal to GB£100.00."]}
+        assert form.errors == {"balance": ["Ensure this value is greater than or equal to GB£100.00."]}
 
 
 class TestDisabledField:

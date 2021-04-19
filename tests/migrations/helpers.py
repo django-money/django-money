@@ -19,7 +19,7 @@ def makemigrations():
 
 
 def get_migration(name):
-    return __import__("money_app.migrations.%s_%s" % (name, MIGRATION_NAME), fromlist=["Migration"]).Migration
+    return __import__("money_app.migrations.{}_{}".format(name, MIGRATION_NAME), fromlist=["Migration"]).Migration
 
 
 def get_operations(migration_name):
