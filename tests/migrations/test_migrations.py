@@ -66,7 +66,7 @@ class TestMigrationFramework:
         )
         tests_path = os.path.dirname(os.path.dirname(tests.__file__))
         return self.run(
-            "import sys; sys.path.append('{}');".format(tests_path)
+            f"import sys; sys.path.append('{tests_path}');"
             + "from tests.migrations.helpers import makemigrations; makemigrations();"
         )
 
@@ -100,8 +100,7 @@ class TestMigrationFramework:
     def migrate(self):
         tests_path = os.path.dirname(os.path.dirname(tests.__file__))
         return self.run(
-            "import sys; sys.path.append('{}');".format(tests_path)
-            + "from tests.migrations.helpers import migrate; migrate();"
+            f"import sys; sys.path.append('{tests_path}');from tests.migrations.helpers import migrate; migrate();"
         )
 
     def assert_migrate(self, output=None):
