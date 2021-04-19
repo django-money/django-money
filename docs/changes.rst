@@ -4,6 +4,9 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+- Drop support for Django 1.11, 2.1 and 3.0.
+- Drop support for Python 3.5.
+
 `1.3.1`_ - 2021-02-04
 ---------------------
 
