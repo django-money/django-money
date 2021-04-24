@@ -35,4 +35,4 @@ BASE_CURRENCY = getattr(settings, "BASE_CURRENCY", "USD")
 EXCHANGE_BACKEND = getattr(settings, "EXCHANGE_BACKEND", "djmoney.contrib.exchange.backends.OpenExchangeRatesBackend")
 RATES_CACHE_TIMEOUT = getattr(settings, "RATES_CACHE_TIMEOUT", 600)
 
-CURRENCY_TICKER_MAX_LENGTH = 3
+CURRENCY_TICKER_MAX_LENGTH = getattr(settings, "CURRENCY_TICKER_MAX_LENGTH", 3)
