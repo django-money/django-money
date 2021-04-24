@@ -94,6 +94,11 @@ Searching for models with money fields:
         BankAccount.objects.filter(balance__gt=Money(1, 'USD'))
         # Returns the "account" object
 
+The default currency code length is `3` but you can change it with the `CURRENCY_CODE_MAX_LENGTH` setting.
+
+Caution: this setting also affects the initial migration of the `exchange` plugin, so changing it after running
+the initial migration has no effect. (You'd need to `manage migrate exchange zero` and migrate again if you want
+to change it).
 
 Field validation
 ----------------
