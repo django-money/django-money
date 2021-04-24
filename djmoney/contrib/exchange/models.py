@@ -12,7 +12,7 @@ from .exceptions import MissingRate
 class ExchangeBackend(models.Model):
     name = models.CharField(max_length=255, primary_key=True)
     last_update = models.DateTimeField(auto_now=True)
-    base_currency = models.CharField(max_length=3)
+    base_currency = models.CharField(max_length=CURRENCY_TICKER_MAX_LENGTH)
 
     def __str__(self):
         return self.name
