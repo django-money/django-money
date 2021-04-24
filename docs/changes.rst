@@ -3,6 +3,9 @@ Changelog
 
 `Unreleased`_ - TBD
 -------------------
+**Added**
+
+- New setting ``CURRENCY_CODE_MAX_LENGTH`` configures default max_length for MoneyField and ``exchage`` app models. `#614`_ (`ayushin`_)
 
 `1.3.1`_ - 2021-02-04
 ---------------------
