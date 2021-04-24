@@ -34,3 +34,5 @@ FIXER_ACCESS_KEY = getattr(settings, "FIXER_ACCESS_KEY", None)
 BASE_CURRENCY = getattr(settings, "BASE_CURRENCY", "USD")
 EXCHANGE_BACKEND = getattr(settings, "EXCHANGE_BACKEND", "djmoney.contrib.exchange.backends.OpenExchangeRatesBackend")
 RATES_CACHE_TIMEOUT = getattr(settings, "RATES_CACHE_TIMEOUT", 600)
+
+MAX_TICKER_LENGTH = 3
