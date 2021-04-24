@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.module_loading import import_string
 
-from djmoney.settings import EXCHANGE_BACKEND, RATES_CACHE_TIMEOUT, MAX_TICKER_LENGTH
+from djmoney.settings import EXCHANGE_BACKEND, RATES_CACHE_TIMEOUT, CURRENCY_TICKER_MAX_LENGTH
 
 from .exceptions import MissingRate
 
@@ -22,7 +22,7 @@ class ExchangeBackend(models.Model):
 
 
 class Rate(models.Model):
-    currency = models.CharField(max_length=MAX_TICKER_LENGTH)
+    currency = models.CharField(max_length=CURRENCY_TICKER_MAX_LENGTH)
     value = models.DecimalField(max_digits=20, decimal_places=6)
     backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name="rates")
 
