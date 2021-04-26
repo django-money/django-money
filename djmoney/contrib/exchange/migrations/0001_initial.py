@@ -2,7 +2,9 @@
 
 import django.db.models.deletion
 from django.db import migrations, models
+
 from djmoney.settings import CURRENCY_CODE_MAX_LENGTH
+
 
 class Migration(migrations.Migration):
 
