@@ -4,7 +4,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.db import models
 from django.utils.module_loading import import_string
 
-from djmoney.settings import EXCHANGE_BACKEND, RATES_CACHE_TIMEOUT, CURRENCY_CODE_MAX_LENGTH
+from djmoney.settings import CURRENCY_CODE_MAX_LENGTH, EXCHANGE_BACKEND, RATES_CACHE_TIMEOUT
 
 from .exceptions import MissingRate
 

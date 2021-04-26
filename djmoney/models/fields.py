@@ -14,7 +14,7 @@ from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
 from .._compat import setup_managers
-from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY, CURRENCY_CODE_MAX_LENGTH
+from ..settings import CURRENCY_CHOICES, CURRENCY_CODE_MAX_LENGTH, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
