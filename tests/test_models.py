@@ -706,7 +706,7 @@ def test_override_decorator():
     When current locale is changed, Money instances should be represented correctly.
     """
     with override("cs"):
-        assert str(Money(10, "CZK")) == "10.00 Kč"
+        assert str(Money(10, "CZK")) == "10,00 Kč"
 
 
 def test_properties_access():

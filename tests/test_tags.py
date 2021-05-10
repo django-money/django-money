@@ -84,6 +84,49 @@ def assert_template(string, result, context=None):
         ),
     ),
 )
+def test_tag_with_legacy_formatting(legacy_formatting, string, result, context):
+    assert_template(string, result, context)
+
+
+@pytest.mark.parametrize(
+    "string, result, context",
+    (
+        ('{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M %}{{NEW_M}}', "2,50\xa0zł", {}),
+        ('{% load djmoney %}{% money_localize "2.5" "PLN" %}', "2,50\xa0zł", {}),
+        ("{% load djmoney %}{% money_localize amount currency %}", "2,60\xa0zł", {"amount": 2.6, "currency": "PLN"}),
+        ("{% load djmoney %}{% money_localize money as NEW_M %}{{NEW_M}}", "2,30\xa0zł", {"money": Money(2.3, "PLN")}),
+        (
+            "{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}",
+            "2,30\xa0zł",
+            {"money": Money(2.3, "PLN")},
+        ),
+        (
+            "{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}",
+            "0,00\xa0zł",
+            {"money": Money(0, "PLN")},
+        ),
+        (
+            # with a tag template "money_localize"
+            "{% load djmoney %}{% money_localize money %}",
+            "2,30\xa0zł",
+            {"money": Money(2.3, "PLN")},
+        ),
+        (
+            # without a tag template "money_localize"
+            "{{ money }}",
+            "2,30\xa0zł",
+            {"money": Money(2.3, "PLN")},
+        ),
+        ("{% load djmoney %}{% money_localize money off %}", "2,30\xa0zł", {"money": Money(2.3, "PLN")}),
+        ("{% load djmoney %}{% money_localize money on %}", "2,30\xa0zł", {"money": Money(2.3, "PLN")}),
+        (
+            # in django 2.0 we fail inside the for loop
+            '{% load djmoney %}{% for i in "xxx" %}{% money_localize money %} {% endfor %}',
+            "2,30\xa0zł 2,30\xa0zł 2,30\xa0zł ",
+            {"money": Money(2.3, "PLN"), "test": "test"},
+        ),
+    ),
+)
 def test_tag(string, result, context):
     assert_template(string, result, context)
 
@@ -94,16 +137,16 @@ def test_tag(string, result, context):
         (
             # money_localize has a default setting USE_L10N = True
             "{% load djmoney %}{% money_localize money %}",
-            "2,30 zł",
+            "2,30\xa0zł",
             {"money": Money(2.3, "PLN")},
         ),
         (
             # without a tag template "money_localize"
             "{{ money }}",
-            "2.30 zł",
+            "2,30\xa0zł",
             {"money": Money(2.3, "PLN")},
         ),
-        ("{% load djmoney %}{% money_localize money on %}", "2,30 zł", {"money": Money(2.3, "PLN")}),
+        ("{% load djmoney %}{% money_localize money on %}", "2,30\xa0zł", {"money": Money(2.3, "PLN")}),
     ),
 )
 def test_l10n_off(settings, string, result, context):
@@ -114,4 +157,4 @@ def test_l10n_off(settings, string, result, context):
 def test_forced_l10n():
     mp = Money(2.3, "PLN")
     mp.use_l10n = True
-    assert_template("{{ money }}", "2,30 zł", {"money": mp})
+    assert_template("{{ money }}", "2,30\xa0zł", {"money": mp})
