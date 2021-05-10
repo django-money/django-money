@@ -1,3 +1,5 @@
+from unittest import mock
+
 import pytest
 
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate, get_default_backend_name
@@ -10,12 +12,12 @@ def m2m_object():
     return ModelWithDefaultAsInt.objects.create(money=Money(100, "USD"))
 
 
-@pytest.fixture()
+@pytest.fixture
 def backend():
     return ExchangeBackend.objects.create(name=get_default_backend_name(), base_currency="USD")
 
 
-@pytest.fixture()
+@pytest.fixture
 def autoconversion(backend, settings):
     settings.AUTO_CONVERT_MONEY = True
     Rate.objects.create(currency="EUR", value="0.88", backend=backend)
@@ -29,3 +31,9 @@ def concrete_instance(m2m_object):
 
 
 pytest_plugins = "pytester"
+
+
+@pytest.yield_fixture
+def legacy_formatting():
+    with mock.patch("djmoney.money.IS_DECIMAL_PLACES_DISPLAY_SET", True):
+        yield

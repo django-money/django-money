@@ -206,7 +206,7 @@ class TestMigrationFramework:
         print(instance.new_field)
         """
         )
-        result.stdout.fnmatch_lines(["US$10.00"])
+        result.stdout.fnmatch_lines(["$10.00"])
 
     def test_migrate_to_moneyfield(self):
         self.make_default_migration(field="models.DecimalField(max_digits=10, decimal_places=2, null=True)")

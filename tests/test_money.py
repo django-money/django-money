@@ -6,11 +6,19 @@ from djmoney.money import DefaultMoney, Money, get_current_locale
 
 
 def test_repr():
-    assert repr(Money("10.5", "USD")) == "<Money: 10.5 USD>"
+    assert repr(Money("10.5", "USD")) == "Money('10.5', 'USD')"
+
+
+def test_legacy_repr():
+    assert repr(Money("10.5", "USD", decimal_places_display=2)) == "Money('10.5', 'USD')"
 
 
 def test_html_safe():
-    assert Money("10.5", "EUR").__html__() == "10.50\xa0€"
+    assert Money("10.5", "EUR").__html__() == "€10.50"
+
+
+def test_legacy_html_safe():
+    assert Money("10.5", "EUR", decimal_places_display=2).__html__() == "10.50\xa0€"
 
 
 def test_html_unsafe():
@@ -35,7 +43,29 @@ def test_reverse_truediv_fails():
         10 / Money(5, "USD")
 
 
-@pytest.mark.parametrize("locale, expected", (("pl", "PL_PL"), ("pl_PL", "pl_PL")))
+@pytest.mark.parametrize(
+    "locale, expected",
+    (
+        ("pl", "PL_PL"),
+        ("pl_PL", "pl_PL"),
+    ),
+)
+def test_legacy_get_current_locale(locale, expected):
+    with override(locale):
+        assert get_current_locale(for_babel=False) == expected
+
+
+@pytest.mark.parametrize(
+    "locale, expected",
+    (
+        ("pl", "pl"),
+        ("pl-pl", "pl_PL"),
+        ("sv", "sv"),
+        ("sv-se", "sv_SE"),
+        ("en-us", "en_US"),
+        ("en-gb", "en_GB"),
+    ),
+)
 def test_get_current_locale(locale, expected):
     with override(locale):
         assert get_current_locale() == expected

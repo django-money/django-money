@@ -111,12 +111,12 @@ class TestMoneyField:
     @pytest.mark.parametrize(
         "value, error",
         (
-            (Money(50, "EUR"), "Ensure this value is greater than or equal to 100.00 €."),
-            (Money(1500, "EUR"), "Ensure this value is less than or equal to 1,000.00 €."),
+            (Money(50, "EUR"), "Ensure this value is greater than or equal to €100.00."),
+            (Money(1500, "EUR"), "Ensure this value is less than or equal to €1,000.00."),
             (Money(40, "USD"), "Ensure this value is greater than or equal to $50.00."),
             (Money(600, "USD"), "Ensure this value is less than or equal to $500.00."),
-            (Money(400, "NOK"), "Ensure this value is greater than or equal to 500.00 Nkr."),
-            (Money(950, "NOK"), "Ensure this value is less than or equal to 900.00 Nkr."),
+            (Money(400, "NOK"), "Ensure this value is greater than or equal to NOK500.00."),
+            (Money(950, "NOK"), "Ensure this value is less than or equal to NOK900.00."),
             (Money(5, "SEK"), "Ensure this value is greater than or equal to 10."),
             (Money(1600, "SEK"), "Ensure this value is less than or equal to 1500."),
         ),
