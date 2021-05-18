@@ -170,7 +170,7 @@ class MoneyField(models.DecimalField):
         default=NOT_PROVIDED,
         default_currency=DEFAULT_CURRENCY,
         currency_choices=CURRENCY_CHOICES,
-        currency_max_length=3,
+        currency_max_length=CURRENCY_CODE_MAX_LENGTH,
         currency_field_name=None,
         money_descriptor_class=MoneyFieldProxy,
         **kwargs
