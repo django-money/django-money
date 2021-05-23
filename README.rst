@@ -42,7 +42,7 @@ Using `pip`:
 
    $ pip install django-money
 
-This automatically installs ``py-moneyed`` v0.8 (or later).
+This automatically installs ``py-moneyed`` v1.2 (or later).
 
 Add ``djmoney`` to your ``INSTALLED_APPS``. This is required so that money field are displayed correctly in the admin.
 
@@ -146,15 +146,12 @@ Adding a new Currency
 Currencies are listed on moneyed, and this modules use this to provide a
 choice list on the admin, also for validation.
 
-To add a new currency available on all the project, you can simple add
-this two lines on your ``settings.py`` file
+To add a new currency available on all the project, you can simply add
+these few lines to your ``settings.py`` file:
 
 .. code:: python
 
         import moneyed
-        from moneyed.localization import _FORMATTER
-        from decimal import ROUND_HALF_EVEN
-
 
         BOB = moneyed.add_currency(
             code='BOB',
@@ -163,20 +160,6 @@ this two lines on your ``settings.py`` file
             countries=('BOLIVIA', )
         )
 
-        # Currency Formatter will output 2.000,00 Bs.
-        _FORMATTER.add_sign_definition(
-            'default',
-            BOB,
-            prefix=u'Bs. '
-        )
-
-        _FORMATTER.add_formatting_definition(
-            'es_BO',
-            group_size=3, group_separator=".", decimal_point=",",
-            positive_sign="",  trailing_positive_sign="",
-            negative_sign="-", trailing_negative_sign="",
-            rounding_method=ROUND_HALF_EVEN
-        )
 
 To restrict the currencies listed on the project set a ``CURRENCIES``
 variable with a list of Currency codes on ``settings.py``
