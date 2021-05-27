@@ -6,6 +6,7 @@ Changelog
 
 - Drop support for Django 1.11, 2.1 and 3.0.
 - Drop support for Python 3.5.
+- Add support for Django 3.2.
 
 `2.0`_ - 2021-05-23
 -------------------
