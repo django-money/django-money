@@ -55,8 +55,10 @@ def find_version():
 setup(
     name="django-money",
     version=find_version(),
-    description="Adds support for using money and currency fields in django models and forms. "
-    "Uses py-moneyed as the money implementation.",
+    description=(
+        "Adds support for using money and currency fields in django models and forms. "
+        "Uses py-moneyed as the money implementation."
+    ),
     long_description=read("README.rst"),
     long_description_content_type="text/x-rst",
     url="https://github.com/django-money/django-money",
