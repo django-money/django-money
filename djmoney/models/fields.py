@@ -14,7 +14,7 @@ from djmoney.money import Currency, Money
 from moneyed import Money as OldMoney
 
 from .._compat import setup_managers
-from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
+from ..settings import CURRENCY_CHOICES, CURRENCY_CODE_MAX_LENGTH, DECIMAL_PLACES, DEFAULT_CURRENCY
 from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
 
 
@@ -149,7 +149,7 @@ class CurrencyField(models.CharField):
     def __init__(self, price_field=None, default=DEFAULT_CURRENCY, **kwargs):
         if isinstance(default, Currency):
             default = default.code
-        kwargs.setdefault("max_length", 3)
+        kwargs.setdefault("max_length", CURRENCY_CODE_MAX_LENGTH)
         self.price_field = price_field
         super().__init__(default=default, **kwargs)
 
@@ -170,7 +170,7 @@ class MoneyField(models.DecimalField):
         default=NOT_PROVIDED,
         default_currency=DEFAULT_CURRENCY,
         currency_choices=CURRENCY_CHOICES,
-        currency_max_length=3,
+        currency_max_length=CURRENCY_CODE_MAX_LENGTH,
         currency_field_name=None,
         money_descriptor_class=MoneyFieldProxy,
         **kwargs

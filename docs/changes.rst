@@ -7,6 +7,22 @@ Changelog
 - Drop support for Django 1.11, 2.1 and 3.0.
 - Drop support for Python 3.5.
 
+`2.0`_ - 2021-05-23
+-------------------
+
+**Added**
+
+- New setting ``CURRENCY_CODE_MAX_LENGTH`` configures default max_length for MoneyField and ``exchange`` app models.
+
+**Changed**
+
+- BREAKING: Update ``py-moneyed`` to ``>=1.2,<2``. It uses ``babel`` to format ``Money``, which formats it differently than ``py-moneyed<1``. `#567`_ (`antonagestam`_)
+
+**Deprecated**
+
+- ``Money.decimal_places_display`` will be removed in django-money 3.0.
+- ``CURRENCY_DECIMAL_PLACES_DISPLAY`` will be removed in django-money 3.0.
+
 `1.3.1`_ - 2021-02-04
 ---------------------
 
@@ -654,7 +670,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/1.3.1...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0...HEAD
+.. _2.0: https://github.com/django-money/django-money/compare/1.3.1...2.0
 .. _1.3.1: https://github.com/django-money/django-money/compare/1.3...1.3.1
 .. _1.3: https://github.com/django-money/django-money/compare/1.2.2...1.3
 .. _1.2.2: https://github.com/django-money/django-money/compare/1.2.1...1.2.2
@@ -717,6 +734,7 @@ wrapping with ``money_manager``.
 .. _#586: https://github.com/django-money/django-money/issues/586
 .. _#585: https://github.com/django-money/django-money/pull/585
 .. _#583: https://github.com/django-money/django-money/issues/583
+.. _#567: https://github.com/django-money/django-money/issues/567
 .. _#553: https://github.com/django-money/django-money/issues/553
 .. _#541: https://github.com/django-money/django-money/issues/541
 .. _#534: https://github.com/django-money/django-money/issues/534
@@ -828,6 +846,7 @@ wrapping with ``money_manager``.
 .. _akumria: https://github.com/akumria
 .. _alexhayes: https://github.com/alexhayes
 .. _andytwoods: https://github.com/andytwoods
+.. _antonagestam: https://github.com/antonagestam
 .. _arthurk: https://github.com/arthurk
 .. _astutejoe: https://github.com/astutejoe
 .. _benjaoming: https://github.com/benjaoming

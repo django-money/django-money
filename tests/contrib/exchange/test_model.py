@@ -106,4 +106,4 @@ def test_without_installed_exchange(testdir):
     """
         )
     )
-    result.stdout.fnmatch_lines(["US$1.00"])
+    result.stdout.fnmatch_lines(["$1.00"])
