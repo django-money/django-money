@@ -27,7 +27,10 @@ class BaseMoneyValidator(BaseValidator):
         if limit_value is None:
             return
         if isinstance(limit_value, (int, Decimal)):
-            cleaned = cleaned.amount
+            try:
+                cleaned = cleaned.amount
+            except AttributeError:
+                pass
         params = {"limit_value": limit_value, "show_value": cleaned, "value": value}
         if self.compare(cleaned, limit_value):
             raise ValidationError(self.message, code=self.code, params=params)
