@@ -4,6 +4,10 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+**Fixed**
+
+- Invalid deprecation warning behavior. `#624`_ (`nerdoc`_)
+
 `2.0`_ - 2021-05-23
 -------------------
 
@@ -725,6 +729,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#624: https://github.com/django-money/django-money/issues/624
 .. _#603: https://github.com/django-money/django-money/issues/603
 .. _#595: https://github.com/django-money/django-money/issues/595
 .. _#593: https://github.com/django-money/django-money/issues/593
@@ -885,6 +890,7 @@ wrapping with ``money_manager``.
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
 .. _niklasb: https://github.com/niklasb
+.. _nerdoc: https://github.com/nerdoc
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach
