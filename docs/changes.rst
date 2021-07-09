@@ -4,6 +4,9 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+`2.0.1`_ - 2021-07-09
+---------------------
+
 **Fixed**
 
 - Invalid deprecation warning behavior. `#624`_ (`nerdoc`_)
@@ -671,7 +674,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.1...HEAD
+.. _2.0.1: https://github.com/django-money/django-money/compare/2.0...2.0.1
 .. _2.0: https://github.com/django-money/django-money/compare/1.3.1...2.0
 .. _1.3.1: https://github.com/django-money/django-money/compare/1.3...1.3.1
 .. _1.3: https://github.com/django-money/django-money/compare/1.2.2...1.3
