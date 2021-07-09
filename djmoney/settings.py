@@ -26,7 +26,7 @@ if CURRENCY_CHOICES is None:
 CURRENCY_CHOICES.sort(key=operator.itemgetter(1, 0))
 DECIMAL_PLACES = getattr(settings, "CURRENCY_DECIMAL_PLACES", 2)
 _decimal_display_value = getattr(settings, "CURRENCY_DECIMAL_PLACES_DISPLAY", None)
-if _decimal_display_value is None:
+if _decimal_display_value is not None:
     warnings.warn(
         "`CURRENCY_DECIMAL_PLACES_DISPLAY` is deprecated and will be removed in django-money 3.0.",
         DeprecationWarning,
