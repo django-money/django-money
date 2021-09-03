@@ -155,37 +155,45 @@ def test_sub_negative():
     assert total == Money(-33, "EUR")
 
 
-def test_add_result_in_proper_instance():
-    one = Money(1, "EUR")
-    assert one._decimal_places_display is None, "this should be None"
-    assert one.decimal_places == 2
-    two = Money(2, "EUR")
-    assert two._decimal_places_display is None, "this should be None"
-    assert two.decimal_places == 2
-    three = one + two
-    assert three._decimal_places_display is None, "this should be None as the others are None"
-    assert three.decimal_places == 2
+@pytest.mark.parametrize(
+    "decimal_places_display, decimal_places",
+    [
+        [None, None],
+        [0, 0],
+        [1, 0],
+        [4, 0],
+        [0, 1],
+        [1, 1],
+        [4, 1],
+        [0, 4],
+        [1, 4],
+        [4, 4],
+        [None, 4],
+        [None, 1],
+        [None, 0],
+        [4, None],
+        [1, None],
+        [0, None],
+    ],
+)
+def test_proper_copy_of_attributes(decimal_places_display, decimal_places):
+    one = Money(1, "EUR", decimal_places_display=decimal_places_display)
 
+    assert one._decimal_places_display is decimal_places_display
+    assert one.decimal_places == 2, "default value"
 
-def test_add_copy_display_places():
-    one = Money(1, "EUR", decimal_places_display=4)
-    assert one._decimal_places_display == 4
-    assert one.decimal_places == 2
-    two = Money(2, "EUR", decimal_places=3)
-    assert two._decimal_places_display is None, "this should be None"
-    assert two.decimal_places == 3
-    three = one + two
-    assert three._decimal_places_display == 4
-    assert three.decimal_places == 3
+    two = Money(2, "EUR", decimal_places=decimal_places)
 
+    assert two._decimal_places_display is None, "default value"
+    assert two.decimal_places == decimal_places
 
-def test_more_copy_tests():
-    one = Money(1, "EUR", decimal_places_display=0)
-    assert one._decimal_places_display == 0
-    assert one.decimal_places == 2
-    two = Money(2, "EUR", decimal_places=0)
-    assert two._decimal_places_display is None, "this should be None"
-    assert two.decimal_places == 0
-    three = one + two
-    assert three._decimal_places_display == 0
-    assert three.decimal_places == 2
+    three = Money(3, "EUR")
+    one._copy_attributes(two, three)
+
+    assert three._decimal_places_display == decimal_places_display
+    assert three.decimal_places == max(2, decimal_places) if decimal_places is not None else 2
+
+    zero = Money(0, "EUR")
+    one._copy_attributes(Money(1, "EUR", decimal_places_display=3), zero)
+
+    assert zero._decimal_places_display == max(3, decimal_places_display) if decimal_places_display is not None else 3
