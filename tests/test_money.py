@@ -153,3 +153,39 @@ def test_sub_negative():
     for bill in bills:
         total -= bill
     assert total == Money(-33, "EUR")
+
+
+def test_add_result_in_proper_instance():
+    one = Money(1, "EUR")
+    assert one._decimal_places_display is None, "this should be None"
+    assert one.decimal_places == 2
+    two = Money(2, "EUR")
+    assert two._decimal_places_display is None, "this should be None"
+    assert two.decimal_places == 2
+    three = one + two
+    assert three._decimal_places_display is None, "this should be None as the others are None"
+    assert three.decimal_places == 2
+
+
+def test_add_copy_display_places():
+    one = Money(1, "EUR", decimal_places_display=4)
+    assert one._decimal_places_display == 4
+    assert one.decimal_places == 2
+    two = Money(2, "EUR", decimal_places=3)
+    assert two._decimal_places_display is None, "this should be None"
+    assert two.decimal_places == 3
+    three = one + two
+    assert three._decimal_places_display == 4
+    assert three.decimal_places == 3
+
+
+def test_more_copy_tests():
+    one = Money(1, "EUR", decimal_places_display=0)
+    assert one._decimal_places_display == 0
+    assert one.decimal_places == 2
+    two = Money(2, "EUR", decimal_places=0)
+    assert two._decimal_places_display is None, "this should be None"
+    assert two.decimal_places == 0
+    three = one + two
+    assert three._decimal_places_display == 0
+    assert three.decimal_places == 2
