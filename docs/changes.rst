@@ -4,6 +4,9 @@ Changelog
 `Unreleased`_ - TBD
 -------------------
 
+`2.0.3`_ - 2021-09-04
+---------------------
+
 **Fixed**
 
 - Inconsistent ``Money._copy_attributes`` behaviour when non-``Money`` instances are involved. `#630`_ (`tned73`_)
@@ -685,7 +688,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.2...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.3...HEAD
+.. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
 .. _2.0.2: https://github.com/django-money/django-money/compare/2.0.1...2.0.2
 .. _2.0.1: https://github.com/django-money/django-money/compare/2.0...2.0.1
 .. _2.0: https://github.com/django-money/django-money/compare/1.3.1...2.0
