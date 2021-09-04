@@ -187,13 +187,25 @@ def test_proper_copy_of_attributes(decimal_places_display, decimal_places):
     assert two._decimal_places_display is None, "default value"
     assert two.decimal_places == decimal_places
 
-    three = Money(3, "EUR")
-    one._copy_attributes(two, three)
+    result = Money(3, "EUR")
+    one._copy_attributes(two, result)
 
-    assert three._decimal_places_display == decimal_places_display
-    assert three.decimal_places == max(2, decimal_places) if decimal_places is not None else 2
+    assert result._decimal_places_display == decimal_places_display
+    assert result.decimal_places == max(2, decimal_places) if decimal_places is not None else 2
 
-    zero = Money(0, "EUR")
-    one._copy_attributes(Money(1, "EUR", decimal_places_display=3), zero)
+    result = Money(0, "EUR")
+    one._copy_attributes(Money(1, "EUR", decimal_places_display=3), result)
 
-    assert zero._decimal_places_display == max(3, decimal_places_display) if decimal_places_display is not None else 3
+    assert result._decimal_places_display == max(3, decimal_places_display) if decimal_places_display is not None else 3
+
+    result = Money(0, "EUR")
+    one._copy_attributes(1, result)
+
+    assert result._decimal_places_display == decimal_places_display
+    assert result.decimal_places == 2
+
+    result = Money(0, "EUR")
+    two._copy_attributes(1, result)
+
+    assert result._decimal_places_display is None
+    assert result.decimal_places == decimal_places if decimal_places else 2
