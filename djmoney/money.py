@@ -65,9 +65,15 @@ class Money(DefaultMoney):
 
         When it comes to what number of decimal places to choose, we take the maximum number.
         """
-        for attribute_name in ("decimal_places", "decimal_places_display"):
-            value = max([getattr(candidate, attribute_name, 0) for candidate in (self, source)])
-            setattr(target, attribute_name, value)
+        for attribute_name in ("decimal_places", "_decimal_places_display"):
+            selection = [
+                getattr(candidate, attribute_name, 0)
+                for candidate in (self, source)
+                if getattr(candidate, attribute_name, 0) is not None
+            ]
+            if selection:
+                value = max(selection)
+                setattr(target, attribute_name, value)
 
     def __add__(self, other):
         if isinstance(other, F):
