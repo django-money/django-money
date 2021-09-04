@@ -67,9 +67,9 @@ class Money(DefaultMoney):
         """
         for attribute_name in ("decimal_places", "_decimal_places_display"):
             selection = [
-                getattr(candidate, attribute_name, 0)
+                getattr(candidate, attribute_name, None)
                 for candidate in (self, source)
-                if getattr(candidate, attribute_name, 0) is not None
+                if getattr(candidate, attribute_name, None) is not None
             ]
             if selection:
                 value = max(selection)
