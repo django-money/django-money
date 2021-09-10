@@ -8,6 +8,27 @@ Changelog
 - Drop support for Python 3.5.
 - Add support for Django 3.2.
 
+`2.0.3`_ - 2021-09-04
+---------------------
+
+**Fixed**
+
+- Inconsistent ``Money._copy_attributes`` behaviour when non-``Money`` instances are involved. `#630`_ (`tned73`_)
+
+`2.0.2`_ - 2021-09-04
+---------------------
+
+**Fixed**
+
+- Inconsistent ``Money._copy_attributes`` behaviour. `#629`_ (`tned73`_)
+
+`2.0.1`_ - 2021-07-09
+---------------------
+
+**Fixed**
+
+- Invalid deprecation warning behavior. `#624`_ (`nerdoc`_)
+
 `2.0`_ - 2021-05-23
 -------------------
 
@@ -671,7 +692,10 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.3...HEAD
+.. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
+.. _2.0.2: https://github.com/django-money/django-money/compare/2.0.1...2.0.2
+.. _2.0.1: https://github.com/django-money/django-money/compare/2.0...2.0.1
 .. _2.0: https://github.com/django-money/django-money/compare/1.3.1...2.0
 .. _1.3.1: https://github.com/django-money/django-money/compare/1.3...1.3.1
 .. _1.3: https://github.com/django-money/django-money/compare/1.2.2...1.3
@@ -729,6 +753,9 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#630: https://github.com/django-money/django-money/pull/630
+.. _#629: https://github.com/django-money/django-money/pull/629
+.. _#624: https://github.com/django-money/django-money/issues/624
 .. _#603: https://github.com/django-money/django-money/issues/603
 .. _#595: https://github.com/django-money/django-money/issues/595
 .. _#593: https://github.com/django-money/django-money/issues/593
@@ -889,6 +916,7 @@ wrapping with ``money_manager``.
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
 .. _niklasb: https://github.com/niklasb
+.. _nerdoc: https://github.com/nerdoc
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach

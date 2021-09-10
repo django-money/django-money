@@ -153,3 +153,59 @@ def test_sub_negative():
     for bill in bills:
         total -= bill
     assert total == Money(-33, "EUR")
+
+
+@pytest.mark.parametrize(
+    "decimal_places_display, decimal_places",
+    [
+        [None, None],
+        [0, 0],
+        [1, 0],
+        [4, 0],
+        [0, 1],
+        [1, 1],
+        [4, 1],
+        [0, 4],
+        [1, 4],
+        [4, 4],
+        [None, 4],
+        [None, 1],
+        [None, 0],
+        [4, None],
+        [1, None],
+        [0, None],
+    ],
+)
+def test_proper_copy_of_attributes(decimal_places_display, decimal_places):
+    one = Money(1, "EUR", decimal_places_display=decimal_places_display)
+
+    assert one._decimal_places_display is decimal_places_display
+    assert one.decimal_places == 2, "default value"
+
+    two = Money(2, "EUR", decimal_places=decimal_places)
+
+    assert two._decimal_places_display is None, "default value"
+    assert two.decimal_places == decimal_places
+
+    result = Money(3, "EUR")
+    one._copy_attributes(two, result)
+
+    assert result._decimal_places_display == decimal_places_display
+    assert result.decimal_places == max(2, decimal_places) if decimal_places is not None else 2
+
+    result = Money(0, "EUR")
+    one._copy_attributes(Money(1, "EUR", decimal_places_display=3), result)
+
+    assert result._decimal_places_display == max(3, decimal_places_display) if decimal_places_display is not None else 3
+
+    result = Money(0, "EUR")
+    one._copy_attributes(1, result)
+
+    assert result._decimal_places_display == decimal_places_display
+    assert result.decimal_places == 2
+
+    result = Money(0, "EUR")
+    two._copy_attributes(1, result)
+
+    assert result._decimal_places_display is None
+    assert result.decimal_places == decimal_places if decimal_places else 2

@@ -17,7 +17,7 @@ django-money
    :target: https://pypi.python.org/pypi/django-money
    :alt: PyPI
 
-A little Django app that uses ``py-moneyed`` to add support for Money
+A little Django app that uses `py-moneyed <https://github.com/py-moneyed/py-moneyed>`__ to add support for Money
 fields in your models and forms.
 
 * Django versions supported: 2.2, 3.1, 3.2
@@ -26,7 +26,7 @@ fields in your models and forms.
 
 If you need support for older versions of Django and Python, please refer to older releases mentioned in `the release notes <https://django-money.readthedocs.io/en/latest/changes.html>`__.
 
-Through the dependency ``py-moneyed``, ``django-money`` gets:
+Through the dependency `py-moneyed <https://github.com/py-moneyed/py-moneyed>`__, ``django-money`` gets:
 
 * Support for proper Money value handling (using the standard Money
   design pattern)
