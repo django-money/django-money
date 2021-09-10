@@ -208,7 +208,7 @@ class MoneyField(models.DecimalField):
         elif isinstance(default, OldMoney):
             default = Money(default.amount, default.currency)
         if default is not None and default is not NOT_PROVIDED and not isinstance(default, Money):
-            raise ValueError("default value must be an instance of Money, is: %s" % default)
+            raise ValueError(f"default value must be an instance of Money, is: {default}")
         return default
 
     def to_python(self, value):

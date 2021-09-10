@@ -24,6 +24,7 @@ else:
 
 
 class ModelWithVanillaMoneyField(models.Model):
+    # TODO: This should now be an error?
     money = MoneyField(max_digits=10, decimal_places=2, default=0.0)
     second_money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency="EUR")
     integer = models.IntegerField(default=0)

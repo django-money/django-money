@@ -1,8 +1,6 @@
 import warnings
-from decimal import ROUND_HALF_EVEN
 
 import moneyed
-from moneyed.localization import _FORMATTER, DEFAULT
 
 
 DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": ":memory:"}}
@@ -35,20 +33,6 @@ SECRET_KEY = "foobar"
 
 USE_L10N = True
 
-
-_FORMATTER.add_sign_definition("pl_PL", moneyed.PLN, suffix=" zł")
-_FORMATTER.add_sign_definition(DEFAULT, moneyed.PLN, suffix=" zł")
-_FORMATTER.add_formatting_definition(
-    "pl_PL",
-    group_size=3,
-    group_separator=" ",
-    decimal_point=",",
-    positive_sign="",
-    trailing_positive_sign="",
-    negative_sign="-",
-    trailing_negative_sign="",
-    rounding_method=ROUND_HALF_EVEN,
-)
 
 moneyed.add_currency("USDT", "000", "Tether", None)
 

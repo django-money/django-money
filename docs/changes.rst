@@ -7,6 +7,9 @@ Changelog
 - Drop support for Django 1.11, 2.1 and 3.0.
 - Drop support for Python 3.5.
 - Add support for Django 3.2.
+- Update py-moneyed to 2.0.
+- Remove the deprecated ``Money.decimal_places_display`` property and argument.
+- Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting.
 
 `2.0.3`_ - 2021-09-04
 ---------------------

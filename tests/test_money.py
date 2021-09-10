@@ -46,18 +46,6 @@ def test_reverse_truediv_fails():
 @pytest.mark.parametrize(
     "locale, expected",
     (
-        ("pl", "PL_PL"),
-        ("pl_PL", "pl_PL"),
-    ),
-)
-def test_legacy_get_current_locale(locale, expected):
-    with override(locale):
-        assert get_current_locale(for_babel=False) == expected
-
-
-@pytest.mark.parametrize(
-    "locale, expected",
-    (
         ("pl", "pl"),
         ("pl-pl", "pl_PL"),
         ("sv", "sv"),
