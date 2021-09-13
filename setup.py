@@ -55,8 +55,10 @@ def find_version():
 setup(
     name="django-money",
     version=find_version(),
-    description="Adds support for using money and currency fields in django models and forms. "
-    "Uses py-moneyed as the money implementation.",
+    description=(
+        "Adds support for using money and currency fields in django models and forms. "
+        "Uses py-moneyed as the money implementation."
+    ),
     long_description=read("README.rst"),
     long_description_content_type="text/x-rst",
     url="https://github.com/django-money/django-money",
@@ -64,8 +66,8 @@ setup(
     maintainer_email="greg@reinbach.com",
     license="BSD",
     packages=find_packages(include=["djmoney", "djmoney.*"]),
-    install_requires=["setuptools", "Django>=1.11", "py-moneyed>=1.2,<2.0"],
-    python_requires=">=3.5",
+    install_requires=["setuptools", "Django>=2.2", "py-moneyed>=1.2,<2.0"],
+    python_requires=">=3.6",
     platforms=["Any"],
     keywords=["django", "py-money", "money"],
     classifiers=[
@@ -74,14 +76,11 @@ setup(
         "License :: OSI Approved :: BSD License",
         "Operating System :: OS Independent",
         "Framework :: Django",
-        "Framework :: Django :: 1.11",
-        "Framework :: Django :: 2.1",
         "Framework :: Django :: 2.2",
-        "Framework :: Django :: 3.0",
         "Framework :: Django :: 3.1",
+        "Framework :: Django :: 3.2",
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",

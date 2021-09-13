@@ -46,13 +46,13 @@ def test_rates_via_base(source, target, expected, django_assert_num_queries):
 @pytest.mark.parametrize("source, target", (("NOK", "ZAR"), ("ZAR", "NOK"), ("USD", "ZAR"), ("ZAR", "USD")))
 @pytest.mark.usefixtures("default_openexchange_rates")
 def test_unknown_currency_with_partially_exiting_currencies(source, target):
-    with pytest.raises(MissingRate, match="Rate {} \\-\\> {} does not exist".format(source, target)):
+    with pytest.raises(MissingRate, match=f"Rate {source} \\-\\> {target} does not exist"):
         get_rate(source, target)
 
 
 @pytest.mark.parametrize("source, target", (("USD", "EUR"), ("SEK", "ZWL")))
 def test_unknown_currency(source, target):
-    with pytest.raises(MissingRate, match="Rate {} \\-\\> {} does not exist".format(source, target)):
+    with pytest.raises(MissingRate, match=f"Rate {source} \\-\\> {target} does not exist"):
         get_rate(source, target)
 
 

@@ -66,8 +66,12 @@ class TestMigrationFramework:
         )
         tests_path = os.path.dirname(os.path.dirname(tests.__file__))
         return self.run(
-            "import sys; sys.path.append('{}');".format(tests_path)
-            + "from tests.migrations.helpers import makemigrations; makemigrations();"
+            f"""
+            import sys
+            sys.path.append('{tests_path}')
+            from tests.migrations.helpers import makemigrations
+            makemigrations()
+            """
         )
 
     def make_default_migration(self, field="MoneyField(max_digits=10, decimal_places=2, null=True)"):
@@ -77,31 +81,37 @@ class TestMigrationFramework:
         return self.testdir.runpython_c(
             dedent(
                 """
-        import os
-        os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
-        from django import setup
+                import os
+                os.environ['DJANGO_SETTINGS_MODULE'] = 'app_settings'
+                from django import setup
 
-        setup()
-        %s
-        """
-                % content
+                setup()
+                """
             )
+            + dedent(content)
         )
 
     def create_instance(self):
         self.run(
             """
-        from money_app.models import Model
-        from djmoney.money import Money
+            from money_app.models import Model
+            from djmoney.money import Money
 
-        Model.objects.create(field=Money(10, 'USD'))"""
+            Model.objects.create(field=Money(10, 'USD'))
+            """
         )
 
     def migrate(self):
         tests_path = os.path.dirname(os.path.dirname(tests.__file__))
         return self.run(
-            "import sys; sys.path.append('{}');".format(tests_path)
-            + "from tests.migrations.helpers import migrate; migrate();"
+            dedent(
+                f"""
+                import sys
+                sys.path.append('{tests_path}')
+                from tests.migrations.helpers import migrate
+                migrate()
+                """
+            )
         )
 
     def assert_migrate(self, output=None):
@@ -200,11 +210,11 @@ class TestMigrationFramework:
         self.assert_migrate(["*Applying money_app.0002_test... OK*"])
         result = self.run(
             """
-        from money_app.models import Model
+            from money_app.models import Model
 
-        instance = Model.objects.get()
-        print(instance.new_field)
-        """
+            instance = Model.objects.get()
+            print(instance.new_field)
+            """
         )
         result.stdout.fnmatch_lines(["$10.00"])
 
