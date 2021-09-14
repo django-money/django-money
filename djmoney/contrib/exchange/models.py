@@ -42,7 +42,7 @@ def get_rate(source, target, backend=None):
     """
     if backend is None:
         backend = get_default_backend_name()
-    key = "djmoney:get_rate:{}:{}:{}".format(source, target, backend)
+    key = f"djmoney:get_rate:{source}:{target}:{backend}"
     result = cache.get(key)
     if result is not None:
         return result
@@ -57,7 +57,7 @@ def _get_rate(source, target, backend):
         return 1
     rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related("backend")
     if not rates:
-        raise MissingRate("Rate {} -> {} does not exist".format(source, target))
+        raise MissingRate(f"Rate {source} -> {target} does not exist")
     if len(rates) == 1:
         return _try_to_get_rate_directly(source, target, rates[0])
     return _get_rate_via_base(rates, target)
@@ -74,7 +74,7 @@ def _try_to_get_rate_directly(source, target, rate):
     elif rate.backend.base_currency == target and rate.currency == source:
         return 1 / rate.value
     # Case when target or source is not a base currency
-    raise MissingRate("Rate {} -> {} does not exist".format(source, target))
+    raise MissingRate(f"Rate {source} -> {target} does not exist")
 
 
 def _get_rate_via_base(rates, target):

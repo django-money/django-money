@@ -186,7 +186,7 @@ def get_current_locale(for_babel=True):
     if locale.upper() in moneyed.localization._FORMATTER.formatting_definitions:
         return locale
 
-    locale = ("{}_{}".format(locale, locale)).upper()
+    locale = f"{locale}_{locale}".upper()
     if locale in moneyed.localization._FORMATTER.formatting_definitions:
         return locale
 

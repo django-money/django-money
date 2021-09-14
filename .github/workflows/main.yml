@@ -28,7 +28,7 @@ jobs:
 
       - uses: actions/setup-python@v2
         with:
-          python-version: 3.7
+          python-version: 3.9
 
       - run: pip install tox
 
@@ -40,53 +40,27 @@ jobs:
       matrix:
         include:
           - python: pypy3
-            tox_env: django111-pypy3
-          - python: pypy3
-            tox_env: django21-pypy3
-          - python: pypy3
             tox_env: django22-pypy3
           - python: pypy3
-            tox_env: django30-pypy3
-          - python: pypy3
             tox_env: django31-pypy3
-          - python: 3.5
-            tox_env: django111-py35
-          - python: 3.5
-            tox_env: django21-py35
-          - python: 3.5
-            tox_env: django22-py35
-          - python: 3.6
-            tox_env: django111-py36
-          - python: 3.6
-            tox_env: django21-py36
           - python: 3.6
             tox_env: django22-py36
-          - python: 3.6
-            tox_env: django30-py36
           - python: 3.6
             tox_env: django31-py36
           - python: 3.6
             tox_env: no_rest_framework
           - python: 3.7
-            tox_env: django21-py37
-          - python: 3.7
             tox_env: django22-py37
-          - python: 3.7
-            tox_env: django30-py37
           - python: 3.7
             tox_env: django31-py37
           - python: 3.8
             tox_env: django22-py38
-          - python: 3.8
-            tox_env: django30-py38
           - python: 3.8
             tox_env: django31-py38
           - python: 3.8
             tox_env: django_master-py38
           - python: 3.9
             tox_env: django22-py39
-          - python: 3.9
-            tox_env: django30-py39
           - python: 3.9
             tox_env: django31-py39
           - python: 3.9
