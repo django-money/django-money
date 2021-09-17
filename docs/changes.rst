@@ -1,7 +1,7 @@
 Changelog
 =========
 
-`Unreleased`_ - TBD
+`2.1`_ - 2021-09-17
 -------------------
 
 - Drop support for Django 1.11, 2.1 and 3.0.
@@ -693,6 +693,7 @@ wrapping with ``money_manager``.
 - Initial public release
 
 .. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.3...HEAD
+.. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
 .. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
 .. _2.0.2: https://github.com/django-money/django-money/compare/2.0.1...2.0.2
 .. _2.0.1: https://github.com/django-money/django-money/compare/2.0...2.0.1
