@@ -4,7 +4,7 @@ Changelog
 `Unreleased`_ - TBA
 -------------------
 
-- Add changes here
+- Renamed ``master`` branch to ``main`` (`benjaoming`_)
 
 `2.1`_ - 2021-09-17
 -------------------
