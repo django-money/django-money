@@ -5,8 +5,8 @@ django-money
    :target: https://github.com/django-money/django-money/actions
    :alt: Build Status
 
-.. image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=master
-   :target: http://codecov.io/github/django-money/django-money?branch=master
+.. image:: http://codecov.io/github/django-money/django-money/coverage.svg?branch=main
+   :target: http://codecov.io/github/django-money/django-money?branch=main
    :alt: Coverage Status
 
 .. image:: https://readthedocs.org/projects/django-money/badge/?version=latest

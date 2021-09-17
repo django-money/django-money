@@ -58,13 +58,13 @@ jobs:
           - python: 3.8
             tox_env: django31-py38
           - python: 3.8
-            tox_env: django_master-py38
+            tox_env: django_main-py38
           - python: 3.9
             tox_env: django22-py39
           - python: 3.9
             tox_env: django31-py39
           - python: 3.9
-            tox_env: django_master-py39
+            tox_env: django_main-py39
     name: ${{ matrix.tox_env }}
     runs-on: ubuntu-latest
     steps:
