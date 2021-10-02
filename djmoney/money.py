@@ -144,9 +144,11 @@ class Money(DefaultMoney):
 
 
 def get_current_locale():
-    # get_language can return None starting from Django 1.8
-    language = translation.get_language() or settings.LANGUAGE_CODE
-    return translation.to_locale(language)
+    return translation.to_locale(
+        translation.get_language()
+        # get_language can return None starting from Django 1.8
+        or settings.LANGUAGE_CODE
+    )
 
 
 def maybe_convert(value, currency):

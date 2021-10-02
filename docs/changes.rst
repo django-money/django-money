@@ -1,15 +1,25 @@
 Changelog
 =========
 
-`Unreleased`_ - TBD
+`Unreleased`_ - TBA
 -------------------
 
-- Drop support for Django 1.11, 2.1 and 3.0.
-- Drop support for Python 3.5.
-- Add support for Django 3.2.
+- Renamed ``master`` branch to ``main`` (`benjaoming`_)
 - Update py-moneyed to 2.0.
 - Remove the deprecated ``Money.decimal_places_display`` property and argument.
 - Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting.
+
+`2.1`_ - 2021-09-17
+-------------------
+
+**Added**
+
+- Add support for Django 3.2. `#612`_ (`antonagestam`_)
+
+**Removed**
+
+- Drop support for Django 1.11, 2.1 and 3.0. `#612`_ (`antonagestam`_)
+- Drop support for Python 3.5. `#612`_ (`antonagestam`_)
 
 `2.0.3`_ - 2021-09-04
 ---------------------
@@ -696,6 +706,7 @@ wrapping with ``money_manager``.
 - Initial public release
 
 .. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.3...HEAD
+.. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
 .. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
 .. _2.0.2: https://github.com/django-money/django-money/compare/2.0.1...2.0.2
 .. _2.0.1: https://github.com/django-money/django-money/compare/2.0...2.0.1
@@ -759,6 +770,7 @@ wrapping with ``money_manager``.
 .. _#630: https://github.com/django-money/django-money/pull/630
 .. _#629: https://github.com/django-money/django-money/pull/629
 .. _#624: https://github.com/django-money/django-money/issues/624
+.. _#612: https://github.com/django-money/django-money/pull/612
 .. _#603: https://github.com/django-money/django-money/issues/603
 .. _#595: https://github.com/django-money/django-money/issues/595
 .. _#593: https://github.com/django-money/django-money/issues/593
