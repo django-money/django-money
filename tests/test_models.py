@@ -787,3 +787,11 @@ def test_mixer_blend():
         instance = mixer.blend(ModelWithTwoMoneyFields)
         assert isinstance(instance.amount1, Money)
         assert isinstance(instance.amount2, Money)
+
+
+def test_deconstruct_includes_default_currency_as_none():
+    instance = ModelWithNullableCurrency()._meta.get_field("money")
+    __, ___, args, kwargs = instance.deconstruct()
+    new = MoneyField(*args, **kwargs)
+    assert new.default_currency == instance.default_currency
+    assert new.default_currency is None
