@@ -789,9 +789,32 @@ def test_mixer_blend():
         assert isinstance(instance.amount2, Money)
 
 
-def test_deconstruct_includes_default_currency_as_none():
-    instance = ModelWithNullableCurrency()._meta.get_field("money")
+@pytest.mark.parametrize(
+    ("attribute", "build_kwargs", "expected"),
+    [
+        pytest.param(
+            "default_currency",
+            {"max_digits": 9, "null": True, "default_currency": None},
+            None,
+            id="default_currency_as_none",
+        ),
+        pytest.param(
+            "default_currency",
+            {"max_digits": 9, "null": True, "default_currency": "SEK"},
+            "SEK",
+            id="default_currency_as_non_default_not_none",
+        ),
+        pytest.param(
+            "currency_max_length",
+            {"max_digits": 9, "currency_max_length": 4},
+            4,
+            id="currency_max_length_as_non_default",
+        ),
+    ],
+)
+def test_deconstruct_includes(attribute, build_kwargs, expected):
+    instance = MoneyField(**build_kwargs)
     __, ___, args, kwargs = instance.deconstruct()
     new = MoneyField(*args, **kwargs)
-    assert new.default_currency == instance.default_currency
-    assert new.default_currency is None
+    assert getattr(new, attribute) == getattr(instance, attribute)
+    assert getattr(new, attribute) == expected
