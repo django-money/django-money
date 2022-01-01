@@ -1,3 +1,4 @@
+from collections import Counter
 from decimal import Decimal
 
 import pytest
@@ -10,6 +11,7 @@ from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel, Va
 pytestmark = pytest.mark.django_db
 serializers = pytest.importorskip("rest_framework.serializers")
 fields = pytest.importorskip("rest_framework.fields")
+djmoney_fields = pytest.importorskip("djmoney.contrib.django_rest_framework.fields")
 
 
 class TestMoneyField:
@@ -144,3 +146,61 @@ class TestMoneyField:
         )
         assert not serializer.is_valid()
         assert serializer.errors["field"][0] == error
+
+    @pytest.mark.parametrize(
+        ("data", "error_codes"),
+        [
+            pytest.param(
+                {"money": "", "money_currency": "XUA"},
+                [("money", "invalid")],
+                id="amount_as_empty_string",
+            ),
+            pytest.param(
+                {"money": None, "money_currency": "XUA"},
+                [("money", "null")],
+                id="amount_as_none",
+            ),
+            pytest.param(
+                {"money": "v", "money_currency": "XUA"},
+                [("money", "invalid")],
+                id="amount_as_invalid_decimal",
+            ),
+            pytest.param(
+                {"money": "0.01", "money_currency": "v"},
+                [("money", "invalid_currency")],
+                id="invalid_currency",
+            ),
+            pytest.param(
+                {"money_currency": "SEK"},
+                [("money", "required")],
+                id="amount_key_not_in_data",
+            ),
+        ],
+    )
+    def test_errors_on(self, data, error_codes):
+        class Serializer(serializers.Serializer):
+            money = djmoney_fields.MoneyField(max_digits=9, decimal_places=2)
+
+        serializer = Serializer(data=data)
+        with pytest.raises(serializers.ValidationError) as err:
+            serializer.is_valid(raise_exception=True)
+
+        assert Counter([(field, code) for field, codes in err.value.get_codes().items() for code in codes]) == Counter(
+            error_codes
+        )
+
+    @pytest.mark.parametrize(
+        ("data", "expected"),
+        [
+            pytest.param({"money": "0.01", "money_currency": None}, Decimal("0.01"), id="is_none"),
+            pytest.param({"money": "0.01", "money_currency": ""}, Decimal("0.01"), id="is_empty_string"),
+            pytest.param({"money": "0.01"}, Decimal("0.01"), id="key_not_in_data"),
+        ],
+    )
+    def test_returns_decimal_when_currency(self, data, expected):
+        class Serializer(serializers.Serializer):
+            money = djmoney_fields.MoneyField(max_digits=9, decimal_places=2)
+
+        serializer = Serializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        assert serializer.validated_data["money"] == expected
