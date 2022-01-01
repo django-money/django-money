@@ -4,7 +4,14 @@ Changelog
 `Unreleased`_ - TBA
 -------------------
 
+**Changed**
+
 - Renamed ``master`` branch to ``main`` (`benjaoming`_)
+
+**Fixed**
+
+- Make Django REST Framework integration always raise lower-level errors as ``ValidationError``. `#601`_, `#637`_ (`flaeppe`_)
+- Set proper value for ``default_currency`` in ``deconstruct``. `#646`_
 
 `2.1`_ - 2021-09-17
 -------------------
@@ -764,11 +771,14 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#646: https://github.com/django-money/django-money/issues/646
+.. _#637: https://github.com/django-money/django-money/issues/637
 .. _#630: https://github.com/django-money/django-money/pull/630
 .. _#629: https://github.com/django-money/django-money/pull/629
 .. _#624: https://github.com/django-money/django-money/issues/624
 .. _#612: https://github.com/django-money/django-money/pull/612
 .. _#603: https://github.com/django-money/django-money/issues/603
+.. _#601: https://github.com/django-money/django-money/issues/601
 .. _#595: https://github.com/django-money/django-money/issues/595
 .. _#593: https://github.com/django-money/django-money/issues/593
 .. _#586: https://github.com/django-money/django-money/issues/586
@@ -902,6 +912,7 @@ wrapping with ``money_manager``.
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _evenicoulddoit: https://github.com/evenicoulddoit
 .. _f213: https://github.com/f213
+.. _flaeppe: https://github.com/flaeppe
 .. _Formulka: https://github.com/Formulka
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
