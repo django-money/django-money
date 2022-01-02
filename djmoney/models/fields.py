@@ -307,6 +307,8 @@ class MoneyField(models.DecimalField):
             kwargs["currency_choices"] = self.currency_choices
         if self.currency_field_name:
             kwargs["currency_field_name"] = self.currency_field_name
+        if self.currency_max_length != CURRENCY_CODE_MAX_LENGTH:
+            kwargs["currency_max_length"] = self.currency_max_length
         return name, path, args, kwargs
 
 
