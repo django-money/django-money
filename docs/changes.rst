@@ -1,8 +1,8 @@
 Changelog
 =========
 
-`Unreleased`_ - TBA
--------------------
+`2.1.1`_ - 2022-01-02
+---------------------
 
 **Changed**
 
@@ -11,7 +11,7 @@ Changelog
 **Fixed**
 
 - Make Django REST Framework integration always raise lower-level errors as ``ValidationError``. `#601`_, `#637`_ (`flaeppe`_)
-- Set proper value for ``default_currency`` in ``deconstruct``. `#646`_
+- False positives in Migration changes, improvements to ``MoneyField.deconstruct``. `#646`_, `#648`_ (`flaeppe`_)
 
 `2.1`_ - 2021-09-17
 -------------------
@@ -709,7 +709,9 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.3...HEAD
+# .. _Unreleased: https:///github.com/django-money/django-money/compare/2.1.1...HEAD
+
+.. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
 .. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
 .. _2.0.2: https://github.com/django-money/django-money/compare/2.0.1...2.0.2
@@ -771,6 +773,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#648: https://github.com/django-money/django-money/issues/648
 .. _#646: https://github.com/django-money/django-money/issues/646
 .. _#637: https://github.com/django-money/django-money/issues/637
 .. _#630: https://github.com/django-money/django-money/pull/630
