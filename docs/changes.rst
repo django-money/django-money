@@ -1,6 +1,19 @@
 Changelog
 =========
 
+`Unreleased`_ - TBD
+-------------------
+
+**Added**
+
+- Add support for Django 4.0.
+- Add support for Python 3.10.
+
+**Removed**
+
+- Drop support for Django 3.1.
+- Drop support for Python 3.6.
+
 `2.1.1`_ - 2022-01-02
 ---------------------
 
@@ -709,7 +722,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-# .. _Unreleased: https:///github.com/django-money/django-money/compare/2.1.1...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/2.1.1...HEAD
 
 .. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1

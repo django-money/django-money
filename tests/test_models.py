@@ -712,10 +712,10 @@ def test_override_decorator():
 def test_properties_access():
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, "USD"), bla=1)
-    if VERSION[:2] > (2, 1):
-        assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
+    if VERSION[:2] > (4, 0):
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got unexpected keyword arguments: 'bla'"
     else:
-        assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
 
 
 def parametrize_with_q(**kwargs):
