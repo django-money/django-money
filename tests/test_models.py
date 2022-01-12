@@ -825,6 +825,7 @@ class TestQuerySet:
     def instance(self):
         return ModelWithVanillaMoneyField.objects.create()
 
+    @pytest.mark.xfail
     def test_instance_from_queryset_with_only_raises_keyerror(self, instance):
         """
         Demonstrates that MoneyFields lack support for only() querysets
