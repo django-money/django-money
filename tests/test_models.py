@@ -5,6 +5,7 @@ Created on May 7, 2011
 """
 import datetime
 from copy import copy
+from decimal import Decimal
 
 from django import VERSION
 from django.core.exceptions import ValidationError
@@ -370,6 +371,12 @@ class TestNullableCurrency:
     def test_fails_with_null_currency(self):
         with pytest.raises(ValueError) as exc:
             ModelWithNullableCurrency.objects.create(money=10)
+        assert str(exc.value) == "Missing currency value"
+        assert not ModelWithNullableCurrency.objects.exists()
+
+    def test_fails_with_null_currency_decimal(self):
+        with pytest.raises(ValueError) as exc:
+            ModelWithNullableCurrency.objects.create(money=Decimal(10))
         assert str(exc.value) == "Missing currency value"
         assert not ModelWithNullableCurrency.objects.exists()
 
