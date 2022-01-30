@@ -5,6 +5,7 @@ Created on May 7, 2011
 """
 import datetime
 from copy import copy
+from decimal import Decimal
 
 from django import VERSION
 from django.core.exceptions import ValidationError
@@ -373,6 +374,12 @@ class TestNullableCurrency:
         assert str(exc.value) == "Missing currency value"
         assert not ModelWithNullableCurrency.objects.exists()
 
+    def test_fails_with_null_currency_decimal(self):
+        with pytest.raises(ValueError) as exc:
+            ModelWithNullableCurrency.objects.create(money=Decimal(10))
+        assert str(exc.value) == "Missing currency value"
+        assert not ModelWithNullableCurrency.objects.exists()
+
     def test_fails_with_nullable_but_no_default(self):
         with pytest.raises(IntegrityError) as exc:
             ModelWithTwoMoneyFields.objects.create()
@@ -712,7 +719,9 @@ def test_override_decorator():
 def test_properties_access():
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, "USD"), bla=1)
-    if VERSION[:2] > (2, 1):
+    if VERSION[:2] > (4, 0):
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got unexpected keyword arguments: 'bla'"
+    elif VERSION[:2] > (2, 1):
         assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
     else:
         assert str(exc.value) == "'bla' is an invalid keyword argument for this function"

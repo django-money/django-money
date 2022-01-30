@@ -104,7 +104,12 @@ class MoneyFieldProxy:
         return data[self.field.name]
 
     def __set__(self, obj, value):  # noqa
-        if value is not None and self.field._currency_field.null and not isinstance(value, MONEY_CLASSES + (Decimal,)):
+        if (
+            value is not None
+            and self.field._currency_field.null
+            and not isinstance(value, MONEY_CLASSES)
+            and not obj.__dict__[self.currency_field_name]
+        ):
             # For nullable fields we need either both NULL amount and currency or both NOT NULL
             raise ValueError("Missing currency value")
         if isinstance(value, BaseExpression):
