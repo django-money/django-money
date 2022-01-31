@@ -1,8 +1,14 @@
 Changelog
 =========
 
-`Unreleased`_ - TBD
+
+`Unreleased`_ - TBA
 -------------------
+
+**Fixed**
+
+- Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
+- Fix test suite for django main branch `#657`_ (`davidszotten`_)
 
 **Added**
 
@@ -13,6 +19,7 @@ Changelog
 
 - Drop support for Django 3.1.
 - Drop support for Python 3.6.
+
 
 `2.1.1`_ - 2022-01-02
 ---------------------
@@ -723,7 +730,6 @@ wrapping with ``money_manager``.
 - Initial public release
 
 .. _Unreleased: https:///github.com/django-money/django-money/compare/2.1.1...HEAD
-
 .. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
 .. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
@@ -786,6 +792,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#657: https://github.com/django-money/django-money/issues/657
 .. _#648: https://github.com/django-money/django-money/issues/648
 .. _#646: https://github.com/django-money/django-money/issues/646
 .. _#637: https://github.com/django-money/django-money/issues/637
@@ -979,3 +986,4 @@ wrapping with ``money_manager``.
 .. _washeck: https://github.com/washeck
 .. _fara: https://github.com/fara
 .. _wearebasti: https://github.com/wearebasti
+.. _davidszotten: https://github.com/davidszotten
