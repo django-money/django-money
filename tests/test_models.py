@@ -724,7 +724,7 @@ def test_properties_access():
     elif VERSION[:2] > (2, 1):
         assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
     else:
-        assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
 
 
 def parametrize_with_q(**kwargs):

@@ -1,6 +1,7 @@
 Changelog
 =========
 
+
 `Unreleased`_ - TBA
 -------------------
 
@@ -8,6 +9,17 @@ Changelog
 
 - Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
 - Fix test suite for django main branch `#657`_ (`davidszotten`_)
+
+**Added**
+
+- Add support for Django 4.0.
+- Add support for Python 3.10.
+
+**Removed**
+
+- Drop support for Django 3.1.
+- Drop support for Python 3.6.
+
 
 `2.1.1`_ - 2022-01-02
 ---------------------
