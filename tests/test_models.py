@@ -5,7 +5,7 @@ Created on May 7, 2011
 """
 import datetime
 from copy import copy
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django import VERSION
 from django.core.exceptions import ValidationError
@@ -19,6 +19,7 @@ import pytest
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from moneyed import Money as OldMoney
+from moneyed.classes import CurrencyDoesNotExist
 
 from .testapp.models import (
     AbstractModel,
@@ -41,6 +42,7 @@ from .testapp.models import (
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
     ModelWithNullableCurrency,
+    ModelWithNullDefaultOnNonNullableField,
     ModelWithSharedCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
@@ -301,6 +303,80 @@ class TestVanillaMoneyField:
     def test_null_default(self):
         instance = NullMoneyFieldModel.objects.create()
         assert instance.field is None
+
+    def test_implicit_currency_field_not_nullable_when_money_field_not_nullable(self):
+        instance = ModelWithVanillaMoneyField(money=10, money_currency=None)
+        with pytest.raises(TypeError, match=r"Currency code can't be None"):
+            instance.save()
+
+
+@pytest.mark.parametrize(
+    ("default", "error", "error_match"),
+    [
+        pytest.param("10", AssertionError, r"Default currency can not be `None`", id="string without currency"),
+        pytest.param(b"10", AssertionError, r"Default currency can not be `None`", id="bytes without currency"),
+        pytest.param(13.37, AssertionError, r"Default currency can not be `None`", id="float"),
+        pytest.param(Decimal(10), AssertionError, r"Default currency can not be `None`", id="decimal"),
+        pytest.param(10, AssertionError, r"Default currency can not be `None`", id="int"),
+        pytest.param("100 ", CurrencyDoesNotExist, r"code  ", id="string with trailing space and without currency"),
+        pytest.param(b"100 ", CurrencyDoesNotExist, r"code  ", id="bytes with trailing space and without currency"),
+        pytest.param("100 ABC123", CurrencyDoesNotExist, r"code ABC123", id="string with unknown currency code"),
+        pytest.param(b"100 ABC123", CurrencyDoesNotExist, r"code ABC123", id="bytes with unknown currency code"),
+        # TODO: Better error reporting on > 1 white spaces between amount and currency as that could be
+        # quite difficult to spot?
+        pytest.param(
+            "100  SEK", CurrencyDoesNotExist, r"code  SEK", id="string with too much value and currency separation"
+        ),
+        pytest.param(
+            b"100  SEK", CurrencyDoesNotExist, r"code  SEK", id="bytes with too much value and currency separation"
+        ),
+        pytest.param(
+            "  10 SEK  ",
+            InvalidOperation,
+            r"(ConversionSyntax|Invalid literal)",
+            id="string with leading and trailing spaces",
+        ),
+        pytest.param(
+            b"  10 SEK  ",
+            InvalidOperation,
+            r"(ConversionSyntax|Invalid literal)",
+            id="bytes with leading and trailing spaces",
+        ),
+        pytest.param(
+            "  10 SEK", InvalidOperation, r"(ConversionSyntax|Invalid literal)", id="string with leading spaces"
+        ),
+        pytest.param(
+            b"  10 SEK", InvalidOperation, r"(ConversionSyntax|Invalid literal)", id="bytes with leading spaces"
+        ),
+        pytest.param("10 SEK  ", CurrencyDoesNotExist, r"code SEK   ", id="string with trailing spaces"),
+        pytest.param(b"10 SEK  ", CurrencyDoesNotExist, r"code SEK   ", id="bytes with trailing spaces"),
+    ],
+)
+def test_errors_instantiating_money_field_with_no_default_currency_and_default_as(default, error, error_match):
+    with pytest.raises(error, match=error_match):
+        MoneyField(max_digits=10, decimal_places=2, default=default, default_currency=None)
+
+
+@pytest.mark.parametrize(
+    ("default", "default_currency", "expected"),
+    [
+        pytest.param("10 SEK", None, Money(10, "SEK"), id="string with currency"),
+        pytest.param(b"10 SEK", None, Money(10, "SEK"), id="bytes with currency"),
+        pytest.param("10", "USD", Money(10, "USD"), id="string without currency and currency default"),
+        pytest.param(b"10", "USD", Money(10, "USD"), id="bytes without currency and currency default"),
+    ],
+)
+def test_can_instantiate_money_field_default_as(default, default_currency, expected):
+    field = MoneyField(max_digits=10, decimal_places=2, default=default, default_currency=default_currency)
+    assert field.default == expected
+
+
+def test_errors_on_default_values_being_none_when_fields_have_not_null_constraint():
+    instance = ModelWithNullDefaultOnNonNullableField()
+    assert instance.money is None
+    assert instance.money_currency is None
+    with pytest.raises(IntegrityError, match=r"testapp_modelwithnulldefaultonnonnullablefield.money"):
+        instance.save()
 
 
 class TestGetOrCreate:
