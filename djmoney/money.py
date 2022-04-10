@@ -50,7 +50,7 @@ class Money(DefaultMoney):
 
     @decimal_places_display.setter
     def decimal_places_display(self, value):
-        """ Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting """
+        """Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting"""
         _warn_decimal_places_display_deprecated()
         self._decimal_places_display = value
 
