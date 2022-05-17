@@ -1,3 +1,4 @@
+import django
 from django.template import Context, Template, TemplateSyntaxError
 from django.utils.translation import override
 
@@ -150,8 +151,12 @@ def test_tag(string, result, context):
     ),
 )
 def test_l10n_off(settings, string, result, context):
-    settings.USE_L10N = False
-    assert_template(string, result, context)
+    # This test is only nice to run in older version of Django that do not either
+    # complain that the setting is deprecated or as of Django 5.0 entirely ignores
+    # this setting
+    if django.VERSION < (4, 0):
+        settings.USE_L10N = False
+        assert_template(string, result, context)
 
 
 def test_forced_l10n():

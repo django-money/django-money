@@ -1,6 +1,8 @@
 import warnings
 from decimal import ROUND_HALF_EVEN
 
+import django
+
 import moneyed
 from moneyed.localization import _FORMATTER, DEFAULT
 
@@ -33,7 +35,10 @@ SITE_ID = 1
 
 SECRET_KEY = "foobar"
 
-USE_L10N = True
+
+# This now defaults to True and raises RemovedInDjango50Warning
+if django.VERSION < (4, 0):
+    USE_L10N = True
 
 
 _FORMATTER.add_sign_definition("pl_PL", moneyed.PLN, suffix=" zł")
