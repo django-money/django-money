@@ -12,7 +12,7 @@ Changelog
 
 **Added**
 
-- Add support for Django 4.0.
+- Add support for Django 4.0 and 4.1.
 - Add support for Python 3.10.
 
 **Removed**

@@ -20,7 +20,7 @@ django-money
 A little Django app that uses `py-moneyed <https://github.com/py-moneyed/py-moneyed>`__ to add support for Money
 fields in your models and forms.
 
-* Django versions supported: 2.2, 3.2, 4.0
+* Django versions supported: 2.2, 3.2, 4.0, 4.1
 * Python versions supported: 3.7, 3.8, 3.9, 3.10
 * PyPy versions supported: PyPy3
 
