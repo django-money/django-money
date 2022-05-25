@@ -56,6 +56,8 @@ jobs:
           - python: '3.8'
             tox_env: django40-py38
           - python: '3.8'
+            tox_env: django41-py38
+          - python: '3.8'
             tox_env: django_main-py38
           - python: '3.9'
             tox_env: django22-py39
@@ -64,6 +66,8 @@ jobs:
           - python: '3.9'
             tox_env: django40-py39
           - python: '3.9'
+            tox_env: django41-py39
+          - python: '3.9'
             tox_env: django_main-py39
           - python: '3.10'
             tox_env: django22-py310
@@ -71,6 +75,8 @@ jobs:
             tox_env: django32-py310
           - python: '3.10'
             tox_env: django40-py310
+          - python: '3.10'
+            tox_env: django41-py310
           - python: '3.10'
             tox_env: django_main-py310
           - python: '3.10'
