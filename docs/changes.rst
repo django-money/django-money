@@ -9,6 +9,8 @@ Changelog
 
 - Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
 - Fix test suite for django main branch `#657`_ (`davidszotten`_)
+- ``MoneyField`` raises ``TypeError`` when default contains a valid amount but no currence, i.e. ``Money(123, None)``. `#661`_ (`flaeppe`_)
+- ``MoneyField`` supports default of type ``bytes`` `#661`_ (`flaeppe`_)
 
 **Added**
 
@@ -792,6 +794,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#661: https://github.com/django-money/django-money/issues/657
 .. _#657: https://github.com/django-money/django-money/issues/657
 .. _#648: https://github.com/django-money/django-money/issues/648
 .. _#646: https://github.com/django-money/django-money/issues/646
