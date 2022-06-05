@@ -29,5 +29,6 @@ docs/_build
 
 # Coverage reports
 .coverage
+.coverage.*
 coverage.xml
 htmlcov

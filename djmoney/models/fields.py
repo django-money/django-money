@@ -91,6 +91,8 @@ class MoneyFieldProxy:
         currency = obj.__dict__[self.currency_field_name]
         if amount is None:
             return None
+        elif currency is None:
+            raise TypeError("Currency code can't be None")
         return Money(amount=amount, currency=currency, decimal_places=self.field.decimal_places)
 
     def __get__(self, obj, type=None):
@@ -182,7 +184,7 @@ class MoneyField(models.DecimalField):
     ):
         nullable = kwargs.get("null", False)
         default = self.setup_default(default, default_currency, nullable)
-        if not default_currency and default is not NOT_PROVIDED:
+        if not default_currency and default not in (None, NOT_PROVIDED):
             default_currency = default.currency
 
         self.currency_max_length = currency_max_length
@@ -196,25 +198,34 @@ class MoneyField(models.DecimalField):
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
-        if isinstance(default, (str, bytes)):
+        if default in (None, NOT_PROVIDED) or isinstance(default, Money):
+            return default
+        elif isinstance(default, (str, bytes)):
             try:
                 # handle scenario where default is formatted like:
                 # 'amount currency-code'
-                amount, currency = default.split(" ")
+                amount, currency = (default.decode() if isinstance(default, bytes) else default).split(" ", 1)
             except ValueError:
                 # value error would be risen if the default is
                 # without the currency part, i.e
                 # 'amount'
-                amount = default
+                amount = default.decode() if isinstance(default, bytes) else default
                 currency = default_currency
-            default = Money(Decimal(amount), Currency(code=currency))
+
+            amount = Decimal(amount)
         elif isinstance(default, (float, Decimal, int)):
-            default = Money(default, default_currency)
+            amount, currency = default, default_currency
         elif isinstance(default, OldMoney):
-            default = Money(default.amount, default.currency)
-        if default is not None and default is not NOT_PROVIDED and not isinstance(default, Money):
-            raise ValueError("default value must be an instance of Money, is: %s" % default)
-        return default
+            amount, currency = default.amount, default.currency
+        else:
+            raise ValueError(f"default value must be an instance of Money, is: {default}")
+
+        assert currency is not None, (
+            "Default currency can not be `None` when default is of a value that doesn't include a currency. Either"
+            " provide a default containing a currency value or configure a currency default via setting"
+            " `default_currency=` or `DEFAULT_CURRENCY`(global)"
+        )
+        return Money(amount, currency)
 
     def to_python(self, value):
         if isinstance(value, MONEY_CLASSES):
