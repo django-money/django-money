@@ -57,41 +57,6 @@ def assert_template(string, result, context=None):
 @pytest.mark.parametrize(
     "string, result, context",
     (
-        ('{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M %}{{NEW_M}}', "2,50 zł", {}),
-        ('{% load djmoney %}{% money_localize "2.5" "PLN" %}', "2,50 zł", {}),
-        ("{% load djmoney %}{% money_localize amount currency %}", "2,60 zł", {"amount": 2.6, "currency": "PLN"}),
-        ("{% load djmoney %}{% money_localize money as NEW_M %}{{NEW_M}}", "2,30 zł", {"money": Money(2.3, "PLN")}),
-        ("{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}", "2.30 zł", {"money": Money(2.3, "PLN")}),
-        ("{% load djmoney %}{% money_localize money off as NEW_M %}{{NEW_M}}", "0.00 zł", {"money": Money(0, "PLN")}),
-        (
-            # with a tag template "money_localize"
-            "{% load djmoney %}{% money_localize money %}",
-            "2,30 zł",
-            {"money": Money(2.3, "PLN")},
-        ),
-        (
-            # without a tag template "money_localize"
-            "{{ money }}",
-            "2,30 zł",
-            {"money": Money(2.3, "PLN")},
-        ),
-        ("{% load djmoney %}{% money_localize money off %}", "2.30 zł", {"money": Money(2.3, "PLN")}),
-        ("{% load djmoney %}{% money_localize money on %}", "2,30 zł", {"money": Money(2.3, "PLN")}),
-        (
-            # in django 2.0 we fail inside the for loop
-            '{% load djmoney %}{% for i in "xxx" %}{% money_localize money %} {% endfor %}',
-            "2,30 zł 2,30 zł 2,30 zł ",
-            {"money": Money(2.3, "PLN"), "test": "test"},
-        ),
-    ),
-)
-def test_tag_with_legacy_formatting(legacy_formatting, string, result, context):
-    assert_template(string, result, context)
-
-
-@pytest.mark.parametrize(
-    "string, result, context",
-    (
         ('{% load djmoney %}{% money_localize "2.5" "PLN" as NEW_M %}{{NEW_M}}', "2,50\xa0zł", {}),
         ('{% load djmoney %}{% money_localize "2.5" "PLN" %}', "2,50\xa0zł", {}),
         ("{% load djmoney %}{% money_localize amount currency %}", "2,60\xa0zł", {"amount": 2.6, "currency": "PLN"}),
