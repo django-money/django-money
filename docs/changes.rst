@@ -1,13 +1,42 @@
 Changelog
 =========
 
+
 `Unreleased`_ - TBA
 -------------------
+
+**Fixed**
+
+- Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
+- Fix test suite for django main branch `#657`_ (`davidszotten`_)
+- ``MoneyField`` raises ``TypeError`` when default contains a valid amount but no currence, i.e. ``Money(123, None)``. `#661`_ (`flaeppe`_)
+- ``MoneyField`` supports default of type ``bytes`` `#661`_ (`flaeppe`_)
+
+**Added**
+
+- Add support for Django 4.0 and 4.1.
+- Add support for Python 3.10.
+
+**Removed**
+
+- Drop support for Django 3.1.
+- Drop support for Python 3.6.
+
+
+`2.1.1`_ - 2022-01-02
+---------------------
+
+**Changed**
 
 - Renamed ``master`` branch to ``main`` (`benjaoming`_)
 - Update py-moneyed to 2.0.
 - Remove the deprecated ``Money.decimal_places_display`` property and argument.
 - Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting.
+
+**Fixed**
+
+- Make Django REST Framework integration always raise lower-level errors as ``ValidationError``. `#601`_, `#637`_ (`flaeppe`_)
+- False positives in Migration changes, improvements to ``MoneyField.deconstruct``. `#646`_, `#648`_ (`flaeppe`_)
 
 `2.1`_ - 2021-09-17
 -------------------
@@ -705,7 +734,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/2.0.3...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/2.1.1...HEAD
+.. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
 .. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
 .. _2.0.2: https://github.com/django-money/django-money/compare/2.0.1...2.0.2
@@ -767,11 +797,17 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#661: https://github.com/django-money/django-money/issues/657
+.. _#657: https://github.com/django-money/django-money/issues/657
+.. _#648: https://github.com/django-money/django-money/issues/648
+.. _#646: https://github.com/django-money/django-money/issues/646
+.. _#637: https://github.com/django-money/django-money/issues/637
 .. _#630: https://github.com/django-money/django-money/pull/630
 .. _#629: https://github.com/django-money/django-money/pull/629
 .. _#624: https://github.com/django-money/django-money/issues/624
 .. _#612: https://github.com/django-money/django-money/pull/612
 .. _#603: https://github.com/django-money/django-money/issues/603
+.. _#601: https://github.com/django-money/django-money/issues/601
 .. _#595: https://github.com/django-money/django-money/issues/595
 .. _#593: https://github.com/django-money/django-money/issues/593
 .. _#586: https://github.com/django-money/django-money/issues/586
@@ -905,6 +941,7 @@ wrapping with ``money_manager``.
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _evenicoulddoit: https://github.com/evenicoulddoit
 .. _f213: https://github.com/f213
+.. _flaeppe: https://github.com/flaeppe
 .. _Formulka: https://github.com/Formulka
 .. _glarrain: https://github.com/glarrain
 .. _graik: https://github.com/graik
@@ -955,3 +992,4 @@ wrapping with ``money_manager``.
 .. _washeck: https://github.com/washeck
 .. _fara: https://github.com/fara
 .. _wearebasti: https://github.com/wearebasti
+.. _davidszotten: https://github.com/davidszotten

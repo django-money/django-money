@@ -216,3 +216,7 @@ class PreciseModel(models.Model):
 
 class ModelWithDefaultPrecision(models.Model):
     money = MoneyField(max_digits=10)
+
+
+class ModelWithNullDefaultOnNonNullableField(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, default=None, default_currency=None)

@@ -1,5 +1,7 @@
 import warnings
 
+import django
+
 import moneyed
 
 
@@ -31,7 +33,10 @@ SITE_ID = 1
 
 SECRET_KEY = "foobar"
 
-USE_L10N = True
+
+# This now defaults to True and raises RemovedInDjango50Warning
+if django.VERSION < (4, 0):
+    USE_L10N = True
 
 
 moneyed.add_currency("USDT", "000", "Tether", None)

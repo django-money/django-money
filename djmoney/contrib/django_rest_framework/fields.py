@@ -1,4 +1,5 @@
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.utils.translation import gettext_lazy as _
 
 from rest_framework.fields import empty
 from rest_framework.serializers import DecimalField, ModelSerializer
@@ -7,6 +8,20 @@ from djmoney.models.fields import MoneyField as ModelField
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES, get_currency_field_name
+from moneyed.classes import CurrencyDoesNotExist
+
+
+class _PrimitiveMoney:
+    """
+    A container for ``Money`` data that does not do any validation of said data.
+    It conveniently holds the amount and currency attributes to ease transformation into a valid ``Money`` instance.
+    """
+
+    __slots__ = ("amount", "currency")
+
+    def __init__(self, amount, currency):
+        self.amount = amount
+        self.currency = currency
 
 
 class MoneyField(DecimalField):
@@ -14,6 +29,10 @@ class MoneyField(DecimalField):
     Treats ``Money`` objects as decimal values in representation and
     does decimal's validation during transformation to native value.
     """
+
+    default_error_messages = {
+        "invalid_currency": _("{currency!r} is not a valid currency"),
+    }
 
     def __init__(self, *args, **kwargs):
         self.default_currency = kwargs.pop("default_currency", None)
@@ -36,16 +55,20 @@ class MoneyField(DecimalField):
         return super().to_representation(obj)
 
     def to_internal_value(self, data):
-        if isinstance(data, MONEY_CLASSES):
+        if isinstance(data, MONEY_CLASSES + (_PrimitiveMoney,)):
             amount = super().to_internal_value(data.amount)
-            return Money(amount, data.currency)
+            try:
+                return Money(amount, data.currency)
+            except CurrencyDoesNotExist:
+                self.fail("invalid_currency", currency=data.currency)
+
         return super().to_internal_value(data)
 
     def get_value(self, data):
         amount = super().get_value(data)
         currency = data.get(get_currency_field_name(self.field_name), self.default_currency)
         if currency and amount is not None and not isinstance(amount, MONEY_CLASSES) and amount is not empty:
-            return Money(amount, currency)
+            return _PrimitiveMoney(amount=amount, currency=currency)
         return amount
 
 

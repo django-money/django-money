@@ -1,3 +1,4 @@
+import warnings
 from types import MappingProxyType
 
 from django.conf import settings
@@ -89,7 +90,13 @@ class Money(DefaultMoney):
     @property
     def is_localized(self):
         if self.use_l10n is None:
-            return settings.USE_L10N
+            # This definitely raises a warning in Django 4 - we want to ignore RemovedInDjango50Warning
+            # However, we cannot ignore this specific warning class as it doesn't exist in older
+            # Django versions
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore")
+                setting = getattr(settings, "USE_L10N", True)
+            return setting
         return self.use_l10n
 
     def __str__(self):
