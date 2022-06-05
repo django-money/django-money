@@ -320,6 +320,13 @@ class TestVanillaMoneyField:
         with pytest.raises(TypeError, match=r"Currency code can't be None"):
             instance.save()
 
+    def test_currency_field_null_switch_not_triggered_from_default_currency(self):
+        # We want a sane default behaviour and simply declaring a `MoneyField(...)`
+        # without any default value args should create non nullable amount and currency
+        # fields
+        assert not ModelWithVanillaMoneyField._meta.get_field("money").null
+        assert not ModelWithVanillaMoneyField._meta.get_field("money_currency").null
+
 
 @pytest.mark.parametrize(
     ("default", "error", "error_match"),
