@@ -64,10 +64,9 @@ class TestMoneyField:
             (NullMoneyFieldModel, "field", {"default_currency": "EUR", "allow_null": True}, None, None),
             (NullMoneyFieldModel, "field", None, Money(10, "USD"), Money(10, "USD")),
             (NullMoneyFieldModel, "field", {"default_currency": "EUR"}, Money(10, "USD"), Money(10, "USD")),
-            (NullMoneyFieldModel, "field", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
+            (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
             (ModelWithVanillaMoneyField, "money", None, Money(10, "USD"), Money(10, "USD")),
             (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, Money(10, "USD"), Money(10, "USD")),
-            (ModelWithVanillaMoneyField, "money", None, 10, Money(10, "XYZ")),
             (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
         ),
     )

@@ -1,5 +1,4 @@
 import warnings
-from functools import partial
 from types import MappingProxyType
 
 from django.conf import settings
@@ -10,19 +9,12 @@ from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
 
 import moneyed.l10n
-import moneyed.localization
 from moneyed import Currency, Money as DefaultMoney
 
-from .settings import DECIMAL_PLACES, DECIMAL_PLACES_DISPLAY, IS_DECIMAL_PLACES_DISPLAY_SET, MONEY_FORMAT
+from .settings import DECIMAL_PLACES, MONEY_FORMAT
 
 
 __all__ = ["Money", "Currency"]
-
-_warn_decimal_places_display_deprecated = partial(
-    warnings.warn,
-    "`Money.decimal_places_display` is deprecated and will be removed in django-money 3.0.",
-    DeprecationWarning,
-)
 
 
 @deconstructible
@@ -33,26 +25,10 @@ class Money(DefaultMoney):
 
     use_l10n = None
 
-    def __init__(self, *args, decimal_places_display=None, format_options=None, **kwargs):
+    def __init__(self, *args, format_options=None, **kwargs):
         self.decimal_places = kwargs.pop("decimal_places", DECIMAL_PLACES)
-        self._decimal_places_display = decimal_places_display
-        if decimal_places_display is not None:
-            _warn_decimal_places_display_deprecated()
         self.format_options = MappingProxyType(format_options) if format_options is not None else None
         super().__init__(*args, **kwargs)
-
-    @property
-    def decimal_places_display(self):
-        _warn_decimal_places_display_deprecated()
-        if self._decimal_places_display is None:
-            return DECIMAL_PLACES_DISPLAY.get(self.currency.code, self.decimal_places)
-        return self._decimal_places_display
-
-    @decimal_places_display.setter
-    def decimal_places_display(self, value):
-        """Set number of digits being displayed - `None` resets to `DECIMAL_PLACES_DISPLAY` setting"""
-        _warn_decimal_places_display_deprecated()
-        self._decimal_places_display = value
 
     def _copy_attributes(self, source, target):
         """Copy attributes to the new `Money` instance.
@@ -124,13 +100,6 @@ class Money(DefaultMoney):
         return self.use_l10n
 
     def __str__(self):
-        if self._decimal_places_display is not None or IS_DECIMAL_PLACES_DISPLAY_SET:
-            kwargs = {"money": self, "decimal_places": self.decimal_places_display}
-            if self.is_localized:
-                locale = get_current_locale(for_babel=False)
-                if locale:
-                    kwargs["locale"] = locale
-            return moneyed.localization.format_money(**kwargs)
         format_options = {
             **MONEY_FORMAT,
             **(self.format_options or {}),
@@ -181,22 +150,12 @@ class Money(DefaultMoney):
     __rmul__ = __mul__
 
 
-def get_current_locale(for_babel=True):
-    # get_language can return None starting from Django 1.8
-    language = translation.get_language() or settings.LANGUAGE_CODE
-    locale = translation.to_locale(language)
-
-    if for_babel:
-        return locale
-
-    if locale.upper() in moneyed.localization._FORMATTER.formatting_definitions:
-        return locale
-
-    locale = f"{locale}_{locale}".upper()
-    if locale in moneyed.localization._FORMATTER.formatting_definitions:
-        return locale
-
-    return ""
+def get_current_locale():
+    return translation.to_locale(
+        translation.get_language()
+        # get_language can return None starting from Django 1.8
+        or settings.LANGUAGE_CODE
+    )
 
 
 def maybe_convert(value, currency):

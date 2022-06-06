@@ -1,5 +1,3 @@
-from unittest import mock
-
 import pytest
 
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate, get_default_backend_name
@@ -31,9 +29,3 @@ def concrete_instance(m2m_object):
 
 
 pytest_plugins = "pytester"
-
-
-@pytest.yield_fixture
-def legacy_formatting():
-    with mock.patch("djmoney.money.IS_DECIMAL_PLACES_DISPLAY_SET", True):
-        yield

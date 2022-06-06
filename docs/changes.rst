@@ -5,6 +5,12 @@ Changelog
 `Unreleased`_ - TBA
 -------------------
 
+**Changed**
+- Update py-moneyed to 2.0. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
+- Remove the deprecated ``Money.decimal_places_display`` property and argument. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
+- Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
+- Null constraint on an implicit ``CurrencyField`` is now declared from ``null=...`` argument to ``MoneyField``. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
+
 **Fixed**
 
 - Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
@@ -798,6 +804,7 @@ wrapping with ``money_manager``.
 .. _#657: https://github.com/django-money/django-money/issues/657
 .. _#648: https://github.com/django-money/django-money/issues/648
 .. _#646: https://github.com/django-money/django-money/issues/646
+.. _#638: https://github.com/django-money/django-money/issues/638
 .. _#637: https://github.com/django-money/django-money/issues/637
 .. _#630: https://github.com/django-money/django-money/pull/630
 .. _#629: https://github.com/django-money/django-money/pull/629
@@ -966,6 +973,7 @@ wrapping with ``money_manager``.
 .. _mstarostik: https://github.com/mstarostik
 .. _niklasb: https://github.com/niklasb
 .. _nerdoc: https://github.com/nerdoc
+.. _paoloxnet: https://github.com/paoloxnet
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
 .. _rach: https://github.com/rach

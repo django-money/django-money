@@ -272,7 +272,7 @@ class MoneyField(models.DecimalField):
             default=self.default_currency,
             editable=False,
             choices=self.currency_choices,
-            null=self.default_currency is None,
+            null=self.null,
         )
         currency_field.creation_counter = self.creation_counter - 1
         currency_field_name = get_currency_field_name(name, self)
