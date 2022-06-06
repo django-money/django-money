@@ -312,20 +312,24 @@ class TestVanillaMoneyField:
         assert instance.field is None
 
     def test_implicit_currency_field_not_nullable_when_money_field_not_nullable(self):
-        with pytest.raises(ValueError, match=r"Missing currency value"):
-            ModelWithVanillaMoneyField(money=10, money_currency=None)
-
-    def test_raises_type_error_setting_currency_to_none_on_nullable_currency_field_while_having_amount(self):
-        instance = NullMoneyFieldModel(field=10, field_currency=None)
+        instance = ModelWithVanillaMoneyField(money=10, money_currency=None)
         with pytest.raises(TypeError, match=r"Currency code can't be None"):
             instance.save()
+
+    def test_raises_type_error_setting_currency_to_none_on_nullable_currency_field_while_having_amount(self):
+        with pytest.raises(ValueError, match=r"Missing currency value"):
+            NullMoneyFieldModel(field=10, field_currency=None)
 
     def test_currency_field_null_switch_not_triggered_from_default_currency(self):
         # We want a sane default behaviour and simply declaring a `MoneyField(...)`
         # without any default value args should create non nullable amount and currency
         # fields
-        assert not ModelWithVanillaMoneyField._meta.get_field("money").null
-        assert not ModelWithVanillaMoneyField._meta.get_field("money_currency").null
+        assert ModelWithVanillaMoneyField._meta.get_field("money").null is False
+        assert ModelWithVanillaMoneyField._meta.get_field("money_currency").null is False
+
+    def test_currency_field_nullable_when_money_field_is_nullable(self):
+        assert NullMoneyFieldModel._meta.get_field("field").null is True
+        assert NullMoneyFieldModel._meta.get_field("field_currency").null is True
 
 
 @pytest.mark.parametrize(
@@ -475,9 +479,9 @@ class TestNullableCurrency:
         assert not ModelWithNullableCurrency.objects.exists()
 
     def test_fails_with_nullable_but_no_default(self):
-        with pytest.raises(IntegrityError) as exc:
+        match = r"NOT NULL constraint failed: testapp_modelwithtwomoneyfields.amount1"
+        with pytest.raises(IntegrityError, match=match):
             ModelWithTwoMoneyFields.objects.create()
-        assert str(exc.value) == "NOT NULL constraint failed: testapp_modelwithtwomoneyfields.amount1"
 
     def test_query_not_null(self):
         money = Money(100, "EUR")
