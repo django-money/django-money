@@ -5,6 +5,12 @@ Changelog
 `Unreleased`_ - TBA
 -------------------
 
+**Changed**
+- Update py-moneyed to 2.0.
+- Remove the deprecated ``Money.decimal_places_display`` property and argument.
+- Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting.
+- Null constraint on an implicit ``CurrencyField`` is now declared from ``null=...`` argument to ``MoneyField``
+
 **Fixed**
 
 - Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
@@ -29,9 +35,6 @@ Changelog
 **Changed**
 
 - Renamed ``master`` branch to ``main`` (`benjaoming`_)
-- Update py-moneyed to 2.0.
-- Remove the deprecated ``Money.decimal_places_display`` property and argument.
-- Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting.
 
 **Fixed**
 
