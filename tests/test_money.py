@@ -120,28 +120,8 @@ def test_sub_negative():
     assert total == Money(-33, "EUR")
 
 
-@pytest.mark.parametrize(
-    "decimal_places_display, decimal_places",
-    [
-        [None, None],
-        [0, 0],
-        [1, 0],
-        [4, 0],
-        [0, 1],
-        [1, 1],
-        [4, 1],
-        [0, 4],
-        [1, 4],
-        [4, 4],
-        [None, 4],
-        [None, 1],
-        [None, 0],
-        [4, None],
-        [1, None],
-        [0, None],
-    ],
-)
-def test_proper_copy_of_attributes(decimal_places_display, decimal_places):
+@pytest.mark.parametrize("decimal_places", [None, 0, 1, 4])
+def test_proper_copy_of_attributes(decimal_places):
     one = Money(1, "EUR")
 
     assert one.decimal_places == 2, "default value"
