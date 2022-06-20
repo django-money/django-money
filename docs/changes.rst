@@ -2,8 +2,8 @@ Changelog
 =========
 
 
-`Unreleased`_ - TBA
--------------------
+`3.0`_ - 2022-06-20
+--------------------
 
 **Changed**
 - Update py-moneyed to 2.0. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
@@ -737,7 +737,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/2.1.1...HEAD
+.. _3.0: https:///github.com/django-money/django-money/compare/2.1.1...3.0
 .. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
 .. _2.0.3: https://github.com/django-money/django-money/compare/2.0.2...2.0.3
