@@ -1,6 +1,13 @@
 Changelog
 =========
 
+`Unreleased`_ - TBA
+-------------------
+
+**Fixed**
+
+- Support for ``Money`` type with ``Coalesce`` in ``QuerySet.update()`` `#678`_ (`stianjensen`_)
+
 
 `3.0`_ - 2022-06-20
 --------------------
@@ -737,6 +744,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
+.. _Unreleased: https:///github.com/django-money/django-money/compare/3.0...HEAD
 .. _3.0: https:///github.com/django-money/django-money/compare/2.1.1...3.0
 .. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
@@ -915,6 +923,7 @@ wrapping with ``money_manager``.
 .. _#519: https://github.com/django-money/django-money/issues/519
 .. _#521: https://github.com/django-money/django-money/issues/521
 .. _#522: https://github.com/django-money/django-money/issues/522
+.. _#678: https://github.com/django-money/django-money/pull/678
 
 
 .. _77cc33: https://github.com/77cc33
@@ -983,6 +992,7 @@ wrapping with ``money_manager``.
 .. _sjdines: https://github.com/sjdines
 .. _snbuchholz: https://github.com/snbuchholz
 .. _spookylukey: https://github.com/spookylukey
+.. _stianjensen: https://github.com/stianjensen
 .. _stinovlas: https://github.com/stinovlas
 .. _synotna: https://github.com/synotna
 .. _tned73: https://github.com/tned73
