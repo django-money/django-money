@@ -15,4 +15,4 @@ class FixerBackend(SimpleExchangeBackend):
         self.access_key = access_key
 
     def get_params(self):
-        return {"access_key": self.access_key}
+        return {"apikey": self.access_key}
