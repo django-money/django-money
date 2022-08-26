@@ -1,6 +1,8 @@
 from __future__ import annotations
 
-from typing import Any, Literal, Optional, TypedDict, overload, type_check_only
+from decimal import Decimal
+from typing import (
+    Any, Literal, Optional, TypedDict, Union, overload, type_check_only)
 
 from django.db.models.expressions import CombinedExpression, F
 from django.utils.safestring import SafeText
@@ -38,11 +40,11 @@ class Money(DefaultMoney):
     @overload
     def __sub__(self, other: F) -> CombinedExpression: ...
     @overload
-    def __mul__(self, other: Money) -> Money: ...
+    def __mul__(self, other: _NumericalType) -> Money: ...
     @overload
     def __mul__(self, other: F) -> CombinedExpression: ...
     @overload
-    def __truediv__(self, other: Money) -> Money: ...
+    def __truediv__(self, other: _NumericalType) -> Money: ...
     @overload
     def __truediv__(self, other: F) -> CombinedExpression: ...
     def __rtruediv__(self, other) -> None: ...
@@ -60,3 +62,6 @@ class Money(DefaultMoney):
 
 
 def get_current_locale() -> str: ...
+
+
+_NumericalType = Union[Money, Decimal, float, int]
