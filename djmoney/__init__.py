@@ -8,3 +8,5 @@ try:
 except ModuleNotFoundError:
     # this part is useful for allow setup.py to be used for version checks
     pass
+
+from . import baker_field_generator
