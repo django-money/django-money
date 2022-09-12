@@ -14,4 +14,4 @@ def setup_managers(sender):
 
     default_manager_name = sender._meta.default_manager_name or "objects"
     for manager in filter(lambda m: m.name == default_manager_name, sender._meta.local_managers):
-        money_manager(manager)
+        setattr(sender, default_manager_name, money_manager(manager))
