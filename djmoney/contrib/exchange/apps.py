@@ -1,3 +1,6 @@
+from django.apps import AppConfig
+
+
 class ExchangeConfig(AppConfig):
-    name = 'djmoney.contrib.exchange'
-    default_auto_field = 'django.db.models.AutoField'
+    name = "djmoney.contrib.exchange"
+    default_auto_field = "django.db.models.AutoField"
