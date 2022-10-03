@@ -40,6 +40,8 @@ def get_rate(source, target, backend=None):
     Converts exchange rate on the DB side if there is no backends with given base currency.
     Uses data from the default backend if the backend is not specified.
     """
+    if str(source) == str(target):
+        return 1
     if backend is None:
         backend = get_default_backend_name()
     key = f"djmoney:get_rate:{source}:{target}:{backend}"
@@ -53,8 +55,6 @@ def get_rate(source, target, backend=None):
 
 def _get_rate(source, target, backend):
     source, target = str(source), str(target)
-    if str(source) == target:
-        return 1
     rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related("backend")
     if not rates:
         raise MissingRate(f"Rate {source} -> {target} does not exist")
