@@ -106,7 +106,7 @@ class TestMoneyField:
 
     def test_serializer_with_fields(self):
         serializer = self.get_serializer(ModelWithVanillaMoneyField, data={"money": "10.00"}, fields_=("money",))
-        serializer.is_valid(True)
+        serializer.is_valid(raise_exception=True)
         assert serializer.data == {"money": "10.00"}
 
     @pytest.mark.parametrize(
