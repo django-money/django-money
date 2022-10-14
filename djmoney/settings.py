@@ -1,5 +1,6 @@
 import operator
 from types import MappingProxyType
+from typing import Optional
 
 from django.conf import settings
 
@@ -8,7 +9,7 @@ from moneyed import CURRENCIES, Currency
 
 # The default currency, you can define this in your project's settings module
 # This has to be a currency object imported from moneyed
-DEFAULT_CURRENCY: Currency = getattr(settings, "DEFAULT_CURRENCY", None)
+DEFAULT_CURRENCY: Optional[Currency] = getattr(settings, "DEFAULT_CURRENCY", None)
 
 
 # The default currency choices, you can define this in your project's
