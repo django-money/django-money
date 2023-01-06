@@ -512,7 +512,7 @@ class TestFExpressions:
             (Money(50, "USD") * F("integer"), Money(100, "USD")),
             (F("integer") * Money(50, "USD"), Money(100, "USD")),
             (Money(50, "USD") / F("integer"), Money(25, "USD")),
-            (Money(51, "USD") % F("integer"), Money(1, "USD")),
+            (Money(51, "USD") % F("integer"), Money(1, "USD")),  # type: ignore
             (F("money") / 2, Money(50, "USD")),
             (F("money") % 98, Money(2, "USD")),
             (F("money") / F("integer"), Money(50, "USD")),

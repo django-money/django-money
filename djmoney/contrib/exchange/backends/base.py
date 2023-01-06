@@ -1,6 +1,7 @@
 import json
 import ssl
 from decimal import Decimal
+from typing import Optional
 from urllib.parse import parse_qsl, urlparse, urlunparse
 from urllib.request import Request, urlopen
 
@@ -19,8 +20,8 @@ except ImportError:
 
 
 class BaseExchangeBackend:
-    name = None
-    url = None
+    name: Optional[str] = None
+    url: Optional[str] = None
 
     def get_rates(self, **kwargs):
         """
