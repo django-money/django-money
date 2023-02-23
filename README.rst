@@ -429,10 +429,10 @@ conversions happening in different directions.
 Usage with Django REST Framework
 --------------------------------
 
-Make sure that ``djmoney`` and is in the ``INSTALLED_APPS`` of your
-``settings.py`` and that ``rest_framework`` has been installed. MoneyField will
-automatically register a serializer for Django REST Framework through
-``djmoney.apps.MoneyConfig.ready()``.
+Make sure that ``djmoney`` is in the ``INSTALLED_APPS`` and provide 
+``DEFAULT_CURRENCY`` on your ``settings.py`` and that ``rest_framework``
+has been installed. MoneyField will automatically register a serializer
+for Django REST Framework through ``djmoney.apps.MoneyConfig.ready()``.
 
 You can add a serializable field the following way:
 
