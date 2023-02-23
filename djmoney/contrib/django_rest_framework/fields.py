@@ -9,6 +9,7 @@ from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES, get_currency_field_name
 from moneyed.classes import CurrencyDoesNotExist
+from django.conf import settings
 
 
 class _PrimitiveMoney:
@@ -35,7 +36,7 @@ class MoneyField(DecimalField):
     }
 
     def __init__(self, *args, **kwargs):
-        self.default_currency = kwargs.pop("default_currency", None)
+        self.default_currency = kwargs.pop("default_currency", settings.DEFAULT_CURRENCY)
         super().__init__(*args, **kwargs)
         # Rest Framework converts `min_value` / `max_value` to validators, that are not aware about `Money` class
         # We need to adjust them
