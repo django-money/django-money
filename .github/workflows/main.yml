@@ -53,7 +53,7 @@ jobs:
           - python: '3.8'
             tox_env: django41-py38
           - python: '3.8'
-            tox_env: django_main-py38
+            tox_env: django42-py38
           - python: '3.9'
             tox_env: django22-py39
           - python: '3.9'
@@ -63,7 +63,7 @@ jobs:
           - python: '3.9'
             tox_env: django41-py39
           - python: '3.9'
-            tox_env: django_main-py39
+            tox_env: django42-py39
           - python: '3.10'
             tox_env: django22-py310
           - python: '3.10'
@@ -73,8 +73,24 @@ jobs:
           - python: '3.10'
             tox_env: django41-py310
           - python: '3.10'
+            tox_env: django42-py310
+          - python: '3.10'
             tox_env: django_main-py310
           - python: '3.10'
+            tox_env: no_rest_framework
+          - python: '3.11'
+            tox_env: django_main-py311
+          - python: '3.11'
+            tox_env: django42-py311
+          - python: '3.11'
+            tox_env: django41-py311
+          - python: '3.11'
+            tox_env: django40-py311
+          - python: '3.11'
+            tox_env: django32-py311
+          - python: '3.11'
+            tox_env: django22-py311
+          - python: '3.11'
             tox_env: no_rest_framework
     name: ${{ matrix.tox_env }}
     runs-on: ubuntu-latest
