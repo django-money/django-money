@@ -22,7 +22,7 @@ fields in your models and forms.
 
 * Django versions supported: 2.2, 3.2, 4.0, 4.1, 4.2
 * Python versions supported: 3.7, 3.8, 3.9, 3.10, 3.11
-* PyPy versions supported: PyPy3
+* PyPy versions supported: PyPy3 (for Django <= 4.0)
 
 If you need support for older versions of Django and Python, please refer to older releases mentioned in `the release notes <https://django-money.readthedocs.io/en/latest/changes.html>`__.
 

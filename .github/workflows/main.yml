@@ -40,10 +40,6 @@ jobs:
             tox_env: django32-pypy3
           - python: pypy-3.8
             tox_env: django40-pypy3
-          - python: pypy-3.8
-            tox_env: django41-pypy3
-          - python: pypy-3.8
-            tox_env: django42-pypy3
           - python: '3.7'
             tox_env: django22-py37
           - python: '3.7'
