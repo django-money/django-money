@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
@@ -9,7 +10,6 @@ from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
 from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES, get_currency_field_name
 from moneyed.classes import CurrencyDoesNotExist
-from django.conf import settings
 
 
 class _PrimitiveMoney:
