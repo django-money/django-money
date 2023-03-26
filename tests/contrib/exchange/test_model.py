@@ -64,8 +64,10 @@ def test_string_representation(backend):
 def test_cache():
     with patch("djmoney.contrib.exchange.models._get_rate", wraps=_get_rate) as original:
         assert get_rate("USD", "USD") == 1
+        assert original.call_count == 0
+        assert get_rate("USD", "EUR") == 2
         assert original.call_count == 1
-        assert get_rate("USD", "USD") == 1
+        assert get_rate("USD", "EUR") == 2
         assert original.call_count == 1
 
 

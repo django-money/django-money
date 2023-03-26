@@ -12,6 +12,7 @@ from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
 from django.db.migrations.writer import MigrationWriter
 from django.db.models import Case, F, Func, Q, Value, When
+from django.db.models.functions import Coalesce
 from django.utils.translation import override
 
 import pytest
@@ -511,7 +512,7 @@ class TestFExpressions:
             (Money(50, "USD") * F("integer"), Money(100, "USD")),
             (F("integer") * Money(50, "USD"), Money(100, "USD")),
             (Money(50, "USD") / F("integer"), Money(25, "USD")),
-            (Money(51, "USD") % F("integer"), Money(1, "USD")),
+            (Money(51, "USD") % F("integer"), Money(1, "USD")),  # type: ignore
             (F("money") / 2, Money(50, "USD")),
             (F("money") % 98, Money(2, "USD")),
             (F("money") / F("integer"), Money(50, "USD")),
@@ -623,6 +624,14 @@ class TestExpressions:
         ModelWithVanillaMoneyField.objects.update(money=Case(When(integer=0, then=Value(10)), default=Value(0)))
         assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(10, "USD")
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(0, "USD")
+
+    def test_update_with_coalesce(self):
+        ModelWithVanillaMoneyField.objects.create(money=Money(1, "USD"), second_money=Money(2, "USD"), integer=0)
+        ModelWithVanillaMoneyField.objects.update(
+            money=Coalesce(F("second_money"), 0, output_field=models.DecimalField())
+        )
+        instance = ModelWithVanillaMoneyField.objects.get()
+        assert instance.money == Money("2", "USD")
 
     def test_create_func(self):
         instance = ModelWithVanillaMoneyField.objects.create(

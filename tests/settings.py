@@ -39,7 +39,7 @@ if django.VERSION < (4, 0):
     USE_L10N = True
 
 
-moneyed.add_currency("USDT", "000", "Tether", None)
+moneyed.add_currency(code="USDT", numeric="000", name="Tether")
 
 OPEN_EXCHANGE_RATES_APP_ID = "test"
 FIXER_ACCESS_KEY = "test"

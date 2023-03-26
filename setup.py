@@ -32,6 +32,8 @@ test_requirements = [
     "pytest-pythonpath",
     "pytest-cov",
     "mixer",
+    "mypy",
+    "django-stubs",
 ]
 
 extras_requirements = {
