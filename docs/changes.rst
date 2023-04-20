@@ -1,13 +1,28 @@
 Changelog
 =========
 
-`Unreleased`_ - TBA
+`Unreleased`_ (TBA)
 -------------------
+
+- TBC...
+
+`3.1`_ - 2023-04-20
+-------------------
+
+**Added**
+
+- Python 3.11 support `#700`_ (`sdarmofal`_)
+- Django 4.2 support `#700`_ (`sdarmofal`_)
+- Pyright support for .pyi files `#686`_ (`karolyi`_)
+- Support for ``Coalesce`` `#678`_ (`stianjensen`_)
 
 **Fixed**
 
 - Support for ``Money`` type with ``Coalesce`` in ``QuerySet.update()`` `#678`_ (`stianjensen`_)
-
+- pre-commit config for moved flake8 repo (`sdarmofal`_)
+- Use latest setup-python GitHub Action `#692`_ (`sondrelg`_)
+- Optimize: Rate is always 1 if source and target are equal `#689`_ (`nschlemm`_)
+- Fixer.io backend: Avoid 403 errors `#681`_ (`spaut33`_)
 
 `3.0`_ - 2022-06-20
 --------------------
@@ -745,6 +760,7 @@ wrapping with ``money_manager``.
 - Initial public release
 
 .. _Unreleased: https:///github.com/django-money/django-money/compare/3.0...HEAD
+.. _3.1: https:///github.com/django-money/django-money/compare/3.0...3.1
 .. _3.0: https:///github.com/django-money/django-money/compare/2.1.1...3.0
 .. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
 .. _2.1: https:///github.com/django-money/django-money/compare/2.0.3...2.1
@@ -808,6 +824,12 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#700: https://github.com/django-money/django-money/pull/700
+.. _#692: https://github.com/django-money/django-money/pull/692
+.. _#689: https://github.com/django-money/django-money/pull/689
+.. _#686: https://github.com/django-money/django-money/pull/686
+.. _#681: https://github.com/django-money/django-money/pull/681
+.. _#678: https://github.com/django-money/django-money/pull/678
 .. _#661: https://github.com/django-money/django-money/issues/657
 .. _#657: https://github.com/django-money/django-money/issues/657
 .. _#648: https://github.com/django-money/django-money/issues/648
@@ -923,7 +945,6 @@ wrapping with ``money_manager``.
 .. _#519: https://github.com/django-money/django-money/issues/519
 .. _#521: https://github.com/django-money/django-money/issues/521
 .. _#522: https://github.com/django-money/django-money/issues/522
-.. _#678: https://github.com/django-money/django-money/pull/678
 
 
 .. _77cc33: https://github.com/77cc33
@@ -967,6 +988,7 @@ wrapping with ``money_manager``.
 .. _jakewins: https://github.com/jakewins
 .. _jonashaag: https://github.com/jonashaag
 .. _jplehmann: https://github.com/jplehmann
+.. _karolyi: https://github.com/karolyi
 .. _kcyeu: https://github.com/kcyeu
 .. _kjagiello: https://github.com/kjagiello
 .. _ivirabyan: https://github.com/ivirabyan
@@ -982,6 +1004,7 @@ wrapping with ``money_manager``.
 .. _mstarostik: https://github.com/mstarostik
 .. _niklasb: https://github.com/niklasb
 .. _nerdoc: https://github.com/nerdoc
+.. _nschlemm: https://github.com/nschlemm
 .. _paoloxnet: https://github.com/paoloxnet
 .. _pjdelport: https://github.com/pjdelport
 .. _plumdog: https://github.com/plumdog
@@ -989,8 +1012,11 @@ wrapping with ``money_manager``.
 .. _rapIsKal: https://github.com/rapIsKal
 .. _richardowen: https://github.com/richardowen
 .. _satels: https://github.com/satels
+.. _sdarmofal: https://github.com/sdarmofal
 .. _sjdines: https://github.com/sjdines
 .. _snbuchholz: https://github.com/snbuchholz
+.. _sondrelg: https://github.com/sondrelg
+.. _spaut33: https://github.com/spaut33
 .. _spookylukey: https://github.com/spookylukey
 .. _stianjensen: https://github.com/stianjensen
 .. _stinovlas: https://github.com/stinovlas
