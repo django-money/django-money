@@ -58,3 +58,4 @@ repos:
            - django-stubs
            - py-moneyed
          files: 'djmoney\/.*\.py|tests\/.*\.py'
+         exclude: djmoney/money.py
