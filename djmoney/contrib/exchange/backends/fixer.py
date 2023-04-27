@@ -15,4 +15,8 @@ class FixerBackend(SimpleExchangeBackend):
         self.access_key = access_key
 
     def get_params(self):
-        return {"apikey": self.access_key}
+        # support both `data.fixer.io` and `api.apilayer.com` auth params
+        return {
+            "apikey": self.access_key,
+            "access_key": self.access_key,
+        }
