@@ -11,7 +11,7 @@ Changelog
 
 **Changed**
 
-- Explicitly define id in ``Rate`` model - This ensures that the database table will use ``AutoField`` even if ``DEFAULT_AUTO_FIELD`` is set to ``BigAutoField`` in the Django project's settings
+- Explicitly define ``id`` in ``djmoney.contrib.exchange.Rate`` model - This ensures that the database table will use ``AutoField`` even if ``DEFAULT_AUTO_FIELD`` is set to ``BigAutoField`` in the Django project's settings #716
 
 **Fixed**
 
