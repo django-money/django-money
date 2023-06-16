@@ -6,7 +6,7 @@ Changelog
 
 - TBC...
 
-`3.2`_ - unreleased
+`3.2` - unreleased
 -------------------
 
 **Changed**
