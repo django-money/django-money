@@ -6,6 +6,18 @@ Changelog
 
 - TBC...
 
+`3.2` - unreleased
+-------------------
+
+**Changed**
+
+- Explicitly define ``id`` in ``djmoney.contrib.exchange.Rate`` model - This ensures that the database table will use ``AutoField``
+  even if ``DEFAULT_AUTO_FIELD`` is set to ``BigAutoField`` in the Django project's settings #716
+
+**Fixed**
+
+- Downgrade asgiref to 3.6 to work with pypy3
+
 `3.1`_ - 2023-04-20
 -------------------
 
