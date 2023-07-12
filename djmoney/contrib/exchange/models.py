@@ -22,6 +22,7 @@ class ExchangeBackend(models.Model):
 
 
 class Rate(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")
     currency = models.CharField(max_length=CURRENCY_CODE_MAX_LENGTH)
     value = models.DecimalField(max_digits=20, decimal_places=6)
     backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name="rates")

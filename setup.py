@@ -68,7 +68,7 @@ setup(
     maintainer_email="greg@reinbach.com",
     license="BSD",
     packages=find_packages(include=["djmoney", "djmoney.*"]),
-    install_requires=["setuptools", "Django>=2.2", "py-moneyed>=2.0,<3.0"],
+    install_requires=["setuptools", "Django>=2.2", "py-moneyed>=2.0,<3.1"],
     python_requires=">=3.7",
     platforms=["Any"],
     keywords=["django", "py-money", "money"],
