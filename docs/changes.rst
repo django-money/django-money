@@ -6,6 +6,18 @@ Changelog
 
 - TBC...
 
+`3.2`_ - 2023-07-03
+-------------------
+
+**Changed**
+
+- Explicitly define ``id`` in ``djmoney.contrib.exchange.Rate`` model - This ensures that the database table will use ``AutoField``
+  even if ``DEFAULT_AUTO_FIELD`` is set to ``BigAutoField`` in the Django project's settings #716
+
+**Fixed**
+
+- Downgrade asgiref to 3.6 to work with pypy3
+
 `3.1`_ - 2023-04-20
 -------------------
 
@@ -759,7 +771,8 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/3.0...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/3.2...HEAD
+.. _3.2: https:///github.com/django-money/django-money/compare/3.1...3.2
 .. _3.1: https:///github.com/django-money/django-money/compare/3.0...3.1
 .. _3.0: https:///github.com/django-money/django-money/compare/2.1.1...3.0
 .. _2.1.1: https:///github.com/django-money/django-money/compare/2.1...2.1.1
