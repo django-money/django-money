@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
@@ -35,7 +36,7 @@ class MoneyField(DecimalField):
     }
 
     def __init__(self, *args, **kwargs):
-        self.default_currency = kwargs.pop("default_currency", None)
+        self.default_currency = kwargs.pop("default_currency", settings.DEFAULT_CURRENCY)
         super().__init__(*args, **kwargs)
         # Rest Framework converts `min_value` / `max_value` to validators, that are not aware about `Money` class
         # We need to adjust them
