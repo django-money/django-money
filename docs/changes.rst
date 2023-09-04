@@ -4,7 +4,9 @@ Changelog
 `Unreleased`_ (TBA)
 -------------------
 
-- TBC...
+**Fixed**
+
+- Fix detection of necessary migrations. Note that this means that previously undetected migrations will be detected as of this version  `#725`_ (`vanschelven`_)
 
 `3.2`_ - 2023-07-03
 -------------------
@@ -958,6 +960,7 @@ wrapping with ``money_manager``.
 .. _#519: https://github.com/django-money/django-money/issues/519
 .. _#521: https://github.com/django-money/django-money/issues/521
 .. _#522: https://github.com/django-money/django-money/issues/522
+.. _#725: https://github.com/django-money/django-money/issues/725
 
 
 .. _77cc33: https://github.com/77cc33
@@ -1047,3 +1050,4 @@ wrapping with ``money_manager``.
 .. _fara: https://github.com/fara
 .. _wearebasti: https://github.com/wearebasti
 .. _davidszotten: https://github.com/davidszotten
+.. _vanschelven: https://github.com/vanschelven

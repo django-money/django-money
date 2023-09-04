@@ -255,7 +255,7 @@ class MoneyField(models.DecimalField):
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True
 
-        if not hasattr(self, "_currency_field"):
+        if not hasattr(self, "_currency_field") and not cls.__module__ == "__fake__":
             self.add_currency_field(cls, name)
 
         super().contribute_to_class(cls, name)
