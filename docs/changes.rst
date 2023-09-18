@@ -1,7 +1,24 @@
 Changelog
 =========
 
+
 `Unreleased`_ (TBA)
+-------------------
+
+**Added**
+
+- (add entry here)
+
+**Fixed**
+
+- (add entry here)
+
+**Changed**
+
+- (add entry here)
+
+
+`3.3`_ - 2023-09-10
 -------------------
 
 **Fixed**
@@ -773,7 +790,9 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/3.2...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/3.3...HEAD
+
+.. _3.3: https:///github.com/django-money/django-money/compare/3.2...3.3
 .. _3.2: https:///github.com/django-money/django-money/compare/3.1...3.2
 .. _3.1: https:///github.com/django-money/django-money/compare/3.0...3.1
 .. _3.0: https:///github.com/django-money/django-money/compare/2.1.1...3.0
