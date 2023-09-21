@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.core import exceptions
 from django.core.exceptions import ValidationError
 from django.core.validators import DecimalValidator
 from django.db import models
@@ -11,12 +12,17 @@ from django.utils.functional import cached_property
 
 from djmoney import forms
 from djmoney.money import Currency, Money
-from moneyed import Money as OldMoney
+from moneyed import Money as OldMoney, Currency as OldCurrency
 
 from .._compat import setup_managers
-from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES, DEFAULT_CURRENCY
-from ..utils import MONEY_CLASSES, get_currency_field_name, prepare_expression
-
+from ..settings import CURRENCY_CHOICES, DEFAULT_CURRENCY, DECIMAL_PLACES
+from ..utils import (
+    MONEY_CLASSES,
+    get_currency_field_name,
+    prepare_expression,
+    old_currency_to_new_currency,
+    get_currency_by_name,
+)
 
 __all__ = ("MoneyField",)
 
@@ -81,7 +87,32 @@ def get_currency(value):
         return value[1]
 
 
-class MoneyFieldProxy:
+class CurrencyFieldProxy(object):
+    def __init__(self, field):
+        self.field = field
+
+    def __get__(self, obj, owner=None):
+        if obj is None:
+            return self
+        val = obj.__dict__[self.field.name]
+        if isinstance(val, BaseExpression):
+            return val
+        if not isinstance(val, Currency):
+            if isinstance(val, OldCurrency):
+                currency = old_currency_to_new_currency(val)
+            else:
+                currency = get_currency_by_name(val)
+            obj.__dict__[self.field.name] = currency
+        return obj.__dict__[self.field.name]
+
+    def __set__(self, obj, value):
+        if isinstance(value, BaseExpression):
+            if isinstance(value, Value):
+                value = self.prepare_value(obj, value.value)
+        obj.__dict__[self.field.name] = value
+
+
+class MoneyFieldProxy(object):
     def __init__(self, field):
         self.field = field
         self.currency_field_name = get_currency_field_name(self.field.name, self.field)
@@ -137,6 +168,8 @@ class MoneyFieldProxy:
         # value!
         # https://github.com/django-money/django-money/issues/221
         object_currency = obj.__dict__.get(self.currency_field_name)
+        if isinstance(value, str):
+            value = get_currency_by_name(value)
         if object_currency != value:
             # in other words, update the currency only if it wasn't
             # changed before.
@@ -153,9 +186,53 @@ class CurrencyField(models.CharField):
         self.price_field = price_field
         super().__init__(default=default, **kwargs)
 
+    def validate(self, value, model_instance):
+        """
+                Validate value and raise ValidationError if necessary. Subclasses
+                should override this to provide validation logic.
+                """
+        if not self.editable:
+            # Skip validation for non-editable fields.
+            return
+
+        if self.choices and value not in self.empty_values:
+            for option_key, option_value in self.choices:
+                if isinstance(option_value, (list, tuple)):
+                    # This is an optgroup, so look inside the group for
+                    # options.
+                    for optgroup_key, optgroup_value in option_value:
+                        if value == optgroup_key:
+                            return
+                elif value == get_currency_by_name(option_key):
+                    return
+            raise exceptions.ValidationError(
+                self.error_messages["invalid_choice"],
+                code="invalid_choice",
+                params={"value": value},
+            )
+
+        if value is None and not self.null:
+            raise exceptions.ValidationError(self.error_messages["null"], code="null")
+
+        if not self.blank and value in self.empty_values:
+            raise exceptions.ValidationError(self.error_messages["blank"], code="blank")
+
     def contribute_to_class(self, cls, name):
         if name not in [f.name for f in cls._meta.fields]:
             super().contribute_to_class(cls, name)
+            setattr(cls, name, CurrencyFieldProxy(self))
+
+    def get_prep_value(self, value):
+        if isinstance(value, Currency) or isinstance(value, OldCurrency):
+            return value.code
+        return value
+
+    def to_python(self, value):
+        if isinstance(value, Currency):
+            return value
+        if value is None:
+            return
+        return get_currency_by_name(value)
 
 
 class MoneyField(models.DecimalField):
@@ -191,6 +268,9 @@ class MoneyField(models.DecimalField):
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
+        if default is None and not nullable:
+            # Backwards compatible fix for non-nullable fields
+            default = 0.0
         if isinstance(default, (str, bytes)):
             try:
                 # handle scenario where default is formatted like:

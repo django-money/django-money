@@ -5,7 +5,7 @@ from django.utils.deconstruct import deconstructible
 from django.utils.html import avoid_wrapping, conditional_escape
 from django.utils.safestring import mark_safe
 
-from moneyed import Currency, Money as DefaultMoney
+from moneyed import Currency as DefaultCurrency, Money as DefaultMoney
 from moneyed.localization import _FORMATTER, format_money
 
 from .settings import DECIMAL_PLACES
@@ -13,6 +13,9 @@ from .settings import DECIMAL_PLACES
 
 __all__ = ["Money", "Currency"]
 
+class Currency(DefaultCurrency):
+    def __len__(self):
+        return len(self.code)
 
 @deconstructible
 class Money(DefaultMoney):
