@@ -213,6 +213,17 @@ need to manually decorate those custom methods, like so:
            def my_custom_method(*args, **kwargs):
                # Awesome stuff
 
+Note on serialization
+---------------------
+
+Django-money provides a custom deserializer, it is not registered
+by default so you will have to actively register it in your ``settings.py``.
+
+.. code:: python
+
+    SERIALIZATION_MODULES = {"json": "djmoney.serializers"}
+
+
 Format localization
 -------------------
 
