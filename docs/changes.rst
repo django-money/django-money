@@ -15,13 +15,6 @@ Changelog
 
 **Changed**
 
-- (add entry here)
-
-`3.4` - unreleased
--------------------
-
-**Changed**
-
 - Don't register Django Money serializers by default, instead the user should actively register a serializer in the ``settings.py`` `#636` (`emorozov`)
 
 
