@@ -140,6 +140,32 @@ The ``balance`` field from the model above has the following validation:
 * Euros should be between 100 and 1000;
 * US Dollars should be between 50 and 500;
 
+Validation with forms
+---------------------
+
+When using with the default ModelForm validation, it is expected that you should
+pass amount and currency as two separate fields:
+
+
+.. code:: python
+
+        # models.py
+        class Product(models.Model):
+            price = MoneyField(
+                max_digits=14,
+                decimal_places=2,
+                default_currency='EUR'
+            )
+
+        # forms.py
+        class ProductForm(ModelForm):
+            class Meta:
+                model = Product
+                fields = "__all__"
+
+        ProductForm({'price_0': 10, 'price_1': 'EUR'})
+
+
 Adding a new Currency
 ---------------------
 
