@@ -213,6 +213,7 @@ need to manually decorate those custom methods, like so:
            def my_custom_method(*args, **kwargs):
                # Awesome stuff
 
+
 Note on serialization
 ---------------------
 

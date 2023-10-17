@@ -15,6 +15,20 @@ Changelog
 
 **Changed**
 
+- (add entry here)
+
+
+`3.4`_ - 2023-10-17
+-------------------
+
+.. note::
+
+   If you are using Django REST Framework or any other mechanism that relies on a custom serializer,
+   please note that you now manually have to register the serializer.
+   See :ref:`this code snippet <index:Note on serialization>`.
+
+**Changed**
+
 - Don't register Django Money serializers by default, instead the user should actively register a serializer in the ``settings.py`` `#636` (`emorozov`)
 
 
@@ -790,8 +804,9 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/3.3...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/3.4...HEAD
 
+.. _3.4: https:///github.com/django-money/django-money/compare/3.3...3.4
 .. _3.3: https:///github.com/django-money/django-money/compare/3.2...3.3
 .. _3.2: https:///github.com/django-money/django-money/compare/3.1...3.2
 .. _3.1: https:///github.com/django-money/django-money/compare/3.0...3.1
