@@ -55,7 +55,7 @@ repos:
     hooks:
        - id: mypy
          additional_dependencies:
-           - django-stubs
+           - django-stubs[compatible-mypy]
            - py-moneyed
          files: 'djmoney\/.*\.py|tests\/.*\.py'
          exclude: djmoney/money.py
