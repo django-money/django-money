@@ -140,11 +140,13 @@ The ``balance`` field from the model above has the following validation:
 * Euros should be between 100 and 1000;
 * US Dollars should be between 50 and 500;
 
-Validation with forms
----------------------
+Constructing form data
+----------------------
 
-When using with the default ModelForm validation, it is expected that you should
-pass amount and currency as two separate fields:
+The default ``ModelForm`` class will use a form field (``djmoney.forms.fields.MoneyField``) that is constructed of two separate fields for amount and currency.
+
+If you need to feed data directly to such a form (for instance if you are writing a test case), then you need to pass amount and currency like this:
+
 
 
 .. code:: python
