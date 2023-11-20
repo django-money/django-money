@@ -163,7 +163,7 @@ If you need to feed data directly to such a form (for instance if you are writin
         class ProductForm(ModelForm):
             class Meta:
                 model = Product
-                fields = "__all__"
+                fields = ["price"]
 
         # tests.py
 
