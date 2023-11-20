@@ -27,7 +27,8 @@ class PyTest(TestCommand):
 
 
 test_requirements = [
-    "pytest>=3.1.0",
+    # Quickfix for "pytest.PytestRemovedIn8Warning: Passing None has been deprecated"
+    "pytest>=3.1.0,<7.4.3",
     "pytest-django",
     "pytest-pythonpath",
     "pytest-cov",
