@@ -165,7 +165,10 @@ If you need to feed data directly to such a form (for instance if you are writin
                 model = Product
                 fields = "__all__"
 
-        ProductForm({'price_0': 10, 'price_1': 'EUR'})
+        # tests.py
+
+        # construct the form in your test case
+        form = ProductForm({'price_0': 10, 'price_1': 'EUR'})
 
 
 Adding a new Currency
