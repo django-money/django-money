@@ -27,7 +27,8 @@ class PyTest(TestCommand):
 
 
 test_requirements = [
-    "pytest>=3.1.0",
+    # Quickfix for https://docs.pytest.org/en/7.1.x/deprecations.html#using-pytest-warns-none
+    "pytest>=3.1.0,<7.0",
     "pytest-django",
     "pytest-pythonpath",
     "pytest-cov",
