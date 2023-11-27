@@ -36,13 +36,15 @@ repos:
     -   id: flake8
         exclude: ^docs
 
--   repo: https://github.com/myint/rstcheck
-    rev: 3f92957
+-   repo: https://github.com/rstcheck/rstcheck
+    rev: v6.2.0
     hooks:
       - id: rstcheck
         additional_dependencies:
           - sphinx
-        args: [--ignore-directives=code]
+        args:
+          - --ignore-directives=code
+          - --ignore-roles=github-issue,github-user
 
 -   repo: https://github.com/psf/black
     rev: 22.3.0
