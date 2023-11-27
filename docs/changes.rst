@@ -5,17 +5,9 @@ Changelog
 `Unreleased`_ (TBA)
 -------------------
 
-**Added**
-
-- (add entry here)
-
 **Fixed**
 
-- (add entry here)
-
-**Changed**
-
-- (add entry here)
+- The default setting for ``CURRENCY_CHOICES`` excluded the currency choice defined by ``DEFAULT_CURRENCY``. `#739`_ (`Naggafin`_)
 
 
 `3.4`_ - 2023-10-17
@@ -29,7 +21,7 @@ Changelog
 
 **Changed**
 
-- Don't register Django Money serializers by default, instead the user should actively register a serializer in the ``settings.py`` `#636` (`emorozov`)
+- Don't register Django Money serializers by default, instead the user should actively register a serializer in the ``settings.py`` `#636`_ (`emorozov`_)
 
 
 `3.3`_ - 2023-09-10
@@ -873,6 +865,7 @@ wrapping with ``money_manager``.
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
 
+.. _#739: https://github.com/django-money/django-money/pull/739
 .. _#700: https://github.com/django-money/django-money/pull/700
 .. _#692: https://github.com/django-money/django-money/pull/692
 .. _#689: https://github.com/django-money/django-money/pull/689
@@ -885,6 +878,7 @@ wrapping with ``money_manager``.
 .. _#646: https://github.com/django-money/django-money/issues/646
 .. _#638: https://github.com/django-money/django-money/issues/638
 .. _#637: https://github.com/django-money/django-money/issues/637
+.. _#636: https://github.com/django-money/django-money/issues/736
 .. _#630: https://github.com/django-money/django-money/pull/630
 .. _#629: https://github.com/django-money/django-money/pull/629
 .. _#624: https://github.com/django-money/django-money/issues/624
@@ -1022,6 +1016,7 @@ wrapping with ``money_manager``.
 .. _dnmellen: https://github.com/dnmellen
 .. _edwinlunando: https://github.com/edwinlunando
 .. _elcolie: https://github.com/elcolie
+.. _emorozov: https://github.com/emorozov
 .. _eriktelepovsky: https://github.com/eriktelepovsky
 .. _evenicoulddoit: https://github.com/evenicoulddoit
 .. _f213: https://github.com/f213
@@ -1052,6 +1047,7 @@ wrapping with ``money_manager``.
 .. _MrFus10n: https://github.com/MrFus10n
 .. _msgre: https://github.com/msgre
 .. _mstarostik: https://github.com/mstarostik
+.. _Naggafin: https://github.com/Naggafin
 .. _niklasb: https://github.com/niklasb
 .. _nerdoc: https://github.com/nerdoc
 .. _nschlemm: https://github.com/nschlemm
