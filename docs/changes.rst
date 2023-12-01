@@ -1,21 +1,30 @@
 Changelog
 =========
 
-
 `Unreleased`_ (TBA)
 -------------------
 
-**Added**
-
-- (add entry here)
-
 **Fixed**
 
-- (add entry here)
+- (add changelog entry)
+
 
 **Changed**
 
-- (add entry here)
+- (add changelog entry)
+
+
+**Added**
+
+- (add changelog entry)
+
+
+`3.4.1`_ - 2023-11-30
+---------------------
+
+**Fixed**
+
+- The default setting for ``CURRENCY_CHOICES`` excluded the currency choice defined by ``DEFAULT_CURRENCY``. :github-issue:`739` (:github-user:`Naggafin`)
 
 
 `3.4`_ - 2023-10-17
@@ -29,7 +38,7 @@ Changelog
 
 **Changed**
 
-- Don't register Django Money serializers by default, instead the user should actively register a serializer in the ``settings.py`` `#636` (`emorozov`)
+- Don't register Django Money serializers by default, instead the user should actively register a serializer in the ``settings.py`` :github-issue:`636` (:github-user:`emorozov`)
 
 
 `3.3`_ - 2023-09-10
@@ -37,7 +46,7 @@ Changelog
 
 **Fixed**
 
-- Fix detection of necessary migrations. Note that this means that previously undetected migrations will be detected as of this version  `#725`_ (`vanschelven`_)
+- Fix detection of necessary migrations. Note that this means that previously undetected migrations will be detected as of this version  :github-issue:`725` (:github-user:`vanschelven`)
 
 `3.2`_ - 2023-07-03
 -------------------
@@ -56,34 +65,34 @@ Changelog
 
 **Added**
 
-- Python 3.11 support `#700`_ (`sdarmofal`_)
-- Django 4.2 support `#700`_ (`sdarmofal`_)
-- Pyright support for .pyi files `#686`_ (`karolyi`_)
-- Support for ``Coalesce`` `#678`_ (`stianjensen`_)
+- Python 3.11 support :github-issue:`700` (:github-user:`sdarmofal`)
+- Django 4.2 support :github-issue:`700` (:github-user:`sdarmofal`)
+- Pyright support for .pyi files :github-issue:`686` (:github-user:`karolyi`)
+- Support for ``Coalesce`` :github-issue:`678` (:github-user:`stianjensen`)
 
 **Fixed**
 
-- Support for ``Money`` type with ``Coalesce`` in ``QuerySet.update()`` `#678`_ (`stianjensen`_)
-- pre-commit config for moved flake8 repo (`sdarmofal`_)
-- Use latest setup-python GitHub Action `#692`_ (`sondrelg`_)
-- Optimize: Rate is always 1 if source and target are equal `#689`_ (`nschlemm`_)
-- Fixer.io backend: Avoid 403 errors `#681`_ (`spaut33`_)
+- Support for ``Money`` type with ``Coalesce`` in ``QuerySet.update()`` :github-issue:`678` (:github-user:`stianjensen`)
+- pre-commit config for moved flake8 repo (:github-user:`sdarmofal`)
+- Use latest setup-python GitHub Action :github-issue:`692` (:github-user:`sondrelg`)
+- Optimize: Rate is always 1 if source and target are equal :github-issue:`689` (:github-user:`nschlemm`)
+- Fixer.io backend: Avoid 403 errors :github-issue:`681` (:github-user:`spaut33`)
 
 `3.0`_ - 2022-06-20
 --------------------
 
 **Changed**
-- Update py-moneyed to 2.0. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
-- Remove the deprecated ``Money.decimal_places_display`` property and argument. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
-- Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
-- Null constraint on an implicit ``CurrencyField`` is now declared from ``null=...`` argument to ``MoneyField``. `#638`_ (`antonagestam`_, `flaeppe`_, `paoloxnet`_)
+- Update py-moneyed to 2.0. :github-issue:`638` (:github-user:`antonagestam`, :github-user:`flaeppe`, :github-user:`paoloxnet`)
+- Remove the deprecated ``Money.decimal_places_display`` property and argument. :github-issue:`638` (:github-user:`antonagestam`, :github-user:`flaeppe`, :github-user:`paoloxnet`)
+- Remove the deprecated ``CURRENCY_DECIMAL_PLACES_DISPLAY`` setting. :github-issue:`638` (:github-user:`antonagestam`, :github-user:`flaeppe`, :github-user:`paoloxnet`)
+- Null constraint on an implicit ``CurrencyField`` is now declared from ``null=...`` argument to ``MoneyField``. :github-issue:`638` (:github-user:`antonagestam`, :github-user:`flaeppe`, :github-user:`paoloxnet`)
 
 **Fixed**
 
-- Improve the internal check for whether a currency is provided `#657`_ (`davidszotten`_)
-- Fix test suite for django main branch `#657`_ (`davidszotten`_)
-- ``MoneyField`` raises ``TypeError`` when default contains a valid amount but no currence, i.e. ``Money(123, None)``. `#661`_ (`flaeppe`_)
-- ``MoneyField`` supports default of type ``bytes`` `#661`_ (`flaeppe`_)
+- Improve the internal check for whether a currency is provided :github-issue:`657` (:github-user:`davidszotten`)
+- Fix test suite for django main branch :github-issue:`657` (:github-user:`davidszotten`)
+- ``MoneyField`` raises ``TypeError`` when default contains a valid amount but no currence, i.e. ``Money(123, None)``. :github-issue:`661` (:github-user:`flaeppe`)
+- ``MoneyField`` supports default of type ``bytes`` :github-issue:`661` (:github-user:`flaeppe`)
 
 **Added**
 
@@ -101,45 +110,45 @@ Changelog
 
 **Changed**
 
-- Renamed ``master`` branch to ``main`` (`benjaoming`_)
+- Renamed ``master`` branch to ``main`` (:github-user:`benjaoming`)
 
 **Fixed**
 
-- Make Django REST Framework integration always raise lower-level errors as ``ValidationError``. `#601`_, `#637`_ (`flaeppe`_)
-- False positives in Migration changes, improvements to ``MoneyField.deconstruct``. `#646`_, `#648`_ (`flaeppe`_)
+- Make Django REST Framework integration always raise lower-level errors as ``ValidationError``. :github-issue:`601`, :github-issue:`637` (:github-user:`flaeppe`)
+- False positives in Migration changes, improvements to ``MoneyField.deconstruct``. :github-issue:`646`, :github-issue:`648` (:github-user:`flaeppe`)
 
 `2.1`_ - 2021-09-17
 -------------------
 
 **Added**
 
-- Add support for Django 3.2. `#612`_ (`antonagestam`_)
+- Add support for Django 3.2. :github-issue:`612` (:github-user:`antonagestam`)
 
 **Removed**
 
-- Drop support for Django 1.11, 2.1 and 3.0. `#612`_ (`antonagestam`_)
-- Drop support for Python 3.5. `#612`_ (`antonagestam`_)
+- Drop support for Django 1.11, 2.1 and 3.0. :github-issue:`612` (:github-user:`antonagestam`)
+- Drop support for Python 3.5. :github-issue:`612` (:github-user:`antonagestam`)
 
 `2.0.3`_ - 2021-09-04
 ---------------------
 
 **Fixed**
 
-- Inconsistent ``Money._copy_attributes`` behaviour when non-``Money`` instances are involved. `#630`_ (`tned73`_)
+- Inconsistent ``Money._copy_attributes`` behaviour when non-``Money`` instances are involved. :github-issue:`630` (:github-user:`tned73`)
 
 `2.0.2`_ - 2021-09-04
 ---------------------
 
 **Fixed**
 
-- Inconsistent ``Money._copy_attributes`` behaviour. `#629`_ (`tned73`_)
+- Inconsistent ``Money._copy_attributes`` behaviour. :github-issue:`629` (:github-user:`tned73`)
 
 `2.0.1`_ - 2021-07-09
 ---------------------
 
 **Fixed**
 
-- Invalid deprecation warning behavior. `#624`_ (`nerdoc`_)
+- Invalid deprecation warning behavior. :github-issue:`624` (:github-user:`nerdoc`)
 
 `2.0`_ - 2021-05-23
 -------------------
@@ -150,7 +159,7 @@ Changelog
 
 **Changed**
 
-- BREAKING: Update ``py-moneyed`` to ``>=1.2,<2``. It uses ``babel`` to format ``Money``, which formats it differently than ``py-moneyed<1``. `#567`_ (`antonagestam`_)
+- BREAKING: Update ``py-moneyed`` to ``>=1.2,<2``. It uses ``babel`` to format ``Money``, which formats it differently than ``py-moneyed<1``. :github-issue:`567` (:github-user:`antonagestam`)
 
 **Deprecated**
 
@@ -162,47 +171,47 @@ Changelog
 
 **Fixed**
 
-- Do not mutate the input ``moneyed.Money`` class to ``djmoney.money.Money`` in ``MoneyField.default`` and F-expressions. `#603`_ (`moser`_)
+- Do not mutate the input ``moneyed.Money`` class to ``djmoney.money.Money`` in ``MoneyField.default`` and F-expressions. :github-issue:`603` (:github-user:`moser`)
 
 `1.3`_ - 2021-01-10
 -------------------
 
 **Added**
 
-- Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency. `#521`_ (`wearebasti`_)
+- Improved localization: New setting ``CURRENCY_DECIMAL_PLACES_DISPLAY`` configures decimal places to display for each configured currency. :github-issue:`521` (:github-user:`wearebasti`)
 
 **Changed**
 
-- Set the default value for ``models.fields.MoneyField`` to ``NOT_PROVIDED``. (`tned73`_)
+- Set the default value for ``models.fields.MoneyField`` to ``NOT_PROVIDED``. (:github-user:`tned73`)
 
 **Fixed**
 
-- Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class. (`Stranger6667`_)
-- Subtracting ``Money`` from ``moneyed.Money``. Regression, introduced in ``1.2``. `#593`_ (`Stranger6667`_)
-- Missing the right ``Money.decimal_places`` and ``Money.decimal_places_display`` values after some arithmetic operations. `#595`_ (`Stranger6667`_)
+- Pin ``pymoneyed<1.0`` as it changed the ``repr`` output of the ``Money`` class. (:github-user:`Stranger6667`)
+- Subtracting ``Money`` from ``moneyed.Money``. Regression, introduced in ``1.2``. :github-issue:`593` (:github-user:`Stranger6667`)
+- Missing the right ``Money.decimal_places`` and ``Money.decimal_places_display`` values after some arithmetic operations. :github-issue:`595` (:github-user:`Stranger6667`)
 
 `1.2.2`_ - 2020-12-29
 ---------------------
 
 **Fixed**
 
-- Confusing "number-over-money" division behavior by backporting changes from ``py-moneyed``. `#586`_ (`wearebasti`_)
-- ``AttributeError`` when a ``Money`` instance is divided by ``Money``. `#585`_ (`niklasb`_)
+- Confusing "number-over-money" division behavior by backporting changes from ``py-moneyed``. :github-issue:`586` (:github-user:`wearebasti`)
+- ``AttributeError`` when a ``Money`` instance is divided by ``Money``. :github-issue:`585` (:github-user:`niklasb`)
 
 `1.2.1`_ - 2020-11-29
 ---------------------
 
 **Fixed**
 
-- Aggregation through a proxy model. `#583`_ (`tned73`_)
+- Aggregation through a proxy model. :github-issue:`583` (:github-user:`tned73`)
 
 `1.2`_ - 2020-11-26
 -------------------
 
 **Fixed**
 
-- Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments `#522`_ (`wearebasti`_)
-- ``DeprecationWarning`` related to the usage of ``cafile`` in ``urlopen``. `#553`_ (`Stranger6667`_)
+- Resulting Money object from arithmetics (add / sub / ...) inherits maximum decimal_places from arguments :github-issue:`522` (:github-user:`wearebasti`)
+- ``DeprecationWarning`` related to the usage of ``cafile`` in ``urlopen``. :github-issue:`553` (:github-user:`Stranger6667`)
 
 **Added**
 
@@ -213,39 +222,39 @@ Changelog
 
 **Fixed**
 
-- Optimize money operations on MoneyField instances with the same currencies. `#541`_ (`horpto`_)
+- Optimize money operations on MoneyField instances with the same currencies. :github-issue:`541` (:github-user:`horpto`)
 
 **Added**
 
-- Support for ``Money`` type in ``QuerySet.bulk_update()`` `#534`_ (`satels`_)
+- Support for ``Money`` type in ``QuerySet.bulk_update()`` :github-issue:`534` (:github-user:`satels`)
 
 `1.0`_ - 2019-11-08
 -------------------
 
 **Added**
 
-- Support for money descriptor customization. (`Stranger6667`_)
-- Fix ``order_by()`` not returning money-compatible queryset `#519`_ (`lieryan`_)
+- Support for money descriptor customization. (:github-user:`Stranger6667`)
+- Fix ``order_by()`` not returning money-compatible queryset :github-issue:`519` (:github-user:`lieryan`)
 - Django 3.0 support
 
 **Removed**
 
-- Support for Django 1.8 & 2.0. (`Stranger6667`_)
-- Support for Python 2.7. `#515`_ (`benjaoming`_)
-- Support for Python 3.4. (`Stranger6667`_)
-- ``MoneyPatched``, use ``djmoney.money.Money`` instead. (`Stranger6667`_)
+- Support for Django 1.8 & 2.0. (:github-user:`Stranger6667`)
+- Support for Python 2.7. :github-issue:`515` (:github-user:`benjaoming`)
+- Support for Python 3.4. (:github-user:`Stranger6667`)
+- ``MoneyPatched``, use ``djmoney.money.Money`` instead. (:github-user:`Stranger6667`)
 
 **Fixed**
 
-- Support instances with ``decimal_places=0`` `#509`_ (`fara`_)
+- Support instances with ``decimal_places=0`` :github-issue:`509` (:github-user:`fara`)
 
 `0.15.1`_ - 2019-06-22
 ----------------------
 
 **Fixed**
 
-- Respect field ``decimal_places`` when instantiating ``Money`` object from field db values. `#501`_ (`astutejoe`_)
-- Restored linting in CI tests (`benjaoming`_)
+- Respect field ``decimal_places`` when instantiating ``Money`` object from field db values. :github-issue:`501` (:github-user:`astutejoe`)
+- Restored linting in CI tests (:github-user:`benjaoming`)
 
 `0.15`_ - 2019-05-30
 --------------------
@@ -256,54 +265,54 @@ Backwards incompatible changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Remove implicit default value on non-nullable MoneyFields.
-  Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. `#411`_ (`washeck`_)
-- Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (`Stranger6667`_)
-- ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. `#376`_
-- In model and non-model forms ``forms.MoneyField`` uses ``CURRENCY_DECIMAL_PLACES`` as the default value for ``decimal_places``. `#434`_ (`Stranger6667`_, `andytwoods`_)
+  Backwards incompatible change: set explicit ``default=0.0`` to keep previous behavior. :github-issue:`411` (:github-user:`washeck`)
+- Remove support for calling ``float`` on ``Money`` instances. Use the ``amount`` attribute instead. (:github-user:`Stranger6667`)
+- ``MinMoneyValidator`` and ``MaxMoneyValidator`` are not inherited from Django's ``MinValueValidator`` and ``MaxValueValidator`` anymore. :github-issue:`376`
+- In model and non-model forms ``forms.MoneyField`` uses ``CURRENCY_DECIMAL_PLACES`` as the default value for ``decimal_places``. :github-issue:`434` (:github-user:`Stranger6667`, :github-user:`andytwoods`)
 
 **Added**
 
 - Add ``Money.decimal_places`` for per-instance configuration of decimal places in the string representation.
-- Support for customization of ``CurrencyField`` length. Some cryptocurrencies could have codes longer than three characters. `#480`_ (`Stranger6667`_, `MrFus10n`_)
-- Add ``default_currency`` option for REST Framework field. `#475`_ (`butorov`_)
+- Support for customization of ``CurrencyField`` length. Some cryptocurrencies could have codes longer than three characters. :github-issue:`480` (:github-user:`Stranger6667`, :github-user:`MrFus10n`)
+- Add ``default_currency`` option for REST Framework field. :github-issue:`475` (:github-user:`butorov`)
 
 **Fixed**
 
 - Failing certificates checks when accessing 3rd party exchange rates backends.
-  Fixed by adding `certifi` to the dependencies list. `#403`_ (`Stranger6667`_)
-- Fixed model-level ``validators`` behavior in REST Framework. `#376`_ (`rapIsKal`_, `Stranger6667`_)
-- Setting keyword argument ``default_currency=None`` for ``MoneyField`` did not revert to ``settings.DEFAULT_CURRENCY`` and set ``str(None)`` as database value for currency. `#490`_  (`benjaoming`_)
+  Fixed by adding `certifi` to the dependencies list. :github-issue:`403` (:github-user:`Stranger6667`)
+- Fixed model-level ``validators`` behavior in REST Framework. :github-issue:`376` (:github-user:`rapIsKal`, :github-user:`Stranger6667`)
+- Setting keyword argument ``default_currency=None`` for ``MoneyField`` did not revert to ``settings.DEFAULT_CURRENCY`` and set ``str(None)`` as database value for currency. :github-issue:`490`  (:github-user:`benjaoming`)
 
 **Changed**
 
 - Allow using patched ``django.core.serializers.python._get_model`` in serializers, which could be helpful for
-  migrations. (`Formulka`_, `Stranger6667`_)
+  migrations. (:github-user:`Formulka`, :github-user:`Stranger6667`)
 
 `0.14.4`_ - 2019-01-07
 ----------------------
 
 **Changed**
 
-- Re-raise arbitrary exceptions in JSON deserializer as `DeserializationError`. (`Stranger6667`_)
+- Re-raise arbitrary exceptions in JSON deserializer as `DeserializationError`. (:github-user:`Stranger6667`)
 
 **Fixed**
 
-- Invalid Django 1.8 version check in ``djmoney.models.fields.MoneyField.value_to_string``. (`Stranger6667`_)
-- InvalidOperation in ``djmoney.contrib.django_rest_framework.fields.MoneyField.get_value`` when amount is None and currency is not None. `#458`_ (`carvincarl`_)
+- Invalid Django 1.8 version check in ``djmoney.models.fields.MoneyField.value_to_string``. (:github-user:`Stranger6667`)
+- InvalidOperation in ``djmoney.contrib.django_rest_framework.fields.MoneyField.get_value`` when amount is None and currency is not None. :github-issue:`458` (:github-user:`carvincarl`)
 
 `0.14.3`_ - 2018-08-14
 ----------------------
 
 **Fixed**
 
-- ``djmoney.forms.widgets.MoneyWidget`` decompression on Django 2.1+. `#443`_ (`Stranger6667`_)
+- ``djmoney.forms.widgets.MoneyWidget`` decompression on Django 2.1+. :github-issue:`443` (:github-user:`Stranger6667`)
 
 `0.14.2`_ - 2018-07-23
 ----------------------
 
 **Fixed**
 
-- Validation of ``djmoney.forms.fields.MoneyField`` when ``disabled=True`` is passed to it. `#439`_ (`stinovlas`_, `Stranger6667`_)
+- Validation of ``djmoney.forms.fields.MoneyField`` when ``disabled=True`` is passed to it. :github-issue:`439` (:github-user:`stinovlas`, :github-user:`Stranger6667`)
 
 `0.14.1`_ - 2018-07-17
 ----------------------
@@ -312,81 +321,81 @@ Backwards incompatible changes
 
 - Support for indirect rates conversion through maximum 1 extra step (when there is no direct conversion rate:
   converting by means of a third currency for which both source and target currency have conversion
-  rates). `#425`_ (`Stranger6667`_, `77cc33`_)
+  rates). :github-issue:`425` (:github-user:`Stranger6667`, :github-user:`77cc33`)
 
 **Fixed**
 
-- Error was raised when trying to do a query with a `ModelWithNullableCurrency`. `#427`_ (`Woile`_)
+- Error was raised when trying to do a query with a `ModelWithNullableCurrency`. :github-issue:`427` (:github-user:`Woile`)
 
 `0.14`_ - 2018-06-09
 --------------------
 
 **Added**
 
-- Caching of exchange rates. `#398`_ (`Stranger6667`_)
-- Added support for nullable ``CurrencyField``. `#260`_ (`Stranger6667`_)
+- Caching of exchange rates. :github-issue:`398` (:github-user:`Stranger6667`)
+- Added support for nullable ``CurrencyField``. :github-issue:`260` (:github-user:`Stranger6667`)
 
 **Fixed**
 
-- Same currency conversion getting MissingRate exception `#418`_ (`humrochagf`_)
-- `TypeError` during templatetag usage inside a for loop on Django 2.0. `#402`_ (`f213`_)
+- Same currency conversion getting MissingRate exception :github-issue:`418` (:github-user:`humrochagf`)
+- `TypeError` during templatetag usage inside a for loop on Django 2.0. :github-issue:`402` (:github-user:`f213`)
 
 **Removed**
 
-- Support for Python 3.3 `#410`_ (`benjaoming`_)
-- Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (`Stranger6667`_)
+- Support for Python 3.3 :github-issue:`410` (:github-user:`benjaoming`)
+- Deprecated ``choices`` argument from ``djmoney.forms.fields.MoneyField``. Use ``currency_choices`` instead. (:github-user:`Stranger6667`)
 
 `0.13.5`_ - 2018-05-19
 ----------------------
 
 **Fixed**
 
-- Missing in dist, ``djmoney/__init__.py``. `#417`_ (`benjaoming`_)
+- Missing in dist, ``djmoney/__init__.py``. :github-issue:`417` (:github-user:`benjaoming`)
 
 `0.13.4`_ - 2018-05-19
 ----------------------
 
 **Fixed**
 
-- Packaging of ``djmoney.contrib.exchange.management.commands``. `#412`_ (`77cc33`_, `Stranger6667`_)
+- Packaging of ``djmoney.contrib.exchange.management.commands``. :github-issue:`412` (:github-user:`77cc33`, :github-user:`Stranger6667`)
 
 `0.13.3`_ - 2018-05-12
 ----------------------
 
 **Added**
 
-- Rounding support via ``round`` built-in function on Python 3. (`Stranger6667`_)
+- Rounding support via ``round`` built-in function on Python 3. (:github-user:`Stranger6667`)
 
 `0.13.2`_ - 2018-04-16
 ----------------------
 
 **Added**
 
-- Django Admin integration for exchange rates. `#392`_ (`Stranger6667`_)
+- Django Admin integration for exchange rates. :github-issue:`392` (:github-user:`Stranger6667`)
 
 **Fixed**
 
-- Exchange rates. TypeError when decoding JSON on Python 3.3-3.5. `#399`_ (`kcyeu`_)
-- Managers patching for models with custom ``Meta.default_manager_name``. `#400`_ (`Stranger6667`_)
+- Exchange rates. TypeError when decoding JSON on Python 3.3-3.5. :github-issue:`399` (:github-user:`kcyeu`)
+- Managers patching for models with custom ``Meta.default_manager_name``. :github-issue:`400` (:github-user:`Stranger6667`)
 
 `0.13.1`_ - 2018-04-07
 ----------------------
 
 **Fixed**
 
-- Regression: Could not run w/o ``django.contrib.exchange`` `#388`_ (`Stranger6667`_)
+- Regression: Could not run w/o ``django.contrib.exchange`` :github-issue:`388` (:github-user:`Stranger6667`)
 
 `0.13`_ - 2018-04-07
 --------------------
 
 **Added**
 
-- Currency exchange `#385`_ (`Stranger6667`_)
+- Currency exchange :github-issue:`385` (:github-user:`Stranger6667`)
 
 **Removed**
 
-- Support for ``django-money-rates`` `#385`_ (`Stranger6667`_)
-- Deprecated ``Money.__float__`` which is implicitly called on some ``sum()`` operations `#347`_. (`jonashaag`_)
+- Support for ``django-money-rates`` :github-issue:`385` (:github-user:`Stranger6667`)
+- Deprecated ``Money.__float__`` which is implicitly called on some ``sum()`` operations :github-issue:`347`. (:github-user:`jonashaag`)
 
 Migration from django-money-rates
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -406,41 +415,41 @@ For more information, look at ``Working with Exchange Rates`` section in README.
 
 **Fixed**
 
-- Fixed ``BaseMoneyValidator`` with falsy limit values. `#371`_ (`1337`_)
+- Fixed ``BaseMoneyValidator`` with falsy limit values. :github-issue:`371` (:github-user:`1337`)
 
 `0.12.2`_ - 2017-12-12
 ----------------------
 
 **Fixed**
 
-- Django master branch compatibility. `#361`_ (`Stranger6667`_)
-- Fixed ``get_or_create`` for models with shared currency. `#364`_ (`Stranger6667`_)
+- Django master branch compatibility. :github-issue:`361` (:github-user:`Stranger6667`)
+- Fixed ``get_or_create`` for models with shared currency. :github-issue:`364` (:github-user:`Stranger6667`)
 
 **Changed**
 
-- Removed confusing rounding to integral value in ``Money.__repr__``. `#366`_ (`Stranger6667`_, `evenicoulddoit`_)
+- Removed confusing rounding to integral value in ``Money.__repr__``. :github-issue:`366` (:github-user:`Stranger6667`, :github-user:`evenicoulddoit`)
 
 `0.12.1`_ - 2017-11-20
 ----------------------
 
 **Fixed**
 
-- Fixed migrations on SQLite. `#139`_, `#338`_ (`Stranger6667`_)
-- Fixed ``Field.rel.to`` usage for Django 2.0. `#349`_ (`richardowen`_)
-- Fixed Django REST Framework behaviour for serializers without ``*_currency`` field in serializer's ``Meta.fields``. `#351`_ (`elcolie`_, `Stranger6667`_)
+- Fixed migrations on SQLite. :github-issue:`139`, :github-issue:`338` (:github-user:`Stranger6667`)
+- Fixed ``Field.rel.to`` usage for Django 2.0. :github-issue:`349` (:github-user:`richardowen`)
+- Fixed Django REST Framework behaviour for serializers without ``*_currency`` field in serializer's ``Meta.fields``. :github-issue:`351` (:github-user:`elcolie`, :github-user:`Stranger6667`)
 
 `0.12`_ - 2017-10-22
 --------------------
 
 **Added**
 
-- Ability to specify name for currency field. `#195`_ (`Stranger6667`_)
-- Validators for ``MoneyField``. `#308`_ (`Stranger6667`_)
+- Ability to specify name for currency field. :github-issue:`195` (:github-user:`Stranger6667`)
+- Validators for ``MoneyField``. :github-issue:`308` (:github-user:`Stranger6667`)
 
 **Changed**
 
-- Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. `#276`_ (`Stranger6667`_)
-- Implement ``__html__`` method. If used in Django templates, an ``Money`` object's amount and currency are now separated with non-breaking space (``&nbsp;``) `#337`_ (`jonashaag`_)
+- Improved ``Money`` support. Now ``django-money`` fully relies on ``pymoneyed`` localization everywhere, including Django admin. :github-issue:`276` (:github-user:`Stranger6667`)
+- Implement ``__html__`` method. If used in Django templates, an ``Money`` object's amount and currency are now separated with non-breaking space (``&nbsp;``) :github-issue:`337` (:github-user:`jonashaag`)
 
 **Deprecated**
 
@@ -448,102 +457,102 @@ For more information, look at ``Working with Exchange Rates`` section in README.
 
 **Fixed**
 
-- Fixed model field validation. `#308`_ (`Stranger6667`_).
-- Fixed managers caching for Django >= 1.10. `#318`_ (`Stranger6667`_).
-- Fixed ``F`` expressions support for ``in`` lookups. `#321`_ (`Stranger6667`_).
-- Fixed money comprehension on querysets. `#331`_ (`Stranger6667`_, `jaavii1988`_).
-- Fixed errors in Django Admin integration. `#334`_ (`Stranger6667`_, `adi-`_).
+- Fixed model field validation. :github-issue:`308` (:github-user:`Stranger6667`).
+- Fixed managers caching for Django >= 1.10. :github-issue:`318` (:github-user:`Stranger6667`).
+- Fixed ``F`` expressions support for ``in`` lookups. :github-issue:`321` (:github-user:`Stranger6667`).
+- Fixed money comprehension on querysets. :github-issue:`331` (:github-user:`Stranger6667`, :github-user:`jaavii1988`).
+- Fixed errors in Django Admin integration. :github-issue:`334` (:github-user:`Stranger6667`, :github-user:`adi-`).
 
 **Removed**
 
-- Dropped support for Python 2.6 and 3.2. (`Stranger6667`_)
-- Dropped support for Django 1.4, 1.5, 1.6, 1.7 and 1.9. (`Stranger6667`_)
+- Dropped support for Python 2.6 and 3.2. (:github-user:`Stranger6667`)
+- Dropped support for Django 1.4, 1.5, 1.6, 1.7 and 1.9. (:github-user:`Stranger6667`)
 
 `0.11.4`_ - 2017-06-26
 ----------------------
 
 **Fixed**
 
-- Fixed money parameters processing in update queries. `#309`_ (`Stranger6667`_)
+- Fixed money parameters processing in update queries. :github-issue:`309` (:github-user:`Stranger6667`)
 
 `0.11.3`_ - 2017-06-19
 ----------------------
 
 **Fixed**
 
-- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6 `#304`_ (`Stranger6667`_)
+- Restored support for Django 1.4, 1.5, 1.6, and 1.7 & Python 2.6 :github-issue:`304` (:github-user:`Stranger6667`)
 
 `0.11.2`_ - 2017-05-31
 ----------------------
 
 **Fixed**
 
-- Fixed field lookup regression. `#300`_ (`lmdsp`_, `Stranger6667`_)
+- Fixed field lookup regression. :github-issue:`300` (:github-user:`lmdsp`, :github-user:`Stranger6667`)
 
 `0.11.1`_ - 2017-05-26
 ----------------------
 
 **Fixed**
 
-- Fixed access to models properties. `#297`_ (`mithrilstar`_, `Stranger6667`_)
+- Fixed access to models properties. :github-issue:`297` (:github-user:`mithrilstar`, :github-user:`Stranger6667`)
 
 **Removed**
 
-- Dropped support for Python 2.6. (`Stranger6667`_)
-- Dropped support for Django < 1.8. (`Stranger6667`_)
+- Dropped support for Python 2.6. (:github-user:`Stranger6667`)
+- Dropped support for Django < 1.8. (:github-user:`Stranger6667`)
 
 `0.11`_ - 2017-05-19
 --------------------
 
 **Added**
 
-- An ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. `#211`_ (`Stranger6667`_, `ChessSpider`_)
+- An ability to set custom currency choices via ``CURRENCY_CHOICES`` settings option. :github-issue:`211` (:github-user:`Stranger6667`, :github-user:`ChessSpider`)
 
 **Fixed**
 
-- Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. `#268`_ (`Stranger6667`_, `lobziik`_)
-- Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. `#272`_ (`Stranger6667`_)
-- Fixed various displaying errors in Django Admin . `#232`_, `#220`_, `#196`_, `#102`_, `#90`_ (`Stranger6667`_,
-  `arthurk`_, `mstarostik`_, `eriktelepovsky`_, `jplehmann`_, `graik`_, `benjaoming`_, `k8n`_, `yellow-sky`_)
-- Fixed non-Money values support for ``in`` lookup. `#278`_ (`Stranger6667`_)
-- Fixed available lookups with removing of needless lookup check. `#277`_ (`Stranger6667`_)
-- Fixed compatibility with ``py-moneyed``. (`Stranger6667`_)
-- Fixed ignored currency value in Django REST Framework integration. `#292`_ (`gonzalobf`_)
+- Fixed ``AttributeError`` in ``get_or_create`` when the model have no default. :github-issue:`268` (:github-user:`Stranger6667`, :github-user:`lobziik`)
+- Fixed ``UnicodeEncodeError`` in string representation of ``MoneyPatched`` on Python 2. :github-issue:`272` (:github-user:`Stranger6667`)
+- Fixed various displaying errors in Django Admin . :github-issue:`232`, :github-issue:`220`, :github-issue:`196`, :github-issue:`102`, :github-issue:`90` (:github-user:`Stranger6667`,
+  :github-user:`arthurk`, :github-user:`mstarostik`, :github-user:`eriktelepovsky`, :github-user:`jplehmann`, :github-user:`graik`, :github-user:`benjaoming`, :github-user:`k8n`, :github-user:`yellow-sky`)
+- Fixed non-Money values support for ``in`` lookup. :github-issue:`278` (:github-user:`Stranger6667`)
+- Fixed available lookups with removing of needless lookup check. :github-issue:`277` (:github-user:`Stranger6667`)
+- Fixed compatibility with ``py-moneyed``. (:github-user:`Stranger6667`)
+- Fixed ignored currency value in Django REST Framework integration. :github-issue:`292` (:github-user:`gonzalobf`)
 
 `0.10.2`_ - 2017-02-18
 ----------------------
 
 **Added**
 
-- Added ability to configure decimal places output. `#154`_, `#251`_ (`ivanchenkodmitry`_)
+- Added ability to configure decimal places output. :github-issue:`154`, :github-issue:`251` (:github-user:`ivanchenkodmitry`)
 
 **Fixed**
 
-- Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. `#257`_ (`kjagiello`_)
-- Fixed handling of currency fields lookups in ``get_or_create`` method. `#258`_ (`Stranger6667`_)
-- Fixed ``PendingDeprecationWarning`` during form initialization. `#262`_ (`Stranger6667`_, `spookylukey`_)
-- Fixed handling of ``F`` expressions which involve non-Money fields. `#265`_ (`Stranger6667`_)
+- Fixed handling of ``defaults`` keyword argument in ``get_or_create`` method. :github-issue:`257` (:github-user:`kjagiello`)
+- Fixed handling of currency fields lookups in ``get_or_create`` method. :github-issue:`258` (:github-user:`Stranger6667`)
+- Fixed ``PendingDeprecationWarning`` during form initialization. :github-issue:`262` (:github-user:`Stranger6667`, :github-user:`spookylukey`)
+- Fixed handling of ``F`` expressions which involve non-Money fields. :github-issue:`265` (:github-user:`Stranger6667`)
 
 `0.10.1`_ - 2016-12-26
 ----------------------
 
 **Fixed**
 
-- Fixed default value for ``djmoney.forms.fields.MoneyField``. `#249`_ (`tsouvarev`_)
+- Fixed default value for ``djmoney.forms.fields.MoneyField``. :github-issue:`249` (:github-user:`tsouvarev`)
 
 `0.10`_ - 2016-12-19
 --------------------
 
 **Changed**
 
-- Do not fail comparisons because of different currency. Just return ``False`` `#225`_ (`benjaoming`_ and `ivirabyan`_)
+- Do not fail comparisons because of different currency. Just return ``False`` :github-issue:`225` (:github-user:`benjaoming` and :github-user:`ivirabyan`)
 
 **Fixed**
 
-- Fixed ``understands_money`` behaviour. Now it can be used as a decorator `#215`_ (`Stranger6667`_)
-- Fixed: Not possible to revert MoneyField currency back to default `#221`_ (`benjaoming`_)
-- Fixed invalid ``creation_counter`` handling. `#235`_ (`msgre`_ and `Stranger6667`_)
-- Fixed broken field resolving. `#241`_ (`Stranger6667`_)
+- Fixed ``understands_money`` behaviour. Now it can be used as a decorator :github-issue:`215` (:github-user:`Stranger6667`)
+- Fixed: Not possible to revert MoneyField currency back to default :github-issue:`221` (:github-user:`benjaoming`)
+- Fixed invalid ``creation_counter`` handling. :github-issue:`235` (:github-user:`msgre` and :github-user:`Stranger6667`)
+- Fixed broken field resolving. :github-issue:`241` (:github-user:`Stranger6667`)
 
 `0.9.1`_ - 2016-08-01
 ---------------------
@@ -559,24 +568,24 @@ NB! If you are using custom model managers **not** named ``objects`` and you exp
 
 **Added**
 
-- Support for ``Value`` and ``Func`` expressions in queries. (`Stranger6667`_)
-- Support for ``in`` lookup. (`Stranger6667`_)
-- Django REST Framework support. `#179`_ (`Stranger6667`_)
-- Django 1.10 support. `#198`_ (`Stranger6667`_)
-- Improved South support. (`Stranger6667`_)
+- Support for ``Value`` and ``Func`` expressions in queries. (:github-user:`Stranger6667`)
+- Support for ``in`` lookup. (:github-user:`Stranger6667`)
+- Django REST Framework support. :github-issue:`179` (:github-user:`Stranger6667`)
+- Django 1.10 support. :github-issue:`198` (:github-user:`Stranger6667`)
+- Improved South support. (:github-user:`Stranger6667`)
 
 **Changed**
 
 - Changed auto conversion of currencies using djmoney_rates (added in 0.7.3) to
   be off by default. You must now add ``AUTO_CONVERT_MONEY = True`` in
-  your ``settings.py`` if you want this feature. `#199`_ (`spookylukey`_)
-- Only make ``objects`` a MoneyManager instance automatically. `#194`_ and `#201`_ (`inureyes`_)
+  your ``settings.py`` if you want this feature. :github-issue:`199` (:github-user:`spookylukey`)
+- Only make ``objects`` a MoneyManager instance automatically. :github-issue:`194` and :github-issue:`201` (:github-user:`inureyes`)
 
 **Fixed**
 
-- Fixed default currency value for nullable fields in forms. `#138`_ (`Stranger6667`_)
-- Fixed ``_has_changed`` deprecation warnings. `#206`_ (`Stranger6667`_)
-- Fixed ``get_or_create`` crash, when ``defaults`` is passed. `#213`_ (`Stranger6667`_, `spookylukey`_)
+- Fixed default currency value for nullable fields in forms. :github-issue:`138` (:github-user:`Stranger6667`)
+- Fixed ``_has_changed`` deprecation warnings. :github-issue:`206` (:github-user:`Stranger6667`)
+- Fixed ``get_or_create`` crash, when ``defaults`` is passed. :github-issue:`213` (:github-user:`Stranger6667`, :github-user:`spookylukey`)
 
 Note about automatic model manager patches
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -609,136 +618,136 @@ wrapping with ``money_manager``.
 
 **Added**
 
-- Support for serialization of ``MoneyPatched`` instances in migrations. (`AlexRiina`_)
-- Improved django-money-rates support. `#173`_ (`Stranger6667`_)
-- Extended ``F`` expressions support. (`Stranger6667`_)
-- Pre-commit hooks support. (`benjaoming`_)
-- Isort integration. (`Stranger6667`_)
-- Makefile for common commands. (`Stranger6667`_)
-- Codecov.io integration. (`Stranger6667`_)
-- Python 3.5 builds to tox.ini and travis.yml. (`Stranger6667`_)
-- Django master support. (`Stranger6667`_)
-- Python 3.2 compatibility. (`Stranger6667`_)
+- Support for serialization of ``MoneyPatched`` instances in migrations. (:github-user:`AlexRiina`)
+- Improved django-money-rates support. :github-issue:`173` (:github-user:`Stranger6667`)
+- Extended ``F`` expressions support. (:github-user:`Stranger6667`)
+- Pre-commit hooks support. (:github-user:`benjaoming`)
+- Isort integration. (:github-user:`Stranger6667`)
+- Makefile for common commands. (:github-user:`Stranger6667`)
+- Codecov.io integration. (:github-user:`Stranger6667`)
+- Python 3.5 builds to tox.ini and travis.yml. (:github-user:`Stranger6667`)
+- Django master support. (:github-user:`Stranger6667`)
+- Python 3.2 compatibility. (:github-user:`Stranger6667`)
 
 **Changed**
 
-- Refactored test suite (`Stranger6667`_)
+- Refactored test suite (:github-user:`Stranger6667`)
 
 **Fixed**
 
-- Fixed fields caching. `#186`_ (`Stranger6667`_)
-- Fixed m2m fields data loss on Django < 1.8. `#184`_ (`Stranger6667`_)
-- Fixed managers access via instances. `#86`_ (`Stranger6667`_)
-- Fixed currency handling behaviour. `#172`_ (`Stranger6667`_)
-- Many PEP8 & flake8 fixes. (`benjaoming`_)
-- Fixed filtration with ``F`` expressions. `#174`_ (`Stranger6667`_)
-- Fixed querying on Django 1.8+. `#166`_ (`Stranger6667`_)
+- Fixed fields caching. :github-issue:`186` (:github-user:`Stranger6667`)
+- Fixed m2m fields data loss on Django < 1.8. :github-issue:`184` (:github-user:`Stranger6667`)
+- Fixed managers access via instances. :github-issue:`86` (:github-user:`Stranger6667`)
+- Fixed currency handling behaviour. :github-issue:`172` (:github-user:`Stranger6667`)
+- Many PEP8 & flake8 fixes. (:github-user:`benjaoming`)
+- Fixed filtration with ``F`` expressions. :github-issue:`174` (:github-user:`Stranger6667`)
+- Fixed querying on Django 1.8+. :github-issue:`166` (:github-user:`Stranger6667`)
 
 `0.7.6`_ - 2016-01-08
 ---------------------
 
 **Added**
 
-- Added correct paths for py.test discovery. (`benjaoming`_)
-- Mention Django 1.9 in tox.ini. (`benjaoming`_)
+- Added correct paths for py.test discovery. (:github-user:`benjaoming`)
+- Mention Django 1.9 in tox.ini. (:github-user:`benjaoming`)
 
 **Fixed**
 
-- Fix for ``get_or_create`` / ``create`` manager methods not respecting currency code. (`toudi`_)
-- Fix unit tests. (`toudi`_)
-- Fix for using ``MoneyField`` with ``F`` expressions when using Django >= 1.8. (`toudi`_)
+- Fix for ``get_or_create`` / ``create`` manager methods not respecting currency code. (:github-user:`toudi`)
+- Fix unit tests. (:github-user:`toudi`)
+- Fix for using ``MoneyField`` with ``F`` expressions when using Django >= 1.8. (:github-user:`toudi`)
 
 `0.7.5`_ - 2015-12-22
 ---------------------
 
 **Fixed**
 
-- Fallback to ``_meta.fields`` if ``_meta.get_fields`` raises ``AttributeError`` `#149`_ (`browniebroke`_)
-- pip instructions updated. (`GheloAce`_)
+- Fallback to ``_meta.fields`` if ``_meta.get_fields`` raises ``AttributeError`` :github-issue:`149` (:github-user:`browniebroke`)
+- pip instructions updated. (:github-user:`GheloAce`)
 
 `0.7.4`_ - 2015-11-02
 ---------------------
 
 **Added**
 
-- Support for Django 1.9 (`kjagiello`_)
+- Support for Django 1.9 (:github-user:`kjagiello`)
 
 **Fixed**
 
-- Fixed loaddata. (`jack-cvr`_)
-- Python 2.6 fixes. (`jack-cvr`_)
-- Fixed currency choices ordering. (`synotna`_)
+- Fixed loaddata. (:github-user:`jack-cvr`)
+- Python 2.6 fixes. (:github-user:`jack-cvr`)
+- Fixed currency choices ordering. (:github-user:`synotna`)
 
 `0.7.3`_ - 2015-10-16
 ---------------------
 
 **Added**
 
-- Sum different currencies. (`dnmellen`_)
-- ``__eq__`` method. (`benjaoming`_)
-- Comparison of different currencies. (`benjaoming`_)
-- Default currency. (`benjaoming`_)
+- Sum different currencies. (:github-user:`dnmellen`)
+- ``__eq__`` method. (:github-user:`benjaoming`)
+- Comparison of different currencies. (:github-user:`benjaoming`)
+- Default currency. (:github-user:`benjaoming`)
 
 **Fixed**
 
-- Fix using Choices for setting currency choices. (`benjaoming`_)
-- Fix tests for Python 2.6. (`plumdog`_)
+- Fix using Choices for setting currency choices. (:github-user:`benjaoming`)
+- Fix tests for Python 2.6. (:github-user:`plumdog`)
 
 `0.7.2`_ - 2015-09-01
 ---------------------
 
 **Fixed**
 
-- Better checks on ``None`` values. (`tsouvarev`_, `sjdines`_)
-- Consistency with South declarations and calling ``str`` function. (`sjdines`_)
+- Better checks on ``None`` values. (:github-user:`tsouvarev`, :github-user:`sjdines`)
+- Consistency with South declarations and calling ``str`` function. (:github-user:`sjdines`)
 
 `0.7.1`_ - 2015-08-11
 ---------------------
 
 **Fixed**
 
-- Fix bug in printing ``MoneyField``. (`YAmikep`_)
-- Added fallback value for current locale getter. (`sjdines`_)
+- Fix bug in printing ``MoneyField``. (:github-user:`YAmikep`)
+- Added fallback value for current locale getter. (:github-user:`sjdines`)
 
 `0.7.0`_ - 2015-06-14
 ---------------------
 
 **Added**
 
-- Django 1.8 compatibility. (`willhcr`_)
+- Django 1.8 compatibility. (:github-user:`willhcr`)
 
 `0.6.0`_ - 2015-05-23
 ---------------------
 
 **Added**
 
-- Python 3 trove classifier. (`dekkers`_)
+- Python 3 trove classifier. (:github-user:`dekkers`)
 
 **Changed**
 
-- Tox cleanup. (`edwinlunando`_)
-- Improved ``README``. (`glarrain`_)
-- Added/Cleaned up tests. (`spookylukey`_, `AlexRiina`_)
+- Tox cleanup. (:github-user:`edwinlunando`)
+- Improved ``README``. (:github-user:`glarrain`)
+- Added/Cleaned up tests. (:github-user:`spookylukey`, :github-user:`AlexRiina`)
 
 **Fixed**
 
-- Append ``_currency`` to non-money ExpressionFields. `#101`_ (`alexhayes`_, `AlexRiina`_, `briankung`_)
-- Data truncated for column. `#103`_ (`alexhayes`_)
-- Fixed ``has_changed`` not working. `#95`_ (`spookylukey`_)
-- Fixed proxy model with ``MoneyField`` returns wrong class. `#80`_ (`spookylukey`_)
+- Append ``_currency`` to non-money ExpressionFields. :github-issue:`101` (:github-user:`alexhayes`, :github-user:`AlexRiina`, :github-user:`briankung`)
+- Data truncated for column. :github-issue:`103` (:github-user:`alexhayes`)
+- Fixed ``has_changed`` not working. :github-issue:`95` (:github-user:`spookylukey`)
+- Fixed proxy model with ``MoneyField`` returns wrong class. :github-issue:`80` (:github-user:`spookylukey`)
 
 `0.5.0`_ - 2014-12-15
 ---------------------
 
 **Added**
 
-- Django 1.7 compatibility. (`w00kie`_)
+- Django 1.7 compatibility. (:github-user:`w00kie`)
 
 **Fixed**
 
-- Added ``choices=`` to instantiation of currency widget. (`davidstockwell`_)
-- Nullable ``MoneyField`` should act as ``default=None``. (`jakewins`_)
-- Fixed bug where a non-required ``MoneyField`` threw an exception. (`spookylukey`_)
+- Added ``choices=`` to instantiation of currency widget. (:github-user:`davidstockwell`)
+- Nullable ``MoneyField`` should act as ``default=None``. (:github-user:`jakewins`)
+- Fixed bug where a non-required ``MoneyField`` threw an exception. (:github-user:`spookylukey`)
 
 `0.4.2`_ - 2014-07-31
 ---------------------
@@ -765,47 +774,48 @@ wrapping with ``money_manager``.
 
 **Added**
 
-- South support via implementing the ``south_triple_field`` method. (`mattions`_)
+- South support via implementing the ``south_triple_field`` method. (:github-user:`mattions`)
 
 **Fixed**
 
-- Fixed issues with money widget not passing attrs up to django's render method, caused id attribute to not be set in html for widgets. (`adambregenzer`_)
-- Fixed issue of default currency not being passed on to widget. (`snbuchholz`_)
-- Return the right default for South. (`mattions`_)
-- Django 1.5 compatibility. (`devlocal`_)
+- Fixed issues with money widget not passing attrs up to django's render method, caused id attribute to not be set in html for widgets. (:github-user:`adambregenzer`)
+- Fixed issue of default currency not being passed on to widget. (:github-user:`snbuchholz`)
+- Return the right default for South. (:github-user:`mattions`)
+- Django 1.5 compatibility. (:github-user:`devlocal`)
 
 `0.3.2`_ - 2012-11-30
 ---------------------
 
 **Fixed**
 
-- Fixed issues with ``display_for_field`` not detecting fields correctly. (`adambregenzer`_)
-- Added South ignore rule to avoid duplicate currency field when using the frozen ORM. (`rach`_)
-- Disallow override of objects manager if not setting it up with an instance. (`rach`_)
+- Fixed issues with ``display_for_field`` not detecting fields correctly. (:github-user:`adambregenzer`)
+- Added South ignore rule to avoid duplicate currency field when using the frozen ORM. (:github-user:`rach`)
+- Disallow override of objects manager if not setting it up with an instance. (:github-user:`rach`)
 
 `0.3.1`_ - 2012-10-11
 ---------------------
 
 **Fixed**
 
-- Fix ``AttributeError`` when Model inherit a manager. (`rach`_)
-- Correctly serialize the field. (`akumria`_)
+- Fix ``AttributeError`` when Model inherit a manager. (:github-user:`rach`)
+- Correctly serialize the field. (:github-user:`akumria`)
 
 `0.3`_ - 2012-09-30
 -------------------
 
 **Added**
 
-- Allow django-money to be specified as read-only in a model. (`akumria`_)
-- South support: Declare default attribute values. (`pjdelport`_)
+- Allow django-money to be specified as read-only in a model. (:github-user:`akumria`)
+- South support: Declare default attribute values. (:github-user:`pjdelport`)
 
 `0.2`_ - 2012-04-10
 -------------------
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/3.4...HEAD
+.. _Unreleased: https:///github.com/django-money/django-money/compare/3.4.1...HEAD
 
+.. _3.4.1: https:///github.com/django-money/django-money/compare/3.4...3.4.1
 .. _3.4: https:///github.com/django-money/django-money/compare/3.3...3.4
 .. _3.3: https:///github.com/django-money/django-money/compare/3.2...3.3
 .. _3.2: https:///github.com/django-money/django-money/compare/3.1...3.2
@@ -872,216 +882,3 @@ wrapping with ``money_manager``.
 .. _0.3.1: https://github.com/django-money/django-money/compare/0.3...0.3.1
 .. _0.3: https://github.com/django-money/django-money/compare/0.2...0.3
 .. _0.2: https://github.com/django-money/django-money/compare/0.2...a6d90348085332a393abb40b86b5dd9505489b04
-
-.. _#700: https://github.com/django-money/django-money/pull/700
-.. _#692: https://github.com/django-money/django-money/pull/692
-.. _#689: https://github.com/django-money/django-money/pull/689
-.. _#686: https://github.com/django-money/django-money/pull/686
-.. _#681: https://github.com/django-money/django-money/pull/681
-.. _#678: https://github.com/django-money/django-money/pull/678
-.. _#661: https://github.com/django-money/django-money/issues/657
-.. _#657: https://github.com/django-money/django-money/issues/657
-.. _#648: https://github.com/django-money/django-money/issues/648
-.. _#646: https://github.com/django-money/django-money/issues/646
-.. _#638: https://github.com/django-money/django-money/issues/638
-.. _#637: https://github.com/django-money/django-money/issues/637
-.. _#630: https://github.com/django-money/django-money/pull/630
-.. _#629: https://github.com/django-money/django-money/pull/629
-.. _#624: https://github.com/django-money/django-money/issues/624
-.. _#612: https://github.com/django-money/django-money/pull/612
-.. _#603: https://github.com/django-money/django-money/issues/603
-.. _#601: https://github.com/django-money/django-money/issues/601
-.. _#595: https://github.com/django-money/django-money/issues/595
-.. _#593: https://github.com/django-money/django-money/issues/593
-.. _#586: https://github.com/django-money/django-money/issues/586
-.. _#585: https://github.com/django-money/django-money/pull/585
-.. _#583: https://github.com/django-money/django-money/issues/583
-.. _#567: https://github.com/django-money/django-money/issues/567
-.. _#553: https://github.com/django-money/django-money/issues/553
-.. _#541: https://github.com/django-money/django-money/issues/541
-.. _#534: https://github.com/django-money/django-money/issues/534
-.. _#515: https://github.com/django-money/django-money/issues/515
-.. _#509: https://github.com/django-money/django-money/issues/509
-.. _#501: https://github.com/django-money/django-money/issues/501
-.. _#490: https://github.com/django-money/django-money/issues/490
-.. _#475: https://github.com/django-money/django-money/issues/475
-.. _#480: https://github.com/django-money/django-money/issues/480
-.. _#458: https://github.com/django-money/django-money/issues/458
-.. _#443: https://github.com/django-money/django-money/issues/443
-.. _#439: https://github.com/django-money/django-money/issues/439
-.. _#434: https://github.com/django-money/django-money/issues/434
-.. _#427: https://github.com/django-money/django-money/pull/427
-.. _#425: https://github.com/django-money/django-money/issues/425
-.. _#417: https://github.com/django-money/django-money/issues/417
-.. _#412: https://github.com/django-money/django-money/issues/412
-.. _#410: https://github.com/django-money/django-money/issues/410
-.. _#403: https://github.com/django-money/django-money/issues/403
-.. _#402: https://github.com/django-money/django-money/issues/402
-.. _#400: https://github.com/django-money/django-money/issues/400
-.. _#399: https://github.com/django-money/django-money/issues/399
-.. _#398: https://github.com/django-money/django-money/issues/398
-.. _#392: https://github.com/django-money/django-money/issues/392
-.. _#388: https://github.com/django-money/django-money/issues/388
-.. _#385: https://github.com/django-money/django-money/issues/385
-.. _#376: https://github.com/django-money/django-money/issues/376
-.. _#347: https://github.com/django-money/django-money/issues/347
-.. _#371: https://github.com/django-money/django-money/issues/371
-.. _#366: https://github.com/django-money/django-money/issues/366
-.. _#364: https://github.com/django-money/django-money/issues/364
-.. _#361: https://github.com/django-money/django-money/issues/361
-.. _#351: https://github.com/django-money/django-money/issues/351
-.. _#349: https://github.com/django-money/django-money/pull/349
-.. _#338: https://github.com/django-money/django-money/issues/338
-.. _#337: https://github.com/django-money/django-money/issues/337
-.. _#334: https://github.com/django-money/django-money/issues/334
-.. _#331: https://github.com/django-money/django-money/issues/331
-.. _#321: https://github.com/django-money/django-money/issues/321
-.. _#318: https://github.com/django-money/django-money/issues/318
-.. _#309: https://github.com/django-money/django-money/issues/309
-.. _#308: https://github.com/django-money/django-money/issues/308
-.. _#304: https://github.com/django-money/django-money/issues/304
-.. _#300: https://github.com/django-money/django-money/issues/300
-.. _#297: https://github.com/django-money/django-money/issues/297
-.. _#292: https://github.com/django-money/django-money/issues/292
-.. _#278: https://github.com/django-money/django-money/issues/278
-.. _#277: https://github.com/django-money/django-money/issues/277
-.. _#276: https://github.com/django-money/django-money/issues/276
-.. _#272: https://github.com/django-money/django-money/issues/272
-.. _#268: https://github.com/django-money/django-money/issues/268
-.. _#265: https://github.com/django-money/django-money/issues/265
-.. _#262: https://github.com/django-money/django-money/issues/262
-.. _#260: https://github.com/django-money/django-money/issues/260
-.. _#258: https://github.com/django-money/django-money/issues/258
-.. _#257: https://github.com/django-money/django-money/pull/257
-.. _#251: https://github.com/django-money/django-money/pull/251
-.. _#249: https://github.com/django-money/django-money/pull/249
-.. _#241: https://github.com/django-money/django-money/issues/241
-.. _#235: https://github.com/django-money/django-money/issues/235
-.. _#232: https://github.com/django-money/django-money/issues/232
-.. _#225: https://github.com/django-money/django-money/issues/225
-.. _#221: https://github.com/django-money/django-money/issues/221
-.. _#220: https://github.com/django-money/django-money/issues/220
-.. _#215: https://github.com/django-money/django-money/issues/215
-.. _#213: https://github.com/django-money/django-money/issues/213
-.. _#211: https://github.com/django-money/django-money/issues/211
-.. _#206: https://github.com/django-money/django-money/issues/206
-.. _#201: https://github.com/django-money/django-money/issues/201
-.. _#199: https://github.com/django-money/django-money/issues/199
-.. _#198: https://github.com/django-money/django-money/issues/198
-.. _#196: https://github.com/django-money/django-money/issues/196
-.. _#195: https://github.com/django-money/django-money/issues/195
-.. _#194: https://github.com/django-money/django-money/issues/194
-.. _#186: https://github.com/django-money/django-money/issues/186
-.. _#184: https://github.com/django-money/django-money/issues/184
-.. _#179: https://github.com/django-money/django-money/issues/179
-.. _#174: https://github.com/django-money/django-money/issues/174
-.. _#173: https://github.com/django-money/django-money/issues/173
-.. _#172: https://github.com/django-money/django-money/issues/172
-.. _#166: https://github.com/django-money/django-money/issues/166
-.. _#154: https://github.com/django-money/django-money/issues/154
-.. _#149: https://github.com/django-money/django-money/issues/149
-.. _#139: https://github.com/django-money/django-money/issues/139
-.. _#138: https://github.com/django-money/django-money/issues/138
-.. _#103: https://github.com/django-money/django-money/issues/103
-.. _#102: https://github.com/django-money/django-money/issues/102
-.. _#101: https://github.com/django-money/django-money/issues/101
-.. _#95: https://github.com/django-money/django-money/issues/95
-.. _#90: https://github.com/django-money/django-money/issues/90
-.. _#86: https://github.com/django-money/django-money/issues/86
-.. _#80: https://github.com/django-money/django-money/issues/80
-.. _#418: https://github.com/django-money/django-money/issues/418
-.. _#411: https://github.com/django-money/django-money/issues/411
-.. _#519: https://github.com/django-money/django-money/issues/519
-.. _#521: https://github.com/django-money/django-money/issues/521
-.. _#522: https://github.com/django-money/django-money/issues/522
-.. _#725: https://github.com/django-money/django-money/issues/725
-
-
-.. _77cc33: https://github.com/77cc33
-.. _AlexRiina: https://github.com/AlexRiina
-.. _carvincarl: https://github.com/carvincarl
-.. _ChessSpider: https://github.com/ChessSpider
-.. _GheloAce: https://github.com/GheloAce
-.. _Stranger6667: https://github.com/Stranger6667
-.. _YAmikep: https://github.com/YAmikep
-.. _adambregenzer: https://github.com/adambregenzer
-.. _adi-: https://github.com/adi-
-.. _akumria: https://github.com/akumria
-.. _alexhayes: https://github.com/alexhayes
-.. _andytwoods: https://github.com/andytwoods
-.. _antonagestam: https://github.com/antonagestam
-.. _arthurk: https://github.com/arthurk
-.. _astutejoe: https://github.com/astutejoe
-.. _benjaoming: https://github.com/benjaoming
-.. _briankung: https://github.com/briankung
-.. _browniebroke: https://github.com/browniebroke
-.. _butorov: https://github.com/butorov
-.. _davidstockwell: https://github.com/davidstockwell
-.. _dekkers: https://github.com/dekkers
-.. _devlocal: https://github.com/devlocal
-.. _dnmellen: https://github.com/dnmellen
-.. _edwinlunando: https://github.com/edwinlunando
-.. _elcolie: https://github.com/elcolie
-.. _eriktelepovsky: https://github.com/eriktelepovsky
-.. _evenicoulddoit: https://github.com/evenicoulddoit
-.. _f213: https://github.com/f213
-.. _flaeppe: https://github.com/flaeppe
-.. _Formulka: https://github.com/Formulka
-.. _glarrain: https://github.com/glarrain
-.. _graik: https://github.com/graik
-.. _gonzalobf: https://github.com/gonzalobf
-.. _horpto: https://github.com/horpto
-.. _inureyes: https://github.com/inureyes
-.. _ivanchenkodmitry: https://github.com/ivanchenkodmitry
-.. _jaavii1988: https://github.com/jaavii1988
-.. _jack-cvr: https://github.com/jack-cvr
-.. _jakewins: https://github.com/jakewins
-.. _jonashaag: https://github.com/jonashaag
-.. _jplehmann: https://github.com/jplehmann
-.. _karolyi: https://github.com/karolyi
-.. _kcyeu: https://github.com/kcyeu
-.. _kjagiello: https://github.com/kjagiello
-.. _ivirabyan: https://github.com/ivirabyan
-.. _k8n: https://github.com/k8n
-.. _lmdsp: https://github.com/lmdsp
-.. _lieryan: https://github.com/lieryan
-.. _lobziik: https://github.com/lobziik
-.. _mattions: https://github.com/mattions
-.. _mithrilstar: https://github.com/mithrilstar
-.. _moser: https://github.com/moser
-.. _MrFus10n: https://github.com/MrFus10n
-.. _msgre: https://github.com/msgre
-.. _mstarostik: https://github.com/mstarostik
-.. _niklasb: https://github.com/niklasb
-.. _nerdoc: https://github.com/nerdoc
-.. _nschlemm: https://github.com/nschlemm
-.. _paoloxnet: https://github.com/paoloxnet
-.. _pjdelport: https://github.com/pjdelport
-.. _plumdog: https://github.com/plumdog
-.. _rach: https://github.com/rach
-.. _rapIsKal: https://github.com/rapIsKal
-.. _richardowen: https://github.com/richardowen
-.. _satels: https://github.com/satels
-.. _sdarmofal: https://github.com/sdarmofal
-.. _sjdines: https://github.com/sjdines
-.. _snbuchholz: https://github.com/snbuchholz
-.. _sondrelg: https://github.com/sondrelg
-.. _spaut33: https://github.com/spaut33
-.. _spookylukey: https://github.com/spookylukey
-.. _stianjensen: https://github.com/stianjensen
-.. _stinovlas: https://github.com/stinovlas
-.. _synotna: https://github.com/synotna
-.. _tned73: https://github.com/tned73
-.. _toudi: https://github.com/toudi
-.. _tsouvarev: https://github.com/tsouvarev
-.. _yellow-sky: https://github.com/yellow-sky
-.. _Woile: https://github.com/Woile
-.. _w00kie: https://github.com/w00kie
-.. _willhcr: https://github.com/willhcr
-.. _1337: https://github.com/1337
-.. _humrochagf: https://github.com/humrochagf
-.. _washeck: https://github.com/washeck
-.. _fara: https://github.com/fara
-.. _wearebasti: https://github.com/wearebasti
-.. _davidszotten: https://github.com/davidszotten
-.. _vanschelven: https://github.com/vanschelven
