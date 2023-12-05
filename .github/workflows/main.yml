@@ -7,7 +7,7 @@ jobs:
     name: Generic pre-commit checks
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: actions/setup-python@v4
@@ -20,7 +20,7 @@ jobs:
     name: docs
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
       - uses: actions/setup-python@v4
@@ -95,7 +95,7 @@ jobs:
     name: ${{ matrix.tox_env }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
@@ -111,7 +111,7 @@ jobs:
       - run: coverage xml -i
 
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v1.0.15
+        uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
           name: codecov-py${{ matrix.python }}
