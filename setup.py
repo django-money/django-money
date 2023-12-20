@@ -42,7 +42,6 @@ setup(
     name="django-money",
     version=find_version(),
     packages=find_packages(include=["djmoney", "djmoney.*"]),
-    install_requires=["setuptools", "Django>=2.2", "py-moneyed>=2.0,<3.1"],
     platforms=["Any"],
     cmdclass={"test": PyTest},
 )

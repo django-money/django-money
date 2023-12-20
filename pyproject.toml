@@ -6,15 +6,18 @@ build-backend = "setuptools.build_meta"
 line-length = 120
 target-version = ["py37"]
 
+[tool.setuptools.dynamic]
+version = {attr = "djmoney.__version__"}
+
 [project]
 name = "django-money"
-version = "3.4.1"
 description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
 authors = [
     {name = "Greg Reinbach", email = "greg@reinbach.com"},
 ]
+dynamic = ["version"]
 readme = "README.rst"
-license = "BSD"
+license = {text = "BSD"}
 keywords = ["django", "py-money", "money"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
