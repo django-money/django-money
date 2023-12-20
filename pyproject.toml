@@ -1,7 +1,67 @@
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
+requires = ["setuptools >= 68.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.black]
 line-length = 120
-target-version = ["py35"]
+target-version = ["py37"]
+
+[tool.poetry]
+name = "django-money"
+version = "3.4.1"
+description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
+authors = [ "Greg Reinbach <greg@reinbach.com>" ]
+readme = "README.rst"
+license = "BSD"
+keywords = ["django", "py-money", "money"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 2.2",
+    "Framework :: Django :: 3.2",
+    "Framework :: Django :: 4.0",
+    "Framework :: Django :: 4.1",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+
+homepage = "https://github.com/django-money/django-money"
+
+[tool.poetry.dependencies]
+python = ">=3.7"
+certifi = {version = ">=2021.5.30", optional = true}
+Django = ">=2.2"
+django-stubs = {version = "*", optional = true}
+mixer = {version = "*", optional = true}
+mypy = {version = "*", optional = true}
+py-moneyed = ">=2.0,<3.1"
+pytest = {version = ">=3.1.0,<7.0", optional = true}
+pytest-cov = {version = "*", optional = true}
+pytest-django = {version = "*", optional = true}
+pytest-pythonpath = {version = "*", optional = true}
+
+[tool.poetry.group.dev.dependencies]
+setuptools = ">=68.0.0,<69.0.0"
+
+[tool.poetry.extras]
+exchange = [
+    "certifi",
+]
+test = [
+    "django-stubs",
+    "mixer",
+    "mypy",
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-pythonpath",
+]
