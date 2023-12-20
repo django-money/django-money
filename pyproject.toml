@@ -6,11 +6,13 @@ build-backend = "setuptools.build_meta"
 line-length = 120
 target-version = ["py37"]
 
-[tool.poetry]
+[project]
 name = "django-money"
 version = "3.4.1"
 description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
-authors = [ "Greg Reinbach <greg@reinbach.com>" ]
+authors = [
+    {name = "Greg Reinbach", email = "greg@reinbach.com"},
+]
 readme = "README.rst"
 license = "BSD"
 keywords = ["django", "py-money", "money"]
@@ -33,28 +35,26 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
+requires-python = ">=3.7"
+dependencies = [
+    "Django>=2.2",
+    "py-moneyed>=2.0,<3.1"
+]
 
+[project.urls]
 homepage = "https://github.com/django-money/django-money"
 
-[tool.poetry.dependencies]
-python = ">=3.7"
-certifi = {version = ">=2021.5.30", optional = true}
-Django = ">=2.2"
-django-stubs = {version = "*", optional = true}
-mixer = {version = "*", optional = true}
-mypy = {version = "*", optional = true}
-py-moneyed = ">=2.0,<3.1"
-pytest = {version = ">=3.1.0,<7.0", optional = true}
-pytest-cov = {version = "*", optional = true}
-pytest-django = {version = "*", optional = true}
-pytest-pythonpath = {version = "*", optional = true}
-
-[tool.poetry.group.dev.dependencies]
-setuptools = ">=68.0.0,<69.0.0"
-
-[tool.poetry.extras]
+[project.optional-dependencies]
+dev = [
+    "black",
+    "flake8",
+    "isort",
+    "pre-commit",
+    "setuptools>=68.0.0,<69.0.0",
+    "tox",
+]
 exchange = [
-    "certifi",
+    "certifi>=2021.5.30",
 ]
 test = [
     "django-stubs",
