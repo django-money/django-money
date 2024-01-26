@@ -141,6 +141,42 @@ class Money(DefaultMoney):
         self._copy_attributes(self, new)
         return new
 
+    def __float__(self):
+        return float(self.amount)
+
+    def __int__(self):
+        return int(self.amount)
+
+    def __lt__(self, other):
+        if isinstance(other, Money):
+            return self.amount < other.amount
+        return self.amount < other
+
+    def __le__(self, other):
+        if isinstance(other, Money):
+            return self.amount <= other.amount
+        return self.amount <= other.amount
+
+    def __gt__(self, other):
+        if isinstance(other, Money):
+            return self.amount > other.amount
+        return self.amount > other
+
+    def __ge__(self, other):
+        if isinstance(other, Money):
+            return self.amount >= other.amount
+        return self.amount >= other
+
+    def __eq__(self, other):
+        if isinstance(other, Money):
+            return self.amount == other.amount
+        return self.amount == other
+
+    def __ne__(self, other):
+        if isinstance(other, Money):
+            return self.amount != other.amount
+        return self.amount != other
+
     # DefaultMoney sets those synonym functions
     # we overwrite the 'targets' so the wrong synonyms are called
     # Example: we overwrite __add__; __radd__ calls __add__ on DefaultMoney...
