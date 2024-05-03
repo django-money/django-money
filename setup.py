@@ -6,10 +6,8 @@ from setuptools import find_packages, setup
 
 
 test_requirements = [
-    # Quickfix for https://docs.pytest.org/en/7.1.x/deprecations.html#using-pytest-warns-none
-    "pytest>=7.1,<8",
+    "pytest>=8.2,<8.3",
     "pytest-django",
-    # "pytest-pythonpath",
     "pytest-cov",
     "mixer",
     "mypy",
