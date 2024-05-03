@@ -2,7 +2,7 @@ default_language_version:
   python: python3
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.2.0
+    rev: v4.6.0
     hooks:
     -   id: trailing-whitespace
     -   id: check-yaml
@@ -14,7 +14,7 @@ repos:
         - --remove
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v2.32.0
+    rev: v3.15.2
     hooks:
     -   id: pyupgrade
         args:
@@ -31,7 +31,7 @@ repos:
       -   id: isort
 
 -   repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 7.0.0
     hooks:
     -   id: flake8
         exclude: ^docs
@@ -47,13 +47,13 @@ repos:
           - --ignore-roles=github-issue,github-user
 
 -   repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 24.4.2
     hooks:
       - id: black
         exclude: ^docs
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.2.0
+    rev: v1.10.0
     hooks:
        - id: mypy
          additional_dependencies:

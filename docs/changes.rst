@@ -21,7 +21,11 @@ Changelog
 
 **Added**
 
-- (add changelog entry)
+- Django 5.0 support
+
+**Removed**
+
+- Official support for Django 2.2, 3.2, 4.0, 4.1
 
 
 `3.4.1`_ - 2023-11-30

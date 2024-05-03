@@ -1,6 +1,7 @@
 """
 This module contains various helpers for migrations testing.
 """
+
 import os
 
 
