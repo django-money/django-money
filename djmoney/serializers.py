@@ -39,7 +39,7 @@ def Deserializer(stream_or_string, **options):  # noqa
             money_fields = {}
             fields = {}
             field_names = {field.name for field in Model._meta.get_fields()}
-            for (field_name, field_value) in obj["fields"].items():
+            for field_name, field_value in obj["fields"].items():
                 if ignore and field_name not in field_names:
                     # skip fields no longer on model
                     continue

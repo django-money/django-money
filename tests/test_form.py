@@ -3,6 +3,8 @@ Created on May 7, 2011
 
 @author: jake
 """
+
+import warnings
 from decimal import Decimal
 
 import pytest
@@ -122,9 +124,9 @@ def test_no_deprecation_warning():
     """
     The library's code shouldn't generate any warnings itself. See #262.
     """
-    with pytest.warns(None) as warning:
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
         MoneyField(max_digits=10, decimal_places=2, currency_choices=(("USD", "USD"),)).formfield()
-    assert not warning
 
 
 class TestValidation:
