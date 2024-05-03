@@ -3,6 +3,7 @@ Created on May 7, 2011
 
 @author: jake
 """
+
 import datetime
 from copy import copy
 from decimal import Decimal, InvalidOperation
