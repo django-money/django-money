@@ -1,12 +1,17 @@
 Changelog
 =========
 
-`Unreleased`_ (TBA)
+`3.5`_ (TBA)
 -------------------
+
+.. important::
+
+   If you generated ``MoneyField`` migrations in the previous series 3.4.x, you may have to manually edit subsequent migrations. Please share your successful approaches in :github-issue:`731`.
+
 
 **Fixed**
 
-- (add changelog entry)
+- Revert 3.4 patch, meaning that auto-generated CurrencyField is once again part of migrations :github-issue:`731` (:github-user:`benjaoming`)
 
 
 **Changed**
@@ -817,8 +822,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/3.4.1...HEAD
-
+.. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
 .. _3.4.1: https:///github.com/django-money/django-money/compare/3.4...3.4.1
 .. _3.4: https:///github.com/django-money/django-money/compare/3.3...3.4
 .. _3.3: https:///github.com/django-money/django-money/compare/3.2...3.3
