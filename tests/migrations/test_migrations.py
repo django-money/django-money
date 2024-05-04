@@ -125,7 +125,12 @@ class TestMigrationFramework:
 
     def test_create_initial(self):
         migration = self.make_default_migration()
-        migration.stdout.fnmatch_lines(["*Migrations for 'money_app':*", "*0001_test.py*", "*- Create model Model*"])
+        print(migration.stdout)
+        # Django 5 output replaced "-" with "+"
+        # Migrations for 'money_app':
+        #  money_app/migrations/0001_test.py
+        #    + Create model Model
+        migration.stdout.fnmatch_lines(["*Migrations for 'money_app':*", "*0001_test.py*", "*Create model Model*"])
         operations = get_operations("0001")
         assert len(operations) == 1
 
@@ -147,8 +152,8 @@ class TestMigrationFramework:
             [
                 "*Migrations for 'money_app':*",
                 "*0002_test.py*",
-                "*- Add field field to model*",
-                "*- Add field field_currency to model*",
+                "*Add field field to model*",
+                "*Add field field_currency to model*",
             ]
         )
 
@@ -164,7 +169,7 @@ class TestMigrationFramework:
         self.make_default_migration()
         migration = self.make_migration(field="MoneyField(max_digits=15, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
-            ["*Migrations for 'money_app':*", "*0002_test.py*", "*- Alter field field on model*"]
+            ["*Migrations for 'money_app':*", "*0002_test.py*", "*Alter field field on model*"]
         )
 
         operations = get_operations("0002")
@@ -181,8 +186,8 @@ class TestMigrationFramework:
             [
                 "*Migrations for 'money_app':*",
                 "*0002_test.py*",
-                "*- Remove field field from model*",
-                "*- Remove field field_currency from model*",
+                "*Remove field field from model*",
+                "*Remove field field_currency from model*",
             ]
         )
 
@@ -203,8 +208,8 @@ class TestMigrationFramework:
             [
                 "*Migrations for 'money_app':*",
                 "*0002_test.py*",
-                "*- Rename field field on model to new_field*",
-                "*- Rename field field_currency on model to new_field_currency*",
+                "*Rename field field on model to new_field*",
+                "*Rename field field_currency on model to new_field_currency*",
             ]
         )
         self.assert_migrate(["*Applying money_app.0002_test... OK*"])
@@ -222,7 +227,7 @@ class TestMigrationFramework:
         self.make_default_migration(field="models.DecimalField(max_digits=10, decimal_places=2, null=True)")
         migration = self.make_migration(field="MoneyField(max_digits=10, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
-            ["*Migrations for 'money_app':*", "*0002_test.py*", "*- Add field field_currency to model*"]
+            ["*Migrations for 'money_app':*", "*0002_test.py*", "*Add field field_currency to model*"]
         )
         self.assert_migrate()
 
@@ -230,6 +235,6 @@ class TestMigrationFramework:
         self.make_default_migration()
         migration = self.make_migration(field="models.DecimalField(max_digits=10, decimal_places=2, null=True)")
         migration.stdout.fnmatch_lines(
-            ["*Migrations for 'money_app':*", "*0002_test.py*", "*- Remove field field_currency from model*"]
+            ["*Migrations for 'money_app':*", "*0002_test.py*", "*Remove field field_currency from model*"]
         )
         self.assert_migrate()

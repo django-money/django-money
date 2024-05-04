@@ -75,6 +75,7 @@ def test_bad_configuration(settings):
     settings.INSTALLED_APPS.remove("djmoney.contrib.exchange")
     with pytest.raises(ImproperlyConfigured):
         convert_money(Money(1, "USD"), "EUR")
+    settings.INSTALLED_APPS.append("djmoney.contrib.exchange")
 
 
 def test_without_installed_exchange(testdir):

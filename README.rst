@@ -140,6 +140,37 @@ The ``balance`` field from the model above has the following validation:
 * Euros should be between 100 and 1000;
 * US Dollars should be between 50 and 500;
 
+Constructing form data
+----------------------
+
+The default ``ModelForm`` class will use a form field (``djmoney.forms.fields.MoneyField``) that is constructed of two separate fields for amount and currency.
+
+If you need to feed data directly to such a form (for instance if you are writing a test case), then you need to pass amount and currency like this:
+
+
+
+.. code:: python
+
+        # models.py
+        class Product(models.Model):
+            price = MoneyField(
+                max_digits=14,
+                decimal_places=2,
+                default_currency='EUR'
+            )
+
+        # forms.py
+        class ProductForm(ModelForm):
+            class Meta:
+                model = Product
+                fields = ["price"]
+
+        # tests.py
+
+        # construct the form in your test case
+        form = ProductForm({'price_0': 10, 'price_1': 'EUR'})
+
+
 Adding a new Currency
 ---------------------
 
@@ -212,6 +243,18 @@ need to manually decorate those custom methods, like so:
            @understands_money
            def my_custom_method(*args, **kwargs):
                # Awesome stuff
+
+
+Note on serialization
+---------------------
+
+Django-money provides a custom deserializer, it is not registered
+by default so you will have to actively register it in your ``settings.py``.
+
+.. code:: python
+
+    SERIALIZATION_MODULES = {"json": "djmoney.serializers"}
+
 
 Format localization
 -------------------

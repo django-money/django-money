@@ -255,6 +255,10 @@ class MoneyField(models.DecimalField):
     def contribute_to_class(self, cls, name):
         cls._meta.has_money_field = True
 
+        # Note the discussion about whether or not the currency field should be added in migrations:
+        # https://github.com/django-money/django-money/issues/725
+        # https://github.com/django-money/django-money/pull/726
+        # https://github.com/django-money/django-money/issues/731
         if not hasattr(self, "_currency_field"):
             self.add_currency_field(cls, name)
 

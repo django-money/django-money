@@ -3,6 +3,7 @@ Created on May 7, 2011
 
 @author: jake
 """
+
 from decimal import Decimal
 
 from django.conf import settings

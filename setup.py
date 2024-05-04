@@ -1,35 +1,13 @@
 import codecs
 import os
 import re
-import sys
 
 from setuptools import find_packages, setup
-from setuptools.command.test import test as TestCommand
-
-
-class PyTest(TestCommand):
-    user_options = [("pytest-args=", "a", "Arguments to pass into py.test")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def finalize_options(self):
-        TestCommand.finalize_options(self)
-        self.test_args = []
-        self.test_suite = True
-
-    def run_tests(self):
-        import pytest
-
-        errno = pytest.main(self.pytest_args)
-        sys.exit(errno)
 
 
 test_requirements = [
-    "pytest>=3.1.0",
+    "pytest>=8.2,<8.3",
     "pytest-django",
-    "pytest-pythonpath",
     "pytest-cov",
     "mixer",
     "mypy",
@@ -93,5 +71,4 @@ setup(
     ],
     tests_require=test_requirements,
     extras_require=extras_requirements,
-    cmdclass={"test": PyTest},
 )

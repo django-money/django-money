@@ -4,7 +4,7 @@ from typing import Optional
 
 from django.conf import settings
 
-from moneyed import CURRENCIES, Currency
+from moneyed import CURRENCIES, XXX, Currency
 
 
 # The default currency, you can define this in your project's settings module
@@ -21,7 +21,9 @@ if CURRENCY_CHOICES is None:
     if PROJECT_CURRENCIES:
         CURRENCY_CHOICES = [(code, CURRENCIES[code].name) for code in PROJECT_CURRENCIES]
     else:
-        CURRENCY_CHOICES = [(c.code, c.name) for i, c in CURRENCIES.items() if c != DEFAULT_CURRENCY]
+        # 'XXX' is a backport from py-moneyed for transactions involving no currency;
+        # this was previously referred to as moneyed.classes.DEFAULT_CURRENCY_CODE
+        CURRENCY_CHOICES = [(c.code, c.name) for i, c in CURRENCIES.items() if c != XXX]
 
 CURRENCY_CHOICES.sort(key=operator.itemgetter(1, 0))
 DECIMAL_PLACES = getattr(settings, "CURRENCY_DECIMAL_PLACES", 2)
