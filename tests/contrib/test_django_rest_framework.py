@@ -1,6 +1,8 @@
 from collections import Counter
 from decimal import Decimal
 
+from django.test import override_settings
+
 import pytest
 
 from djmoney.money import Money
@@ -203,3 +205,22 @@ class TestMoneyField:
         serializer = Serializer(data=data)
         serializer.is_valid(raise_exception=True)
         assert serializer.validated_data["money"] == expected
+
+
+class TestMinValueSerializer:
+
+    # Test case contributed for
+    # https://github.com/django-money/django-money/pull/722
+    @override_settings(DEFAULT_CURRENCY="EUR")
+    def test_serializer_validators(self):
+        from djmoney.contrib.django_rest_framework import MoneyField
+
+        class MinValueSerializer(serializers.Serializer):
+            money = MoneyField(decimal_places=2, max_digits=10, min_value=0)
+
+            class Meta:
+                model = ModelWithVanillaMoneyField
+
+        serializer = MinValueSerializer(data={"money": "-1"})
+        assert not serializer.is_valid()
+        assert serializer.errors["money"][0] == "Ensure this value is greater than or equal to 0."
