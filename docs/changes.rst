@@ -1,7 +1,7 @@
 Changelog
 =========
 
-`3.5`_ (TBA)
+`3.5`_ - 2024-05-04
 -------------------
 
 .. important::
@@ -822,7 +822,9 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
+# .. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
+
+.. _3.5: https:///github.com/django-money/django-money/compare/3.5...3.4.1
 .. _3.4.1: https:///github.com/django-money/django-money/compare/3.4...3.4.1
 .. _3.4: https:///github.com/django-money/django-money/compare/3.3...3.4
 .. _3.3: https:///github.com/django-money/django-money/compare/3.2...3.3
