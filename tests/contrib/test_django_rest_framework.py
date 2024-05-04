@@ -212,7 +212,14 @@ class TestMinValueSerializer:
     # Test case contributed for
     # https://github.com/django-money/django-money/pull/722
     @override_settings(DEFAULT_CURRENCY="EUR")
-    def test_serializer_validators(self):
+    @pytest.mark.parametrize(
+        ("data", "is_valid"),
+        [
+            pytest.param({"money": Money(-1, "EUR")}, False, id="is_invalid_money_value"),
+            pytest.param({"money": Money(1, "EUR")}, True, id="is_valid_money_value"),
+        ],
+    )
+    def test_serializer_validators(self, data, is_valid):
         from djmoney.contrib.django_rest_framework import MoneyField
 
         class MinValueSerializer(serializers.Serializer):
@@ -221,9 +228,9 @@ class TestMinValueSerializer:
             class Meta:
                 model = ModelWithVanillaMoneyField
 
-        serializer = MinValueSerializer(data={"money": "-1"})
-        assert not serializer.is_valid()
-        assert serializer.errors["money"][0] == "Ensure this value is greater than or equal to 0."
-
-        serializer = MinValueSerializer(data={"money": "1"})
-        assert serializer.is_valid()
+        serializer = MinValueSerializer(data=data)
+        if is_valid:
+            assert serializer.is_valid()
+        else:
+            assert not serializer.is_valid()
+            assert serializer.errors["money"][0] == "Ensure this value is greater than or equal to 0."
