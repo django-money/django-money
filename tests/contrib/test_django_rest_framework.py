@@ -217,6 +217,8 @@ class TestMinValueSerializer:
         [
             pytest.param({"money": Money(-1, "EUR")}, False, id="is_invalid_money_value"),
             pytest.param({"money": Money(1, "EUR")}, True, id="is_valid_money_value"),
+            pytest.param({"money": "-1", "money_currency": "EUR"}, False, id="is_invalid_dict_value"),
+            pytest.param({"money": "0.01", "money_currency": "EUR"}, True, id="is_valid_dict_value"),
         ],
     )
     def test_serializer_validators(self, data, is_valid):
