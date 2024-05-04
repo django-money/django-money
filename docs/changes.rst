@@ -12,7 +12,7 @@ Changelog
 **Fixed**
 
 - Revert 3.4 patch, meaning that auto-generated CurrencyField is once again part of migrations :github-issue:`731` (:github-user:`benjaoming`)
-
+- django-rest-framework: MinMoneyValidator and MaxMoneyValidator fixed, may require default_currency defined :github-issue:`722` (:github-user:`hosamhamdy258` :github-user:`errietta` :github-user:`benjaoming`)
 
 **Changed**
 
@@ -21,11 +21,11 @@ Changelog
 
 **Added**
 
-- Django 5.0 support
+- Django 5.0 support :github-issue:`753` (:github-user:`benjaoming`)
 
 **Removed**
 
-- Official support for Django 2.2, 3.2, 4.0, 4.1
+- Official support for Django 2.2, 3.2, 4.0, 4.1 :github-issue:`753` (:github-user:`benjaoming`)
 
 
 `3.4.1`_ - 2023-11-30
