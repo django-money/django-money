@@ -224,3 +224,6 @@ class TestMinValueSerializer:
         serializer = MinValueSerializer(data={"money": "-1"})
         assert not serializer.is_valid()
         assert serializer.errors["money"][0] == "Ensure this value is greater than or equal to 0."
+
+        serializer = MinValueSerializer(data={"money": "1"})
+        assert serializer.is_valid()
