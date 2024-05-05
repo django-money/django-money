@@ -261,3 +261,15 @@ class TestMinValueSerializer:
         else:
             assert not serializer.is_valid()
             assert serializer.errors["second_money"][0] == "Ensure this value is greater than or equal to 0."
+
+    def test_no_model_serializer(self):
+        from djmoney.contrib.django_rest_framework import MoneyField
+
+        class NormalSerializer(serializers.Serializer):
+            the_money = MoneyField(decimal_places=2, max_digits=10, min_value=0)
+
+            class Meta:
+                fields = ("the_money",)
+
+        serializer = NormalSerializer(data={"the_money": "0.01", "the_money_currency": "EUR"})
+        assert serializer.is_valid()
