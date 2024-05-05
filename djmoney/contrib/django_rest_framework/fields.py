@@ -66,7 +66,9 @@ class MoneyField(DecimalField):
 
     def get_value(self, data):
         default_currency = None
-        if hasattr(self.parent, "Meta"):
+        parent_meta = getattr(self.parent, "Meta", None)
+
+        if parent_meta and hasattr(parent_meta, "model"):
             model_meta = self.parent.Meta.model._meta
             field = model_meta.get_field(self.field_name)
             default_currency = field.default_currency
