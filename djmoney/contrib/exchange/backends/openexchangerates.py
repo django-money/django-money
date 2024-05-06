@@ -18,4 +18,4 @@ class OpenExchangeRatesBackend(SimpleExchangeBackend):
         self.access_key = access_key
 
     def get_params(self):
-        return {"app_id": self.access_key}
+        return {"app_id": self.access_key, "base": settings.BASE_CURRENCY}
