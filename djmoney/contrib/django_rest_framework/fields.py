@@ -65,8 +65,16 @@ class MoneyField(DecimalField):
         return super().to_internal_value(data)
 
     def get_value(self, data):
+        default_currency = None
+        parent_meta = getattr(self.parent, "Meta", None)
+
+        if parent_meta and hasattr(parent_meta, "model"):
+            model_meta = self.parent.Meta.model._meta
+            field = model_meta.get_field(self.field_name)
+            default_currency = field.default_currency
+
         amount = super().get_value(data)
-        currency = data.get(get_currency_field_name(self.field_name), self.default_currency)
+        currency = data.get(get_currency_field_name(self.field_name), self.default_currency or default_currency)
         if currency and amount is not None and not isinstance(amount, MONEY_CLASSES) and amount is not empty:
             return _PrimitiveMoney(amount=amount, currency=currency)
         return amount

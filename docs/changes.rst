@@ -1,26 +1,34 @@
 Changelog
 =========
 
-`Unreleased`_ (TBA)
--------------------
+`3.5.1`_ - 2024-05-05
+---------------------
 
 **Fixed**
 
-- (add changelog entry)
+- django-rest-framework: Fix regression from 3.5 :github-issue:`757` (:github-user:`phillipuniverse`)
 
 
-**Changed**
+`3.5`_ - 2024-05-04
+-------------------
 
-- (add changelog entry)
+.. important::
 
+   If you generated ``MoneyField`` migrations in the previous series 3.4.x, you may have to manually edit subsequent migrations. Please share your successful approaches in :github-issue:`731`.
+
+
+**Fixed**
+
+- Revert 3.4 patch, meaning that auto-generated CurrencyField is once again part of migrations :github-issue:`731` (:github-user:`benjaoming`)
+- django-rest-framework: MinMoneyValidator and MaxMoneyValidator fixed, may require default_currency defined :github-issue:`722` (:github-user:`hosamhamdy258` :github-user:`errietta` :github-user:`benjaoming`)
 
 **Added**
 
-- Django 5.0 support
+- Django 5.0 support :github-issue:`753` (:github-user:`benjaoming`)
 
 **Removed**
 
-- Official support for Django 2.2, 3.2, 4.0, 4.1
+- Official support for Django 2.2, 3.2, 4.0, 4.1 :github-issue:`753` (:github-user:`benjaoming`)
 
 
 `3.4.1`_ - 2023-11-30
@@ -817,8 +825,10 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _Unreleased: https:///github.com/django-money/django-money/compare/3.4.1...HEAD
+# .. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
 
+.. _3.5.1: https:///github.com/django-money/django-money/compare/3.5.1...3.5
+.. _3.5: https:///github.com/django-money/django-money/compare/3.5...3.4.1
 .. _3.4.1: https:///github.com/django-money/django-money/compare/3.4...3.4.1
 .. _3.4: https:///github.com/django-money/django-money/compare/3.3...3.4
 .. _3.3: https:///github.com/django-money/django-money/compare/3.2...3.3
