@@ -273,3 +273,16 @@ class TestMinValueSerializer:
 
         serializer = NormalSerializer(data={"the_money": "0.01", "the_money_currency": "EUR"})
         assert serializer.is_valid()
+
+    def test_model_serializer_with_field_source(self):
+        class ModelSerializer(serializers.ModelSerializer):
+            renamed_money_field = djmoney_fields.MoneyField(
+                source="money", max_digits=10, decimal_places=2, min_value=0
+            )
+
+            class Meta:
+                model = ModelWithVanillaMoneyField
+                fields = ("renamed_money_field",)
+
+        serializer = ModelSerializer(data={"renamed_money_field": "0.01", "renamed_money_field_currency": "EUR"})
+        assert serializer.is_valid()
