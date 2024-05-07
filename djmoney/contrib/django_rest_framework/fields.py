@@ -70,7 +70,7 @@ class MoneyField(DecimalField):
 
         if parent_meta and hasattr(parent_meta, "model"):
             model_meta = self.parent.Meta.model._meta
-            field = model_meta.get_field(self.field_name)
+            field = model_meta.get_field(self.source)
             default_currency = field.default_currency
 
         amount = super().get_value(data)
