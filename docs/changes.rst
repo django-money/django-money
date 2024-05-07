@@ -1,6 +1,14 @@
 Changelog
 =========
 
+`3.5.2`_ - 2024-05-07
+---------------------
+
+**Fixed**
+
+- django-rest-framework: Fix regression from 3.5 :github-issue:`762` (:github-user:`dariusmazeika`)
+
+
 `3.5.1`_ - 2024-05-05
 ---------------------
 
@@ -827,6 +835,7 @@ wrapping with ``money_manager``.
 
 # .. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
 
+.. _3.5.2: https:///github.com/django-money/django-money/compare/3.5.2...3.5.1
 .. _3.5.1: https:///github.com/django-money/django-money/compare/3.5.1...3.5
 .. _3.5: https:///github.com/django-money/django-money/compare/3.5...3.4.1
 .. _3.4.1: https:///github.com/django-money/django-money/compare/3.4...3.4.1
