@@ -15,7 +15,7 @@ Changelog
 **Fixed**
 
 - django-rest-framework: Fix regression from 3.5 :github-issue:`757` (:github-user:`phillipuniverse`)
-
+- Add `base` parameter to openexchangerates.org backend :github-issue:`751` (:github-user:`foarsitter`)
 
 `3.5`_ - 2024-05-04
 -------------------
