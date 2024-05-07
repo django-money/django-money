@@ -423,7 +423,7 @@ To set up a periodic rates update you could use Celery task:
 
 .. code:: python
 
-    CELERYBEAT_SCHEDULE = {
+    CELERY_BEAT_SCHEDULE = {
         'update_rates': {
             'task': 'path.to.your.task',
             'schedule': crontab(minute=0, hour=0),
