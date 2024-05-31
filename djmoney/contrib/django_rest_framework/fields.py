@@ -1,3 +1,4 @@
+from django.core.exceptions import FieldDoesNotExist
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
@@ -70,9 +71,11 @@ class MoneyField(DecimalField):
 
         if parent_meta and hasattr(parent_meta, "model"):
             model_meta = self.parent.Meta.model._meta
-            field = model_meta.get_field(self.source)
-            default_currency = field.default_currency
-
+            try:
+                field = model_meta.get_field(self.source)
+                default_currency = field.default_currency
+            except FieldDoesNotExist:
+                pass
         amount = super().get_value(data)
         currency = data.get(get_currency_field_name(self.field_name), self.default_currency or default_currency)
         if currency and amount is not None and not isinstance(amount, MONEY_CLASSES) and amount is not empty:
