@@ -129,6 +129,14 @@ class ModelManager(models.Manager):
     pass
 
 
+class MoneyFieldModelWithProperty(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency="USD")
+
+    @property
+    def ten_extra_monies(self):
+        return self.money + Money(10, "USD")
+
+
 class NotNullMoneyFieldModel(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
 
