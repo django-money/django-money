@@ -7,8 +7,12 @@ import pytest
 
 from djmoney.money import Money
 
-from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel, ValidatedMoneyModel
-
+from ..testapp.models import (
+    ModelWithVanillaMoneyField,
+    NullMoneyFieldModel,
+    ValidatedMoneyModel,
+    MoneyFieldModelWithProperty,
+)
 
 pytestmark = pytest.mark.django_db
 serializers = pytest.importorskip("rest_framework.serializers")
@@ -77,6 +81,31 @@ class TestMoneyField:
         assert serializer.is_valid()
         instance = serializer.save()
         assert getattr(instance, field) == expected
+
+    def test_to_internal_value_for_property_field(self):
+
+        class PropertyModelSerializer(serializers.ModelSerializer):
+            extra_monies = djmoney_fields.MoneyField(
+                source="ten_extra_monies",
+                max_digits=10,
+                decimal_places=2,
+                min_value=0,
+                default_currency="EUR",
+                required=False,
+                allow_null=True,
+                read_only=True,
+            )
+
+            class Meta:
+                model = MoneyFieldModelWithProperty
+                fields = ("extra_monies", "money")
+
+        serializer = PropertyModelSerializer(data={"money": Money(12, "USD"), "ten_extra_monies": Money(100, "USD")})
+        serializer.is_valid()
+        assert serializer.validated_data == {"money": Money("12.00", "USD")}
+        instance = serializer.save()
+        assert instance.ten_extra_monies == Money(22, "USD")
+        assert instance.money == Money(12, "USD")
 
     def test_invalid_value(self):
         serializer = self.get_serializer(ModelWithVanillaMoneyField, data={"money": None})
@@ -286,3 +315,29 @@ class TestMinValueSerializer:
 
         serializer = ModelSerializer(data={"renamed_money_field": "0.01", "renamed_money_field_currency": "EUR"})
         assert serializer.is_valid()
+
+    def test_model_serializer_with_nonexistent_property_raises_error(self):
+        class PropertyModelSerializer(serializers.ModelSerializer):
+            nonexistent_field = djmoney_fields.MoneyField(
+                max_digits=10,
+                decimal_places=2,
+                min_value=0,
+                default_currency="EUR",
+                required=False,
+                allow_null=True,
+            )
+
+            class Meta:
+                model = MoneyFieldModelWithProperty
+                fields = ("nonexistent_field", "money")
+
+        data = {"nonexistent_field": "12.00", "money": "10.00"}
+
+        serializer = PropertyModelSerializer(data=data)
+        with pytest.raises(ValueError) as ex:
+            serializer.is_valid()
+
+        expected_error_message = (
+            "nonexistent_field is neither a db field nor a property on the model MoneyFieldModelWithProperty"
+        )
+        assert ex.value.args[0] == expected_error_message
