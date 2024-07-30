@@ -9,10 +9,11 @@ from djmoney.money import Money
 
 from ..testapp.models import (
     ModelWithVanillaMoneyField,
+    MoneyFieldModelWithProperty,
     NullMoneyFieldModel,
     ValidatedMoneyModel,
-    MoneyFieldModelWithProperty,
 )
+
 
 pytestmark = pytest.mark.django_db
 serializers = pytest.importorskip("rest_framework.serializers")
