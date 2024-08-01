@@ -1,6 +1,18 @@
 Changelog
 =========
 
+`3.5.3`_ - 2024-08-01
+---------------------
+
+**Fixed**
+
+- django-rest-framework: MoneyField does not work anymore with custom serializer fields :github-issue:`768` (:github-user:`apjama`)
+
+**Added**
+
+- Django 5.1 support :github-issue:`767` (:github-user:`benjaoming`)
+
+
 `3.5.2`_ - 2024-05-07
 ---------------------
 
@@ -835,6 +847,7 @@ wrapping with ``money_manager``.
 
 # .. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
 
+.. _3.5.3: https:///github.com/django-money/django-money/compare/3.5.3...3.5.2
 .. _3.5.2: https:///github.com/django-money/django-money/compare/3.5.2...3.5.1
 .. _3.5.1: https:///github.com/django-money/django-money/compare/3.5.1...3.5
 .. _3.5: https:///github.com/django-money/django-money/compare/3.5...3.4.1
