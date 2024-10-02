@@ -26,5 +26,8 @@ class MoneyWidget(MultiWidget):
         if value is not None:
             if isinstance(value, (list, tuple)):
                 return value
+            elif isinstance(value, str):
+                return (
+                    value.split(',') + [self.default_currency])[:2]
             return [value.amount, value.currency]
         return [None, self.default_currency]
