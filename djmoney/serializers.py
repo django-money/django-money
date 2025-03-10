@@ -21,7 +21,7 @@ def Deserializer(stream_or_string, **options):  # noqa
     # Local imports to allow using modified versions of `_get_model` / `_get_model_from_node`
     # It could be patched in runtime via `unittest.mock.patch` for example
     from django.core.serializers.python import Deserializer as PythonDeserializer
-    
+
     if django.VERSION < (5, 2):
         from django.core.serializers.python import _get_model
     else:
