@@ -1,6 +1,7 @@
 import json
 import sys
 
+import django
 from django.core.serializers.base import DeserializationError
 from django.core.serializers.json import Serializer as JSONSerializer
 
@@ -17,9 +18,14 @@ def Deserializer(stream_or_string, **options):  # noqa
     """
     Deserialize a stream or string of JSON data.
     """
-    # Local imports to allow using modified versions of `_get_model`
+    # Local imports to allow using modified versions of `_get_model` / `_get_model_from_node`
     # It could be patched in runtime via `unittest.mock.patch` for example
-    from django.core.serializers.python import Deserializer as PythonDeserializer, _get_model
+    from django.core.serializers.python import Deserializer as PythonDeserializer
+
+    if django.VERSION < (5, 2):
+        from django.core.serializers.python import _get_model
+    else:
+        _get_model = PythonDeserializer._get_model_from_node
 
     ignore = options.pop("ignorenonexistent", False)
 
