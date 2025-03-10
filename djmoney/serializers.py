@@ -22,6 +22,7 @@ def Deserializer(stream_or_string, **options):  # noqa
     # It could be patched in runtime via `unittest.mock.patch` for example
     if django.VERSION >= (5, 2):
         from django.core.serializers.python import Deserializer as PythonDeserializer
+
         _get_model = PythonDeserializer._get_model_from_node
     else:
         from django.core.serializers.python import Deserializer as PythonDeserializer, _get_model
