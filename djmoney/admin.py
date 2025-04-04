@@ -14,7 +14,7 @@ def setup_admin_integration():
     def display_for_field(value, field, *args, **kwargs):
         if isinstance(field, MoneyField):
             return str(value)
-        return original_display_for_field(value, field,*args, **kwargs)
+        return original_display_for_field(value, field, *args, **kwargs)
 
     for mod in MODULES_TO_PATCH:
         setattr(mod, "display_for_field", display_for_field)
