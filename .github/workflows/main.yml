@@ -34,6 +34,7 @@ jobs:
 
   tests:
     strategy:
+      fail-fast: false
       matrix:
         include:
           - python: '3.8'
