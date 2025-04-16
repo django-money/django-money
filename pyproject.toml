@@ -2,6 +2,67 @@
 requires = ["setuptools >= 40.6.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "django-money"
+dynamic = ["version"]
+description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
+readme = "README.rst"
+license = { text = "BSD" }
+requires-python = ">=3.7"
+maintainers = [
+    { name = "Greg Reinbach", email = "greg@reinbach.com" },
+]
+keywords = [
+    "django",
+    "money",
+    "py-money",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+dependencies = [
+    "Django>=2.2",
+    "py-moneyed>=2.0,<3.1",
+    "setuptools",
+]
+
+[project.optional-dependencies]
+exchange = [
+    "certifi",
+]
+
+[dependency-groups]
+test = [
+    "django-stubs",
+    "mixer",
+    "mypy",
+    "pytest-cov",
+    "pytest-django",
+    "pytest>=8.2,<8.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/django-money/django-money"
+
+[tool.setuptools.dynamic]
+version = { attr = "djmoney.__version__" }
+
 [tool.black]
 line-length = 120
 target-version = ["py35"]
