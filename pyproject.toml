@@ -56,6 +56,10 @@ test = [
     "pytest-django",
     "pytest>=8.2,<8.3",
 ]
+docs = [
+    "Sphinx>=6,<7",
+    "sphinx_rtd_theme>=1.2,<1.3",
+]
 
 [project.urls]
 Homepage = "https://github.com/django-money/django-money"
