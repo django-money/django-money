@@ -1,6 +1,7 @@
 import json
 from unittest.mock import patch
 
+import django
 from django.core.management import call_command
 from django.core.serializers.base import DeserializationError
 
@@ -82,6 +83,7 @@ def test_deserialization_error():
         list(Deserializer("invalid JSON"))
 
 
+@pytest.mark.skipif(django.VERSION >= (5, 2), reason="_get_model was removed in Django 5.2")
 def test_patched_get_model(fixture_file):
     """Sometimes it is useful to patch `django.code.serializers.python._get_model`.
 
@@ -93,6 +95,22 @@ def test_patched_get_model(fixture_file):
         return ModelWithDefaultAsInt
 
     with patch("django.core.serializers.python._get_model", _get_model):
+        loaddata(fixture_file)
+    assert ModelWithDefaultAsInt.objects.get().money == Money(1, "USD")
+
+
+@pytest.mark.skipif(django.VERSION < (5, 2), reason="Deserializer API were added in Django 5.2")
+def test_patched_get_model_from_node(fixture_file):
+    """Sometimes it is useful to patch `django.code.serializers.python.Deserializer._get_model_from_node`.
+
+    Our code should use the patched version."""
+    data = '[{"model": "testapp.unknown_model", "pk": 1, "fields": {"money_currency": "USD", "money": "1.00"}}]'
+    fixture_file.write(data)
+
+    def _get_model_from_node(self, identifier):
+        return ModelWithDefaultAsInt
+
+    with patch("django.core.serializers.python.Deserializer._get_model_from_node", _get_model_from_node):
         loaddata(fixture_file)
     assert ModelWithDefaultAsInt.objects.get().money == Money(1, "USD")
 
