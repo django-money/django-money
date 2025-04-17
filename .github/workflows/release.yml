@@ -14,15 +14,9 @@ jobs:
       uses: actions/setup-python@v5
       with:
         python-version: "3.10"
-    - name: Install tox
-      run: >-
-        python -m
-        pip install
-        tox
-        --user
+    - uses: astral-sh/setup-uv@v5
     - name: Build a binary wheel and a source tarball
-      run: >-
-        python -m tox -e build
+      run: uv build
     - name: Publish distribution 📦 to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
       with:

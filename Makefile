@@ -30,18 +30,16 @@ clean-test:
 test:
 	pytest --cov=./djmoney tests
 
-coverage:
-	coverage run --source djmoney setup.py test
+coverage: test
 	coverage report -m
 	coverage html
 
 install: clean
-	python setup.py install
+	uv sync
 
 release: dist  ## Generate and upload release to PyPi
-	twine upload -s dist/*
+	uv publish
 
 dist: clean  ## Generate source dist and wheels
-	python setup.py sdist
-	python setup.py bdist_wheel
+	uv build
 	ls -l dist
