@@ -7,7 +7,8 @@ name = "django-money"
 dynamic = ["version"]
 description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
 readme = "README.rst"
-license = { text = "BSD" }
+license = "BSD-3-Clause"
+license-files = ["LICENSE.txt"]
 requires-python = ">=3.8"
 maintainers = [
     { name = "Greg Reinbach", email = "greg@reinbach.com" },
