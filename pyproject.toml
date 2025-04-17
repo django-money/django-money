@@ -38,7 +38,7 @@ classifiers = [
     "Programming Language :: Python :: Implementation :: PyPy",
 ]
 dependencies = [
-    "Django>=2.2",
+    "Django>=4.2",
     "py-moneyed>=2.0,<3.1",
     "setuptools",
 ]

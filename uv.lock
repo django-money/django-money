@@ -411,7 +411,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "certifi", marker = "extra == 'exchange'" },
-    { name = "django", specifier = ">=2.2" },
+    { name = "django", specifier = ">=4.2" },
     { name = "py-moneyed", specifier = ">=2.0,<3.1" },
     { name = "setuptools" },
 ]
