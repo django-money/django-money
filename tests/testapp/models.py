@@ -165,6 +165,16 @@ class ModelWithCustomManager(models.Model):
     manager = money_manager(MoneyManager())
 
 
+class CustomMoneyManager(models.Manager):
+    pass
+
+
+class ModelWithCustomManagerWithoutExplicitWrapping(models.Model):
+    field = MoneyField(max_digits=10, decimal_places=2)
+
+    objects = CustomMoneyManager()
+
+
 class DateTimeModel(models.Model):
     field = MoneyField(max_digits=10, decimal_places=2)
     created = models.DateTimeField(null=True, blank=True)
