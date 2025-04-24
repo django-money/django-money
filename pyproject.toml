@@ -11,6 +11,8 @@ license = { text = "BSD" }
 requires-python = ">=3.8"
 maintainers = [
     { name = "Greg Reinbach", email = "greg@reinbach.com" },
+    { name = "Benjamin Balder Bach", email = "benjamin@overtag.dk" },
+    { name = "Dmitry Dygalo", email = "dmitry@dygalo.dev" },
 ]
 keywords = [
     "django",
