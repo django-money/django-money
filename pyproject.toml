@@ -40,7 +40,6 @@ classifiers = [
 dependencies = [
     "Django>=4.2",
     "py-moneyed>=2.0,<3.1",
-    "setuptools",
 ]
 
 [project.optional-dependencies]
