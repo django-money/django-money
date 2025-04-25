@@ -180,7 +180,7 @@ class MoneyField(models.DecimalField):
         currency_max_length=CURRENCY_CODE_MAX_LENGTH,
         currency_field_name=None,
         money_descriptor_class=MoneyFieldProxy,
-        **kwargs
+        **kwargs,
     ):
         nullable = kwargs.get("null", False)
         default = self.setup_default(default, default_currency, nullable)
