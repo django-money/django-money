@@ -150,6 +150,41 @@ class MoneyFieldProxy:
             setattr(obj, self.currency_field_name, value)
 
 
+class LinkedCurrencyMoneyFieldProxy(MoneyFieldProxy):
+    """
+    Overridden to support fetching currency across relationships.
+    """
+
+    def __init__(self, field, currency_field_name=None):
+        super(LinkedCurrencyMoneyFieldProxy, self).__init__(field)
+        self.currency_field_name = currency_field_name or get_currency_field_name(self.field.name, self.field)
+
+    def _money_from_obj(self, obj):
+        amount = obj.__dict__[self.field.name]
+        if "__" in self.currency_field_name:
+            attrs = self.currency_field_name.split("__")
+            related_attrs, currency_attr = attrs[:-1], attrs[-1]
+            for related_attr in related_attrs:
+                obj = getattr(obj, related_attr)
+            currency = getattr(obj, currency_attr)
+        else:
+            currency = obj.__dict__[self.currency_field_name]
+        if amount is None:
+            return None
+        return Money(amount=amount, currency=currency)
+
+    def __set__(self, obj, value):  # noqa
+        if isinstance(value, BaseExpression):
+            if isinstance(value, Value):
+                value = self.prepare_value(obj, value.value)
+            elif not isinstance(value, Func):
+                validate_money_expression(obj, value)
+                prepare_expression(value)
+        else:
+            value = self.prepare_value(obj, value)
+        obj.__dict__[self.field.name] = value
+
+
 class CurrencyField(models.CharField):
     description = "A field which stores currency."
 
@@ -330,6 +365,53 @@ class MoneyField(models.DecimalField):
         if self.currency_max_length != CURRENCY_CODE_MAX_LENGTH:
             kwargs["currency_max_length"] = self.currency_max_length
         return name, path, args, kwargs
+
+
+def noop_add_currency_field(*args, **kwargs):
+    pass
+
+
+class LinkedCurrencyMoneyField(MoneyField):
+    """
+    Customized MoneyField to not automatically add a currency field to the
+    underlying database model class.
+    """
+
+    def __init__(
+        self,
+        currency_field=None,
+        currency_field_name=None,
+        verbose_name=None,
+        name=None,
+        max_digits=None,
+        decimal_places=None,
+        default=None,
+        default_currency=DEFAULT_CURRENCY,
+        currency_choices=CURRENCY_CHOICES,
+        **kwargs
+    ):
+        self._currency_field = currency_field
+        super(LinkedCurrencyMoneyField, self).__init__(
+            verbose_name=verbose_name,
+            name=name,
+            max_digits=max_digits,
+            decimal_places=decimal_places,
+            default=default,
+            default_currency=default_currency,
+            currency_choices=currency_choices,
+            **kwargs
+        )
+        self._currency_field_name = currency_field_name
+
+    def contribute_to_class(self, cls, name):
+        # This nonsense is necessary to prevent django from automatically adding
+        # a currency field during migrations.
+        for b in self.__class__.__mro__:
+            if b != object:
+                setattr(b, "add_currency_field", noop_add_currency_field)
+
+        super(LinkedCurrencyMoneyField, self).contribute_to_class(cls, name)
+        setattr(cls, self.name, LinkedCurrencyMoneyFieldProxy(self, self._currency_field_name))
 
 
 def patch_managers(sender, **kwargs):
