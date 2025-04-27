@@ -3,13 +3,14 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework.fields import empty
-from rest_framework.serializers import DecimalField, ModelSerializer
+from rest_framework.serializers import DecimalField, ModelSerializer, Field
 
-from djmoney.models.fields import MoneyField as ModelField
+from djmoney.models.fields import MoneyField as MoneyModelField, CurrencyField as CurrencyModelField
 from djmoney.models.validators import MaxMoneyValidator, MinMoneyValidator
-from djmoney.money import Money
+from djmoney.money import Money, Currency
 from djmoney.utils import MONEY_CLASSES, get_currency_field_name
 from moneyed.classes import CurrencyDoesNotExist
+from babel.numbers import is_currency
 
 
 class _PrimitiveMoney:
@@ -88,5 +89,28 @@ class MoneyField(DecimalField):
         return amount
 
 
-def register_money_field():
-    ModelSerializer.serializer_field_mapping[ModelField] = MoneyField
+class CurrencyField(Field):
+    """
+    Simple Django Rest Framework Currency Field.
+    Adds some validation
+
+    NOTE: Requires babel
+    """
+
+    default_error_messages = {
+        'invalid_currency_code': 'Invalid currency code. Currency must be a valid ISO-4217 currency code but got {passed_currency}. More information at https://es.wikipedia.org/wiki/ISO_4217'
+    }
+
+    def to_representation(self, value: Currency) -> str:
+        return value.code
+
+    def to_internal_value(self, data) -> Currency:
+        if not is_currency(data):
+            self.fail('invalid_currency_code', passed_currency=data)
+
+        return Currency(data)
+
+
+def register_drf_fields():
+    ModelSerializer.serializer_field_mapping[MoneyModelField] = MoneyField
+    ModelSerializer.serializer_field_mapping[CurrencyModelField] = CurrencyField

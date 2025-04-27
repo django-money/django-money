@@ -1,1 +1,1 @@
-from .fields import MoneyField, register_money_field  # noqa
+from .fields import MoneyField, register_drf_fields  # noqa
