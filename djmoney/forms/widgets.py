@@ -14,7 +14,7 @@ class MoneyWidget(MultiWidget):
         currency_widget=None,
         default_currency=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
         self.default_currency = default_currency
         if not currency_widget:
