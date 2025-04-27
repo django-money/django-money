@@ -35,6 +35,7 @@ from .testapp.models import (
     ModelWithChoicesMoneyField,
     ModelWithCustomDefaultManager,
     ModelWithCustomManager,
+    ModelWithCustomManagerWithoutExplicitWrapping,
     ModelWithDefaultAsDecimal,
     ModelWithDefaultAsFloat,
     ModelWithDefaultAsInt,
@@ -768,7 +769,12 @@ def test_migration_serialization():
 
 
 @pytest.mark.parametrize(
-    "model, manager_name", ((ModelWithVanillaMoneyField, "objects"), (ModelWithCustomDefaultManager, "custom"))
+    "model, manager_name",
+    (
+        (ModelWithVanillaMoneyField, "objects"),
+        (ModelWithCustomDefaultManager, "custom"),
+        (ModelWithCustomManagerWithoutExplicitWrapping, "objects"),
+    ),
 )
 def test_clear_meta_cache(model, manager_name):
     """
@@ -804,6 +810,11 @@ class TestFieldAttributes:
 class TestCustomManager:
     def test_method(self):
         assert ModelWithCustomManager.manager.super_method().count() == 0
+
+
+def test_automatic_wrapping_of_custom_model_manager():
+    manager_class = ModelWithCustomManagerWithoutExplicitWrapping.objects.__class__
+    assert manager_class.__module__ + "." + manager_class.__name__ == "djmoney.models.managers.MoneyManager"
 
 
 def test_package_is_importable():
