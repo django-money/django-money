@@ -937,3 +937,20 @@ def test_deconstruct_includes(attribute, build_kwargs, expected):
     new = MoneyField(*args, **kwargs)
     assert getattr(new, attribute) == getattr(instance, attribute)
     assert getattr(new, attribute) == expected
+
+
+class TestQuerySet:
+    @pytest.fixture
+    def instance(self):
+        return ModelWithVanillaMoneyField.objects.create()
+
+    @pytest.mark.xfail
+    def test_instance_from_queryset_with_only_raises_keyerror(self, instance):
+        """
+        Demonstrates that MoneyFields lack support for only() querysets
+        https://github.com/django-money/django-money/issues/654
+        """
+        assert isinstance(instance.money, Money)
+        assert instance.money == Money('0.0', 'XYZ')
+        only_instance = ModelWithVanillaMoneyField.objects.filter(pk=instance.pk).only("money").first()
+        assert only_instance.money == Money('0.0', 'XYZ')  # fails with `Keyerror: 'money_currency'`
