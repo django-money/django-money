@@ -106,5 +106,5 @@ def convert_money(value, currency, backend=None):
         raise ImproperlyConfigured(
             "You have to add 'djmoney.contrib.exchange' to INSTALLED_APPS in order to use currency exchange"
         )
-    amount = value.amount * get_rate(value.currency, currency, backend)
+    amount = value.amount * get_rate(value.currency, currency, backend=backend)
     return value.__class__(amount, currency)
