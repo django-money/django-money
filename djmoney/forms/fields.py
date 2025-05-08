@@ -23,7 +23,7 @@ class MoneyField(MultiValueField):
         default_amount=None,
         default_currency=None,
         *args,
-        **kwargs
+        **kwargs,
     ):
 
         amount_field = DecimalField(

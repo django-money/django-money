@@ -16,6 +16,7 @@ DefaultMoney = _DefaultMoney
 @type_check_only
 class _FormatOptions(TypedDict):
     "Format options parameter."
+
     format: Optional[str]
     locale: str
     currency_digits: bool
