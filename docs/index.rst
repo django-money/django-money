@@ -11,7 +11,7 @@ Contents
 
    changes
    contributing
-
+   settings
 
 Indices and tables
 ==================

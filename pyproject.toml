@@ -82,3 +82,6 @@ known_first_party = ["tests", "djmoney", "moneyed"]
 known_third_party = ["moneyed", "pytest", "rest_framework", "sphinx_rtd_theme"]
 sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 lines_after_imports = 2
+
+[tool.setuptools]
+packages = ["djmoney", "django_money"]
