@@ -1,6 +1,25 @@
 Settings
 ========
 
+The following settings are available in [djmoney/settings.py](https://github.com/django-money/django-money/blob/main/djmoney/settings.py) - documentation pull requests are welcome.
+
+* DEFAULT_CURRENCY (documented below)
+* CURRENCIES (undocumented)
+* CURRENCY_CHOICES (undocumented)
+* CURRENCY_DECIMAL_PLACES (undocumented)
+* CURRENCY_CODE_MAX_LENGTH (undocumented)
+* MONEY_FORMAT (undocumented)
+
+Settings for currency conversion:
+
+* OPEN_EXCHANGE_RATES_URL (undocumented)
+* OPEN_EXCHANGE_RATES_APP_ID (undocumented)
+* FIXER_URL (undocumented)
+* FIXER_ACCESS_KEY (undocumented)
+* BASE_CURRENCY (undocumented)
+* EXCHANGE_BACKEND (undocumented)
+* RATES_CACHE_TIMEOUT (undocumented)
+
 DEFAULT_CURRENCY
 -----------------
 
@@ -33,7 +52,3 @@ Example:
 
 In this example, the `price` field will use Euros (`EUR`) as its currency, overriding the global `DEFAULT_CURRENCY`.
 
-### Notes
-
-- If `DEFAULT_CURRENCY` is not set in `settings.py`, it defaults to `None`.
-- You can override the default currency for specific fields by using the `default_currency` argument.
