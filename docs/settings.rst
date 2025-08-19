@@ -23,7 +23,7 @@ Settings for currency conversion:
 DEFAULT_CURRENCY
 -----------------
 
-The `DEFAULT_CURRENCY` setting specifies the default currency used for monetary fields in your Django application. 
+The `DEFAULT_CURRENCY` setting specifies the default currency used for monetary fields in your Django application.
 By default, it is set to `None`, meaning no default currency is applied unless explicitly configured.
 
 ### Configuration
@@ -38,7 +38,7 @@ This will set the default currency to US Dollars.
 
 ### Usage in Fields
 
-The `DEFAULT_CURRENCY` is used in fields like `MoneyField` to set a default currency. If not explicitly overridden, 
+The `DEFAULT_CURRENCY` is used in fields like `MoneyField` to set a default currency. If not explicitly overridden,
 the field will use the globally configured `DEFAULT_CURRENCY`.
 
 Example:
@@ -51,4 +51,3 @@ Example:
         price = MoneyField(max_digits=10, decimal_places=2, default_currency="EUR")
 
 In this example, the `price` field will use Euros (`EUR`) as its currency, overriding the global `DEFAULT_CURRENCY`.
-
