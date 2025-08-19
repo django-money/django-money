@@ -2,19 +2,16 @@ default_language_version:
   python: python3
 repos:
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
+    rev: v6.0.0
     hooks:
     -   id: trailing-whitespace
     -   id: check-yaml
     -   id: check-added-large-files
     -   id: debug-statements
     -   id: end-of-file-fixer
-    -   id: fix-encoding-pragma
-        args:
-        - --remove
 
 -   repo: https://github.com/asottile/pyupgrade
-    rev: v3.19.1
+    rev: v3.20.0
     hooks:
     -   id: pyupgrade
         args:
@@ -26,13 +23,13 @@ repos:
       -   id: isort
 
 -   repo: https://github.com/pycqa/flake8
-    rev: 7.2.0
+    rev: 7.3.0
     hooks:
     -   id: flake8
         exclude: ^docs
 
 -   repo: https://github.com/rstcheck/rstcheck
-    rev: v6.2.4
+    rev: v6.2.5
     hooks:
       - id: rstcheck
         additional_dependencies:
@@ -48,7 +45,7 @@ repos:
         exclude: ^docs
 
 -   repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.15.0
+    rev: v1.17.1
     hooks:
        - id: mypy
          additional_dependencies:
