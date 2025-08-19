@@ -951,6 +951,6 @@ class TestQuerySet:
         https://github.com/django-money/django-money/issues/654
         """
         assert isinstance(instance.money, Money)
-        assert instance.money == Money('0.0', 'XYZ')
+        assert instance.money == Money("0.0", "XYZ")
         only_instance = ModelWithVanillaMoneyField.objects.filter(pk=instance.pk).only("money").first()
-        assert only_instance.money == Money('0.0', 'XYZ')  # fails with `Keyerror: 'money_currency'`
+        assert only_instance.money == Money("0.0", "XYZ")  # fails with `Keyerror: 'money_currency'`
