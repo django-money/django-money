@@ -64,8 +64,10 @@ def test_string_representation(backend):
 def test_cache():
     with patch("djmoney.contrib.exchange.models._get_rate", wraps=_get_rate) as original:
         assert get_rate("USD", "USD") == 1
+        assert original.call_count == 0
+        assert get_rate("USD", "EUR") == 2
         assert original.call_count == 1
-        assert get_rate("USD", "USD") == 1
+        assert get_rate("USD", "EUR") == 2
         assert original.call_count == 1
 
 
@@ -73,6 +75,7 @@ def test_bad_configuration(settings):
     settings.INSTALLED_APPS.remove("djmoney.contrib.exchange")
     with pytest.raises(ImproperlyConfigured):
         convert_money(Money(1, "USD"), "EUR")
+    settings.INSTALLED_APPS.append("djmoney.contrib.exchange")
 
 
 def test_without_installed_exchange(testdir):

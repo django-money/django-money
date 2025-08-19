@@ -1,3 +1,4 @@
+import django
 import django.contrib.admin.utils as admin_utils
 
 import pytest
@@ -14,33 +15,16 @@ INTEGER_FIELD = ModelWithVanillaMoneyField._meta.get_field("integer")
 @pytest.mark.parametrize(
     "value, expected",
     (
-        (Money(10, "RUB"), "10.00 руб."),  # Issue 232
-        (Money(1234), "1,234.00 XYZ"),  # Issue 220
-        (Money(1000, "SAR"), "ر.س1,000.00"),  # Issue 196
-        (Money(1000, "PLN"), "1,000.00 zł"),  # Issue 102
-        (Money("3.33", "EUR"), "3.33 €"),  # Issue 90
-    ),
-)
-def test_display_for_field_with_legacy_formatting(legacy_formatting, settings, value, expected):
-    settings.USE_L10N = True
-    # This locale has no definitions in py-moneyed, so it will work for localized money representation.
-    settings.LANGUAGE_CODE = "cs"
-    settings.DECIMAL_PLACES_DISPLAY = {}
-    assert admin_utils.display_for_field(value, MONEY_FIELD, "") == expected
-
-
-@pytest.mark.parametrize(
-    "value, expected",
-    (
         (Money(10, "RUB"), "10,00\xa0RUB"),  # Issue 232
-        (Money(1234), "1\xa0234,00\xa0XYZ"),  # Issue 220
         (Money(1000, "SAR"), "1\xa0000,00\xa0SAR"),  # Issue 196
         (Money(1000, "PLN"), "1\xa0000,00\xa0PLN"),  # Issue 102
         (Money("3.33", "EUR"), "3,33\xa0€"),  # Issue 90
     ),
 )
 def test_display_for_field(settings, value, expected):
-    settings.USE_L10N = True
+    # This now defaults to True and raises RemovedInDjango50Warning
+    if django.VERSION < (4, 0):
+        settings.USE_L10N = True
     # This locale has no definitions in py-moneyed, so it will work for localized money representation.
     settings.LANGUAGE_CODE = "cs"
     assert admin_utils.display_for_field(value, MONEY_FIELD, "") == expected

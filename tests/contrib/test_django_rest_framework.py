@@ -1,11 +1,18 @@
 from collections import Counter
 from decimal import Decimal
 
+from django.test import override_settings
+
 import pytest
 
 from djmoney.money import Money
 
-from ..testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel, ValidatedMoneyModel
+from ..testapp.models import (
+    ModelWithVanillaMoneyField,
+    MoneyFieldModelWithProperty,
+    NullMoneyFieldModel,
+    ValidatedMoneyModel,
+)
 
 
 pytestmark = pytest.mark.django_db
@@ -64,10 +71,9 @@ class TestMoneyField:
             (NullMoneyFieldModel, "field", {"default_currency": "EUR", "allow_null": True}, None, None),
             (NullMoneyFieldModel, "field", None, Money(10, "USD"), Money(10, "USD")),
             (NullMoneyFieldModel, "field", {"default_currency": "EUR"}, Money(10, "USD"), Money(10, "USD")),
-            (NullMoneyFieldModel, "field", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
+            (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
             (ModelWithVanillaMoneyField, "money", None, Money(10, "USD"), Money(10, "USD")),
             (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, Money(10, "USD"), Money(10, "USD")),
-            (ModelWithVanillaMoneyField, "money", None, 10, Money(10, "XYZ")),
             (ModelWithVanillaMoneyField, "money", {"default_currency": "EUR"}, 10, Money(10, "EUR")),
         ),
     )
@@ -76,6 +82,31 @@ class TestMoneyField:
         assert serializer.is_valid()
         instance = serializer.save()
         assert getattr(instance, field) == expected
+
+    def test_to_internal_value_for_property_field(self):
+
+        class PropertyModelSerializer(serializers.ModelSerializer):
+            extra_monies = djmoney_fields.MoneyField(
+                source="ten_extra_monies",
+                max_digits=10,
+                decimal_places=2,
+                min_value=0,
+                default_currency="EUR",
+                required=False,
+                allow_null=True,
+                read_only=True,
+            )
+
+            class Meta:
+                model = MoneyFieldModelWithProperty
+                fields = ("extra_monies", "money")
+
+        serializer = PropertyModelSerializer(data={"money": Money(12, "USD"), "ten_extra_monies": Money(100, "USD")})
+        serializer.is_valid()
+        assert serializer.validated_data == {"money": Money("12.00", "USD")}
+        instance = serializer.save()
+        assert instance.ten_extra_monies == Money(22, "USD")
+        assert instance.money == Money(12, "USD")
 
     def test_invalid_value(self):
         serializer = self.get_serializer(ModelWithVanillaMoneyField, data={"money": None})
@@ -107,7 +138,7 @@ class TestMoneyField:
 
     def test_serializer_with_fields(self):
         serializer = self.get_serializer(ModelWithVanillaMoneyField, data={"money": "10.00"}, fields_=("money",))
-        serializer.is_valid(True)
+        serializer.is_valid(raise_exception=True)
         assert serializer.data == {"money": "10.00"}
 
     @pytest.mark.parametrize(
@@ -204,3 +235,110 @@ class TestMoneyField:
         serializer = Serializer(data=data)
         serializer.is_valid(raise_exception=True)
         assert serializer.validated_data["money"] == expected
+
+
+# Test case contributed for
+# https://github.com/django-money/django-money/pull/722
+class TestMinValueSerializer:
+
+    @override_settings(DEFAULT_CURRENCY="EUR")
+    @pytest.mark.parametrize(
+        ("data", "is_valid"),
+        [
+            pytest.param({"money": Money(-1, "EUR")}, False, id="is_invalid_money_value"),
+            pytest.param({"money": Money(1, "EUR")}, True, id="is_valid_money_value"),
+            pytest.param({"money": "-1", "money_currency": "EUR"}, False, id="is_invalid_dict_value"),
+            pytest.param({"money": "0.01", "money_currency": "EUR"}, True, id="is_valid_dict_value"),
+        ],
+    )
+    def test_serializer_validator_field_without_default_currency(self, data, is_valid):
+        from djmoney.contrib.django_rest_framework import MoneyField
+
+        class MinValueSerializer(serializers.Serializer):
+            money = MoneyField(decimal_places=2, max_digits=10, min_value=0)
+
+            class Meta:
+                model = ModelWithVanillaMoneyField
+
+        serializer = MinValueSerializer(data=data)
+        if is_valid:
+            assert serializer.is_valid()
+        else:
+            assert not serializer.is_valid()
+            assert serializer.errors["money"][0] == "Ensure this value is greater than or equal to 0."
+
+    @pytest.mark.parametrize(
+        ("data", "is_valid"),
+        [
+            pytest.param({"second_money": Money(-1, "EUR")}, False, id="is_invalid_money_value"),
+            pytest.param({"second_money": Money(1, "EUR")}, True, id="is_valid_money_value"),
+            pytest.param({"second_money": "-1", "second_money_currency": "EUR"}, False, id="is_invalid_dict_value"),
+            pytest.param({"second_money": "0.01", "second_money_currency": "EUR"}, True, id="is_valid_dict_value"),
+        ],
+    )
+    def test_serializer_validator_field_with_default_currencey(self, data, is_valid):
+        from djmoney.contrib.django_rest_framework import MoneyField
+
+        class MinValueSerializer(serializers.Serializer):
+            second_money = MoneyField(decimal_places=2, max_digits=10, min_value=0)
+
+            class Meta:
+                model = ModelWithVanillaMoneyField
+
+        serializer = MinValueSerializer(data=data)
+        if is_valid:
+            assert serializer.is_valid()
+        else:
+            assert not serializer.is_valid()
+            assert serializer.errors["second_money"][0] == "Ensure this value is greater than or equal to 0."
+
+    def test_no_model_serializer(self):
+        from djmoney.contrib.django_rest_framework import MoneyField
+
+        class NormalSerializer(serializers.Serializer):
+            the_money = MoneyField(decimal_places=2, max_digits=10, min_value=0)
+
+            class Meta:
+                fields = ("the_money",)
+
+        serializer = NormalSerializer(data={"the_money": "0.01", "the_money_currency": "EUR"})
+        assert serializer.is_valid()
+
+    def test_model_serializer_with_field_source(self):
+        class ModelSerializer(serializers.ModelSerializer):
+            renamed_money_field = djmoney_fields.MoneyField(
+                source="money", max_digits=10, decimal_places=2, min_value=0
+            )
+
+            class Meta:
+                model = ModelWithVanillaMoneyField
+                fields = ("renamed_money_field",)
+
+        serializer = ModelSerializer(data={"renamed_money_field": "0.01", "renamed_money_field_currency": "EUR"})
+        assert serializer.is_valid()
+
+    def test_model_serializer_with_nonexistent_property_raises_error(self):
+        class PropertyModelSerializer(serializers.ModelSerializer):
+            nonexistent_field = djmoney_fields.MoneyField(
+                max_digits=10,
+                decimal_places=2,
+                min_value=0,
+                default_currency="EUR",
+                required=False,
+                allow_null=True,
+            )
+
+            class Meta:
+                model = MoneyFieldModelWithProperty
+                fields = ("nonexistent_field", "money")
+
+        data = {"nonexistent_field": "12.00", "money": "10.00"}
+
+        serializer = PropertyModelSerializer(data=data)
+        with pytest.raises(ValueError) as ex:
+            serializer.is_valid()
+
+        expected_error_message = (
+            "nonexistent_field is neither a db field nor a property on the model MoneyFieldModelWithProperty"
+        )
+        assert ex.value.args[0] == expected_error_message

@@ -1,6 +1,7 @@
 """
 This module contains various helpers for migrations testing.
 """
+
 import os
 
 
@@ -12,7 +13,7 @@ def makemigrations():
     from django.db.migrations import questioner
 
     # We should answer yes for all migrations questioner questions
-    questioner.input = lambda x: "y"
+    questioner.input = lambda prompt=None: "y"
 
     os.system("find . -name \\*.pyc -delete")
     call_command("makemigrations", "money_app", name=MIGRATION_NAME)

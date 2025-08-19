@@ -22,6 +22,7 @@ class ExchangeBackend(models.Model):
 
 
 class Rate(models.Model):
+    id = models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")
     currency = models.CharField(max_length=CURRENCY_CODE_MAX_LENGTH)
     value = models.DecimalField(max_digits=20, decimal_places=6)
     backend = models.ForeignKey(ExchangeBackend, on_delete=models.CASCADE, related_name="rates")
@@ -40,6 +41,8 @@ def get_rate(source, target, backend=None):
     Converts exchange rate on the DB side if there is no backends with given base currency.
     Uses data from the default backend if the backend is not specified.
     """
+    if str(source) == str(target):
+        return 1
     if backend is None:
         backend = get_default_backend_name()
     key = f"djmoney:get_rate:{source}:{target}:{backend}"
@@ -53,8 +56,6 @@ def get_rate(source, target, backend=None):
 
 def _get_rate(source, target, backend):
     source, target = str(source), str(target)
-    if str(source) == target:
-        return 1
     rates = Rate.objects.filter(currency__in=(source, target), backend=backend).select_related("backend")
     if not rates:
         raise MissingRate(f"Rate {source} -> {target} does not exist")
@@ -100,10 +101,10 @@ def _get_rate_via_base(rates, target):
     return second.value / first.value
 
 
-def convert_money(value, currency):
+def convert_money(value, currency, backend=None):
     if "djmoney.contrib.exchange" not in settings.INSTALLED_APPS:
         raise ImproperlyConfigured(
             "You have to add 'djmoney.contrib.exchange' to INSTALLED_APPS in order to use currency exchange"
         )
-    amount = value.amount * get_rate(value.currency, currency)
+    amount = value.amount * get_rate(value.currency, currency, backend=backend)
     return value.__class__(amount, currency)

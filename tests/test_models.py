@@ -3,14 +3,17 @@ Created on May 7, 2011
 
 @author: jake
 """
+
 import datetime
 from copy import copy
+from decimal import Decimal, InvalidOperation
 
 from django import VERSION
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, models
 from django.db.migrations.writer import MigrationWriter
 from django.db.models import Case, F, Func, Q, Value, When
+from django.db.models.functions import Coalesce
 from django.utils.translation import override
 
 import pytest
@@ -18,6 +21,7 @@ import pytest
 from djmoney.models.fields import MoneyField
 from djmoney.money import Money
 from moneyed import Money as OldMoney
+from moneyed.classes import CurrencyDoesNotExist
 
 from .testapp.models import (
     AbstractModel,
@@ -40,6 +44,7 @@ from .testapp.models import (
     ModelWithDefaultAsStringWithCurrency,
     ModelWithNonMoneyField,
     ModelWithNullableCurrency,
+    ModelWithNullDefaultOnNonNullableField,
     ModelWithSharedCurrency,
     ModelWithTwoMoneyFields,
     ModelWithUniqueIdAndCurrency,
@@ -59,8 +64,8 @@ class TestVanillaMoneyField:
     @pytest.mark.parametrize(
         "model_class, kwargs, expected",
         (
-            (ModelWithVanillaMoneyField, {"money": Money("100.0")}, Money("100.0")),
-            (ModelWithVanillaMoneyField, {"money": OldMoney("100.0")}, Money("100.0")),
+            (ModelWithVanillaMoneyField, {"money": Money("100.0", "USD")}, Money("100.0", "USD")),
+            (ModelWithVanillaMoneyField, {"money": OldMoney("100.0", "USD")}, Money("100.0", "USD")),
             (BaseModel, {}, Money(0, "USD")),
             (BaseModel, {"money": "111.2"}, Money("111.2", "USD")),
             (BaseModel, {"money": Money("123", "PLN")}, Money("123", "PLN")),
@@ -115,7 +120,6 @@ class TestVanillaMoneyField:
     @pytest.mark.parametrize(
         "model_class, other_value",
         (
-            (ModelWithVanillaMoneyField, Money("100.0")),
             (BaseModel, Money(0, "USD")),
             (ModelWithDefaultAsMoney, Money("0.01", "RUB")),
             (ModelWithDefaultAsFloat, OldMoney("12.05", "PLN")),
@@ -148,27 +152,35 @@ class TestVanillaMoneyField:
             BaseModel.objects.create(money=value)
 
     @pytest.mark.parametrize("money_class", (Money, OldMoney))
-    @pytest.mark.parametrize("field_name", ("money", "second_money"))
-    def test_save_new_value(self, field_name, money_class):
-        ModelWithVanillaMoneyField.objects.create(**{field_name: money_class("100.0")})
+    def test_save_new_value_on_field_without_default(self, money_class):
+        ModelWithVanillaMoneyField.objects.create(money=money_class("100.0", "DKK"))
 
         # Try setting the value directly
         retrieved = ModelWithVanillaMoneyField.objects.get()
-        setattr(retrieved, field_name, Money(1, "DKK"))
+        retrieved.money = Money(1, "DKK")
         retrieved.save()
         retrieved = ModelWithVanillaMoneyField.objects.get()
+        assert retrieved.money == Money(1, "DKK")
 
-        assert getattr(retrieved, field_name) == Money(1, "DKK")
+    def test_save_new_value_on_field_with_default(self):
+        ModelWithDefaultAsMoney.objects.create()
+
+        # Try setting the value directly
+        retrieved = ModelWithDefaultAsMoney.objects.get()
+        retrieved.money = Money(1, "DKK")
+        retrieved.save()
+        retrieved = ModelWithDefaultAsMoney.objects.get()
+        assert retrieved.money == Money(1, "DKK")
 
     def test_rounding(self):
-        money = Money("100.0623456781123219")
+        money = Money("100.0623456781123219", "USD")
 
         instance = ModelWithVanillaMoneyField.objects.create(money=money)
         # TODO. Should instance.money be rounded too?
 
         retrieved = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
 
-        assert retrieved.money == Money("100.06")
+        assert retrieved.money == Money("100.06", "USD")
 
     @pytest.fixture(params=[Money, OldMoney])
     def objects_setup(self, request):
@@ -237,7 +249,7 @@ class TestVanillaMoneyField:
         assert ModelWithTwoMoneyFields.objects.filter(**kwargs).count() == expected
 
     def test_exact_match(self):
-        money = Money("100.0")
+        money = Money("100.0", "USD")
 
         instance = ModelWithVanillaMoneyField.objects.create(money=money)
         retrieved = ModelWithVanillaMoneyField.objects.get(money=money)
@@ -250,9 +262,9 @@ class TestVanillaMoneyField:
         ModelIssue300.objects.filter(money__created__gt=date)
 
     def test_range_search(self):
-        money = Money("3")
+        money = Money("3", "EUR")
 
-        instance = ModelWithVanillaMoneyField.objects.create(money=Money("100.0"))
+        instance = ModelWithVanillaMoneyField.objects.create(money=Money("100.0", "EUR"))
         retrieved = ModelWithVanillaMoneyField.objects.get(money__gt=money)
 
         assert instance.pk == retrieved.pk
@@ -301,12 +313,101 @@ class TestVanillaMoneyField:
         instance = NullMoneyFieldModel.objects.create()
         assert instance.field is None
 
+    def test_implicit_currency_field_not_nullable_when_money_field_not_nullable(self):
+        instance = ModelWithVanillaMoneyField(money=10, money_currency=None)
+        with pytest.raises(TypeError, match=r"Currency code can't be None"):
+            instance.save()
+
+    def test_raises_type_error_setting_currency_to_none_on_nullable_currency_field_while_having_amount(self):
+        with pytest.raises(ValueError, match=r"Missing currency value"):
+            NullMoneyFieldModel(field=10, field_currency=None)
+
+    def test_currency_field_null_switch_not_triggered_from_default_currency(self):
+        # We want a sane default behaviour and simply declaring a `MoneyField(...)`
+        # without any default value args should create non nullable amount and currency
+        # fields
+        assert ModelWithVanillaMoneyField._meta.get_field("money").null is False
+        assert ModelWithVanillaMoneyField._meta.get_field("money_currency").null is False
+
+    def test_currency_field_nullable_when_money_field_is_nullable(self):
+        assert NullMoneyFieldModel._meta.get_field("field").null is True
+        assert NullMoneyFieldModel._meta.get_field("field_currency").null is True
+
+
+@pytest.mark.parametrize(
+    ("default", "error", "error_match"),
+    [
+        pytest.param("10", AssertionError, r"Default currency can not be `None`", id="string without currency"),
+        pytest.param(b"10", AssertionError, r"Default currency can not be `None`", id="bytes without currency"),
+        pytest.param(13.37, AssertionError, r"Default currency can not be `None`", id="float"),
+        pytest.param(Decimal(10), AssertionError, r"Default currency can not be `None`", id="decimal"),
+        pytest.param(10, AssertionError, r"Default currency can not be `None`", id="int"),
+        pytest.param("100 ", CurrencyDoesNotExist, r"code  ", id="string with trailing space and without currency"),
+        pytest.param(b"100 ", CurrencyDoesNotExist, r"code  ", id="bytes with trailing space and without currency"),
+        pytest.param("100 ABC123", CurrencyDoesNotExist, r"code ABC123", id="string with unknown currency code"),
+        pytest.param(b"100 ABC123", CurrencyDoesNotExist, r"code ABC123", id="bytes with unknown currency code"),
+        # TODO: Better error reporting on > 1 white spaces between amount and currency as that could be
+        # quite difficult to spot?
+        pytest.param(
+            "100  SEK", CurrencyDoesNotExist, r"code  SEK", id="string with too much value and currency separation"
+        ),
+        pytest.param(
+            b"100  SEK", CurrencyDoesNotExist, r"code  SEK", id="bytes with too much value and currency separation"
+        ),
+        pytest.param(
+            "  10 SEK  ",
+            InvalidOperation,
+            r"(ConversionSyntax|Invalid literal)",
+            id="string with leading and trailing spaces",
+        ),
+        pytest.param(
+            b"  10 SEK  ",
+            InvalidOperation,
+            r"(ConversionSyntax|Invalid literal)",
+            id="bytes with leading and trailing spaces",
+        ),
+        pytest.param(
+            "  10 SEK", InvalidOperation, r"(ConversionSyntax|Invalid literal)", id="string with leading spaces"
+        ),
+        pytest.param(
+            b"  10 SEK", InvalidOperation, r"(ConversionSyntax|Invalid literal)", id="bytes with leading spaces"
+        ),
+        pytest.param("10 SEK  ", CurrencyDoesNotExist, r"code SEK   ", id="string with trailing spaces"),
+        pytest.param(b"10 SEK  ", CurrencyDoesNotExist, r"code SEK   ", id="bytes with trailing spaces"),
+    ],
+)
+def test_errors_instantiating_money_field_with_no_default_currency_and_default_as(default, error, error_match):
+    with pytest.raises(error, match=error_match):
+        MoneyField(max_digits=10, decimal_places=2, default=default, default_currency=None)
+
+
+@pytest.mark.parametrize(
+    ("default", "default_currency", "expected"),
+    [
+        pytest.param("10 SEK", None, Money(10, "SEK"), id="string with currency"),
+        pytest.param(b"10 SEK", None, Money(10, "SEK"), id="bytes with currency"),
+        pytest.param("10", "USD", Money(10, "USD"), id="string without currency and currency default"),
+        pytest.param(b"10", "USD", Money(10, "USD"), id="bytes without currency and currency default"),
+    ],
+)
+def test_can_instantiate_money_field_default_as(default, default_currency, expected):
+    field = MoneyField(max_digits=10, decimal_places=2, default=default, default_currency=default_currency)
+    assert field.default == expected
+
+
+def test_errors_on_default_values_being_none_when_fields_have_not_null_constraint():
+    instance = ModelWithNullDefaultOnNonNullableField()
+    assert instance.money is None
+    assert instance.money_currency is None
+    with pytest.raises(IntegrityError, match=r"testapp_modelwithnulldefaultonnonnullablefield.money"):
+        instance.save()
+
 
 class TestGetOrCreate:
     @pytest.mark.parametrize(
         "model, field_name, kwargs, currency",
         (
-            (ModelWithVanillaMoneyField, "money", {"money_currency": "PLN"}, "PLN"),
+            (ModelWithDefaultAsInt, "money", {"money_currency": "PLN"}, "PLN"),
             (ModelWithVanillaMoneyField, "money", {"money": Money(0, "EUR")}, "EUR"),
             (ModelWithVanillaMoneyField, "money", {"money": OldMoney(0, "EUR")}, "EUR"),
             (ModelWithSharedCurrency, "first", {"first": 10, "second": 15, "currency": "CZK"}, "CZK"),
@@ -373,10 +474,16 @@ class TestNullableCurrency:
         assert str(exc.value) == "Missing currency value"
         assert not ModelWithNullableCurrency.objects.exists()
 
+    def test_fails_with_null_currency_decimal(self):
+        with pytest.raises(ValueError) as exc:
+            ModelWithNullableCurrency.objects.create(money=Decimal(10))
+        assert str(exc.value) == "Missing currency value"
+        assert not ModelWithNullableCurrency.objects.exists()
+
     def test_fails_with_nullable_but_no_default(self):
-        with pytest.raises(IntegrityError) as exc:
+        match = r"NOT NULL constraint failed: testapp_modelwithtwomoneyfields.amount1"
+        with pytest.raises(IntegrityError, match=match):
             ModelWithTwoMoneyFields.objects.create()
-        assert str(exc.value) == "NOT NULL constraint failed: testapp_modelwithtwomoneyfields.amount1"
 
     def test_query_not_null(self):
         money = Money(100, "EUR")
@@ -406,7 +513,7 @@ class TestFExpressions:
             (Money(50, "USD") * F("integer"), Money(100, "USD")),
             (F("integer") * Money(50, "USD"), Money(100, "USD")),
             (Money(50, "USD") / F("integer"), Money(25, "USD")),
-            (Money(51, "USD") % F("integer"), Money(1, "USD")),
+            (Money(51, "USD") % F("integer"), Money(1, "USD")),  # type: ignore
             (F("money") / 2, Money(50, "USD")),
             (F("money") % 98, Money(2, "USD")),
             (F("money") / F("integer"), Money(50, "USD")),
@@ -519,10 +626,20 @@ class TestExpressions:
         assert ModelWithVanillaMoneyField.objects.get(integer=0).money == Money(10, "USD")
         assert ModelWithVanillaMoneyField.objects.get(integer=1).money == Money(0, "USD")
 
+    def test_update_with_coalesce(self):
+        ModelWithVanillaMoneyField.objects.create(money=Money(1, "USD"), second_money=Money(2, "USD"), integer=0)
+        ModelWithVanillaMoneyField.objects.update(
+            money=Coalesce(F("second_money"), 0, output_field=models.DecimalField())
+        )
+        instance = ModelWithVanillaMoneyField.objects.get()
+        assert instance.money == Money("2", "USD")
+
     def test_create_func(self):
-        instance = ModelWithVanillaMoneyField.objects.create(money=Func(Value(-10), function="ABS"))
+        instance = ModelWithVanillaMoneyField.objects.create(
+            money=Func(Value(-10), function="ABS"), money_currency="USD"
+        )
         instance.refresh_from_db()
-        assert instance.money.amount == 10
+        assert instance.money == Money(10, "USD")
 
     @pytest.mark.parametrize(
         "value, expected", ((None, None), (10, Money(10, "USD")), (Money(10, "EUR"), Money(10, "EUR")))
@@ -534,7 +651,7 @@ class TestExpressions:
 
     def test_value_create_invalid(self):
         with pytest.raises(ValidationError):
-            ModelWithVanillaMoneyField.objects.create(money=Value("string"))
+            ModelWithVanillaMoneyField.objects.create(money=Value("string"), money_currency="DKK")
 
     def test_expressions_for_non_money_fields(self):
         instance = ModelWithVanillaMoneyField.objects.create(money=Money(1, "USD"), integer=0)
@@ -553,7 +670,7 @@ def test_find_models_related_to_money_models():
 def test_allow_expression_nodes_without_money():
     """Allow querying on expression nodes that are not Money"""
     desc = "hundred"
-    ModelWithNonMoneyField.objects.create(money=Money(100.0), desc=desc)
+    ModelWithNonMoneyField.objects.create(money=Money(100.0, "USD"), desc=desc)
     instance = ModelWithNonMoneyField.objects.filter(desc=F("desc")).get()
     assert instance.desc == desc
 
@@ -712,10 +829,12 @@ def test_override_decorator():
 def test_properties_access():
     with pytest.raises(TypeError) as exc:
         ModelWithVanillaMoneyField(money=Money(1, "USD"), bla=1)
-    if VERSION[:2] > (2, 1):
+    if VERSION[:2] > (4, 0):
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got unexpected keyword arguments: 'bla'"
+    elif VERSION[:2] > (2, 1):
         assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
     else:
-        assert str(exc.value) == "'bla' is an invalid keyword argument for this function"
+        assert str(exc.value) == "ModelWithVanillaMoneyField() got an unexpected keyword argument 'bla'"
 
 
 def parametrize_with_q(**kwargs):
@@ -784,7 +903,7 @@ def test_mixer_blend():
     except AttributeError:
         pass  # mixer doesn't work with pypy
     else:
-        instance = mixer.blend(ModelWithTwoMoneyFields)
+        instance = mixer.blend(ModelWithTwoMoneyFields, amount1_currency="EUR", amount2_currency="USD")
         assert isinstance(instance.amount1, Money)
         assert isinstance(instance.amount2, Money)
 

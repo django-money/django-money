@@ -3,6 +3,8 @@ Created on May 7, 2011
 
 @author: jake
 """
+
+import warnings
 from decimal import Decimal
 
 import pytest
@@ -122,9 +124,9 @@ def test_no_deprecation_warning():
     """
     The library's code shouldn't generate any warnings itself. See #262.
     """
-    with pytest.warns(None) as warning:
+    with warnings.catch_warnings():
+        warnings.simplefilter("error")
         MoneyField(max_digits=10, decimal_places=2, currency_choices=(("USD", "USD"),)).formfield()
-    assert not warning
 
 
 class TestValidation:
@@ -190,7 +192,7 @@ class TestDisabledField:
 def test_decimal_places_model_form(model_class):
     """Forms should use DECIMAL_PLACES setting value when none specified."""
 
-    expected = str(10 ** -settings.DECIMAL_PLACES)
+    expected = str(10**-settings.DECIMAL_PLACES)
     assert model_class().fields["money"].widget.widgets[0].attrs["step"] == expected
 
 
@@ -198,5 +200,5 @@ def test_precedence_decimal_places_model_form():
     """Forms should use decimal_places in field value when specified."""
 
     decimal_places = PreciseModelForm.Meta.model._meta.fields[2].decimal_places
-    expected = str(10 ** -decimal_places)
+    expected = str(10**-decimal_places)
     assert PreciseModelForm().fields["money"].widget.widgets[0].attrs["step"] == expected

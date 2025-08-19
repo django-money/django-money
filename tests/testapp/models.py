@@ -3,6 +3,7 @@ Created on May 7, 2011
 
 @author: jake
 """
+
 from decimal import Decimal
 
 from django.conf import settings
@@ -24,7 +25,7 @@ else:
 
 
 class ModelWithVanillaMoneyField(models.Model):
-    money = MoneyField(max_digits=10, decimal_places=2, default=0.0)
+    money = MoneyField(max_digits=10, decimal_places=2)
     second_money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency="EUR")
     integer = models.IntegerField(default=0)
 
@@ -128,6 +129,14 @@ class ModelManager(models.Manager):
     pass
 
 
+class MoneyFieldModelWithProperty(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency="USD")
+
+    @property
+    def ten_extra_monies(self):
+        return self.money + Money(10, "USD")
+
+
 class NotNullMoneyFieldModel(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
 
@@ -215,3 +224,7 @@ class PreciseModel(models.Model):
 
 class ModelWithDefaultPrecision(models.Model):
     money = MoneyField(max_digits=10)
+
+
+class ModelWithNullDefaultOnNonNullableField(models.Model):
+    money = MoneyField(max_digits=10, decimal_places=2, default=None, default_currency=None)

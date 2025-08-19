@@ -20,9 +20,9 @@ django-money
 A little Django app that uses `py-moneyed <https://github.com/py-moneyed/py-moneyed>`__ to add support for Money
 fields in your models and forms.
 
-* Django versions supported: 2.2, 3.1, 3.2
-* Python versions supported: 3.6, 3.7, 3.8, 3.9
-* PyPy versions supported: PyPy3
+* Django versions supported: 2.2, 3.2, 4.0, 4.1, 4.2
+* Python versions supported: 3.7, 3.8, 3.9, 3.10, 3.11
+* PyPy versions supported: PyPy3 (for Django <= 4.0)
 
 If you need support for older versions of Django and Python, please refer to older releases mentioned in `the release notes <https://django-money.readthedocs.io/en/latest/changes.html>`__.
 
@@ -140,6 +140,37 @@ The ``balance`` field from the model above has the following validation:
 * Euros should be between 100 and 1000;
 * US Dollars should be between 50 and 500;
 
+Constructing form data
+----------------------
+
+The default ``ModelForm`` class will use a form field (``djmoney.forms.fields.MoneyField``) that is constructed of two separate fields for amount and currency.
+
+If you need to feed data directly to such a form (for instance if you are writing a test case), then you need to pass amount and currency like this:
+
+
+
+.. code:: python
+
+        # models.py
+        class Product(models.Model):
+            price = MoneyField(
+                max_digits=14,
+                decimal_places=2,
+                default_currency='EUR'
+            )
+
+        # forms.py
+        class ProductForm(ModelForm):
+            class Meta:
+                model = Product
+                fields = ["price"]
+
+        # tests.py
+
+        # construct the form in your test case
+        form = ProductForm({'price_0': 10, 'price_1': 'EUR'})
+
+
 Adding a new Currency
 ---------------------
 
@@ -212,6 +243,18 @@ need to manually decorate those custom methods, like so:
            @understands_money
            def my_custom_method(*args, **kwargs):
                # Awesome stuff
+
+
+Note on serialization
+---------------------
+
+Django-money provides a custom deserializer, it is not registered
+by default so you will have to actively register it in your ``settings.py``.
+
+.. code:: python
+
+    SERIALIZATION_MODULES = {"json": "djmoney.serializers"}
+
 
 Format localization
 -------------------
@@ -380,7 +423,7 @@ To set up a periodic rates update you could use Celery task:
 
 .. code:: python
 
-    CELERYBEAT_SCHEDULE = {
+    CELERY_BEAT_SCHEDULE = {
         'update_rates': {
             'task': 'path.to.your.task',
             'schedule': crontab(minute=0, hour=0),

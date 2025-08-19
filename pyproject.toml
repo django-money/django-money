@@ -1,7 +1,84 @@
 [build-system]
-requires = ["setuptools >= 40.6.0", "wheel"]
+requires = ["setuptools >= 75.3.2", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-money"
+dynamic = ["version"]
+description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
+readme = "README.rst"
+license = { text = "BSD" }
+requires-python = ">=3.8"
+maintainers = [
+    { name = "Greg Reinbach", email = "greg@reinbach.com" },
+    { name = "Benjamin Balder Bach", email = "benjamin@overtag.dk" },
+    { name = "Dmitry Dygalo", email = "dmitry@dygalo.dev" },
+]
+keywords = [
+    "django",
+    "money",
+    "py-money",
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Framework :: Django :: 5.0",
+    "Framework :: Django :: 5.1",
+    "Framework :: Django :: 5.2",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dependencies = [
+    "Django>=4.2",
+    "py-moneyed>=2.0,<3.1",
+]
+
+[project.optional-dependencies]
+exchange = [
+    "certifi",
+]
+
+[dependency-groups]
+test = [
+    "django-stubs",
+    "mixer",
+    "mypy",
+    "pytest-cov",
+    "pytest-django",
+    "pytest>=8.2,<8.3",
+]
+docs = [
+    "Sphinx>=6,<7",
+    "sphinx_rtd_theme>=1.2,<1.3",
+]
+
+[project.urls]
+Homepage = "https://github.com/django-money/django-money"
+
+[tool.setuptools.dynamic]
+version = { attr = "djmoney.__version__" }
 
 [tool.black]
 line-length = 120
-target-version = ["py35"]
+target-version = ["py38"]
+
+[tool.isort]
+profile = "black"
+line_length = 120
+combine_as_imports = true
+known_django = "django"
+known_first_party = ["tests", "djmoney", "moneyed"]
+known_third_party = ["moneyed", "pytest", "rest_framework", "sphinx_rtd_theme"]
+sections = ["FUTURE", "STDLIB", "DJANGO", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+lines_after_imports = 2
