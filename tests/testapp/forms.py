@@ -9,6 +9,8 @@ from django import forms
 from djmoney.forms import MoneyField
 
 from .models import (
+    ModelWithCallableDefault,
+    ModelWithCallableDefaultAndDefaultCurrency,
     ModelWithDefaultAsString,
     ModelWithDefaultPrecision,
     ModelWithValidation,
@@ -36,6 +38,18 @@ class OptionalMoneyForm(forms.Form):
 class MoneyModelForm(forms.ModelForm):
     class Meta:
         model = ModelWithVanillaMoneyField
+        fields = ("money",)
+
+
+class MoneyModelFormWithCallableDefault(forms.ModelForm):
+    class Meta:
+        model = ModelWithCallableDefault
+        fields = ("money",)
+
+
+class MoneyModelFormWithCallableDefaultAndCallableDefaultCurrency(forms.ModelForm):
+    class Meta:
+        model = ModelWithCallableDefaultAndDefaultCurrency
         fields = ("money",)
 
 

@@ -168,6 +168,10 @@ class CurrencyField(models.CharField):
 class MoneyField(models.DecimalField):
     description = "A field which stores both the currency and amount of money."
 
+    @property
+    def non_db_attrs(self):
+        return super().non_db_attrs + ("default_currency", "currency_choices")
+
     def __init__(
         self,
         verbose_name=None,
@@ -184,7 +188,9 @@ class MoneyField(models.DecimalField):
     ):
         nullable = kwargs.get("null", False)
         default = self.setup_default(default, default_currency, nullable)
-        if not default_currency and default not in (None, NOT_PROVIDED):
+
+        # Provide the default currency from the default Money instance provided
+        if not default_currency and isinstance(default, Money):
             default_currency = default.currency
 
         self.currency_max_length = currency_max_length
@@ -198,8 +204,24 @@ class MoneyField(models.DecimalField):
         Field.creation_counter += 1
 
     def setup_default(self, default, default_currency, nullable):
-        if default in (None, NOT_PROVIDED) or isinstance(default, Money):
+        # None and NOT_PROVIDED are returned as-is
+        if default in (None, NOT_PROVIDED):
             return default
+        # Money instances need no further processing
+        elif isinstance(default, Money):
+            return default
+        # Callables continue to be callables (will be evaluated later)
+        # Evaluating them here will create new migrations every time the callable returns a new value
+        elif callable(default):
+            return default
+        # This is not supported: If default_currency is a callable, we need to fail, we cannot call it to construct the
+        # default, that would have unintended consequences. Require to have BOTH default and default_currency as
+        # callables in that case.
+        elif callable(default_currency) and default_currency != NOT_PROVIDED:
+            raise ValueError(
+                "django-money does not support a callable for default_currency, if the amount's default isn't also a "
+                "callable."
+            )
         elif isinstance(default, (str, bytes)):
             try:
                 # handle scenario where default is formatted like:
@@ -306,7 +328,10 @@ class MoneyField(models.DecimalField):
         defaults["currency_choices"] = self.currency_choices
         defaults["default_currency"] = self.default_currency
         if self._has_default:
-            defaults["default_amount"] = self.default.amount
+            if callable(self.default):
+                defaults["default_amount"] = self.default().amount
+            else:
+                defaults["default_amount"] = self.default.amount
         return super().formfield(**defaults)
 
     def value_to_string(self, obj):
@@ -316,13 +341,10 @@ class MoneyField(models.DecimalField):
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
 
-        if self._has_default:
-            kwargs["default"] = self.default.amount
+        # Comment needed: Why is this done?
         if self.default_currency != DEFAULT_CURRENCY:
-            if self.default_currency is not None:
-                kwargs["default_currency"] = str(self.default_currency)
-            else:
-                kwargs["default_currency"] = None
+            kwargs["default_currency"] = self.default_currency
+        # Comment needed: Why is this done?
         if self.currency_choices != CURRENCY_CHOICES:
             kwargs["currency_choices"] = self.currency_choices
         if self.currency_field_name:

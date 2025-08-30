@@ -24,6 +24,14 @@ else:
     register = lambda _: None  # noqa
 
 
+def get_default():
+    return Money("0.00", settings.TEST_DEFAULT_CURRENCY)
+
+
+def get_default_currency():
+    return settings.TEST_DEFAULT_CURRENCY
+
+
 class ModelWithVanillaMoneyField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2)
     second_money = MoneyField(max_digits=10, decimal_places=2, default=0.0, default_currency="EUR")
@@ -228,3 +236,20 @@ class ModelWithDefaultPrecision(models.Model):
 
 class ModelWithNullDefaultOnNonNullableField(models.Model):
     money = MoneyField(max_digits=10, decimal_places=2, default=None, default_currency=None)
+
+
+class ModelWithCallableDefault(models.Model):
+
+    money = MoneyField(max_digits=10, decimal_places=2, default=get_default, blank=True)
+
+
+class ModelWithCallableDefaultCurrency(models.Model):
+
+    money = MoneyField(max_digits=10, decimal_places=2, default_currency=get_default_currency)
+
+
+class ModelWithCallableDefaultAndDefaultCurrency(models.Model):
+
+    money = MoneyField(
+        max_digits=10, decimal_places=2, default=get_default, default_currency=get_default_currency, blank=True
+    )

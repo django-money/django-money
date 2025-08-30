@@ -43,3 +43,8 @@ moneyed.add_currency(code="USDT", numeric="000", name="Tether")
 
 OPEN_EXCHANGE_RATES_APP_ID = "test"
 FIXER_ACCESS_KEY = "test"
+
+DEFAULT_CURRENCY = "USD"
+
+# Additional setting for callables with different defaults
+TEST_DEFAULT_CURRENCY = "EUR"

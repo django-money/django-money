@@ -20,6 +20,8 @@ from .testapp.forms import (
     MoneyForm,
     MoneyFormMultipleCurrencies,
     MoneyModelForm,
+    MoneyModelFormWithCallableDefault,
+    MoneyModelFormWithCallableDefaultAndCallableDefaultCurrency,
     MoneyModelFormWithValidation,
     NullableModelForm,
     OptionalMoneyForm,
@@ -28,7 +30,12 @@ from .testapp.forms import (
     PreciseModelForm,
     ValidatedMoneyModelForm,
 )
-from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
+from .testapp.models import (
+    ModelWithCallableDefault,
+    ModelWithCallableDefaultAndDefaultCurrency,
+    ModelWithVanillaMoneyField,
+    NullMoneyFieldModel,
+)
 
 
 pytestmark = pytest.mark.django_db
@@ -43,6 +50,30 @@ def test_save():
 
     retrieved = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
     assert money == retrieved.money
+
+
+def test_save_with_callable_default():
+    """Test if the callable default triggers"""
+    expected_money = Money(Decimal("0"), "EUR")
+    form = MoneyModelFormWithCallableDefault({})
+
+    assert form.is_valid()
+    instance = form.save()
+
+    retrieved = ModelWithCallableDefault.objects.get(pk=instance.pk)
+    assert expected_money == retrieved.money
+
+
+def test_save_with_callable_default_and_currency():
+    """Test if the callable defaults trigger when both are defined"""
+    expected_money = Money(Decimal("0"), "EUR")
+    form = MoneyModelFormWithCallableDefaultAndCallableDefaultCurrency({})
+
+    assert form.is_valid()
+    instance = form.save()
+
+    retrieved = ModelWithCallableDefaultAndDefaultCurrency.objects.get(pk=instance.pk)
+    assert expected_money == retrieved.money
 
 
 def test_validate():
