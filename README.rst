@@ -134,6 +134,28 @@ MoneyField defaults, both money and separate currency. Here is an example:
 Note that the supplied callables are subject to Django's internals and the fact that they need to be serializable for
 the migration framework.
 
+Configuring currency choices
+----------------------------
+
+It's possible to supply a global Django project setting for ``CURRENCY_CHOICES``, but you may also supply this as an
+individual ``currency_choices`` option for MoneyFields:
+
+.. code:: python
+
+        from django.conf import settings
+        from django.db import models
+        from djmoney.models.fields import MoneyField
+
+        class Invoice(models.Model):
+            # Allow 2 different currencies for total amount
+            total_amount = MoneyField(max_digits=15, decimal_places=2, currency_choices=[("CLY", "CLY"), ("USD", "USD")])
+            # Only allow 1 currency in the accounted field
+            converted_amount = MoneyField(max_digits=15, decimal_places=2, currency_choices=[("CLY", "CLY")])
+
+As with other Django Field ``choices`` kwargs, you can also supply a callable for ``currency_choices`` (but not a
+lambda). Please note that - similar to other ``choices`` fields - there are NO database constraints implied by this
+option, so you need may need additional validation safeguards and
+`adding your own db constraints <https://adamj.eu/tech/2020/01/22/djangos-field-choices-dont-constrain-your-data/>`__.
 
 Field validation
 ----------------
