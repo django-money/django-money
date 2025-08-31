@@ -2,6 +2,18 @@ Changelog
 =========
 
 
+`3.6b1`_ - 2025-08-31
+---------------------
+
+**Added**
+
+- Support for callable ``default`` and ``currency_default``, and ``currency_choices`` :github-issue:`683` (:github-user:`benjaoming`)
+- Add ``backend`` kwarg to ``convert_money`` function :github-issue:`787` (:github-user:`heckad`)
+
+**Changed**
+
+- Migrate to pyproject.toml and uv :github-issue:`791` (:github-user:`browniebroke`)
+
 `3.5.4`_ - 2025-04-17
 ---------------------
 
@@ -854,8 +866,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-# .. _3.5: https:///github.com/django-money/django-money/compare/3.5...HEAD
-
+.. _3.6b1: https:///github.com/django-money/django-money/compare/3.6.0b1...HEAD
 .. _3.5.4: https:///github.com/django-money/django-money/compare/3.5.4...3.5.3
 .. _3.5.3: https:///github.com/django-money/django-money/compare/3.5.3...3.5.2
 .. _3.5.2: https:///github.com/django-money/django-money/compare/3.5.2...3.5.1
