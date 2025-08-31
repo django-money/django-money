@@ -100,6 +100,41 @@ Caution: this setting also affects the initial migration of the `exchange` plugi
 the initial migration has no effect. (You'd need to `manage migrate exchange zero` and migrate again if you want
 to change it).
 
+Callable defaults
+-----------------
+
+To make things configurable through project settings (especially useful for third-party applications using
+django-money), you can wrap configurable defaults in a callable. This avoids generating migrations on models when the
+defaults change!
+
+You can define a `default callable <https://docs.djangoproject.com/en/5.2/ref/models/fields/#default>`__ for your
+MoneyField defaults, both money and separate currency. Here is an example:
+
+.. code:: python
+
+        from django.conf import settings
+        from django.db import models
+        from djmoney.models.fields import MoneyField
+        from djmoney.money import Money
+
+        def get_default_currency():
+            return settings.MY_DEFAULT_CURRENCY
+
+        def get_default_zero():
+            return Money("0.00", settings.MY_DEFAULT_CURRENCY)
+
+        class Product(models.Model):
+            # The price has no default value, but a default currency is defined!
+            price = MoneyField(max_digits=10, decimals=2, currency_default=get_default_currency)
+            # Discount field defaults to 0 Money and thus does not need a default currency (it's in the Money
+            # value supplied by get_default_zero
+            discount = MoneyField(max_digits=10, decimals=2, default=get_default_zero)
+
+
+Note that the supplied callables are subject to Django's internals and the fact that they need to be serializable for
+the migration framework.
+
+
 Field validation
 ----------------
 
