@@ -219,6 +219,25 @@ class TestMigrationFramework:
         )
         migration.stdout.fnmatch_lines(["No changes detected in app 'money_app'"])
 
+    def test_alter_field_currency_choices_callable(self):
+        """Test that changing the return value of a callable does not produce new migrations."""
+        self.make_default_migration()
+        # Change the field to have a callable default
+        migration = self.make_migration(
+            callable_default='[("USD", "USD")]',
+            field="MoneyField(max_digits=15, decimal_places=2, null=True, currency_choices=default1)",
+        )
+        migration.stdout.fnmatch_lines(
+            ["*Migrations for 'money_app':*", "*0002_test.py*", "*Alter field field on model*"]
+        )
+
+        # Change the return value of the callable
+        migration = self.make_migration(
+            callable_default='[("CNY", "CNY")]',
+            field="MoneyField(max_digits=15, decimal_places=2, null=True, currency_choices=default1)",
+        )
+        migration.stdout.fnmatch_lines(["No changes detected in app 'money_app'"])
+
     def test_remove_field(self):
         self.make_default_migration()
         migration = self.make_migration()
