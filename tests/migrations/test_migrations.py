@@ -45,7 +45,7 @@ class TestMigrationFramework:
         fd = self.project_root.join("models.py")
         fd.write(dedent(content))
 
-    def make_migration(self, callable_default="0.00 USD", **fields):
+    def make_migration(self, callable_default='Money("0.00 USD")', **fields):
         """
         Creates a model with provided fields and creates a migration for it.
         """
@@ -61,7 +61,7 @@ class TestMigrationFramework:
 
             # A callable default
             def default1():
-                return Money("{callable_default}")
+                return {callable_default}
 
             class Model(models.Model):
                 {fields}
@@ -188,7 +188,6 @@ class TestMigrationFramework:
         """Test that changing the return value of a callable does not produce new migrations."""
         self.make_default_migration()
         # Change the field to have a callable default
-        # migration = self.make_migration(field="MoneyField(max_digits=15, decimal_places=2, null=True)")
         migration = self.make_migration(
             field="MoneyField(max_digits=15, decimal_places=2, null=True, default=default1)"
         )
@@ -198,7 +197,25 @@ class TestMigrationFramework:
 
         # Change the return value of the callable
         migration = self.make_migration(
-            callable_default="123", field="MoneyField(max_digits=15, decimal_places=2, null=True, default=default1)"
+            callable_default='"USD"', field="MoneyField(max_digits=15, decimal_places=2, null=True, default=default1)"
+        )
+        migration.stdout.fnmatch_lines(["No changes detected in app 'money_app'"])
+
+    def test_alter_field_currency_callable(self):
+        """Test that changing the return value of a callable does not produce new migrations."""
+        self.make_default_migration()
+        # Change the field to have a callable default
+        migration = self.make_migration(
+            field="MoneyField(max_digits=15, decimal_places=2, null=True, default_currency=default1)"
+        )
+        migration.stdout.fnmatch_lines(
+            ["*Migrations for 'money_app':*", "*0002_test.py*", "*Alter field field on model*"]
+        )
+
+        # Change the return value of the callable
+        migration = self.make_migration(
+            callable_default='"USD"',
+            field="MoneyField(max_digits=15, decimal_places=2, null=True, default_currency=default1)",
         )
         migration.stdout.fnmatch_lines(["No changes detected in app 'money_app'"])
 
