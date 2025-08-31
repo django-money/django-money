@@ -43,6 +43,10 @@ class MoneyField(MultiValueField):
         )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
+
+        # Force-overwrite this because we do not support it, and somehow it's added in Django admin formsets.
+        kwargs["show_hidden_initial"] = False
+
         super().__init__(fields, *args, **kwargs)
 
         # set the initial value to the default currency so that the
@@ -68,6 +72,8 @@ class MoneyField(MultiValueField):
         if initial is None:
             initial = ["" for _ in range(0, len(data))]
         else:
+            # If the initial value was supplied as a list, go with that.
+            # Otherwise, try to decompress it.
             if not isinstance(initial, list):
                 initial = self.widget.decompress(initial)
 
@@ -79,7 +85,7 @@ class MoneyField(MultiValueField):
         # consider the money value to have changed. If the currency
         # has changed, but the amount is *empty* then we do not
         # consider the money value to have changed. This means that it
-        # plays nicely with empty formrows in formsets.
+        # plays nicely with empty form rows in formsets.
         try:
             amount_data = data[0]
         except IndexError:
