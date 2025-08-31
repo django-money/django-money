@@ -11,6 +11,7 @@ from djmoney.forms import MoneyField
 from .models import (
     ModelWithCallableDefault,
     ModelWithCallableDefaultAndDefaultCurrency,
+    ModelWithCallableDefaultCurrency,
     ModelWithDefaultAsString,
     ModelWithDefaultPrecision,
     ModelWithValidation,
@@ -44,6 +45,12 @@ class MoneyModelForm(forms.ModelForm):
 class MoneyModelFormWithCallableDefault(forms.ModelForm):
     class Meta:
         model = ModelWithCallableDefault
+        fields = ("money",)
+
+
+class MoneyModelFormWithCallableDefaultCurrency(forms.ModelForm):
+    class Meta:
+        model = ModelWithCallableDefaultCurrency
         fields = ("money",)
 
 
