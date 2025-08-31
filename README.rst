@@ -103,8 +103,7 @@ to change it).
 Callable defaults
 -----------------
 
-.. versionadded:: 3.6.0
-   Callables were introduced in 3.6.0 and did not work before.
+**Added in version 3.6.0: Callables were introduced in 3.6.0 and did not work before.**
 
 To make things configurable through project settings (especially useful for third-party applications using
 django-money), you can wrap configurable defaults in a callable. This avoids generating migrations on models when the
