@@ -32,6 +32,7 @@ from .testapp.models import (
     InheritorModel,
     ModelIssue300,
     ModelRelatedToModelWithMoney,
+    ModelWithCallableCurrencyChoices,
     ModelWithCallableDefault,
     ModelWithCallableDefaultAndDefaultCurrency,
     ModelWithCallableDefaultCurrency,
@@ -84,6 +85,7 @@ class TestVanillaMoneyField:
             (ModelWithCallableDefault, {}, Money("0.00", "EUR")),  # noqa
             (ModelWithCallableDefaultCurrency, {"money": 0}, Money("0.00", "EUR")),
             (ModelWithCallableDefaultAndDefaultCurrency, {}, Money("0.00", "EUR")),
+            (ModelWithCallableCurrencyChoices, {"money": Money("0.00", "DKK")}, Money("0.00", "DKK")),
             (CryptoModel, {"money": Money(10, "USDT")}, Money(10, "USDT")),
         ),
     )
