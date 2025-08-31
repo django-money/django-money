@@ -20,6 +20,10 @@ from .testapp.forms import (
     MoneyForm,
     MoneyFormMultipleCurrencies,
     MoneyModelForm,
+    MoneyModelFormWithCallableCurrencyChoices,
+    MoneyModelFormWithCallableDefault,
+    MoneyModelFormWithCallableDefaultAndCallableDefaultCurrency,
+    MoneyModelFormWithCallableDefaultCurrency,
     MoneyModelFormWithValidation,
     NullableModelForm,
     OptionalMoneyForm,
@@ -28,7 +32,14 @@ from .testapp.forms import (
     PreciseModelForm,
     ValidatedMoneyModelForm,
 )
-from .testapp.models import ModelWithVanillaMoneyField, NullMoneyFieldModel
+from .testapp.models import (
+    ModelWithCallableCurrencyChoices,
+    ModelWithCallableDefault,
+    ModelWithCallableDefaultAndDefaultCurrency,
+    ModelWithCallableDefaultCurrency,
+    ModelWithVanillaMoneyField,
+    NullMoneyFieldModel,
+)
 
 
 pytestmark = pytest.mark.django_db
@@ -43,6 +54,63 @@ def test_save():
 
     retrieved = ModelWithVanillaMoneyField.objects.get(pk=instance.pk)
     assert money == retrieved.money
+
+
+def test_save_with_callable_default():
+    """Test if the callable default triggers"""
+    expected_money = Money(Decimal("0"), "EUR")
+    form = MoneyModelFormWithCallableDefault({})
+
+    assert form.is_valid()
+    instance = form.save()
+
+    retrieved = ModelWithCallableDefault.objects.get(pk=instance.pk)
+    assert expected_money == retrieved.money
+
+
+def test_save_with_callable_default_currency():
+    """Test if the callable default triggers"""
+    expected_money = Money(Decimal("10"), "EUR")
+    form = MoneyModelFormWithCallableDefaultCurrency({"money_0": "10", "money_1": "EUR"})
+
+    assert form.fields["money"].initial[0] is None
+    assert form.fields["money"].initial[1]() == "EUR"
+    assert """<option value="EUR" selected>""" in form.as_p()
+    assert form.is_valid()
+
+    instance = form.save()
+
+    retrieved = ModelWithCallableDefaultCurrency.objects.get(pk=instance.pk)
+    assert expected_money == retrieved.money
+
+
+def test_save_with_callable_default_and_currency():
+    """Test if the callable defaults trigger when both are defined"""
+    expected_money = Money(Decimal("0"), "EUR")
+    form = MoneyModelFormWithCallableDefaultAndCallableDefaultCurrency({})
+
+    assert form.is_valid()
+    instance = form.save()
+
+    retrieved = ModelWithCallableDefaultAndDefaultCurrency.objects.get(pk=instance.pk)
+    assert expected_money == retrieved.money
+
+
+def test_save_with_callable_currency_choices():
+    """Test if the callable default triggers"""
+    expected_money = Money(Decimal("10"), "EUR")
+    form = MoneyModelFormWithCallableCurrencyChoices({"money_0": "10", "money_1": "EUR"})
+
+    assert form.fields["money"].initial[0] is None
+    assert form.fields["money"].initial[1]() == "EUR"
+    assert list(form.fields["money"].widget.widgets[1].choices) == [("DKK", "DKK"), ("EUR", "EUR"), ("USD", "USD")]
+    assert """<option value="EUR" selected>""" in form.as_p()
+    assert form.is_valid()
+
+    instance = form.save()
+
+    retrieved = ModelWithCallableCurrencyChoices.objects.get(pk=instance.pk)
+    assert expected_money == retrieved.money
 
 
 def test_validate():
