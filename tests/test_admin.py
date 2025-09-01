@@ -70,8 +70,8 @@ def test_admin_with_formset(admin_user, admin_client):
             "modelwithparentandcallablefields_set-1-modelwithcallabledefaultanddefaultcurrency_ptr": "",
             "modelwithparentandcallablefields_set-1-parent": 1,
             "modelwithparentandcallablefields_set-1-money_0": "0.00",
-            # This value is wrong.
-            "modelwithparentandcallablefields_set-1-money_1": ("0.00 EUR"),
+            "modelwithparentandcallablefields_set-1-money_1": "EUR",
+            "initial-modelwithparentandcallablefields_set-1-money": "0.00 EUR",
         },
     )
 

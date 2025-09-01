@@ -55,6 +55,8 @@ class MoneyField(MultiValueField):
         # default currency appears as the selected menu item
         if callable(default_currency):
             default_currency = default_currency()
+        if isinstance(default_amount, Money):
+            default_amount = default_amount.amount
         self.initial = [default_amount, default_currency]
 
     def hidden_widget(self):
@@ -67,14 +69,12 @@ class MoneyField(MultiValueField):
             if not self.required and data_list[0] in self.empty_values:
                 return None
             else:
-                print(f"data_list: {data_list}")
                 return Money(*data_list[:2])
         return None
 
     def clean(self, value):
         if isinstance(value, MONEY_CLASSES):
             value = (value.amount, value.currency)
-        print(f"clean: {value}")
         if isinstance(value, list):
             amount, currency = value
             if callable(currency):
