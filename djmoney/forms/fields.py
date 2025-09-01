@@ -5,10 +5,15 @@ from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES
 
 from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES
-from .widgets import MoneyWidget
+from .widgets import HiddenMoneyWidget, MoneyWidget
 
 
 __all__ = ("MoneyField",)
+
+
+class InvalidMoneyInput:
+    def __init__(self, value):
+        self.value = value
 
 
 class MoneyField(MultiValueField):
@@ -48,19 +53,33 @@ class MoneyField(MultiValueField):
 
         # set the initial value to the default currency so that the
         # default currency appears as the selected menu item
+        if callable(default_currency):
+            default_currency = default_currency()
         self.initial = [default_amount, default_currency]
+
+    def hidden_widget(self):
+        # TODO: This should inherit the constraints of the field
+        #  Otherwise, we won't validate that min, max value and currency_choices are valid?
+        return HiddenMoneyWidget()
 
     def compress(self, data_list):
         if data_list:
             if not self.required and data_list[0] in self.empty_values:
                 return None
             else:
+                print(f"data_list: {data_list}")
                 return Money(*data_list[:2])
         return None
 
     def clean(self, value):
         if isinstance(value, MONEY_CLASSES):
             value = (value.amount, value.currency)
+        print(f"clean: {value}")
+        if isinstance(value, list):
+            amount, currency = value
+            if callable(currency):
+                currency = currency()
+            value = (amount, currency)
         return super().clean(value)
 
     def has_changed(self, initial, data):  # noqa

@@ -50,11 +50,10 @@ def test_admin_with_formset(admin_user, admin_client):
     response = admin_client.get(url)
     assert response.status_code == 200
 
-    print(response.content)
-
     response = admin_client.post(
         url,
         {
+            "_save": "Save",
             "modelwithparentandcallablefields_set-TOTAL_FORMS": 2,
             "modelwithparentandcallablefields_set-INITIAL_FORMS": 1,
             "modelwithparentandcallablefields_set-MIN_NUM_FORMS": 0,
@@ -64,15 +63,18 @@ def test_admin_with_formset(admin_user, admin_client):
             "modelwithparentandcallablefields_set-0-parent": 1,
             "modelwithparentandcallablefields_set-0-money_0": 123,
             "modelwithparentandcallablefields_set-0-money_1": "CHF",
-            "initial-modelwithparentandcallablefields_set-0-money": "\\xe2\\x82\\xac0.00",
+            # This is a very sensitive field value, so we are also checking that it's actually part of the generated
+            # form data.
+            "initial-modelwithparentandcallablefields_set-0-money": "0.00 EUR",
             # We want this to be all default values and check that it is NOT created
             "modelwithparentandcallablefields_set-1-modelwithcallabledefaultanddefaultcurrency_ptr": "",
             "modelwithparentandcallablefields_set-1-parent": 1,
             "modelwithparentandcallablefields_set-1-money_0": "0.00",
-            "modelwithparentandcallablefields_set-1-money_1": (
-                "[Decimal(&#x27;0.00&#x27;), &lt;function get_default_currency at 0x7f639b897100&gt;]"
-            ),
+            # This value is wrong.
+            "modelwithparentandcallablefields_set-1-money_1": ("0.00 EUR"),
         },
     )
+
+    print(response.content)
 
     assert response.status_code == 302
