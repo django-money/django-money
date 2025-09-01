@@ -268,3 +268,11 @@ class ModelWithCallableCurrencyChoices(models.Model):
     money = MoneyField(
         max_digits=10, decimal_places=2, default_currency=get_default_currency, currency_choices=get_currency_choices
     )
+
+
+class ParentModel(models.Model):
+    pass
+
+
+class ModelWithParentAndCallableFields(ModelWithCallableDefaultAndDefaultCurrency):
+    parent = models.ForeignKey(ParentModel, on_delete=models.CASCADE)

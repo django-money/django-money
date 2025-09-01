@@ -1,11 +1,12 @@
 import django
 import django.contrib.admin.utils as admin_utils
+from django.urls import reverse
 
 import pytest
 
 from djmoney.money import Money
 
-from .testapp.models import ModelWithVanillaMoneyField
+from .testapp.models import ModelWithParentAndCallableFields, ModelWithVanillaMoneyField, ParentModel
 
 
 MONEY_FIELD = ModelWithVanillaMoneyField._meta.get_field("money")
@@ -32,3 +33,46 @@ def test_display_for_field(settings, value, expected):
 
 def test_default_display():
     assert admin_utils.display_for_field(10, INTEGER_FIELD, "") == "10"
+
+
+def test_admin_with_formset(admin_user, admin_client):
+    """Test to assure that formsets with MoneyFields behave correctly"""
+
+    parent = ParentModel.objects.create()
+    obj = ModelWithParentAndCallableFields.objects.create(parent=parent)
+
+    url = reverse(
+        "admin:testapp_parentmodel_change",
+        kwargs={
+            "object_id": obj.pk,
+        },
+    )
+    response = admin_client.get(url)
+    assert response.status_code == 200
+
+    print(response.content)
+
+    response = admin_client.post(
+        url,
+        {
+            "modelwithparentandcallablefields_set-TOTAL_FORMS": 2,
+            "modelwithparentandcallablefields_set-INITIAL_FORMS": 1,
+            "modelwithparentandcallablefields_set-MIN_NUM_FORMS": 0,
+            "modelwithparentandcallablefields_set-MAX_NUM_FORMS": 2,
+            # The first object exists. We sent back updated values.
+            "modelwithparentandcallablefields_set-0-modelwithcallabledefaultanddefaultcurrency_ptr": obj.pk,
+            "modelwithparentandcallablefields_set-0-parent": 1,
+            "modelwithparentandcallablefields_set-0-money_0": 123,
+            "modelwithparentandcallablefields_set-0-money_1": "CHF",
+            "initial-modelwithparentandcallablefields_set-0-money": "\\xe2\\x82\\xac0.00",
+            # We want this to be all default values and check that it is NOT created
+            "modelwithparentandcallablefields_set-1-modelwithcallabledefaultanddefaultcurrency_ptr": "",
+            "modelwithparentandcallablefields_set-1-parent": 1,
+            "modelwithparentandcallablefields_set-1-money_0": "0.00",
+            "modelwithparentandcallablefields_set-1-money_1": (
+                "[Decimal(&#x27;0.00&#x27;), &lt;function get_default_currency at 0x7f639b897100&gt;]"
+            ),
+        },
+    )
+
+    assert response.status_code == 302

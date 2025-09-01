@@ -44,9 +44,6 @@ class MoneyField(MultiValueField):
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
 
-        # Force-overwrite this because we do not support it, and somehow it's added in Django admin formsets.
-        kwargs["show_hidden_initial"] = False
-
         super().__init__(fields, *args, **kwargs)
 
         # set the initial value to the default currency so that the
