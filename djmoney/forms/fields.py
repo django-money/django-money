@@ -53,15 +53,23 @@ class MoneyField(MultiValueField):
 
         # set the initial value to the default currency so that the
         # default currency appears as the selected menu item
+
+        # Callables might be supplied in cases where the initial data is directly copied from the MoneyField db
+        # object - this seems to happen internally when Django auto-generates certain hidden input fields to track
+        # initial data in a formset.
         if callable(default_currency):
             default_currency = default_currency()
+
+        # TODO: are we sure we do not have default_amount callables here?
         if isinstance(default_amount, Money):
             default_amount = default_amount.amount
+
         self.initial = [default_amount, default_currency]
 
     def hidden_widget(self):
         # TODO: This should inherit the constraints of the field
         #  Otherwise, we won't validate that min, max value and currency_choices are valid?
+        # This is usually used to pre-fill the 'initial data' hidden input, so it's not very sensitive to tampering.
         return HiddenMoneyWidget()
 
     def compress(self, data_list):
