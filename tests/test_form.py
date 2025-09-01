@@ -74,7 +74,7 @@ def test_save_with_callable_default_currency():
     form = MoneyModelFormWithCallableDefaultCurrency({"money_0": "10", "money_1": "EUR"})
 
     assert form.fields["money"].initial[0] is None
-    assert form.fields["money"].initial[1]() == "EUR"
+    assert form.fields["money"].initial[1] == "EUR"
     assert """<option value="EUR" selected>""" in form.as_p()
     assert form.is_valid()
 
@@ -102,7 +102,7 @@ def test_save_with_callable_currency_choices():
     form = MoneyModelFormWithCallableCurrencyChoices({"money_0": "10", "money_1": "EUR"})
 
     assert form.fields["money"].initial[0] is None
-    assert form.fields["money"].initial[1]() == "EUR"
+    assert form.fields["money"].initial[1] == "EUR"
     assert list(form.fields["money"].widget.widgets[1].choices) == [("DKK", "DKK"), ("EUR", "EUR"), ("USD", "USD")]
     assert """<option value="EUR" selected>""" in form.as_p()
     assert form.is_valid()

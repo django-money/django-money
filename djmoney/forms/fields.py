@@ -5,7 +5,7 @@ from djmoney.money import Money
 from djmoney.utils import MONEY_CLASSES
 
 from ..settings import CURRENCY_CHOICES, DECIMAL_PLACES
-from .widgets import MoneyWidget
+from .widgets import HiddenMoneyWidget, MoneyWidget
 
 
 __all__ = ("MoneyField",)
@@ -43,11 +43,29 @@ class MoneyField(MultiValueField):
         )
         # The two fields that this widget comprises
         fields = (amount_field, currency_field)
+
         super().__init__(fields, *args, **kwargs)
 
         # set the initial value to the default currency so that the
         # default currency appears as the selected menu item
+
+        # Callables might be supplied in cases where the initial data is directly copied from the MoneyField db
+        # object - this seems to happen internally when Django auto-generates certain hidden input fields to track
+        # initial data in a formset.
+        if callable(default_currency):
+            default_currency = default_currency()
+
+        # TODO: are we sure we do not have default_amount callables here?
+        if isinstance(default_amount, Money):
+            default_amount = default_amount.amount
+
         self.initial = [default_amount, default_currency]
+
+    def hidden_widget(self):
+        # TODO: This should inherit the constraints of the field
+        #  Otherwise, we won't validate that min, max value and currency_choices are valid?
+        # This is usually used to pre-fill the 'initial data' hidden input, so it's not very sensitive to tampering.
+        return HiddenMoneyWidget()
 
     def compress(self, data_list):
         if data_list:
@@ -60,6 +78,10 @@ class MoneyField(MultiValueField):
     def clean(self, value):
         if isinstance(value, MONEY_CLASSES):
             value = (value.amount, value.currency)
+        # Unpack the list and fail if it doesn't match the expected structure
+        if isinstance(value, (list, tuple)):
+            amount, currency = value
+            value = (amount, currency)
         return super().clean(value)
 
     def has_changed(self, initial, data):  # noqa
@@ -68,6 +90,8 @@ class MoneyField(MultiValueField):
         if initial is None:
             initial = ["" for _ in range(0, len(data))]
         else:
+            # If the initial value was supplied as a list, go with that.
+            # Otherwise, try to decompress it.
             if not isinstance(initial, list):
                 initial = self.widget.decompress(initial)
 
@@ -79,7 +103,7 @@ class MoneyField(MultiValueField):
         # consider the money value to have changed. If the currency
         # has changed, but the amount is *empty* then we do not
         # consider the money value to have changed. This means that it
-        # plays nicely with empty formrows in formsets.
+        # plays nicely with empty form rows in formsets.
         try:
             amount_data = data[0]
         except IndexError:
