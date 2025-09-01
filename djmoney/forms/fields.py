@@ -11,11 +11,6 @@ from .widgets import HiddenMoneyWidget, MoneyWidget
 __all__ = ("MoneyField",)
 
 
-class InvalidMoneyInput:
-    def __init__(self, value):
-        self.value = value
-
-
 class MoneyField(MultiValueField):
     def __init__(
         self,
@@ -83,10 +78,9 @@ class MoneyField(MultiValueField):
     def clean(self, value):
         if isinstance(value, MONEY_CLASSES):
             value = (value.amount, value.currency)
-        if isinstance(value, list):
+        # Unpack the list and fail if it doesn't match the expected structure
+        if isinstance(value, (list, tuple)):
             amount, currency = value
-            if callable(currency):
-                currency = currency()
             value = (amount, currency)
         return super().clean(value)
 
