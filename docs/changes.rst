@@ -10,9 +10,14 @@ Changelog
 - Support for callable ``default`` and ``currency_default``, and ``currency_choices`` :github-issue:`683` (:github-user:`benjaoming`)
 - Add ``backend`` kwarg to ``convert_money`` function :github-issue:`787` (:github-user:`heckad`)
 
+**Fixed**
+
+- The auto-generated hidden input field that tracks initial data in formsets with MoneyField should now work :github-issue:`803` (:github-user:`benjaoming`)
+
 **Changed**
 
 - Migrate to pyproject.toml and uv :github-issue:`791` (:github-user:`browniebroke`)
+
 
 `3.5.4`_ - 2025-04-17
 ---------------------
