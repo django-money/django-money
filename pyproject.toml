@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "Adds support for using money and currency fields in django models and forms. Uses py-moneyed as the money implementation."
 readme = "README.rst"
 license = { text = "BSD" }
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 maintainers = [
     { name = "Greg Reinbach", email = "greg@reinbach.com" },
     { name = "Benjamin Balder Bach", email = "benjamin@overtag.dk" },
@@ -30,8 +30,6 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
