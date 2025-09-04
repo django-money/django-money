@@ -18,6 +18,10 @@ Changelog
 
 - Migrate to pyproject.toml and uv :github-issue:`791` (:github-user:`browniebroke`)
 
+**Removed**
+
+- Python 3.8 and 3.9 support was dropped to give way for typehints :github-issue:`781` (:github-user:`benjaoming`)
+
 
 `3.5.4`_ - 2025-04-17
 ---------------------
