@@ -1,0 +1,29 @@
+name: Upgrader
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "49 5 8 * *"
+
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v5
+      - uses: astral-sh/setup-uv@v6
+        with:
+          python-version: 3.13
+      - run: rm uv.lock
+      - run: uv lock
+      - uses: peter-evans/create-pull-request@v7
+        with:
+          branch: update/uv-lock
+          title: "Upgrade dependencies from uv.lock"
+          commit-message: "Upgrade dependencies"
+          body: |
+            Upgrade dependencies from lock file by deleting `uv.lock` and generating it again.
+
+            Note that CI job did NOT run due to [the default `GITHUB_TOKEN` limitations](https://github.com/peter-evans/create-pull-request#token). To trigger it, close this pull request and re-open it.
