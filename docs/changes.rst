@@ -2,13 +2,14 @@ Changelog
 =========
 
 
-`3.6b2`_ - 2025-09-01
----------------------
+`3.6`_ - 2026-01-27
+-------------------
 
 **Added**
 
 - Support for callable ``default`` and ``currency_default``, and ``currency_choices`` :github-issue:`683` (:github-user:`benjaoming`)
 - Add ``backend`` kwarg to ``convert_money`` function :github-issue:`787` (:github-user:`heckad`)
+- Add getting a limit value from a callable :github-issue:`810` (:github-user:`heckad`)
 
 **Fixed**
 
@@ -875,7 +876,10 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-.. _3.6b2: https:///github.com/django-money/django-money/compare/3.5.4...HEAD
+..
+  .. _develop: https:///github.com/django-money/django-money/compare/3.6...HEAD
+
+.. _3.6: https:///github.com/django-money/django-money/compare/3.5.4...3.6
 .. _3.5.4: https:///github.com/django-money/django-money/compare/3.5.4...3.5.3
 .. _3.5.3: https:///github.com/django-money/django-money/compare/3.5.3...3.5.2
 .. _3.5.2: https:///github.com/django-money/django-money/compare/3.5.2...3.5.1
