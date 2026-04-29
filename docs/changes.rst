@@ -8,6 +8,11 @@ Changelog
 **Added**
 
 - ``UniRateBackend`` exchange-rate backend for `UniRateAPI <https://unirateapi.com>`_. Configure via ``EXCHANGE_BACKEND = "djmoney.contrib.exchange.backends.UniRateBackend"`` and set ``UNIRATE_ACCESS_KEY``.
+Unreleased
+
+**Changed**
+
+- Update README to reflect currently supported Python (3.10–3.13) and Django (4.2–5.2) versions. :github-issue:`820` (:github-user:`smhtbtb`)
 
 
 `3.6`_ - 2026-01-27
