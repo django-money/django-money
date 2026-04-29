@@ -8,7 +8,6 @@ Changelog
 **Added**
 
 - ``UniRateBackend`` exchange-rate backend for `UniRateAPI <https://unirateapi.com>`_. Configure via ``EXCHANGE_BACKEND = "djmoney.contrib.exchange.backends.UniRateBackend"`` and set ``UNIRATE_ACCESS_KEY``.
-Unreleased
 
 **Changed**
 
