@@ -65,14 +65,16 @@ class BaseExchangeBackend:
         Updates rates for the given backend.
         """
         backend, _ = ExchangeBackend.objects.update_or_create(name=self.name, defaults={"base_currency": base_currency})
-        backend.clear_rates()
         params = self.get_params()
         params.update(base_currency=base_currency, **kwargs)
         Rate.objects.bulk_create(
             [
                 Rate(currency=currency, value=value, backend=backend)
                 for currency, value in self.get_rates(**params).items()
-            ]
+            ],
+            update_conflicts=True,
+            unique_fields=["currency", "backend"],
+            update_fields=["value"],
         )
 
 
