@@ -7,7 +7,7 @@ from django.core.cache import cache
 
 import pytest
 
-from djmoney.contrib.exchange.backends import FixerBackend, OpenExchangeRatesBackend
+from djmoney.contrib.exchange.backends import FixerBackend, OpenExchangeRatesBackend, UniRateBackend
 from djmoney.contrib.exchange.backends.base import BaseExchangeBackend
 from djmoney.contrib.exchange.models import ExchangeBackend, Rate
 
@@ -33,6 +33,13 @@ FIXER_RESPONSE = """{
 }"""
 FIXER_EXPECTED = json.loads(FIXER_RESPONSE, parse_float=Decimal)["rates"]
 
+UNIRATE_RESPONSE = """{
+    "amount": 1.0,
+    "base": "USD",
+    "rates": {"EUR": 0.85, "NOK": 10.5, "SEK": 11.0}
+}"""
+UNIRATE_EXPECTED = json.loads(UNIRATE_RESPONSE, parse_float=Decimal)["rates"]
+
 
 @contextmanager
 def mock_backend(value):
@@ -48,6 +55,7 @@ class ExchangeTest:
         params=(
             (OpenExchangeRatesBackend, OPEN_EXCHANGE_RATES_RESPONSE, OPEN_EXCHANGE_RATES_EXPECTED),
             (FixerBackend, FIXER_RESPONSE, FIXER_EXPECTED),
+            (UniRateBackend, UNIRATE_RESPONSE, UNIRATE_EXPECTED),
         ),
     )
     def setup(self, request):

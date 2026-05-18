@@ -2,8 +2,12 @@ Changelog
 =========
 
 
-Unreleased
-----------
+`Unreleased`_
+-------------
+
+**Added**
+
+- ``UniRateBackend`` exchange-rate backend for `UniRateAPI <https://unirateapi.com>`_. Configure via ``EXCHANGE_BACKEND = "djmoney.contrib.exchange.backends.UniRateBackend"`` and set ``UNIRATE_ACCESS_KEY``.
 
 **Changed**
 
@@ -885,9 +889,7 @@ wrapping with ``money_manager``.
 
 - Initial public release
 
-..
-  .. _develop: https:///github.com/django-money/django-money/compare/3.6...HEAD
-
+.. _Unreleased: https:///github.com/django-money/django-money/compare/3.6...HEAD
 .. _3.6: https:///github.com/django-money/django-money/compare/3.5.4...3.6
 .. _3.5.4: https:///github.com/django-money/django-money/compare/3.5.4...3.5.3
 .. _3.5.3: https:///github.com/django-money/django-money/compare/3.5.3...3.5.2

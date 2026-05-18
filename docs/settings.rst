@@ -16,6 +16,8 @@ Settings for currency conversion:
 * OPEN_EXCHANGE_RATES_APP_ID (undocumented)
 * FIXER_URL (undocumented)
 * FIXER_ACCESS_KEY (undocumented)
+* UNIRATE_URL (undocumented)
+* UNIRATE_ACCESS_KEY (undocumented)
 * BASE_CURRENCY (undocumented)
 * EXCHANGE_BACKEND (undocumented)
 * RATES_CACHE_TIMEOUT (undocumented)
