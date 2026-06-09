@@ -61,11 +61,13 @@ class MoneyField(MultiValueField):
 
         self.initial = [default_amount, default_currency]
 
-    def hidden_widget(self):
+    def hidden_widget(self, *args, **kwargs):
         # TODO: This should inherit the constraints of the field
         #  Otherwise, we won't validate that min, max value and currency_choices are valid?
         # This is usually used to pre-fill the 'initial data' hidden input, so it's not very sensitive to tampering.
-        return HiddenMoneyWidget()
+        # Accept the same arguments as Django's default class-based hidden_widget so that
+        # callers such as django-crispy-forms can pass attrs through (#825).
+        return HiddenMoneyWidget(*args, **kwargs)
 
     def compress(self, data_list):
         if data_list:
