@@ -188,6 +188,17 @@ def test_fields_default_amount_becomes_forms_initial():
     assert form.fields["money"].initial == [123, "PLN"]
 
 
+def test_hidden_widget_accepts_attrs():
+    """
+    hidden_widget should accept the arguments Django's default class-based
+    hidden_widget does, so third-party callers like django-crispy-forms can
+    pass attrs through. See #825.
+    """
+    field = MoneyField(max_digits=10, decimal_places=2).formfield()
+    widget = field.hidden_widget(attrs={"class": "foo"})
+    assert widget.attrs["class"] == "foo"
+
+
 def test_no_deprecation_warning():
     """
     The library's code shouldn't generate any warnings itself. See #262.

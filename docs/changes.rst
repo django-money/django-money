@@ -5,7 +5,9 @@ Changelog
 `Unreleased`_
 -------------
 
-...
+**Fixed**
+
+- ``MoneyField.hidden_widget`` now accepts arguments so callers such as django-crispy-forms can pass ``attrs`` :github-issue:`825` (:github-user:`SAY-5`)
 
 `3.6.1`_ - 2026-06-07
 ---------------------
